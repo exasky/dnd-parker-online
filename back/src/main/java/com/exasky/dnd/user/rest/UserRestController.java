@@ -32,4 +32,9 @@ public class UserRestController {
     public DnDUserDto update(@PathVariable Long id, @RequestBody DnDUserDto dto) {
         return DnDUserDto.toDto(this.userService.update(id, DnDUserDto.toBo(dto)));
     }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        this.userService.delete(id);
+    }
 }

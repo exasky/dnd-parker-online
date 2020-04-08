@@ -29,6 +29,8 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatMenuModule} from "@angular/material/menu";
 import {UserListComponent} from "./user/component/user-list.component";
+import {ConfirmDialogComponent} from "./common/confirm-dialog.component";
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
@@ -40,7 +42,8 @@ import {UserListComponent} from "./user/component/user-list.component";
     AdventureCreatorComponent,
     CharacterCreatorComponent,
     CharacterItemDisplayerComponent,
-    UserListComponent
+    UserListComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -61,8 +64,10 @@ import {UserListComponent} from "./user/component/user-list.component";
     MatTreeModule,
     MatToolbarModule,
     MatSidenavModule,
-    MatMenuModule
+    MatMenuModule,
+    MatDialogModule
   ],
+  entryComponents : [ConfirmDialogComponent],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ForbiddenInterceptor, multi: true },

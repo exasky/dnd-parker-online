@@ -29,7 +29,7 @@ public class UserService {
 
     @Transactional
     public DnDUser create(DnDUser toCreate) {
-        DnDUser attachedUser = this.loginService.register(toCreate.getUsername(), toCreate.getPassword());
+        DnDUser attachedUser = loginService.register(toCreate.getUsername(), toCreate.getPassword());
 
         attachedUser.setRole(toCreate.getRole());
         attachedUser.updateCharacters(toCreate.getCharacters().stream()
@@ -43,7 +43,7 @@ public class UserService {
 
     @Transactional
     public DnDUser update(Long id, DnDUser toUpdate) {
-        DnDUser attachedUser = this.userRepository.getOne(id);
+        DnDUser attachedUser = userRepository.getOne(id);
 
         attachedUser.getCharacters().forEach(prevCharacter -> prevCharacter.setUser(null));
 
@@ -56,5 +56,14 @@ public class UserService {
         attachedUser.getCharacters().forEach(character -> character.setUser(attachedUser));
 
         return attachedUser;
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        DnDUser attachedUser = userRepository.getOne(id);
+
+        attachedUser.getCharacters().forEach(prevCharacter -> prevCharacter.setUser(null));
+
+        userRepository.delete(attachedUser);
     }
 }
