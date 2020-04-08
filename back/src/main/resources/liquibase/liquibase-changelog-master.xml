@@ -14,4 +14,5 @@
     <include file="liquibase/changelog/liquibase-diff-20200407-145121.xml"/>
     <include file="liquibase/changelog/liquibase-diff-20200407-145400.xml"/>
     <include file="liquibase/changelog/liquibase-diff-20200408-053720.xml"/>
+    <include file="liquibase/changelog/liquibase-diff-20200408-074912.xml"/>
 </databaseChangeLog>
