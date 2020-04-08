@@ -1,0 +1,22 @@
+<div class="d-flex flex-column align-items-center flex-grow" style="justify-content: space-evenly">
+  <mat-card>
+    Bienvenue {{loginService.currentUserValue.username}} !
+  </mat-card>
+  <mat-card>
+    <mat-card-header>
+      Available adventures:
+    </mat-card-header>
+    <mat-card-content class="m-5">
+      <span *ngIf="adventures && adventures.length === 0">No available adventures, create one ? :)</span>
+      <button *ngFor="let adventure of adventures"
+              mat-button
+              (click)="goToAdventure(adventure.id)">
+        {{adventure.name}}
+      </button>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="d-flex flex-column w-50" *ngIf="loginService.isGM">
+    <button mat-raised-button (click)="createCampaignAdventure()">Create new campaign</button>
+  </div>
+</div>

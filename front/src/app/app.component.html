@@ -1,0 +1,37 @@
+<mat-toolbar color="primary" class="flex-shrink-0 d-flex justify-content-between" *ngIf="loginService.currentUserValue">
+  <button type="button" mat-button (click)="drawer.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>DnD Online</span>
+  <div>
+    <button mat-button [matMenuTriggerFor]="menu">{{loginService.currentUserValue.username}}</button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="loginService.logout()">Logout</button>
+    </mat-menu>
+  </div>
+
+</mat-toolbar>
+
+
+<mat-drawer-container autosize class="flex-grow h-100">
+  <mat-drawer #drawer mode="over">
+    <div *ngIf="loginService.currentUserValue"
+         class="d-flex flex-column m-3">
+      <button mat-raised-button routerLink="/" (click)="drawer.toggle()">Home</button>
+
+      <button mat-raised-button *ngIf="loginService.isGM"
+              class="my-3"
+              routerLink="/campaign-creator" (click)="drawer.toggle()">
+        Campaign creator
+      </button>
+      <button mat-raised-button *ngIf="loginService.isGM"
+              routerLink="/users" (click)="drawer.toggle()">
+        Users
+      </button>
+    </div>
+  </mat-drawer>
+
+  <mat-drawer-content class="flex-grow d-flex">
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>

@@ -1,0 +1,60 @@
+<div class="d-flex flex-column flex-shrink-0" *ngIf="adventure">
+  <div class="d-flex">
+    <mat-form-field>
+      <mat-select aria-label="Display grid lines" [(ngModel)]="options.displayGrid"
+                  placeholder="Display grid lines"
+                  (ngModelChange)="changedOptions()">
+        <mat-option value="always">Always</mat-option>
+        <mat-option value="onDrag&Resize">On Drag & Resize</mat-option>
+        <mat-option value="none">None</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-button (click)="saveAdventure()">Save</button>
+  </div>
+
+  <div style="display: flex; justify-content: space-around;" *ngIf="loginService.isGM">
+    <div *ngFor="let layerElement of addableLayerElements" draggable="true"
+         (dragstart)="dragStartHandler($event, layerElement)">
+      <img style="max-width: 100px; max-height: 100px" [src]="'assets/item/' + layerElement.icon">
+    </div>
+  </div>
+</div>
+
+<div *ngIf="adventure" class="flex-grow overflow m-3" style="position: relative">
+  <div [ngStyle]="{'width': gamePanelXSize * 700 + 'px',
+                  'height': gamePanelYSize * 700 + 'px'}">
+    <ng-template ngFor let-boardRow [ngForOf]="adventure.boards" let-rowIdx="index">
+      <ng-template ngFor let-boardCol [ngForOf]="boardRow" let-colIdx="index">
+        <div *ngIf="boardCol"
+             [ngStyle]="{'top': 700 * rowIdx + 'px',
+                      'left': 700 * colIdx + 'px',
+                      'background-image': 'url(\'assets/board/' + boardCol.boardNumber + '.JPG\')',
+                      'transform': 'rotate(' + boardCol.rotation + 'deg)'}"
+             class="adventure-board-background"></div>
+      </ng-template>
+    </ng-template>
+
+    <gridster [options]="options" style="flex-grow: 1">
+      <gridster-item *ngFor="let item of dashboard"
+                     [item]="item"
+                     [ngSwitch]="item.type"
+                     style="background: none !important;">
+
+        <!-- TODO add character icons -->
+        <div *ngSwitchCase="layerElementType.CHARACTER"
+             class="adventure-board-item"
+             [ngStyle]="{'background-image': 'url(\'assets/character/' + item.icon + '\')',
+                              'transform': 'rotate(' + item.rotation + 'deg)'}"></div>
+
+        <div *ngSwitchDefault
+             class="adventure-board-item"
+             [ngStyle]="{'background-image': 'url(\'assets/item/' + item.icon + '\')',
+                              'transform': 'rotate(' + item.rotation + 'deg)'}"></div>
+        <button mat-mini-fab *ngIf="loginService.isGM" (mousedown)="removeItem($event, item)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </gridster-item>
+    </gridster>
+  </div>
+</div>

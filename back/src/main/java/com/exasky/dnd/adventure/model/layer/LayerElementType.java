@@ -1,0 +1,15 @@
+package com.exasky.dnd.adventure.model.layer;
+
+public enum LayerElementType {
+    CHEST,
+    VERTICAL_DOOR_VERTICAL_OPENED,
+    VERTICAL_DOOR_VERTICAL_CLOSED,
+    VERTICAL_DOOR_HORIZONTAL_OPENED,
+    VERTICAL_DOOR_HORIZONTAL_CLOSED,
+    TRAP_ACTIVATED,
+    TRAP_DEACTIVATED,
+    CHARACTER,
+    MONSTER,
+    TREE,
+    PYLON
+}

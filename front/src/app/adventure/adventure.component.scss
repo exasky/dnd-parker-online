@@ -1,0 +1,22 @@
+.adventure-container {
+  position: relative;
+}
+
+.adventure-board-background {
+  background-size: contain;
+  height: 700px;
+  width: 700px;
+  position: absolute
+}
+
+.adventure-board-item {
+  background-size: contain !important;
+  position: absolute;
+  background: none no-repeat center center;
+  height: 100%;
+  width: 100%;
+}
+
+gridster {
+  background: none !important;
+}
