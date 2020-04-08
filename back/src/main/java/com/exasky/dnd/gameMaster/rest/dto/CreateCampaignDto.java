@@ -7,6 +7,7 @@ import java.util.List;
 
 public class CreateCampaignDto {
     private Long id;
+    private String name;
     private List<AdventureCreateDto> adventures = new ArrayList<>();
     private List<CharacterForCreateCampaignDto> characters = new ArrayList<>();
 
@@ -23,6 +24,7 @@ public class CreateCampaignDto {
         CreateCampaignDto dto = new CreateCampaignDto();
 
         dto.id = bo.getId();
+        dto.name = bo.getName();
         dto.adventures = AdventureCreateDto.toDto(bo.getAdventures());
         dto.characters = CharacterForCreateCampaignDto.toDto(bo.getCharacters());
 
@@ -37,6 +39,14 @@ public class CreateCampaignDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<AdventureCreateDto> getAdventures() {

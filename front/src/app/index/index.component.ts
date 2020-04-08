@@ -2,6 +2,8 @@ import {Component, HostBinding, OnInit} from "@angular/core";
 import {AdventureService} from "../adventure/service/adventure.service";
 import {LoginService} from "../login/login.service";
 import {Router} from "@angular/router";
+import {GmService} from "../adventure/service/gm.service";
+import {SimpleCampaign} from "../adventure/model/campaign";
 
 @Component({
   selector: 'app-index',
@@ -14,20 +16,28 @@ export class IndexComponent implements OnInit {
   @HostBinding('style.display') display = 'flex';
 
   public adventures: { id: number; name: string }[];
+  public campaigns: SimpleCampaign[];
 
   constructor(private adventureService: AdventureService,
+              private gmService: GmService,
               public loginService: LoginService,
               private router: Router) {
   }
 
   ngOnInit(): void {
-    this.adventureService.getAdventures().subscribe(adventures => {
-      this.adventures = adventures;
-    })
+    if (this.loginService.isGM) {
+      this.gmService.getAllCampaigns().subscribe(campaigns => this.campaigns = campaigns);
+    } else {
+      this.adventureService.getCampaignsForCurrentUser().subscribe(campaigns => this.campaigns = campaigns);
+    }
   }
 
   goToAdventure(id: number) {
     this.router.navigateByUrl('adventure/' + id);
+  }
+
+  goToCampaignEditor(id: number) {
+    this.router.navigateByUrl('campaign-creator/' + id);
   }
 
   createCampaignAdventure() {

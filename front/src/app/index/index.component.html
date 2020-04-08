@@ -4,14 +4,25 @@
   </mat-card>
   <mat-card>
     <mat-card-header>
-      Available adventures:
+      Available campaigns:
     </mat-card-header>
     <mat-card-content class="m-5">
-      <span *ngIf="adventures && adventures.length === 0">No available adventures, create one ? :)</span>
-      <button *ngFor="let adventure of adventures"
+      <span *ngIf="campaigns && campaigns.length === 0">No available campaign</span>
+      <button *ngFor="let campaign of campaigns"
               mat-button
-              (click)="goToAdventure(adventure.id)">
-        {{adventure.name}}
+              (click)="goToAdventure(campaign.currentAdventure)">
+        {{campaign.name}}
+      </button>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="loginService.isGM">
+    <mat-card-header>Update campaign:</mat-card-header>
+    <mat-card-content>
+      <button *ngFor="let campaign of campaigns"
+              mat-button
+              (click)="goToCampaignEditor(campaign.id)">
+        {{campaign.name}}
       </button>
     </mat-card-content>
   </mat-card>

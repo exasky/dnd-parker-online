@@ -17,7 +17,11 @@ public class Campaign {
     private String name;
 
     @OneToMany(mappedBy = "campaign", orphanRemoval = true, cascade = CascadeType.ALL)
-    List<Adventure> adventures = new ArrayList<>();
+    private List<Adventure> adventures = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "current_adventure_id", referencedColumnName = "id")
+    private Adventure currentAdventure;
 
     @ManyToMany()
     @JoinTable(name = "campaign_character_item",
@@ -59,6 +63,14 @@ public class Campaign {
     public void updateAdventures(List<Adventure> adventures) {
         this.adventures.clear();
         this.adventures.addAll(adventures);
+    }
+
+    public Adventure getCurrentAdventure() {
+        return currentAdventure;
+    }
+
+    public void setCurrentAdventure(Adventure currentAdventure) {
+        this.currentAdventure = currentAdventure;
     }
 
     public List<CharacterItem> getDrawnItems() {

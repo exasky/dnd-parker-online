@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class SimpleCampaignDto {
     private Long id;
     private String name;
+    private Long currentAdventure;
     private List<SimpleCharacterDto> characters = new ArrayList<>();
 
     public static List<SimpleCampaignDto> toDto(List<Campaign> bos) {
@@ -23,6 +24,7 @@ public class SimpleCampaignDto {
 
         dto.id = bo.getId();
         dto.name = bo.getName();
+        dto.currentAdventure = bo.getCurrentAdventure().getId();
         dto.characters = SimpleCharacterDto.toDto(bo.getCharacters());
 
         return dto;
@@ -44,6 +46,14 @@ public class SimpleCampaignDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getCurrentAdventure() {
+        return currentAdventure;
+    }
+
+    public void setCurrentAdventure(Long currentAdventure) {
+        this.currentAdventure = currentAdventure;
     }
 
     public List<SimpleCharacterDto> getCharacters() {

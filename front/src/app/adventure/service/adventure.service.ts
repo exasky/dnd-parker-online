@@ -1,8 +1,9 @@
 import {Injectable} from "@angular/core";
-import {Observable, of} from "rxjs";
+import {Observable} from "rxjs";
 import {Adventure} from "../model/adventure";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
+import {SimpleCampaign} from "../model/campaign";
 
 @Injectable({
   providedIn: "root"
@@ -14,8 +15,8 @@ export class AdventureService {
   constructor(private http: HttpClient) {
   }
 
-  getAdventures(): Observable<{ id: number, name: string }[]> {
-    return this.http.get<{ id: number, name: string }[]>(AdventureService.API_URL);
+  getCampaignsForCurrentUser(): Observable<SimpleCampaign[]> {
+    return this.http.get<SimpleCampaign[]>(AdventureService.API_URL + '/campaigns');
   }
 
   getAdventure(id: number | string): Observable<Adventure> {

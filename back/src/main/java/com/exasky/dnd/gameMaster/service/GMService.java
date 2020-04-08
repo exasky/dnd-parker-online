@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,6 +71,10 @@ public class GMService {
                 .map(character -> characterService.createOrUpdate(character, attachedCampaign))
                 .collect(Collectors.toList()));
 
+        if (!attachedCampaign.getAdventures().isEmpty()) {
+            attachedCampaign.setCurrentAdventure(attachedCampaign.getAdventures().get(0));
+        }
+
         return attachedCampaign;
     }
 
@@ -84,6 +89,11 @@ public class GMService {
         attachedCampaign.updateCharacters(toUpdate.getCharacters().stream()
                 .map(character -> characterService.createOrUpdate(character, attachedCampaign))
                 .collect(Collectors.toList()));
+
+        if (!attachedCampaign.getAdventures().isEmpty()
+                && Objects.isNull(attachedCampaign.getCurrentAdventure())) {
+            attachedCampaign.setCurrentAdventure(attachedCampaign.getAdventures().get(0));
+        }
 
         return attachedCampaign;
     }
