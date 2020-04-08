@@ -3,7 +3,7 @@ import {NgModule} from '@angular/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {AppComponent} from './app.component';
-import {AdventureComponent} from "./adventure/adventure.component";
+import {AdventureComponent} from "./adventure/component/adventure/adventure.component";
 import {AppRoutingModule} from "./app-routing.module";
 import {GridsterModule} from "angular-gridster2";
 import {MatIconModule} from "@angular/material/icon";
@@ -32,6 +32,7 @@ import {UserListComponent} from "./user/component/user-list.component";
 import {ConfirmDialogComponent} from "./common/confirm-dialog.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {UserDetailComponent} from "./user/component/user-detail.component";
+import {AdventureItemDisplayerComponent} from "./adventure/component/adventure/adventure-item-displayer.component";
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import {UserDetailComponent} from "./user/component/user-detail.component";
     CharacterItemDisplayerComponent,
     UserListComponent,
     ConfirmDialogComponent,
-    UserDetailComponent
+    UserDetailComponent,
+    AdventureItemDisplayerComponent
   ],
   imports: [
     BrowserModule,

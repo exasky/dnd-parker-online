@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {AdventureComponent} from "./adventure/adventure.component";
+import {AdventureComponent} from "./adventure/component/adventure/adventure.component";
 import {IndexComponent} from "./index/index.component";
 import {LoginComponent} from "./login/login.component";
 import {AuthGuard} from "./login/guard/auth.guard";

@@ -7,12 +7,12 @@ import {
   GridsterItemComponentInterface,
   GridType
 } from "angular-gridster2";
-import {Adventure, Board, LayerElement, LayerElementType, LayerItem} from "./model/adventure";
-import {AdventureService} from "./service/adventure.service";
-import {GmService} from "./service/gm.service";
+import {Adventure, Board, LayerElement, LayerElementType, LayerItem} from "../../model/adventure";
+import {AdventureService} from "../../service/adventure.service";
+import {GmService} from "../../service/gm.service";
 import {ActivatedRoute} from "@angular/router";
-import {LoginService} from "../login/login.service";
-import {ROLE_GM} from "../user/user";
+import {LoginService} from "../../../login/login.service";
+import {ROLE_GM} from "../../../user/user";
 
 @Component({
   selector: 'app-board',
@@ -118,14 +118,9 @@ export class AdventureComponent implements OnInit {
     }
   }
 
-  dragStartHandler(ev, layerElement: LayerElement) {
-    ev.dataTransfer.setData('text/plain', layerElement.type);
-    ev.dataTransfer.dropEffect = 'copy';
-  }
-
   emptyCellDropCallback(event: MouseEvent, item: GridsterItem) {
-    const layerElementType = (event as any).dataTransfer.getData('text');
-    const elementToAdd = this.addableLayerElements.find(le => le.type === layerElementType);
+    const layerElementId = +(event as any).dataTransfer.getData('text');
+    const elementToAdd = this.addableLayerElements.find(le => le.id === layerElementId);
     this.dashboard.push({
       ...item,
       elementId: elementToAdd.id,

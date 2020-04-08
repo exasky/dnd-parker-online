@@ -3,6 +3,8 @@ package com.exasky.dnd.adventure.rest.dto;
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.rest.dto.layer.LayerDto;
 
+import java.util.List;
+
 public class AdventureDto {
     private Long id;
     private String name;
@@ -10,6 +12,7 @@ public class AdventureDto {
     private BoardDto[][] boards;
     private LayerDto mjLayer;
     private LayerDto characterLayer;
+    private List<CharacterDto> characters;
 
     public static Adventure toBo(AdventureDto dto) {
         Adventure adventure = new Adventure();
@@ -32,6 +35,7 @@ public class AdventureDto {
         dto.setBoards(BoardDto.toDto(bo.getBoards()));
         dto.setMjLayer(LayerDto.toDto(bo.getMjLayer()));
         dto.setCharacterLayer(LayerDto.toDto(bo.getCharacterLayer()));
+        dto.setCharacters(CharacterDto.toDto(bo.getCampaign().getCharacters()));
 
         return dto;
     }
@@ -84,5 +88,14 @@ public class AdventureDto {
     public void setCharacterLayer(LayerDto characterLayer) {
         this.characterLayer = characterLayer;
     }
+
+    public List<CharacterDto> getCharacters() {
+        return characters;
+    }
+
+    public void setCharacters(List<CharacterDto> characters) {
+        this.characters = characters;
+    }
+
     // endregion
 }

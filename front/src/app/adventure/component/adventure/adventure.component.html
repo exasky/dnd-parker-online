@@ -1,0 +1,86 @@
+<ng-container *ngIf="adventure">
+  <div class="d-flex flex-column flex-shrink-0">
+
+    <div class="d-flex">
+      <div class="flex-1">
+        <mat-form-field>
+          <mat-select aria-label="Display grid lines" [(ngModel)]="options.displayGrid"
+                      placeholder="Display grid lines"
+                      (ngModelChange)="changedOptions()">
+            <mat-option value="always">Always</mat-option>
+            <mat-option value="onDrag&Resize">On Drag & Resize</mat-option>
+            <mat-option value="none">None</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-button (click)="saveAdventure()">Save (to remove websocket)</button>
+      </div>
+      <div class="flex-1 d-flex justify-content-center align-items-center">
+        <h3>{{adventure.name}}</h3>
+      </div>
+      <div class="flex-1 d-flex justify-content-end align-items-center">
+        <button mat-raised-button (click)="drawer.toggle()">Show characters</button>
+      </div>
+    </div>
+
+    <app-adventure-item-displayer *ngIf="loginService.isGM"
+                                  [layerElements]="addableLayerElements"></app-adventure-item-displayer>
+  </div>
+
+  <mat-drawer-container class="flex-grow d-flex">
+    <mat-drawer-content class="flex-grow m-3" style="position: relative">
+      <div [ngStyle]="{'width': gamePanelXSize * 700 + 'px',
+                  'height': gamePanelYSize * 700 + 'px'}"
+           class="overflow">
+        <ng-template ngFor let-boardRow [ngForOf]="adventure.boards" let-rowIdx="index">
+          <ng-template ngFor let-boardCol [ngForOf]="boardRow" let-colIdx="index">
+            <div *ngIf="boardCol"
+                 [ngStyle]="{'top': 700 * rowIdx + 'px',
+                      'left': 700 * colIdx + 'px',
+                      'background-image': 'url(\'assets/board/' + boardCol.boardNumber + '.JPG\')',
+                      'transform': 'rotate(' + boardCol.rotation + 'deg)'}"
+                 class="adventure-board-background"></div>
+          </ng-template>
+        </ng-template>
+
+        <gridster [options]="options" style="flex-grow: 1">
+          <gridster-item *ngFor="let item of dashboard"
+                         [item]="item"
+                         [ngSwitch]="item.type"
+                         style="background: none !important;">
+
+            <!-- TODO add character icons -->
+            <div *ngSwitchCase="layerElementType.CHARACTER"
+                 class="adventure-board-item"
+                 [ngStyle]="{'background-image': 'url(\'assets/character/' + item.icon + '-token.jpg\')',
+                              'transform': 'rotate(' + item.rotation + 'deg)'}"></div>
+
+            <div *ngSwitchCase="layerElementType.MONSTER"
+                 class="adventure-board-item"
+                 [ngStyle]="{'background-image': 'url(\'assets/monster/' + item.icon + '-token.jpg\')',
+                              'transform': 'rotate(' + item.rotation + 'deg)'}"></div>
+
+            <div *ngSwitchDefault
+                 class="adventure-board-item"
+                 [ngStyle]="{'background-image': 'url(\'assets/item/' + item.icon + '\')',
+                              'transform': 'rotate(' + item.rotation + 'deg)'}"></div>
+            <button mat-mini-fab *ngIf="loginService.isGM" (mousedown)="removeItem($event, item)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </gridster-item>
+        </gridster>
+      </div>
+    </mat-drawer-content>
+    <mat-drawer #drawer mode="side" position="end">
+      <div class="d-flex flex-column">
+        <div *ngFor="let character of adventure.characters">
+          {{character.name}} - {{character.maxMp}}
+        </div>
+      </div>
+    </mat-drawer>
+  </mat-drawer-container>
+  <!--<mat-drawer-container>-->
+  <!--  <mat-drawer-content>Main content</mat-drawer-content>-->
+  <!--  <mat-drawer mode="side" opened>Drawer content</mat-drawer>-->
+  <!--</mat-drawer-container>-->
+</ng-container>
