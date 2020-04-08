@@ -6,6 +6,7 @@ import {LoginComponent} from "./login/login.component";
 import {AuthGuard} from "./login/guard/auth.guard";
 import {CampaignCreatorComponent} from "./adventure/component/creator/campaign/campaign-creator.component";
 import {UserListComponent} from "./user/component/user-list.component";
+import {UserDetailComponent} from "./user/component/user-detail.component";
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -16,7 +17,8 @@ const routes: Routes = [
       {path: 'campaign-creator', component: CampaignCreatorComponent},
       {path: 'campaign-creator/:id', component: CampaignCreatorComponent},
       {path: 'adventure/:id', component: AdventureComponent},
-      {path: 'users', component: UserListComponent}
+      {path: 'users', component: UserListComponent},
+      {path: 'user-detail', component: UserDetailComponent}
     ]
   },
 

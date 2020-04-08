@@ -6,6 +6,7 @@
   <div>
     <button mat-button [matMenuTriggerFor]="menu">{{loginService.currentUserValue.username}}</button>
     <mat-menu #menu="matMenu">
+      <button mat-menu-item routerLink="/user-detail">Profile</button>
       <button mat-menu-item (click)="loginService.logout()">Logout</button>
     </mat-menu>
   </div>

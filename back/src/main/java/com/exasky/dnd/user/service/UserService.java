@@ -27,6 +27,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public DnDUser getById(Long id) {
+        return userRepository.getOne(id);
+    }
+
     @Transactional
     public DnDUser create(DnDUser toCreate) {
         DnDUser attachedUser = loginService.register(toCreate.getUsername(), toCreate.getPassword());
@@ -54,6 +58,15 @@ public class UserService {
                 .collect(Collectors.toList())
         );
         attachedUser.getCharacters().forEach(character -> character.setUser(attachedUser));
+
+        return attachedUser;
+    }
+
+    @Transactional
+    public DnDUser updatePassword(Long id, DnDUser toUpdate) {
+        DnDUser attachedUser = userRepository.getOne(id);
+
+        attachedUser.setPassword(loginService.encorePassword(toUpdate.getPassword()));
 
         return attachedUser;
     }

@@ -24,8 +24,12 @@ public class LoginService {
 
         s.setUsername(username);
         s.setRole(UserRole.ROLE_GM);
-        s.setPassword(passwordEncoder.encode(password));
+        s.setPassword(encorePassword(password));
 
         return this.userRepository.save(s);
+    }
+
+    public String encorePassword(String password) {
+        return passwordEncoder.encode(password);
     }
 }

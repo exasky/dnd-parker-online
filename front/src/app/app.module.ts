@@ -31,6 +31,7 @@ import {MatMenuModule} from "@angular/material/menu";
 import {UserListComponent} from "./user/component/user-list.component";
 import {ConfirmDialogComponent} from "./common/confirm-dialog.component";
 import {MatDialogModule} from "@angular/material/dialog";
+import {UserDetailComponent} from "./user/component/user-detail.component";
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import {MatDialogModule} from "@angular/material/dialog";
     CharacterCreatorComponent,
     CharacterItemDisplayerComponent,
     UserListComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    UserDetailComponent
   ],
   imports: [
     BrowserModule,

@@ -17,12 +17,20 @@ export class UserService {
     return this.http.get<UserEdit[]>(UserService.API_URL);
   }
 
+  getById(id: number): Observable<UserEdit> {
+    return this.http.get<UserEdit>(UserService.API_URL + '/' + id);
+  }
+
   create(user: UserEdit): Observable<void> {
     return this.http.post<void>(UserService.API_URL, user);
   }
 
-  update(user: UserEdit): Observable<void> {
-    return this.http.put<void>(UserService.API_URL + '/' + user.id, user);
+  update(user: UserEdit): Observable<UserEdit> {
+    return this.http.put<UserEdit>(UserService.API_URL + '/' + user.id, user);
+  }
+
+  updatePassword(user: UserEdit): Observable<UserEdit> {
+    return this.http.put<UserEdit>(UserService.API_URL + '/update-password/' + user.id, user);
   }
 
   delete(id: number) {

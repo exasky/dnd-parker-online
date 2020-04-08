@@ -29,7 +29,14 @@ public class DnDUser implements UserDetails {
     private UserRole role;
 
     @OneToMany(mappedBy = "user")
-    private List<Character> characters = new ArrayList<>();;
+    private List<Character> characters = new ArrayList<>();
+
+    public DnDUser() {
+    }
+
+    public DnDUser(Long id) {
+        this.id = id;
+    }
 
     // region Getters & Setters
     public Long getId() {
