@@ -5,11 +5,10 @@
       <div>
         <div style="overflow-x: scroll; overflow-y: hidden; white-space: nowrap;">
           <ng-template ngFor let-board [ngForOf]="availableBoards">
-            <div class="draggable-board"
+            <img class="draggable-board"
                  draggable="true"
-                 (dragstart)="dragStartHandler($event, board)"
-                 [ngStyle]="{'background-image': 'url(\'assets/board/' + board.boardNumber + '.JPG\')'}">
-            </div>
+                 [src]="'assets/board/' + board.boardNumber + '.JPG'"
+                 (dragstart)="dragStartHandler($event, board)">
           </ng-template>
         </div>
       </div>

@@ -1,4 +1,4 @@
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "material/material";
 @import "~bootstrap/scss/bootstrap";
 
 @import "flex";
@@ -15,4 +15,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .w-0 {
   //noinspection CssRedundantUnit
   width: 0px;
+}
+
+.tooltip-inner {
+  max-width: unset !important;
 }
