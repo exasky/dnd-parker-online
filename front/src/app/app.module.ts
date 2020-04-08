@@ -32,7 +32,9 @@ import {UserListComponent} from "./user/component/user-list.component";
 import {ConfirmDialogComponent} from "./common/confirm-dialog.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {UserDetailComponent} from "./user/component/user-detail.component";
-import {AdventureItemDisplayerComponent} from "./adventure/component/adventure/adventure-item-displayer.component";
+import {AdventureItemDisplayerComponent} from "./adventure/component/adventure/item/adventure-item-displayer.component";
+import {NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
+import {CharacterTooltipDisplayerComponent} from "./adventure/component/adventure/character/character-tooltip-displayer.component";
 
 @NgModule({
   declarations: [
@@ -47,7 +49,8 @@ import {AdventureItemDisplayerComponent} from "./adventure/component/adventure/a
     UserListComponent,
     ConfirmDialogComponent,
     UserDetailComponent,
-    AdventureItemDisplayerComponent
+    AdventureItemDisplayerComponent,
+    CharacterTooltipDisplayerComponent
   ],
   imports: [
     BrowserModule,
@@ -69,7 +72,8 @@ import {AdventureItemDisplayerComponent} from "./adventure/component/adventure/a
     MatToolbarModule,
     MatSidenavModule,
     MatMenuModule,
-    MatDialogModule
+    MatDialogModule,
+    NgbTooltipModule
   ],
   entryComponents : [ConfirmDialogComponent],
   providers: [

@@ -47,23 +47,47 @@
           <gridster-item *ngFor="let item of dashboard"
                          [item]="item"
                          [ngSwitch]="item.type"
-                         style="background: none !important;">
+                         style="background: none !important;"
+                         [ngbTooltip]="tipContent"
+                         [container]="'body'"
+                         #t="ngbTooltip"
+                         (mousedown)="t.close()">
 
-            <!-- TODO add character icons -->
+            <ng-template #tipContent [ngSwitch]="item.type">
+              <ng-template [ngSwitchCase]="layerElementType.CHARACTER">
+                <app-character-tooltip-displayer [character]="item.character"></app-character-tooltip-displayer>
+<!--                Hello, character <b>{{item.icon}}</b>!<br/>-->
+<!--                Hello, character <b>{{item.character.name}}</b>!-->
+              </ng-template>
+              <ng-template [ngSwitchCase]="layerElementType.MONSTER">
+                Hello, monter <b>{{item.icon}}</b>!
+              </ng-template>
+              <div *ngSwitchDefault>
+                Hello, other <b>{{item.icon}}</b>!
+              </div>
+
+            </ng-template>
+
             <div *ngSwitchCase="layerElementType.CHARACTER"
                  class="adventure-board-item"
                  [ngStyle]="{'background-image': 'url(\'assets/character/' + item.icon + '-token.jpg\')',
-                              'transform': 'rotate(' + item.rotation + 'deg)'}"></div>
+                              'transform': 'rotate(' + item.rotation + 'deg)'}">
+              <ng-template #tipContent>Hello, <b>{{item.icon}}</b>!</ng-template>
+            </div>
 
             <div *ngSwitchCase="layerElementType.MONSTER"
                  class="adventure-board-item"
                  [ngStyle]="{'background-image': 'url(\'assets/monster/' + item.icon + '-token.jpg\')',
-                              'transform': 'rotate(' + item.rotation + 'deg)'}"></div>
+                              'transform': 'rotate(' + item.rotation + 'deg)'}">
+              <ng-template #tipContent>Hello, <b>{{item.icon}}</b>!</ng-template>
+            </div>
 
             <div *ngSwitchDefault
                  class="adventure-board-item"
                  [ngStyle]="{'background-image': 'url(\'assets/item/' + item.icon + '\')',
-                              'transform': 'rotate(' + item.rotation + 'deg)'}"></div>
+                              'transform': 'rotate(' + item.rotation + 'deg)'}">
+              <ng-template #tipContent>Hello, <b>{{item.icon}}</b>!</ng-template>
+            </div>
             <button mat-mini-fab *ngIf="loginService.isGM" (mousedown)="removeItem($event, item)">
               <mat-icon>delete</mat-icon>
             </button>

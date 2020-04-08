@@ -119,9 +119,11 @@ export class AdventureComponent implements OnInit {
   }
 
   emptyCellDropCallback(event: MouseEvent, item: GridsterItem) {
+    // TODO if element to add is character, add character pointer reference in object
     const layerElementId = +(event as any).dataTransfer.getData('text');
     const elementToAdd = this.addableLayerElements.find(le => le.id === layerElementId);
-    this.dashboard.push({
+
+    let itemToPush = {
       ...item,
       elementId: elementToAdd.id,
       cols: elementToAdd.colSize,
@@ -130,7 +132,12 @@ export class AdventureComponent implements OnInit {
       icon: elementToAdd.icon,
       rotation: elementToAdd.rotation,
       type: elementToAdd.type
-    })
+    };
+    if (elementToAdd.type === LayerElementType.CHARACTER) {
+      itemToPush['character']
+        = this.adventure.characters.find(char => elementToAdd.icon.toLowerCase().indexOf(char.name.toLowerCase()) !== -1);
+    }
+    this.dashboard.push(itemToPush)
 
     // TODO Send to api to propagate
   }

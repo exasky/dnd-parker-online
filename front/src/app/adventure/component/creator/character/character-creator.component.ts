@@ -2,7 +2,7 @@ import {Component, HostBinding, Input} from "@angular/core";
 import {Character, CharacterItem} from "../../../model/character";
 
 @Component({
-  selector: 'app-character-selector',
+  selector: 'app-character-creator',
   templateUrl: './character-creator.component.html'
 })
 export class CharacterCreatorComponent {
@@ -26,8 +26,16 @@ export class CharacterCreatorComponent {
     this.transferItem(ev, this.character.equippedItems);
   }
 
+  removeEquipmentItem(item: CharacterItem) {
+    this.character.equippedItems.splice(this.character.equippedItems.indexOf(item), 1);
+  }
+
   addBackPackItem(ev: DragEvent) {
     this.transferItem(ev, this.character.backpackItems);
+  }
+
+  removeBackpackItem(item: CharacterItem) {
+    this.character.backpackItems.splice(this.character.backpackItems.indexOf(item), 1);
   }
 
   private transferItem(ev, toItemList: CharacterItem[]) {

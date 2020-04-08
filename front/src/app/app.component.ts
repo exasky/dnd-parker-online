@@ -1,5 +1,6 @@
-import {Component, HostBinding} from '@angular/core';
+import {Component, HostBinding, Inject} from '@angular/core';
 import {LoginService} from "./login/login.service";
+import {DOCUMENT} from "@angular/common";
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,19 @@ import {LoginService} from "./login/login.service";
 export class AppComponent {
   @HostBinding('class') cssClasses = "d-flex flex-column";
 
-  constructor(public loginService: LoginService) {
+  isDarkTheme = false;
+
+  constructor(public loginService: LoginService,
+              @Inject(DOCUMENT) private document: Document) {
+  }
+  switchDarkTheme() {
+    if (this.isDarkTheme) {
+      this.isDarkTheme = false;
+      this.document.body.classList.remove('unicorn-dark-theme');
+    } else {
+      this.isDarkTheme = true;
+      this.document.body.classList.add('unicorn-dark-theme');
+    }
+
   }
 }

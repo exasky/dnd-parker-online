@@ -6,11 +6,17 @@
     Dran & Drop items here
   </div>
   <div *ngIf="character.equippedItems.length !== 0" class="d-flex flex-wrap">
-    <img *ngFor="let item of character.equippedItems"
-         [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
-         draggable="true"
-         (dragstart)="equipmentDragStartHandler($event, item)"
-         width="150px" height="230px">
+    <div *ngFor="let item of character.equippedItems" style="position:relative;">
+      <img [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
+           draggable="true"
+           (dragstart)="equipmentDragStartHandler($event, item)"
+           width="150px" height="230px">
+      <button mat-mini-fab
+              style="position: absolute; top: 0; left: 73px"
+              (click)="removeEquipmentItem(item)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -38,11 +44,18 @@
     Dran & Drop items here
   </div>
   <div *ngIf="character.backpackItems.length !== 0" class="d-flex flex-wrap">
-    <img *ngFor="let item of character.backpackItems"
-         [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
-         draggable="true"
-         (dragstart)="backpackDragStartHandler($event, item)"
-         width="150px" height="230px">
+    <div style="position:relative;" *ngFor="let item of character.backpackItems">
+      <img [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
+           draggable="true"
+           (dragstart)="backpackDragStartHandler($event, item)"
+           width="150px" height="230px">
+      <button mat-mini-fab
+              style="position: absolute; top: 0; left: 73px"
+              (click)="removeBackpackItem(item)">
+        <mat-icon>rotate_left</mat-icon>
+      </button>
+    </div>
+
   </div>
 
 </div>

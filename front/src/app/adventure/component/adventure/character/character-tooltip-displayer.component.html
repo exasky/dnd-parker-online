@@ -1,0 +1,32 @@
+<!-- Equipped items-->
+<div class="d-flex flex-2"
+     (dragover)="$event.preventDefault()">
+  <div *ngIf="character.equippedItems.length !== 0" class="d-flex flex-wrap">
+    <img *ngFor="let item of character.equippedItems"
+         [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
+         draggable="true"
+         width="150px" height="230px">
+  </div>
+</div>
+
+<div class="d-flex flex-column flex-1">
+  <table>
+    <tr><td>Name</td><td>{{character.name}}</td></tr>
+    <tr><td>HP</td><td>{{character.hp}}</td></tr>
+    <tr *ngIf="character.maxMp !== 0"><td>MP</td><td>{{character.mp}}</td></tr>
+  </table>
+
+  <img *ngIf="character.name" width="300px" [src]="'assets/character/' + character.name.toLowerCase() + '.jpg'">
+</div>
+
+<!-- Backpack items-->
+<div class="d-flex flex-2"
+     (dragover)="$event.preventDefault()">
+  <div *ngIf="character.backpackItems.length !== 0" class="d-flex flex-wrap">
+    <img *ngFor="let item of character.backpackItems"
+         [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
+         draggable="true"
+         width="150px" height="230px">
+  </div>
+
+</div>

@@ -27,10 +27,10 @@
     <div class="flex-grow d-flex">
       <div class="flex-grow d-flex overflow flex-wrap justify-content-center align-items-center flex-3">
         <mat-card *ngFor="let character of campaign.characters; let index = index" class="m-3 flex-grow d-flex flex-column">
-          <app-character-selector [character]="character"
-                                  [positionInList]="index"
-                                  [allCharacters]="campaign.characters"
-                                  [allCharacterItems]="allCharacterItems"></app-character-selector>
+          <app-character-creator [character]="character"
+                                 [positionInList]="index"
+                                 [allCharacters]="campaign.characters"
+                                 [allCharacterItems]="allCharacterItems"></app-character-creator>
         </mat-card>
 
       </div>

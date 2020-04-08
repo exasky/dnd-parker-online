@@ -1,7 +1,7 @@
 import {Component, HostBinding, Input} from "@angular/core";
 import {MatTreeFlatDataSource, MatTreeFlattener} from "@angular/material/tree";
 import {FlatTreeControl} from "@angular/cdk/tree";
-import {LayerElement, LayerElementType} from "../../model/adventure";
+import {LayerElement, LayerElementType} from "../../../model/adventure";
 
 /**
  * Food data with nested structure.
