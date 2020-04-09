@@ -57,4 +57,13 @@ public class AdventureService {
     public List<Campaign> getCampaignsForCurrentUser() {
         return this.campaignRepository.findAllForUser(getCurrentUser().getId());
     }
+
+    public Adventure update(Long id, Adventure updateAdventure) {
+        Adventure attachedAdventure = repository.getOne(id);
+
+        attachedAdventure.setMjLayer(layerService.createOrUpdate(updateAdventure.getMjLayer()));
+        attachedAdventure.setCharacterLayer(layerService.createOrUpdate(updateAdventure.getCharacterLayer()));
+
+        return repository.save(attachedAdventure);
+    }
 }

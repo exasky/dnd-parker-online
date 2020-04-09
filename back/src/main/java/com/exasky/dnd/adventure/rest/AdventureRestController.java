@@ -6,10 +6,8 @@ import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.SimpleCampaignDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,9 +17,13 @@ public class AdventureRestController {
 
     private final AdventureService adventureService;
 
+    private final SimpMessageSendingOperations messagingTemplate;
+
     @Autowired
-    public AdventureRestController(AdventureService adventureService)  {
+    public AdventureRestController(AdventureService adventureService,
+                                   SimpMessageSendingOperations messagingTemplate)  {
         this.adventureService = adventureService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping
@@ -37,5 +39,12 @@ public class AdventureRestController {
     @GetMapping("/{id}")
     public AdventureDto getAdventure(@PathVariable Long id) {
         return AdventureDto.toDto(this.adventureService.getById(id));
+    }
+
+    @PutMapping("/{id}")
+    public AdventureDto update(@PathVariable Long id, @RequestBody AdventureDto adventureWriteDto) {
+        AdventureDto returnDto = AdventureDto.toDto(this.adventureService.update(id, AdventureDto.toBo(adventureWriteDto)));
+        this.messagingTemplate.convertAndSend("/topic/adventure", returnDto);
+        return returnDto;
     }
 }

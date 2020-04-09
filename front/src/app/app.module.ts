@@ -35,6 +35,8 @@ import {UserDetailComponent} from "./user/component/user-detail.component";
 import {AdventureItemDisplayerComponent} from "./adventure/component/adventure/item/adventure-item-displayer.component";
 import {NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
 import {CharacterTooltipDisplayerComponent} from "./adventure/component/adventure/character/character-tooltip-displayer.component";
+import {RxStompService} from "@stomp/ng2-stompjs";
+import {AdventureWebsocketService} from "./common/service/adventure.websocket.service";
 
 @NgModule({
   declarations: [
@@ -79,6 +81,8 @@ import {CharacterTooltipDisplayerComponent} from "./adventure/component/adventur
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ForbiddenInterceptor, multi: true },
+    RxStompService,
+    AdventureWebsocketService
   ],
   bootstrap: [AppComponent]
 })

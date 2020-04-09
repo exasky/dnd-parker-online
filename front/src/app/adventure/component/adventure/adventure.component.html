@@ -92,7 +92,7 @@
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
             </div>
 
-            <button mat-mini-fab *ngIf="loginService.isGM" (mousedown)="removeItem($event, item)">
+            <button mat-mini-fab *ngIf="loginService.isGM" (mousedown)="removeItem(item, $event)">
               <mat-icon>delete</mat-icon>
             </button>
           </gridster-item>

@@ -13,6 +13,8 @@ import {GmService} from "../../service/gm.service";
 import {ActivatedRoute} from "@angular/router";
 import {LoginService} from "../../../login/login.service";
 import {ROLE_GM} from "../../../user/user";
+import {AdventureWebsocketService} from "../../../common/service/adventure.websocket.service";
+import {SocketResponse} from "../../../common/model";
 
 @Component({
   selector: 'app-board',
@@ -37,7 +39,8 @@ export class AdventureComponent implements OnInit {
   constructor(private adventureService: AdventureService,
               private mjService: GmService,
               public loginService: LoginService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private adventureWS: AdventureWebsocketService) {
   }
 
   ngOnInit() {
@@ -50,7 +53,31 @@ export class AdventureComponent implements OnInit {
 
       this.initGridsterConf();
       this.initDashboard();
-    })
+    });
+
+    const obs = this.adventureWS.getObservable();
+    obs.subscribe({
+      next: (receivedMsg: SocketResponse) => {
+        if (receivedMsg.type === 'SUCCESS') {
+          this.adventure = receivedMsg.message;
+          // Update existing items of else create
+          this.adventure.mjLayer.items.forEach(mjItem => {
+            this.updateItem(mjItem, 0);
+          });
+          this.adventure.characterLayer.items.forEach(characterItem => {
+            this.updateItem(characterItem, 1);
+          })
+
+          // Remove others
+          const allLayerIds = this.adventure.mjLayer.items.map(value => value.id)
+            .concat(this.adventure.characterLayer.items.map(value => value.id));
+          this.removeUnusedItems(allLayerIds);
+        }
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
   }
 
   private initGridsterConf() {
@@ -98,17 +125,17 @@ export class AdventureComponent implements OnInit {
       disableWarnings: false,
       scrollToNewItems: false,
       allowMultiLayer: true,
-      itemChangeCallback: this.itemChange,
+      itemChangeCallback: this.itemChange.bind(this),
     };
   }
 
   private initDashboard() {
     this.dashboard = [];
     this.adventure.mjLayer.items.forEach(mjItem => {
-      this.addItem(mjItem, 0);
+      this.updateItem(mjItem, 0);
     });
     this.adventure.characterLayer.items.forEach(characterItem => {
-      this.addItem(characterItem, 1);
+      this.updateItem(characterItem, 1);
     })
   }
 
@@ -119,7 +146,6 @@ export class AdventureComponent implements OnInit {
   }
 
   emptyCellDropCallback(event: MouseEvent, item: GridsterItem) {
-    // TODO if element to add is character, add character pointer reference in object
     const layerElementId = +(event as any).dataTransfer.getData('text');
     const elementToAdd = this.addableLayerElements.find(le => le.id === layerElementId);
 
@@ -139,17 +165,25 @@ export class AdventureComponent implements OnInit {
     }
     this.dashboard.push(itemToPush)
 
-    // TODO Send to api to propagate
+    this.saveAdventure();
   }
 
   itemChange(item: GridsterItem, itemComponent: GridsterItemComponentInterface) {
-    // TODO Send to api to propagate
+    this.saveAdventure();
   }
 
-  removeItem($event, item) {
-    $event.preventDefault();
-    $event.stopPropagation();
+  removeItem(item: GridsterItem, $event?) {
+    if ($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+    }
     this.dashboard.splice(this.dashboard.indexOf(item), 1);
+    this.saveAdventure();
+  }
+
+  removeUnusedItems(existingIds: number[]) {
+    const dashboardItemsToRemove = this.dashboard.filter(dashboardItem => existingIds.indexOf(dashboardItem.id) === -1);
+    dashboardItemsToRemove.forEach(toRemove => this.removeItem(toRemove, null));
   }
 
   addItem(item: LayerItem, layerIndex = 0) {
@@ -168,6 +202,21 @@ export class AdventureComponent implements OnInit {
     })
   }
 
+  updateItem(item: LayerItem, layerIndex = 0) {
+    const dashboardItem = this.dashboard.find(dashboardItem => dashboardItem.id === item.id);
+    if (!dashboardItem) {
+      this.addItem(item, layerIndex);
+    } else {
+      // Update item only if position unchanged
+      if (dashboardItem.x !== item.positionX || dashboardItem.y !== item.positionY) {
+        dashboardItem.x = item.positionX;
+        dashboardItem.y = item.positionY;
+        this.dashboard.splice(this.dashboard.indexOf(dashboardItem), 1);
+        this.dashboard.push({...dashboardItem}); // Force re-insert with different reference
+      }
+    }
+  }
+
   private isDragEnabledForItem(item: LayerItem, layerIndex: number): boolean {
     const user = this.loginService.currentUserValue;
 
@@ -182,6 +231,7 @@ export class AdventureComponent implements OnInit {
     this.dashboard.forEach(value => {
       const currentLayer = value.layerIndex === 0 ? this.adventure.mjLayer : this.adventure.characterLayer;
       currentLayer.items.push({
+        id: value.id,
         positionX: value.x,
         positionY: value.y,
         element: {
@@ -194,12 +244,8 @@ export class AdventureComponent implements OnInit {
         }
       })
     })
-    // this.adventureService.update(this.adventure).subscribe(adventure => {
-    //   this.adventure = adventure;
-    //
-    //   this.initGridsterConf();
-    //   this.initDashboard();
-    // });
+    this.adventureService.update(this.adventure).subscribe(() => {
+    });
   }
 
 }

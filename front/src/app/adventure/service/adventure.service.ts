@@ -22,4 +22,8 @@ export class AdventureService {
   getAdventure(id: number | string): Observable<Adventure> {
     return this.http.get<Adventure>(AdventureService.API_URL + '/' + id);
   }
+
+  update(adventure: Adventure): Observable<Adventure> {
+    return this.http.put<Adventure>(AdventureService.API_URL + '/' + adventure.id, adventure);
+  }
 }
