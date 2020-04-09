@@ -78,22 +78,20 @@
                  class="adventure-board-item"
                  [ngStyle]="{'background-image': 'url(\'assets/character/' + item.icon + '-token.jpg\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
-              <ng-template #tipContent>Hello, <b>{{item.icon}}</b>!</ng-template>
             </div>
 
             <div *ngSwitchCase="layerElementType.MONSTER"
                  class="adventure-board-item"
                  [ngStyle]="{'background-image': 'url(\'assets/monster/' + item.icon + '-token.jpg\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
-              <ng-template #tipContent>Hello, <b>{{item.icon}}</b>!</ng-template>
             </div>
 
             <div *ngSwitchDefault
                  class="adventure-board-item"
                  [ngStyle]="{'background-image': 'url(\'assets/item/' + item.icon + '\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
-              <ng-template #tipContent>Hello, <b>{{item.icon}}</b>!</ng-template>
             </div>
+
             <button mat-mini-fab *ngIf="loginService.isGM" (mousedown)="removeItem($event, item)">
               <mat-icon>delete</mat-icon>
             </button>
