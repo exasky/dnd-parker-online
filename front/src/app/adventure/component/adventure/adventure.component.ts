@@ -163,7 +163,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       elementId: elementToAdd.id,
       cols: elementToAdd.colSize,
       rows: elementToAdd.rowSize,
-      layerIndex: 0,
+      layerIndex: this.getLayerIndex(elementToAdd),
       icon: elementToAdd.icon,
       rotation: elementToAdd.rotation,
       type: elementToAdd.type
@@ -172,6 +172,13 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.dashboard.push(itemToPush)
 
     this.saveAdventure();
+  }
+
+  private getLayerIndex(element: LayerElement) {
+    return ([LayerElementType.CHARACTER, LayerElementType.MONSTER, LayerElementType.PYLON, LayerElementType.TREE]
+      .indexOf(element.type) !== -1)
+      ? 1
+      : 0
   }
 
   itemChange(item: GridsterItem, itemComponent: GridsterItemComponentInterface) {
