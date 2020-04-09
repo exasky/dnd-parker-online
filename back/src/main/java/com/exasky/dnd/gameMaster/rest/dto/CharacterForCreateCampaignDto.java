@@ -25,7 +25,7 @@ public class CharacterForCreateCampaignDto {
     }
 
     public static Character toBo(CharacterForCreateCampaignDto dto) {
-        Character bo = new Character();
+        Character bo = new Character(dto.id);
 
         bo.setName(dto.name);
         bo.setMaxHp(dto.maxHp);

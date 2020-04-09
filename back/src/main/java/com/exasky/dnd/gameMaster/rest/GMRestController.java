@@ -1,5 +1,7 @@
 package com.exasky.dnd.gameMaster.rest;
 
+import com.exasky.dnd.adventure.model.Campaign;
+import com.exasky.dnd.adventure.rest.dto.AdventureDto;
 import com.exasky.dnd.adventure.rest.dto.layer.LayerElementDto;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.CharacterItemDto;
@@ -7,6 +9,7 @@ import com.exasky.dnd.gameMaster.rest.dto.CreateCampaignDto;
 import com.exasky.dnd.gameMaster.rest.dto.SimpleCampaignDto;
 import com.exasky.dnd.gameMaster.service.GMService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,9 +20,13 @@ public class GMRestController {
 
     private final GMService gmService;
 
+    private final SimpMessageSendingOperations messagingTemplate;
+
     @Autowired
-    public GMRestController(GMService gmService) {
+    public GMRestController(GMService gmService,
+                            SimpMessageSendingOperations messagingTemplate) {
         this.gmService = gmService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("/addable-elements")
@@ -49,6 +56,12 @@ public class GMRestController {
 
     @PutMapping("/campaign/{id}")
     public CreateCampaignDto updateCampaign(@PathVariable Long id, @RequestBody CreateCampaignDto dto) {
-        return CreateCampaignDto.toDto(this.gmService.update(id, CreateCampaignDto.toBo(dto)));
+        // TODO send websocket message with current adventure
+        Campaign updatedCampaign = this.gmService.update(id, CreateCampaignDto.toBo(dto));
+
+        this.messagingTemplate.convertAndSend("/topic/adventure",
+                AdventureDto.toDto(updatedCampaign.getCurrentAdventure()));
+
+        return CreateCampaignDto.toDto(updatedCampaign);
     }
 }

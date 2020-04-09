@@ -159,10 +159,7 @@ export class AdventureComponent implements OnInit {
       rotation: elementToAdd.rotation,
       type: elementToAdd.type
     };
-    if (elementToAdd.type === LayerElementType.CHARACTER) {
-      itemToPush['character']
-        = this.adventure.characters.find(char => elementToAdd.icon.toLowerCase().indexOf(char.name.toLowerCase()) !== -1);
-    }
+    this.addSpecificToDashboardItem(itemToPush, elementToAdd);
     this.dashboard.push(itemToPush)
 
     this.saveAdventure();
@@ -187,7 +184,7 @@ export class AdventureComponent implements OnInit {
   }
 
   addItem(item: LayerItem, layerIndex = 0) {
-    this.dashboard.push({
+    const itemToPush = {
       id: item.id,
       x: item.positionX,
       y: item.positionY,
@@ -199,7 +196,9 @@ export class AdventureComponent implements OnInit {
       rotation: item.element.rotation,
       type: item.element.type,
       dragEnabled: this.isDragEnabledForItem(item, layerIndex)
-    })
+    };
+    this.addSpecificToDashboardItem(itemToPush, item.element);
+    this.dashboard.push(itemToPush)
   }
 
   updateItem(item: LayerItem, layerIndex = 0) {
@@ -214,6 +213,14 @@ export class AdventureComponent implements OnInit {
         this.dashboard.splice(this.dashboard.indexOf(dashboardItem), 1);
         this.dashboard.push({...dashboardItem}); // Force re-insert with different reference
       }
+      this.addSpecificToDashboardItem(dashboardItem, item.element);
+    }
+  }
+
+  private addSpecificToDashboardItem(dashboardItem: GridsterItem, layerElement: LayerElement) {
+    if (layerElement.type === LayerElementType.CHARACTER) {
+      dashboardItem['character']
+        = this.adventure.characters.find(char => layerElement.icon.toLowerCase().indexOf(char.name.toLowerCase()) !== -1);
     }
   }
 
