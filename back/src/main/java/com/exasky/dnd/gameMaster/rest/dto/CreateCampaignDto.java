@@ -14,6 +14,7 @@ public class CreateCampaignDto {
     public static Campaign toBo(CreateCampaignDto dto) {
         Campaign bo = new Campaign(dto.id);
 
+        bo.setName(dto.name);
         bo.setAdventures(AdventureCreateDto.toBo(dto.adventures));
         bo.setCharacters(CharacterForCreateCampaignDto.toBo(dto.characters));
 
