@@ -21,6 +21,8 @@ public class CharacterDto {
     private List<CharacterItemDto> backpackItems;
     private Short backpackSize;
 
+    private Long userId;
+
     public static List<CharacterDto> toDto(List<Character> bos) {
         return Objects.isNull(bos)
                 ? new ArrayList<>()
@@ -28,19 +30,22 @@ public class CharacterDto {
     }
 
     public static CharacterDto toDto(Character bo) {
-        CharacterDto characterDto = new CharacterDto();
+        CharacterDto dto = new CharacterDto();
 
-        characterDto.id = bo.getId();
-        characterDto.name = bo.getName();
-        characterDto.maxMp = bo.getMaxMp();
-        characterDto.hp = bo.getHp();
-        characterDto.maxMp = bo.getMp();
-        characterDto.mp = bo.getMp();
-        characterDto.backpackSize = bo.getBackPackSize();
-        characterDto.equippedItems = CharacterItemDto.toDto(bo.getEquipments());
-        characterDto.backpackItems = CharacterItemDto.toDto(bo.getBackPack());
+        dto.id = bo.getId();
+        dto.name = bo.getName();
+        dto.maxMp = bo.getMaxMp();
+        dto.hp = bo.getHp();
+        dto.maxMp = bo.getMp();
+        dto.mp = bo.getMp();
+        dto.backpackSize = bo.getBackPackSize();
+        dto.equippedItems = CharacterItemDto.toDto(bo.getEquipments());
+        dto.backpackItems = CharacterItemDto.toDto(bo.getBackPack());
+        if (Objects.nonNull(bo.getUser())) {
+            dto.userId = bo.getUser().getId();
+        }
 
-        return characterDto;
+        return dto;
     }
 
     // region Getters & Setters
@@ -115,6 +120,14 @@ public class CharacterDto {
 
     public void setBackpackSize(Short backpackSize) {
         this.backpackSize = backpackSize;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     // endregion

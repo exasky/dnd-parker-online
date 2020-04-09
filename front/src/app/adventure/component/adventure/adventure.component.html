@@ -40,12 +40,12 @@
                       'left': 700 * colIdx + 'px',
                       'transform': 'rotate(' + boardCol.rotation + 'deg)'}"
                  [src]="'assets/board/' + boardCol.boardNumber + '.JPG'">
-<!--            <div *ngIf="boardCol" TODO replace div.background-image by img-->
-<!--                 [ngStyle]="{'top': 700 * rowIdx + 'px',-->
-<!--                      'left': 700 * colIdx + 'px',-->
-<!--                      'background-image': 'url(\'assets/board/' + boardCol.boardNumber + '.JPG\')',-->
-<!--                      'transform': 'rotate(' + boardCol.rotation + 'deg)'}"-->
-<!--                 class="adventure-board-background"></div>-->
+            <!--            <div *ngIf="boardCol" TODO replace div.background-image by img-->
+            <!--                 [ngStyle]="{'top': 700 * rowIdx + 'px',-->
+            <!--                      'left': 700 * colIdx + 'px',-->
+            <!--                      'background-image': 'url(\'assets/board/' + boardCol.boardNumber + '.JPG\')',-->
+            <!--                      'transform': 'rotate(' + boardCol.rotation + 'deg)'}"-->
+            <!--                 class="adventure-board-background"></div>-->
           </ng-template>
         </ng-template>
 
@@ -58,6 +58,11 @@
                          [container]="'body'"
                          #t="ngbTooltip"
                          (mousedown)="t.close()">
+
+            <div *ngIf="!item.dragEnabled && item.type === layerElementType.CHARACTER"
+                 class="adventure-board-item"
+                 style="z-index: 5; background-color: rgba(0,0,0,0.5)">
+            </div>
 
             <ng-template #tipContent [ngSwitch]="item.type">
               <ng-template [ngSwitchCase]="layerElementType.CHARACTER">

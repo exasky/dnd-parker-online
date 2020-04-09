@@ -12,6 +12,8 @@ export class Character {
   backpackItems: CharacterItem[];
   backpackSize: number;
 
+  userId?: number;
+
   constructor() {
     this.equippedItems = [];
     this.backpackItems = [];

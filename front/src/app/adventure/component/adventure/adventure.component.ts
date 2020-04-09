@@ -1,4 +1,4 @@
-import {Component, HostBinding, OnInit} from "@angular/core";
+import {Component, HostBinding, OnDestroy, OnInit} from "@angular/core";
 import {
   CompactType,
   DisplayGrid,
@@ -15,14 +15,17 @@ import {LoginService} from "../../../login/login.service";
 import {ROLE_GM} from "../../../user/user";
 import {AdventureWebsocketService} from "../../../common/service/adventure.websocket.service";
 import {SocketResponse} from "../../../common/model";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-board',
   templateUrl: './adventure.component.html',
   styleUrls: ['./adventure.component.scss']
 })
-export class AdventureComponent implements OnInit {
+export class AdventureComponent implements OnInit, OnDestroy {
   @HostBinding('class') cssClasses = "flex-grow d-flex flex-column";
+
+  adventureWSObs: Subscription;
 
   layerElementType = LayerElementType;
 
@@ -47,6 +50,8 @@ export class AdventureComponent implements OnInit {
     this.mjService.getAddableElements().subscribe(elements => this.addableLayerElements = elements);
     this.adventureService.getAdventure(this.route.snapshot.paramMap.get("id")).subscribe(adventure => {
       this.adventure = adventure;
+      const currentUser = this.loginService.currentUserValue;
+      currentUser.currentCharacter = this.adventure.characters.find(character => character.userId === currentUser.id);
 
       this.gamePanelYSize = this.adventure.boards.length;
       this.gamePanelXSize = this.adventure.boards.map((row: Board[]) => row.length).sort()[0];
@@ -56,7 +61,7 @@ export class AdventureComponent implements OnInit {
     });
 
     const obs = this.adventureWS.getObservable();
-    obs.subscribe({
+    this.adventureWSObs = obs.subscribe({
       next: (receivedMsg: SocketResponse) => {
         if (receivedMsg.type === 'SUCCESS') {
           this.adventure = receivedMsg.message;
@@ -78,6 +83,10 @@ export class AdventureComponent implements OnInit {
         console.log(err);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.adventureWSObs.unsubscribe();
   }
 
   private initGridsterConf() {
@@ -228,7 +237,7 @@ export class AdventureComponent implements OnInit {
     const user = this.loginService.currentUserValue;
 
     return user.role === ROLE_GM || (
-      item.element.type === LayerElementType.CHARACTER && (item.element.type as any).name === user.currentCharacter.name)
+      item.element.type === LayerElementType.CHARACTER && item.element.icon === user.currentCharacter.name)
     // TODO check character id ?
   }
 
