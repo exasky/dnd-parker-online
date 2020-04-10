@@ -2,7 +2,7 @@
   <div class="d-flex flex-column flex-shrink-0">
 
     <div class="d-flex">
-      <div class="flex-1">
+      <div class="flex-1 d-flex justify-content-start align-items-center ml-2">
         <mat-form-field>
           <mat-select aria-label="Display grid lines" [(ngModel)]="options.displayGrid"
                       placeholder="Display grid lines"
@@ -15,9 +15,9 @@
 
       </div>
       <div class="flex-1 d-flex justify-content-center align-items-center">
-        <h3>{{adventure.name}}</h3>
+        <h3 class="mb-0">{{adventure.name}}</h3>
       </div>
-      <div class="flex-1 d-flex justify-content-end align-items-center">
+      <div class="flex-1 d-flex justify-content-end align-items-center mr-2">
         <button mat-raised-button (click)="drawer.toggle()">Show actions</button>
       </div>
     </div>
@@ -27,10 +27,11 @@
   </div>
 
   <mat-drawer-container class="flex-grow d-flex flex-column">
-    <mat-drawer-content class="flex-grow m-3" style="position: relative">
+    <mat-drawer-content class="flex-grow m-3">
       <div [ngStyle]="{'width': gamePanelXSize * 700 + 'px',
-                  'height': gamePanelYSize * 700 + 'px'}"
-           class="overflow">
+                       'height': gamePanelYSize * 700 + 'px',
+                       'margin': '0 auto',
+                       'position': 'relative'}">
         <ng-template ngFor let-boardRow [ngForOf]="adventure.boards" let-rowIdx="index">
           <ng-template ngFor let-boardCol [ngForOf]="boardRow" let-colIdx="index">
             <img *ngIf="boardCol"

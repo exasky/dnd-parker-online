@@ -21,6 +21,5 @@ export class CharacterTooltipDisplayerComponent implements OnInit {
   ngOnInit(): void {
     if (!this.cardWidth) this.cardWidth = "150";
     if (!this.cardHeight) this.cardHeight = "230";
-    console.log(this.cardWidth);
   }
 }

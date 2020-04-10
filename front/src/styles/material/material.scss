@@ -26,12 +26,11 @@ $my-theme: mat-light-theme(
 
 
 // Define an alternate dark theme.
-$my-red: map_merge($mat-red, (1000: #b71c1c));
-$dark-primary: mat-palette($my-red, 1000);
-$dark-accent: mat-palette($mat-grey);
+$dark-primary: mat-palette($mat-indigo, 600);
+$dark-accent: mat-palette($mat-brown);
 $dark-warn: mat-palette($mat-deep-orange);
 $dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
-$my-dark-theme-background: map_merge($mat-dark-theme-background, (background: #323232, raised-button: map-get($my-red, 1000)));
+$my-dark-theme-background: map_merge($mat-dark-theme-background, (background: #323232));
 .unicorn-dark-theme {
   @include angular-material-theme(
       (primary: $dark-primary,

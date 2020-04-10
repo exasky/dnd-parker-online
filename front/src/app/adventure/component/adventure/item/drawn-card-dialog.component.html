@@ -3,6 +3,6 @@
   <img style="max-width: 400px; max-height: 500px"
        [src]="'assets/card/' + data.type.toLowerCase() + '/' + data.level + '/' + data.name + '.jpg'">
 </div>
-<mat-dialog-actions>
+<mat-dialog-actions class="d-flex justify-content-center">
   <button mat-button (click)="dialogRef.close(true)">Close</button>
 </mat-dialog-actions>
