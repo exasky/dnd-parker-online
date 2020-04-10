@@ -34,3 +34,4 @@ build/
 src/main/resources/static/
 
 application-*.properties
+logs

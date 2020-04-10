@@ -56,12 +56,20 @@ public class GMRestController {
 
     @PutMapping("/campaign/{id}")
     public CreateCampaignDto updateCampaign(@PathVariable Long id, @RequestBody CreateCampaignDto dto) {
-        // TODO send websocket message with current adventure
         Campaign updatedCampaign = this.gmService.update(id, CreateCampaignDto.toBo(dto));
 
         this.messagingTemplate.convertAndSend("/topic/adventure",
                 AdventureDto.toDto(updatedCampaign.getCurrentAdventure()));
 
         return CreateCampaignDto.toDto(updatedCampaign);
+    }
+
+    @GetMapping("/draw-card/{adventureId}")
+    public CharacterItemDto drawCard(@PathVariable Long adventureId) {
+        CharacterItemDto dto = CharacterItemDto.toDto(this.gmService.drawCard(adventureId));
+
+        this.messagingTemplate.convertAndSend("/topic/drawn-card", dto);
+
+        return dto;
     }
 }

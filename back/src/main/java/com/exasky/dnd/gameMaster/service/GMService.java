@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 // TODO preauthorize gm
@@ -96,5 +96,39 @@ public class GMService {
         }
 
         return attachedCampaign;
+    }
+
+    public CharacterItem drawCard(Long adventureId) {
+        Campaign campaign = this.campaignRepository.getByAdventureId(adventureId);
+
+        // TODO create ValidationCheckException to return errors & ErrorHandler (cf other project)
+
+        //noinspection OptionalGetWithoutIsPresent
+        Short adventureLevel = campaign.getAdventures()
+                .stream()
+                .filter(a -> a.getId().equals(adventureId)).findFirst().get().getLevel();
+
+        List<CharacterItem> itemsOnCharacter = campaign.getCharacters()
+                .stream()
+                .flatMap(c -> Stream.of(c.getEquipments(), c.getBackPack())
+                        .flatMap(Collection::stream))
+                .collect(Collectors.toList());
+
+        List<CharacterItem> drawnCards = campaign.getDrawnItems();
+
+        Set<Long> usedItemIds = Stream.of(itemsOnCharacter, drawnCards)
+                .flatMap(Collection::stream)
+                .map(CharacterItem::getId)
+                .collect(Collectors.toSet());
+
+        List<CharacterItem> availableCards
+                = characterItemRepository.findAllByIdNotInAndLevelLessThanEqual(usedItemIds, adventureLevel);
+
+        CharacterItem drawnCard = availableCards.get(new Random().nextInt(availableCards.size()));
+
+        campaign.getDrawnItems().add(drawnCard);
+        campaignRepository.save(campaign);
+
+        return drawnCard;
     }
 }

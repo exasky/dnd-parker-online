@@ -3,7 +3,7 @@
     <!-- use Spring default values -->
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
-    <property name="LOGS" value="./logs" />
+    <property name="LOGS" value="logs" />
 <!--TODO Why not logging to file ?-->
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
@@ -14,10 +14,10 @@
     </appender>
 
     <appender name="Application" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}\application.log</file>
+        <file>${LOGS}/application.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>${LOGS}\application.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${LOGS}/application.log.%d{yyyy-MM-dd}.log</fileNamePattern>
 
             <!-- keep 30 days' worth of history -->
             <maxHistory>30</maxHistory>

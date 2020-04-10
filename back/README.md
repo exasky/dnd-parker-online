@@ -13,7 +13,7 @@ For building and running the application you need:
 
 - MySQL database (see application.properties)
     - create the db 'dnd' by hand
-- After launchin the app, call post localhost:8080/register <code>{ username: $username, password: $password}</code> to add the first ADMIN user
+- After launchin the app, call post localhost:8080/rest/v1/register <code>{ username: $username, password: $password}</code> to add the first ADMIN user
 
 ## Running the application locally
 
