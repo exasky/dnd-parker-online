@@ -1,21 +1,12 @@
 import {Injectable} from '@angular/core';
-import {InjectableRxStompConfig, RxStompService} from '@stomp/ng2-stompjs';
-import {WebSocketService} from './websocket.service';
-import {WebSocketOptions} from '../model';
-
-export const progressStompConfig: InjectableRxStompConfig = {
-  webSocketFactory: () => {
-    return new WebSocket('ws://' + location.host + '/stomp');
-  }
-};
+import {WebSocketWrapperService} from './web-socket-wrapper.service';
+import {AbstractWebsocket} from "./abstract-websocket";
 
 @Injectable()
-export class AdventureWebsocketService extends WebSocketService {
-  constructor(stompService: RxStompService) {
-    super(
-      stompService,
-      progressStompConfig,
-      new WebSocketOptions('/topic/adventure')
-    );
+export class AdventureWebsocketService extends AbstractWebsocket {
+
+  constructor(wsService: WebSocketWrapperService) {
+    super(wsService, '/topic/adventure');
   }
+
 }
