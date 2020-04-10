@@ -13,7 +13,6 @@
           </mat-select>
         </mat-form-field>
 
-        <button mat-button (click)="saveAdventure()">Save (to remove websocket)</button>
       </div>
       <div class="flex-1 d-flex justify-content-center align-items-center">
         <h3>{{adventure.name}}</h3>
@@ -67,8 +66,6 @@
             <ng-template #tipContent [ngSwitch]="item.type">
               <ng-template [ngSwitchCase]="layerElementType.CHARACTER">
                 <app-character-tooltip-displayer [character]="item.character"></app-character-tooltip-displayer>
-                <!--                Hello, character <b>{{item.icon}}</b>!<br/>-->
-                <!--                Hello, character <b>{{item.character.name}}</b>!-->
               </ng-template>
               <ng-template [ngSwitchCase]="layerElementType.MONSTER">
                 Hello, monter <b>{{item.icon}}</b>!
@@ -105,9 +102,6 @@
     </mat-drawer-content>
     <mat-drawer #drawer mode="side" position="end">
       <div class="d-flex flex-column" style="min-width: 150px">
-        <div *ngFor="let character of adventure.characters">
-          {{character.name}} - {{character.maxMp}}
-        </div>
         <app-action-panel [adventure]="adventure"></app-action-panel>
       </div>
     </mat-drawer>

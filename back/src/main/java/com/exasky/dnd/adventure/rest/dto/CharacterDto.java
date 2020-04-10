@@ -34,9 +34,9 @@ public class CharacterDto {
 
         dto.id = bo.getId();
         dto.name = bo.getName();
-        dto.maxMp = bo.getMaxMp();
+        dto.maxHp = bo.getMaxMp();
         dto.hp = bo.getHp();
-        dto.maxMp = bo.getMp();
+        dto.maxMp = bo.getMaxMp();
         dto.mp = bo.getMp();
         dto.backpackSize = bo.getBackPackSize();
         dto.equippedItems = CharacterItemDto.toDto(bo.getEquipments());

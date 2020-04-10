@@ -1,0 +1,20 @@
+.status-bar {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.status-bar-text {
+  position: absolute;
+  padding: 10px;
+  left: 40%;
+  color: white;
+  right: 40%;
+  display: flex;
+  justify-content: center;
+}
+
+.mat-progress-bar {
+  height: 30px;
+}

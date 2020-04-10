@@ -20,19 +20,33 @@
   </div>
 </div>
 
-<div class="d-flex flex-column flex-1">
-  <mat-form-field>
-    <mat-label>Name</mat-label>
-    <input matInput [(ngModel)]="character.name" autocomplete="false">
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Max HP</mat-label>
-    <input matInput [(ngModel)]="character.maxHp" autocomplete="false">
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Max MP</mat-label>
-    <input matInput [(ngModel)]="character.maxMp" autocomplete="false">
-  </mat-form-field>
+<div class="flex-1 d-flex flex-column">
+  <div class="d-flex justify-content-center">
+    <mat-form-field style="max-width: 8rem">
+      <mat-label>Name</mat-label>
+      <input matInput [(ngModel)]="character.name" autocomplete="false">
+    </mat-form-field>
+  </div>
+  <div class="d-flex justify-content-around">
+    <mat-form-field style="max-width: 4rem">
+      <mat-label>Max HP</mat-label>
+      <input matInput [(ngModel)]="character.maxHp" autocomplete="false" type="number">
+    </mat-form-field>
+    <mat-form-field style="max-width: 4rem">
+      <mat-label>HP</mat-label>
+      <input matInput [(ngModel)]="character.hp" autocomplete="false" type="number">
+    </mat-form-field>
+  </div>
+  <div class="d-flex justify-content-around">
+    <mat-form-field style="max-width: 4rem">
+      <mat-label>Max MP</mat-label>
+      <input matInput [(ngModel)]="character.maxMp" autocomplete="false" type="number">
+    </mat-form-field>
+    <mat-form-field style="max-width: 4rem">
+      <mat-label>MP</mat-label>
+      <input matInput [(ngModel)]="character.mp" autocomplete="false" type="number">
+    </mat-form-field>
+  </div>
   <img *ngIf="character.name" width="300px" [src]="'assets/character/' + character.name.toLowerCase() + '.jpg'">
 </div>
 

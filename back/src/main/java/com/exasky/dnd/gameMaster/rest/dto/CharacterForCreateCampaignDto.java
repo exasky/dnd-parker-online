@@ -11,7 +11,9 @@ public class CharacterForCreateCampaignDto {
     private Long id;
     private String name;
 
+    private Short hp;
     private Short maxHp;
+    private Short mp;
     private Short maxMp;
 
     private List<CharacterItemDto> equippedItems;
@@ -29,9 +31,9 @@ public class CharacterForCreateCampaignDto {
 
         bo.setName(dto.name);
         bo.setMaxHp(dto.maxHp);
-        bo.setHp(dto.maxHp);
+        bo.setHp(Objects.nonNull(dto.hp) ? dto.hp : dto.maxHp);
         bo.setMaxMp(dto.maxMp);
-        bo.setMp(dto.maxMp);
+        bo.setMp(Objects.nonNull(dto.mp) ? dto.mp : dto.maxMp);
         bo.setBackPackSize(dto.backpackSize);
 
         bo.setEquipments(CharacterItemDto.toBo(dto.equippedItems));
@@ -51,7 +53,9 @@ public class CharacterForCreateCampaignDto {
 
         dto.id = bo.getId();
         dto.maxHp = bo.getMaxHp();
+        dto.hp = bo.getHp();
         dto.maxMp = bo.getMaxMp();
+        dto.mp = bo.getMp();
         dto.name = bo.getName();
         dto.backpackSize = bo.getBackPackSize();
         dto.backpackItems = CharacterItemDto.toDto(bo.getBackPack());
@@ -117,5 +121,22 @@ public class CharacterForCreateCampaignDto {
     public void setBackpackSize(Short backpackSize) {
         this.backpackSize = backpackSize;
     }
+
+    public Short getHp() {
+        return hp;
+    }
+
+    public void setHp(Short hp) {
+        this.hp = hp;
+    }
+
+    public Short getMp() {
+        return mp;
+    }
+
+    public void setMp(Short mp) {
+        this.mp = mp;
+    }
+
     // endregion
 }

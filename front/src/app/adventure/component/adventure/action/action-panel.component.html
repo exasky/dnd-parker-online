@@ -1,2 +1,16 @@
-<button mat-raised-button (click)="drawCard()">Draw card</button>
-<button mat-raised-button (click)="rollDices()">Roll dices</button>
+<button mat-raised-button color="accent" class="m-2" (click)="drawCard()">Draw card</button>
+<button mat-raised-button color="accent" class="m-2" (click)="rollDices()">Roll dices</button>
+
+<mat-divider class="m-2" [inset]="false"></mat-divider>
+
+<button *ngFor="let character of adventure.characters"
+        mat-raised-button class="m-2"
+        style="text-transform: capitalize"
+        [ngbTooltip]="tooltipContent"
+        [container]="'body'"
+        placement="left">
+  {{character.name}}
+  <ng-template #tooltipContent>
+    <app-character-tooltip-displayer [character]="character"></app-character-tooltip-displayer>
+  </ng-template>
+</button>

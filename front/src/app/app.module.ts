@@ -44,6 +44,8 @@ import {WebSocketWrapperService} from "./common/service/web-socket-wrapper.servi
 import {DiceComponent} from "./adventure/component/adventure/dice/dice.component";
 import {DiceDialogComponent} from "./adventure/component/adventure/dice/dice-dialog.component";
 import {DiceWebsocketService} from "./common/service/dice.websocket.service";
+import {MatDividerModule} from "@angular/material/divider";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @NgModule({
   declarations: [
@@ -86,7 +88,9 @@ import {DiceWebsocketService} from "./common/service/dice.websocket.service";
     MatSidenavModule,
     MatMenuModule,
     MatDialogModule,
-    NgbTooltipModule
+    NgbTooltipModule,
+    MatDividerModule,
+    MatProgressBarModule
   ],
   entryComponents: [ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent],
   providers: [

@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from "@angular/core";
+import {Component, HostBinding, Input, OnDestroy, OnInit} from "@angular/core";
 import {GmService} from "../../../service/gm.service";
 import {Adventure} from "../../../model/adventure";
 import {MatDialog} from "@angular/material/dialog";
@@ -14,6 +14,8 @@ import {DiceMessage, DiceMessageType} from "../../../model/dice-message";
   templateUrl: './action-panel.component.html'
 })
 export class ActionPanelComponent implements OnInit, OnDestroy {
+  @HostBinding('class') cssClasses = "flex-grow d-flex flex-column";
+
   @Input()
   adventure: Adventure;
   private subscription: Subscription;
