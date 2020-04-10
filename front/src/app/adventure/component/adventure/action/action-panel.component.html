@@ -8,9 +8,12 @@
         style="text-transform: capitalize"
         [ngbTooltip]="tooltipContent"
         [container]="'body'"
+        tooltipClass="w-75"
         placement="left">
   {{character.name}}
   <ng-template #tooltipContent>
-    <app-character-tooltip-displayer [character]="character"></app-character-tooltip-displayer>
+    <app-character-tooltip-displayer [character]="character"
+                                     cardWidth="200"
+                                     cardHeight="300"></app-character-tooltip-displayer>
   </ng-template>
 </button>

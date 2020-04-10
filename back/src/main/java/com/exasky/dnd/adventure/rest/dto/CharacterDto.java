@@ -34,7 +34,7 @@ public class CharacterDto {
 
         dto.id = bo.getId();
         dto.name = bo.getName();
-        dto.maxHp = bo.getMaxMp();
+        dto.maxHp = bo.getMaxHp();
         dto.hp = bo.getHp();
         dto.maxMp = bo.getMaxMp();
         dto.mp = bo.getMp();

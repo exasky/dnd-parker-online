@@ -1,11 +1,14 @@
 <!-- Equipped items-->
-<div class="d-flex flex-2"
-     (dragover)="$event.preventDefault()">
-  <div *ngIf="character.equippedItems.length !== 0" class="d-flex flex-wrap">
+<div class="d-flex flex-2">
+  <div *ngIf="character.equippedItems.length !== 0"
+       class="flex-grow d-flex justify-content-around align-items-center flex-wrap">
     <img *ngFor="let item of character.equippedItems"
          [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
-         draggable="true"
-         width="150px" height="230px">
+         [width]="cardWidth" [height]="cardHeight">
+  </div>
+  <div *ngIf="character.equippedItems.length === 0"
+       class="flex-grow d-flex justify-content-center align-items-center">
+    No Equipped item !
   </div>
 </div>
 
@@ -16,7 +19,7 @@
     </mat-progress-bar>
     <div class="status-bar-text">HP : {{character.hp}} / {{character.maxHp}}</div>
   </section>
-  <section class="status-bar mx-2" *ngIf="character.maxMp !== 0">
+  <section class="status-bar mx-2" *ngIf="character.maxMp">
     <mat-progress-bar color="accent" mode="determinate" [value]="(character.mp * 100) / character.maxMp">
     </mat-progress-bar>
     <div class="status-bar-text">MP : {{character.mp}} / {{character.maxMp}}</div>
@@ -26,13 +29,15 @@
 </div>
 
 <!-- Backpack items-->
-<div class="d-flex flex-2"
-     (dragover)="$event.preventDefault()">
-  <div *ngIf="character.backpackItems.length !== 0" class="d-flex flex-wrap">
+<div class="d-flex flex-2">
+  <div *ngIf="character.backpackItems.length !== 0"
+       class="flex-grow d-flex justify-content-around align-items-center flex-wrap">
     <img *ngFor="let item of character.backpackItems"
          [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
-         draggable="true"
-         width="150px" height="230px">
+         [width]="cardWidth" [height]="cardHeight">
   </div>
-
+  <div *ngIf="character.backpackItems.length === 0"
+       class="flex-grow d-flex justify-content-center align-items-center">
+    No backpack item !
+  </div>
 </div>
