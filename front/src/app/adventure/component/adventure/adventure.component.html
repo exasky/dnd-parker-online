@@ -108,6 +108,7 @@
         <div *ngFor="let character of adventure.characters">
           {{character.name}} - {{character.maxMp}}
         </div>
+        <app-action-panel [adventure]="adventure"></app-action-panel>
       </div>
     </mat-drawer>
   </mat-drawer-container>

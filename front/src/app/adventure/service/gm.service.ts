@@ -36,4 +36,8 @@ export class GmService {
       ? this.http.put<Campaign>(GmService.API_URL + '/campaign/' + campaign.id, campaign)
       : this.http.post<Campaign>(GmService.API_URL + '/campaign', campaign);
   }
+
+  drawCard(adventureId: number | string): Observable<CharacterItem> {
+    return this.http.get<CharacterItem>(GmService.API_URL + '/draw-card/' + adventureId);
+  }
 }

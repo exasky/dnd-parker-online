@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Drawn card</h1>
+<div mat-dialog-content>
+  <img style="max-width: 400px; max-height: 500px"
+       [src]="'assets/card/' + data.type.toLowerCase() + '/' + data.level + '/' + data.name + '.jpg'">
+</div>
+<mat-dialog-actions>
+  <button mat-button (click)="dialogRef.close(true)">Close</button>
+</mat-dialog-actions>

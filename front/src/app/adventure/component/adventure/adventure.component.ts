@@ -16,6 +16,9 @@ import {ROLE_GM} from "../../../user/user";
 import {AdventureWebsocketService} from "../../../common/service/adventure.websocket.service";
 import {SocketResponse} from "../../../common/model";
 import {Subscription} from "rxjs";
+import {DrawnCardWebsocketService} from "../../../common/service/drawn-card.websocket.service";
+import {DrawnCardDialogComponent} from "./item/drawn-card-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-board',
@@ -26,6 +29,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   @HostBinding('class') cssClasses = "flex-grow d-flex flex-column";
 
   adventureWSObs: Subscription;
+  drawnCardWSObs: Subscription;
 
   layerElementType = LayerElementType;
 
@@ -43,7 +47,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
               private mjService: GmService,
               public loginService: LoginService,
               private route: ActivatedRoute,
-              private adventureWS: AdventureWebsocketService) {
+              private adventureWS: AdventureWebsocketService,
+              private drawnCardWS: DrawnCardWebsocketService,
+              private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -60,8 +66,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       this.initDashboard();
     });
 
-    const obs = this.adventureWS.getObservable();
-    this.adventureWSObs = obs.subscribe({
+    this.adventureWSObs = this.adventureWS.getObservable().subscribe({
       next: (receivedMsg: SocketResponse) => {
         if (receivedMsg.type === 'SUCCESS') {
           this.adventure = receivedMsg.message;
@@ -83,6 +88,12 @@ export class AdventureComponent implements OnInit, OnDestroy {
         console.log(err);
       }
     });
+
+    this.drawnCardWSObs = this.drawnCardWS.getObservable().subscribe((receivedMsg: SocketResponse) => {
+      if (receivedMsg.type === 'SUCCESS') {
+        this.dialog.open(DrawnCardDialogComponent, {data: receivedMsg.message});
+      }
+    })
   }
 
   ngOnDestroy(): void {
@@ -211,7 +222,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       icon: item.element.icon,
       rotation: item.element.rotation,
       type: item.element.type,
-      dragEnabled: this.isDragEnabledForItem(item, layerIndex)
+      dragEnabled: this.isDragEnabledForItem(item)
     };
     this.addSpecificToDashboardItem(itemToPush, item.element);
     this.dashboard.push(itemToPush)
@@ -240,12 +251,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isDragEnabledForItem(item: LayerItem, layerIndex: number): boolean {
+  private isDragEnabledForItem(item: LayerItem): boolean {
     const user = this.loginService.currentUserValue;
 
     return user.role === ROLE_GM || (
-      item.element.type === LayerElementType.CHARACTER && item.element.icon === user.currentCharacter.name)
-    // TODO check character id ?
+      item.element.type === LayerElementType.CHARACTER && item.element.icon.toLowerCase() === user.currentCharacter.name.toLowerCase())
   }
 
   saveAdventure() {

@@ -13,8 +13,7 @@ export class WebSocketWrapperService {
     heartbeatIncoming: 0,
     heartbeatOutgoing: 20000,
     reconnectDelay: 10000,
-    webSocketFactory: () => new WebSocket('ws://localhost:8080/stomp'),
-    // webSocketFactory: () => new WebSocket('ws://' + location.host + '/stomp'),
+    webSocketFactory: () => new WebSocket('ws://' + location.host + '/stomp'),
     debug: (str) => {
       console.log(str);
     }

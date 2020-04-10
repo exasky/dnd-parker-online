@@ -37,6 +37,10 @@ import {NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
 import {CharacterTooltipDisplayerComponent} from "./adventure/component/adventure/character/character-tooltip-displayer.component";
 import {RxStompService} from "@stomp/ng2-stompjs";
 import {AdventureWebsocketService} from "./common/service/adventure.websocket.service";
+import {ActionPanelComponent} from "./adventure/component/adventure/action/action-panel.component";
+import {DrawnCardDialogComponent} from "./adventure/component/adventure/item/drawn-card-dialog.component";
+import {DrawnCardWebsocketService} from "./common/service/drawn-card.websocket.service";
+import {WebSocketWrapperService} from "./common/service/web-socket-wrapper.service";
 
 @NgModule({
   declarations: [
@@ -52,7 +56,9 @@ import {AdventureWebsocketService} from "./common/service/adventure.websocket.se
     ConfirmDialogComponent,
     UserDetailComponent,
     AdventureItemDisplayerComponent,
-    CharacterTooltipDisplayerComponent
+    CharacterTooltipDisplayerComponent,
+    ActionPanelComponent,
+    DrawnCardDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -77,12 +83,14 @@ import {AdventureWebsocketService} from "./common/service/adventure.websocket.se
     MatDialogModule,
     NgbTooltipModule
   ],
-  entryComponents : [ConfirmDialogComponent],
+  entryComponents: [ConfirmDialogComponent, DrawnCardDialogComponent],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ForbiddenInterceptor, multi: true },
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: ForbiddenInterceptor, multi: true},
     RxStompService,
-    AdventureWebsocketService
+    WebSocketWrapperService,
+    AdventureWebsocketService,
+    DrawnCardWebsocketService
   ],
   bootstrap: [AppComponent]
 })

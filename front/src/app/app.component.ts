@@ -9,6 +9,17 @@ import {DOCUMENT} from "@angular/common";
 export class AppComponent implements OnInit {
   @HostBinding('class') cssClasses = "d-flex flex-column";
 
+  // TODO observe mouve players to display to others in adventure
+
+  // TODO Draw card websocket popup each player to display the card
+
+  // TODO add next adventure button
+
+  // TODO dice launcher 2D. prendre chaqu'une des faces d'un dé, faire un rand 1-6
+  // TODO Pouvoir choisir les dés à lancer
+  // TODO stocker en base pour avoir une liste avec des noms et des ids
+  // TODO les noms des images : dice_id/name -face1.jpg -face2.jpg rand 1-5
+
   isDarkTheme = false;
 
   constructor(public loginService: LoginService,
