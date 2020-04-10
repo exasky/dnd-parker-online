@@ -1,4 +1,4 @@
-<div class="d-flex" *ngIf="dices">
+<div class="d-flex" *ngIf="allDices">
   <div class="flex-grow d-flex flex-column">
     <div class="flex-grow d-flex flex-wrap">
       <app-dice *ngFor="let dice of selectedDices"
@@ -6,10 +6,16 @@
                 [diceType]="dice.name"
                 (click)="removeDiceFromList(dice)"></app-dice>
     </div>
-    <button mat-raised-button (click)="rollDices()">Roll dices !</button>
+    <button mat-raised-button
+            #rollButton
+            (click)="rollDices()"
+            [disabled]="disabled">
+      Roll dices !
+    </button>
+    <div *ngIf="rollButton.disabled">C'est pas ton tour !</div>
   </div>
   <div class="flex-shrink-0 d-flex flex-wrap justify-content-around" style="max-width: 200px">
-    <div *ngFor="let dice of dices">
+    <div *ngFor="let dice of allDices">
       <img height="70px" width="70px"
            [src]="'assets/dice/' + dice.name + '/1.jpeg'"
            (click)="addToDiceList(dice)">

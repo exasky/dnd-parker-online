@@ -11,14 +11,17 @@ export class DiceComponent {
   @Input()
   diceType: string;
 
+  constructor() {
+  }
+
+  set value(value: number) {
+    this.toggleClasses(this.diceElement.nativeElement);
+    this.diceElement.nativeElement.dataset.roll = value;
+  }
+
   rollDice(): number {
     this.toggleClasses(this.diceElement.nativeElement);
     this.diceElement.nativeElement.dataset.roll = this.getRandomNumber(1,6);
-    // const dice = [...document.querySelectorAll(".die-list")];
-    // dice.forEach(die => {
-    //   this.toggleClasses(die);
-      // die.dataset.roll = this.getRandomNumber(1, 6);
-    // });
     return this.diceElement.nativeElement.dataset.roll;
   }
 
@@ -31,9 +34,5 @@ export class DiceComponent {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  arrayOne(n: number): any[] {
-    return Array(n);
   }
 }

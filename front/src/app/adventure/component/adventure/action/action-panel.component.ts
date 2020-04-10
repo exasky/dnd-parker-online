@@ -1,19 +1,42 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {GmService} from "../../../service/gm.service";
 import {Adventure} from "../../../model/adventure";
 import {MatDialog} from "@angular/material/dialog";
 import {DiceDialogComponent} from "../dice/dice-dialog.component";
+import {DiceWebsocketService} from "../../../../common/service/dice.websocket.service";
+import {SocketResponse} from "../../../../common/model";
+import {DiceService} from "../../../service/dice.service";
+import {Subscription} from "rxjs";
+import {DiceMessage, DiceMessageType} from "../../../model/dice-message";
 
 @Component({
   selector: 'app-action-panel',
   templateUrl: './action-panel.component.html'
 })
-export class ActionPanelComponent {
+export class ActionPanelComponent implements OnInit, OnDestroy {
   @Input()
   adventure: Adventure;
+  private subscription: Subscription;
 
   constructor(private gmService: GmService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private diceWS: DiceWebsocketService,
+              private diceService: DiceService) {
+  }
+
+  ngOnInit(): void {
+    this.subscription = this.diceWS.getObservable().subscribe((receivedMsg: SocketResponse) => {
+      if (receivedMsg.type === 'SUCCESS') {
+        const diceMessage: DiceMessage = receivedMsg.message;
+        if (diceMessage.type === DiceMessageType.OPEN_DIALOG) {
+          this.dialog.open(DiceDialogComponent, {data: receivedMsg.message.message});
+        }
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   drawCard() {
@@ -22,6 +45,6 @@ export class ActionPanelComponent {
   }
 
   rollDices() {
-    this.dialog.open(DiceDialogComponent);
+    this.diceService.openDiceDialog();
   }
 }
