@@ -1,0 +1,19 @@
+<div class="d-flex" *ngIf="dices">
+  <div class="flex-grow d-flex flex-column">
+    <div class="flex-grow d-flex flex-wrap">
+      <app-dice *ngFor="let dice of selectedDices"
+                #diceCmp
+                [diceType]="dice.name"
+                (click)="removeDiceFromList(dice)"></app-dice>
+    </div>
+    <button mat-raised-button (click)="rollDices()">Roll dices !</button>
+  </div>
+  <div class="flex-shrink-0 d-flex flex-wrap justify-content-around" style="max-width: 200px">
+    <div *ngFor="let dice of dices">
+      <img height="70px" width="70px"
+           [src]="'assets/dice/' + dice.name + '/1.jpeg'"
+           (click)="addToDiceList(dice)">
+    </div>
+  </div>
+</div>
+

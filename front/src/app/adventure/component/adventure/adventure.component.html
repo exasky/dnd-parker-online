@@ -19,7 +19,7 @@
         <h3>{{adventure.name}}</h3>
       </div>
       <div class="flex-1 d-flex justify-content-end align-items-center">
-        <button mat-raised-button (click)="drawer.toggle()">Show characters</button>
+        <button mat-raised-button (click)="drawer.toggle()">Show actions</button>
       </div>
     </div>
 
@@ -104,7 +104,7 @@
       </div>
     </mat-drawer-content>
     <mat-drawer #drawer mode="side" position="end">
-      <div class="d-flex flex-column">
+      <div class="d-flex flex-column" style="min-width: 150px">
         <div *ngFor="let character of adventure.characters">
           {{character.name}} - {{character.maxMp}}
         </div>
@@ -112,8 +112,4 @@
       </div>
     </mat-drawer>
   </mat-drawer-container>
-  <!--<mat-drawer-container>-->
-  <!--  <mat-drawer-content>Main content</mat-drawer-content>-->
-  <!--  <mat-drawer mode="side" opened>Drawer content</mat-drawer>-->
-  <!--</mat-drawer-container>-->
 </ng-container>

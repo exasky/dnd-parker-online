@@ -98,6 +98,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.adventureWSObs.unsubscribe();
+    this.drawnCardWSObs.unsubscribe();
   }
 
   private initGridsterConf() {

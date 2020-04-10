@@ -3,7 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {CharacterItem} from "../../../model/character";
 
 @Component({
-  selector: 'drawn-card-dialog',
+  selector: 'app-drawn-card-dialog',
   templateUrl: './drawn-card-dialog.component.html',
 })
 export class DrawnCardDialogComponent {

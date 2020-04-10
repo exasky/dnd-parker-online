@@ -6,6 +6,7 @@ import com.exasky.dnd.adventure.rest.dto.layer.LayerElementDto;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.CharacterItemDto;
 import com.exasky.dnd.gameMaster.rest.dto.CreateCampaignDto;
+import com.exasky.dnd.gameMaster.rest.dto.DiceDto;
 import com.exasky.dnd.gameMaster.rest.dto.SimpleCampaignDto;
 import com.exasky.dnd.gameMaster.service.GMService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,11 @@ public class GMRestController {
     @GetMapping("/character-items")
     public List<CharacterItemDto> getAllCharacterItems() {
         return CharacterItemDto.toDto(this.gmService.getAllCharacterItems());
+    }
+
+    @GetMapping("/dices")
+    public List<DiceDto> getAllDices() {
+        return DiceDto.toDto(this.gmService.getAllDices());
     }
 
     @GetMapping("/campaign")

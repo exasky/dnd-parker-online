@@ -41,6 +41,9 @@ import {ActionPanelComponent} from "./adventure/component/adventure/action/actio
 import {DrawnCardDialogComponent} from "./adventure/component/adventure/item/drawn-card-dialog.component";
 import {DrawnCardWebsocketService} from "./common/service/drawn-card.websocket.service";
 import {WebSocketWrapperService} from "./common/service/web-socket-wrapper.service";
+import {DiceComponent} from "./adventure/component/adventure/dice/dice.component";
+import {DiceDialogComponent} from "./adventure/component/adventure/dice/dice-dialog.component";
+import {DiceWebsocketService} from "./common/service/dice.websocket.service";
 
 @NgModule({
   declarations: [
@@ -58,7 +61,9 @@ import {WebSocketWrapperService} from "./common/service/web-socket-wrapper.servi
     AdventureItemDisplayerComponent,
     CharacterTooltipDisplayerComponent,
     ActionPanelComponent,
-    DrawnCardDialogComponent
+    DrawnCardDialogComponent,
+    DiceComponent,
+    DiceDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -83,14 +88,15 @@ import {WebSocketWrapperService} from "./common/service/web-socket-wrapper.servi
     MatDialogModule,
     NgbTooltipModule
   ],
-  entryComponents: [ConfirmDialogComponent, DrawnCardDialogComponent],
+  entryComponents: [ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ForbiddenInterceptor, multi: true},
     RxStompService,
     WebSocketWrapperService,
     AdventureWebsocketService,
-    DrawnCardWebsocketService
+    DrawnCardWebsocketService,
+    DiceWebsocketService
   ],
   bootstrap: [AppComponent]
 })

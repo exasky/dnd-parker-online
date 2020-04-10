@@ -17,4 +17,6 @@
     <include file="liquibase/changelog/liquibase-diff-20200408-074912.xml"/>
     <include file="liquibase/changelog/liquibase-diff-20200408-133145.xml"/>
     <include file="liquibase/init/liquibase-init-data-2.xml"/>
+    <include file="liquibase/changelog/liquibase-diff-20200410-152519.xml"/>
+    <include file="liquibase/init/liquibase-init-dices.xml"/>
 </databaseChangeLog>
