@@ -10,7 +10,7 @@ import {
 import {Adventure, Board, LayerElement, LayerElementType, LayerItem} from "../../model/adventure";
 import {AdventureService} from "../../service/adventure.service";
 import {GmService} from "../../service/gm.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {LoginService} from "../../../login/login.service";
 import {ROLE_GM} from "../../../user/user";
 import {AdventureWebsocketService} from "../../../common/service/adventure.websocket.service";
@@ -19,6 +19,7 @@ import {Subscription} from "rxjs";
 import {DrawnCardWebsocketService} from "../../../common/service/drawn-card.websocket.service";
 import {DrawnCardDialogComponent} from "./item/drawn-card-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
+import {AdventureMessage, AdventureMessageType} from "../../model/adventure-message";
 
 @Component({
   selector: 'app-board',
@@ -49,6 +50,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private adventureWS: AdventureWebsocketService,
               private drawnCardWS: DrawnCardWebsocketService,
+              private router: Router,
               private dialog: MatDialog) {
   }
 
@@ -69,19 +71,26 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventureWSObs = this.adventureWS.getObservable().subscribe({
       next: (receivedMsg: SocketResponse) => {
         if (receivedMsg.type === 'SUCCESS') {
-          this.adventure = receivedMsg.message;
-          // Update existing items of else create
-          this.adventure.mjLayer.items.forEach(mjItem => {
-            this.updateItem(mjItem, 0);
-          });
-          this.adventure.characterLayer.items.forEach(characterItem => {
-            this.updateItem(characterItem, 1);
-          })
+          const message: AdventureMessage = receivedMsg.message;
+          if (message.type === AdventureMessageType.GOTO) {
+            this.router.navigateByUrl('adventure/' + message.message).then(() => {
+              window.location.reload();
+            });;
+          } else {
+            this.adventure = message.message;
+            // Update existing items of else create
+            this.adventure.mjLayer.items.forEach(mjItem => {
+              this.updateItem(mjItem, 0);
+            });
+            this.adventure.characterLayer.items.forEach(characterItem => {
+              this.updateItem(characterItem, 1);
+            })
 
-          // Remove others
-          const allLayerIds = this.adventure.mjLayer.items.map(value => value.id)
-            .concat(this.adventure.characterLayer.items.map(value => value.id));
-          this.removeUnusedItems(allLayerIds);
+            // Remove others
+            const allLayerIds = this.adventure.mjLayer.items.map(value => value.id)
+              .concat(this.adventure.characterLayer.items.map(value => value.id));
+            this.removeUnusedItems(allLayerIds);
+          }
         }
       },
       error: err => {

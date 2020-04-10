@@ -1,5 +1,6 @@
 package com.exasky.dnd.gameMaster.service;
 
+import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.adventure.model.Dice;
 import com.exasky.dnd.adventure.model.card.CharacterItem;
@@ -141,5 +142,35 @@ public class GMService {
         campaignRepository.save(campaign);
 
         return drawnCard;
+    }
+
+    @Transactional
+    public Long findPreviousAdventureId(Long adventureId) {
+        Adventure adventure = this.adventureService.getById(adventureId);
+        Campaign campaign = adventure.getCampaign();
+        List<Adventure> adventures = campaign.getAdventures();
+        int adventureIdx = adventures.indexOf(adventure);
+        if (adventureIdx <= 0) {
+            return adventure.getId();
+        } else {
+            Adventure newCurrentAdventure = adventures.get(adventureIdx - 1);
+            campaign.setCurrentAdventure(newCurrentAdventure);
+            return newCurrentAdventure.getId();
+        }
+    }
+
+    @Transactional
+    public Long findNextAdventureId(Long adventureId) {
+        Adventure adventure = this.adventureService.getById(adventureId);
+        Campaign campaign = adventure.getCampaign();
+        List<Adventure> adventures = campaign.getAdventures();
+        int adventureIdx = adventures.indexOf(adventure);
+        if (adventureIdx >= adventures.size() - 1) {
+            return adventure.getId();
+        } else {
+            Adventure newCurrentAdventure = adventures.get(adventureIdx + 1);
+            campaign.setCurrentAdventure(newCurrentAdventure);
+            return newCurrentAdventure.getId();
+        }
     }
 }

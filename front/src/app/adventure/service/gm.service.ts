@@ -45,4 +45,12 @@ export class GmService {
   drawCard(adventureId: number | string): Observable<CharacterItem> {
     return this.http.get<CharacterItem>(GmService.API_URL + '/draw-card/' + adventureId);
   }
+
+  previousAdventure(adventureId: number | string) {
+    return this.http.get(GmService.API_URL + '/previous-adventure/' + adventureId).subscribe(() => {});
+  }
+
+  nextAdventure(adventureId: number | string) {
+    return this.http.get(GmService.API_URL + '/next-adventure/' + adventureId).subscribe(() => {});
+  }
 }

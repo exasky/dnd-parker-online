@@ -4,10 +4,7 @@ import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.adventure.rest.dto.AdventureDto;
 import com.exasky.dnd.adventure.rest.dto.layer.LayerElementDto;
 import com.exasky.dnd.common.Constant;
-import com.exasky.dnd.gameMaster.rest.dto.CharacterItemDto;
-import com.exasky.dnd.gameMaster.rest.dto.CreateCampaignDto;
-import com.exasky.dnd.gameMaster.rest.dto.DiceDto;
-import com.exasky.dnd.gameMaster.rest.dto.SimpleCampaignDto;
+import com.exasky.dnd.gameMaster.rest.dto.*;
 import com.exasky.dnd.gameMaster.service.GMService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -64,8 +61,10 @@ public class GMRestController {
     public CreateCampaignDto updateCampaign(@PathVariable Long id, @RequestBody CreateCampaignDto dto) {
         Campaign updatedCampaign = this.gmService.update(id, CreateCampaignDto.toBo(dto));
 
-        this.messagingTemplate.convertAndSend("/topic/adventure",
-                AdventureDto.toDto(updatedCampaign.getCurrentAdventure()));
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.RELOAD);
+        wsDto.setMessage(AdventureDto.toDto(updatedCampaign.getCurrentAdventure()));
+        this.messagingTemplate.convertAndSend("/topic/adventure", wsDto);
 
         return CreateCampaignDto.toDto(updatedCampaign);
     }
@@ -77,5 +76,23 @@ public class GMRestController {
         this.messagingTemplate.convertAndSend("/topic/drawn-card", dto);
 
         return dto;
+    }
+
+    @GetMapping("/previous-adventure/{adventureId}")
+    public void previousAdventure(@PathVariable Long adventureId) {
+        AdventureMessageDto dto = new AdventureMessageDto();
+        dto.setType(AdventureMessageDto.AdventureMessageType.GOTO);
+        dto.setMessage(gmService.findPreviousAdventureId(adventureId));
+
+        this.messagingTemplate.convertAndSend("/topic/adventure", dto);
+    }
+
+    @GetMapping("/next-adventure/{adventureId}")
+    public void nextAdventure(@PathVariable Long adventureId) {
+        AdventureMessageDto dto = new AdventureMessageDto();
+        dto.setType(AdventureMessageDto.AdventureMessageType.GOTO);
+        dto.setMessage(gmService.findNextAdventureId(adventureId));
+
+        this.messagingTemplate.convertAndSend("/topic/adventure", dto);
     }
 }

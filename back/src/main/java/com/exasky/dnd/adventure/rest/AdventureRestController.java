@@ -4,6 +4,7 @@ import com.exasky.dnd.adventure.rest.dto.AdventureDto;
 import com.exasky.dnd.adventure.rest.dto.SimpleAdventureReadDto;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
+import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
 import com.exasky.dnd.gameMaster.rest.dto.SimpleCampaignDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -44,7 +45,12 @@ public class AdventureRestController {
     @PutMapping("/{id}")
     public AdventureDto update(@PathVariable Long id, @RequestBody AdventureDto adventureWriteDto) {
         AdventureDto returnDto = AdventureDto.toDto(this.adventureService.update(id, AdventureDto.toBo(adventureWriteDto)));
-        this.messagingTemplate.convertAndSend("/topic/adventure", returnDto);
+
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.RELOAD);
+        wsDto.setMessage(returnDto);
+        this.messagingTemplate.convertAndSend("/topic/adventure", wsDto);
+
         return returnDto;
     }
 }

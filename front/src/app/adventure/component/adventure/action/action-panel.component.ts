@@ -8,6 +8,7 @@ import {SocketResponse} from "../../../../common/model";
 import {DiceService} from "../../../service/dice.service";
 import {Subscription} from "rxjs";
 import {DiceMessage, DiceMessageType} from "../../../model/dice-message";
+import {LoginService} from "../../../../login/login.service";
 
 @Component({
   selector: 'app-action-panel',
@@ -23,7 +24,8 @@ export class ActionPanelComponent implements OnInit, OnDestroy {
   constructor(private gmService: GmService,
               private dialog: MatDialog,
               private diceWS: DiceWebsocketService,
-              private diceService: DiceService) {
+              private diceService: DiceService,
+              public loginService: LoginService) {
   }
 
   ngOnInit(): void {
@@ -48,5 +50,13 @@ export class ActionPanelComponent implements OnInit, OnDestroy {
 
   rollDices() {
     this.diceService.openDiceDialog();
+  }
+
+  prevAdventure() {
+    this.gmService.previousAdventure(this.adventure.id);
+  }
+
+  nextAdventure() {
+    this.gmService.nextAdventure(this.adventure.id);
   }
 }
