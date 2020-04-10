@@ -5,7 +5,7 @@ import {WebSocketOptions} from '../model';
 
 export const progressStompConfig: InjectableRxStompConfig = {
   webSocketFactory: () => {
-    return new WebSocket('ws://' + location.hostname + ':8080/stomp');
+    return new WebSocket('ws://' + location.host + '/stomp');
   }
 };
 
