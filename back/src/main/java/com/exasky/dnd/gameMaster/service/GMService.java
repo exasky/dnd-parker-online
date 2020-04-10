@@ -108,22 +108,28 @@ public class GMService {
                 .stream()
                 .filter(a -> a.getId().equals(adventureId)).findFirst().get().getLevel();
 
-        List<CharacterItem> itemsOnCharacter = campaign.getCharacters()
-                .stream()
-                .flatMap(c -> Stream.of(c.getEquipments(), c.getBackPack())
-                        .flatMap(Collection::stream))
+        List<Long> itemOnCharacterIds = campaign.getCharacters().stream()
+                .flatMap(c -> Stream.of(c.getEquipments(), c.getBackPack()).flatMap(Collection::stream))
+                .map(CharacterItem::getId)
                 .collect(Collectors.toList());
 
-        List<CharacterItem> drawnCards = campaign.getDrawnItems();
-
-        Set<Long> usedItemIds = Stream.of(itemsOnCharacter, drawnCards)
-                .flatMap(Collection::stream)
+        List<Long> drawnCardIds = campaign.getDrawnItems().stream()
                 .map(CharacterItem::getId)
+                .collect(Collectors.toList());
+
+        Set<Long> usedItemIds = Stream.of(itemOnCharacterIds, drawnCardIds)
+                .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
         List<CharacterItem> availableCards
                 = characterItemRepository.findAllByIdNotInAndLevelLessThanEqual(usedItemIds, adventureLevel);
 
+        // Clear the discard
+        if (availableCards.isEmpty()) {
+            campaign.getDrawnItems().clear();
+            campaignRepository.save(campaign);
+            availableCards = characterItemRepository.findAllByIdNotInAndLevelLessThanEqual(itemOnCharacterIds, adventureLevel);
+        }
         CharacterItem drawnCard = availableCards.get(new Random().nextInt(availableCards.size()));
 
         campaign.getDrawnItems().add(drawnCard);
