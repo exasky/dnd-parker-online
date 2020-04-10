@@ -1,7 +1,5 @@
 package com.exasky.dnd.adventure.model;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
-
 public enum ImageRotation {
     NONE(0), RIGHT(90), LEFT(-90), DOWN(180);
 
@@ -15,9 +13,9 @@ public enum ImageRotation {
         return rotationDegree;
     }
 
-    public static ImageRotation getImageRotationFromCode(int rotationDegree){
-        for(ImageRotation e : ImageRotation.values()){
-            if(rotationDegree == e.rotationDegree) return e;
+    public static ImageRotation getImageRotationFromCode(int rotationDegree) {
+        for (ImageRotation e : ImageRotation.values()) {
+            if (rotationDegree == e.rotationDegree) return e;
         }
         throw new IllegalArgumentException("Cannot find ImageRotation for value: " + rotationDegree);
     }
