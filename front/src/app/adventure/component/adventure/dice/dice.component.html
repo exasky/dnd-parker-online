@@ -1,5 +1,5 @@
 <div class="dice">
-  <ol class="die-list odd-roll" #dice data-roll="1">
+  <ol class="die-list even-roll" #dice data-roll="1">
     <li *ngFor="let number of [1,2,3,4,5,6]" class="die-item"
         attr.data-side="{{number}}"
         [ngStyle]="{'background-image': 'url(\'assets/dice/' + diceType + '/' + number + '.jpeg\')'}">

@@ -1,25 +1,25 @@
-<div class="d-flex" *ngIf="allDices">
-  <div class="flex-grow d-flex flex-column">
-    <div class="flex-grow d-flex flex-wrap">
-      <app-dice *ngFor="let dice of selectedDices"
-                #diceCmp
-                [diceType]="dice.name"
-                (click)="removeDiceFromList(dice)"></app-dice>
-    </div>
-    <button mat-raised-button
-            #rollButton
-            (click)="rollDices()"
-            [disabled]="disabled">
-      Roll dices !
-    </button>
-    <div *ngIf="rollButton.disabled">C'est pas ton tour !</div>
-  </div>
-  <div class="flex-shrink-0 d-flex flex-wrap justify-content-around" style="max-width: 200px">
-    <div *ngFor="let dice of allDices">
-      <img height="70px" width="70px"
-           [src]="'assets/dice/' + dice.name + '/1.jpeg'"
-           (click)="addToDiceList(dice)">
-    </div>
+<div class="d-flex justify-content-evenly mat-elevation-z3 p-2" style="border-radius: 4px">
+  <div *ngFor="let dice of allDices" class="m-1">
+    <img height="70px" width="70px"
+         style="border-radius: 5px"
+         [src]="'assets/dice/' + dice.name + '/1.jpeg'"
+         (click)="addToDiceList(dice)">
   </div>
 </div>
-
+<mat-dialog-content>
+  <div class="d-flex flex-wrap justify-content-evenly">
+    <app-dice *ngFor="let dice of selectedDices"
+              #diceCmp
+              [diceType]="dice.name"
+              (click)="removeDiceFromList(dice)"></app-dice>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class="d-flex justify-content-center">
+  <button mat-raised-button
+          #rollButton
+          (click)="rollDices()"
+          [disabled]="disabled">
+    Roll dices !
+  </button>
+  <div *ngIf="rollButton.disabled">C'est pas ton tour !</div>
+</mat-dialog-actions>

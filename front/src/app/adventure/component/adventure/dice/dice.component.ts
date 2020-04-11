@@ -1,5 +1,8 @@
 import {Component, ElementRef, Input, ViewChild} from "@angular/core";
 
+/**
+ * Inspired by https://codesandbox.io/s/animated-3d-dice-roll-hormj?file=/styles.css:1710-2273
+ */
 @Component({
   selector: 'app-dice',
   templateUrl: './dice.component.html',
