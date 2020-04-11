@@ -24,7 +24,9 @@ public class SimpleCampaignDto {
 
         dto.id = bo.getId();
         dto.name = bo.getName();
-        dto.currentAdventure = bo.getCurrentAdventure().getId();
+        if (Objects.nonNull(bo.getCurrentAdventure())) {
+            dto.currentAdventure = bo.getCurrentAdventure().getId();
+        }
         dto.characters = SimpleCharacterDto.toDto(bo.getCharacters());
 
         return dto;

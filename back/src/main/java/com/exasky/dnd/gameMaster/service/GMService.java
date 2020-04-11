@@ -83,6 +83,8 @@ public class GMService {
     public Campaign create(Campaign toCreate) {
         Campaign attachedCampaign = this.campaignRepository.save(new Campaign());
 
+        attachedCampaign.setName(toCreate.getName());
+
         attachedCampaign.updateAdventures(toCreate.getAdventures().stream().
                 map(adventure -> adventureService.createOrUpdate(adventure, attachedCampaign))
                 .collect(Collectors.toList()));
@@ -101,6 +103,8 @@ public class GMService {
     @Transactional
     public Campaign update(Long id, Campaign toUpdate) {
         Campaign attachedCampaign = this.campaignRepository.getOne(id);
+
+        attachedCampaign.setName(toUpdate.getName());
 
         //noinspection ConstantConditions
         if (Objects.isNull(attachedCampaign)) {
