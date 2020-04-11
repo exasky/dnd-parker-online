@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface CampaignRepository extends JpaRepository<Campaign, Long> {
-    @Query(value = "SELECT c FROM Campaign c " +
+    @Query(value = "SELECT DISTINCT c FROM Campaign c " +
             "JOIN c.characters character " +
             "WHERE character.user.id = :userId")
     List<Campaign> findAllForUser(Long userId);
