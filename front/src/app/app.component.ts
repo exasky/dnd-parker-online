@@ -1,5 +1,5 @@
 import {Component, HostBinding, Inject, OnInit} from '@angular/core';
-import {LoginService} from "./login/login.service";
+import {AuthService} from "./login/auth.service";
 import {DOCUMENT} from "@angular/common";
 
 @Component({
@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
 
   // TODO alert service + error interceptor
 
-  constructor(public loginService: LoginService,
+  constructor(public authService: AuthService,
               @Inject(DOCUMENT) private document: Document) {
   }
 

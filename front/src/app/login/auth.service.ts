@@ -10,7 +10,7 @@ import {Router} from "@angular/router";
 @Injectable({
   providedIn: "root"
 })
-export class LoginService {
+export class AuthService {
 
   private static API_URL = environment.apiUrl + '/login';
 
@@ -32,7 +32,7 @@ export class LoginService {
   }
 
   login(username: string, password: string) {
-    return this.http.post<any>(LoginService.API_URL, { username, password })
+    return this.http.post<any>(AuthService.API_URL, { username, password })
       .pipe(map(res => {
         const user = jwt_decode(res.token);
         user.token = res.token;

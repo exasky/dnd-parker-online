@@ -1,6 +1,6 @@
 import {Component, HostBinding, OnInit} from "@angular/core";
 import {AdventureService} from "../adventure/service/adventure.service";
-import {LoginService} from "../login/login.service";
+import {AuthService} from "../login/auth.service";
 import {Router} from "@angular/router";
 import {GmService} from "../adventure/service/gm.service";
 import {SimpleCampaign} from "../adventure/model/campaign";
@@ -20,12 +20,12 @@ export class IndexComponent implements OnInit {
 
   constructor(private adventureService: AdventureService,
               private gmService: GmService,
-              public loginService: LoginService,
+              public authService: AuthService,
               private router: Router) {
   }
 
   ngOnInit(): void {
-    if (this.loginService.isGM) {
+    if (this.authService.isGM) {
       this.gmService.getAllCampaigns().subscribe(campaigns => this.campaigns = campaigns);
     } else {
       this.adventureService.getCampaignsForCurrentUser().subscribe(campaigns => this.campaigns = campaigns);

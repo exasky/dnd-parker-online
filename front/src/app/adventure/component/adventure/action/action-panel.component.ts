@@ -8,7 +8,7 @@ import {SocketResponse} from "../../../../common/model";
 import {DiceService} from "../../../service/dice.service";
 import {Subscription} from "rxjs";
 import {DiceMessage, DiceMessageType} from "../../../model/dice-message";
-import {LoginService} from "../../../../login/login.service";
+import {AuthService} from "../../../../login/auth.service";
 
 @Component({
   selector: 'app-action-panel',
@@ -25,7 +25,7 @@ export class ActionPanelComponent implements OnInit, OnDestroy {
               private dialog: MatDialog,
               private diceWS: DiceWebsocketService,
               private diceService: DiceService,
-              public loginService: LoginService) {
+              public authService: AuthService) {
   }
 
   ngOnInit(): void {

@@ -19,7 +19,7 @@
   </ng-template>
 </button>
 
-<div class="flex-grow d-flex flex-column justify-content-end" *ngIf="loginService.isGM">
+<div class="flex-grow d-flex flex-column justify-content-end" *ngIf="authService.isGM">
   <button mat-raised-button color="accent" class="m-2" (click)="prevAdventure()">Previous adventure</button>
   <button mat-raised-button color="accent" class="m-2" (click)="nextAdventure()">Next adventure</button>
 </div>

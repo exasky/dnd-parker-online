@@ -1,7 +1,7 @@
 import {Component, HostBinding, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
-import {LoginService} from "./login.service";
+import {AuthService} from "./auth.service";
 
 @Component({
   selector: 'app-login',
@@ -20,10 +20,10 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private loginService: LoginService
+    private authService: AuthService
   ) {
     // redirect to home if already logged in
-    if (this.loginService.currentUserValue) {
+    if (this.authService.currentUserValue) {
       this.router.navigate(['/']);
     }
   }
@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this.loginService.login(this.f.username.value, this.f.password.value)
+    this.authService.login(this.f.username.value, this.f.password.value)
       .subscribe(
         () => this.router.navigate([this.returnUrl]),
         () => this.loading = false);

@@ -4,7 +4,7 @@ import {GmService} from "../../../service/gm.service";
 import {Dice} from "../../../model/dice";
 import {Subscription} from "rxjs";
 import {DiceComponent} from "./dice.component";
-import {LoginService} from "../../../../login/login.service";
+import {AuthService} from "../../../../login/auth.service";
 import {DiceWebsocketService} from "../../../../common/service/dice.websocket.service";
 import {DiceService} from "../../../service/dice.service";
 import {SocketResponse} from "../../../../common/model";
@@ -26,14 +26,14 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
   diceWSObs: Subscription;
 
   constructor(private gmService: GmService,
-              public loginService: LoginService,
+              public authService: AuthService,
               private diceWS: DiceWebsocketService,
               private diceService: DiceService,
               @Inject(MAT_DIALOG_DATA) public data: number) {
   }
 
   ngOnInit(): void {
-    this.disabled = !this.loginService.isGM && !(this.loginService.currentUserValue.id === this.data);
+    this.disabled = !this.authService.isGM && !(this.authService.currentUserValue.id === this.data);
     this.gmService.getAllDices().subscribe(dices => this.allDices = dices);
     this.diceWS.getObservable().subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === 'SUCCESS') {

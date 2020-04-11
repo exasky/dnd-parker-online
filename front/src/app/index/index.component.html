@@ -1,6 +1,6 @@
 <div class="d-flex flex-column align-items-center flex-grow" style="justify-content: space-evenly">
   <mat-card>
-    Bienvenue {{loginService.currentUserValue.username}} !
+    Bienvenue {{authService.currentUserValue.username}} !
   </mat-card>
   <mat-card>
     <mat-card-header>
@@ -16,7 +16,7 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card *ngIf="loginService.isGM">
+  <mat-card *ngIf="authService.isGM">
     <mat-card-header>Update campaign:</mat-card-header>
     <mat-card-content>
       <button *ngFor="let campaign of campaigns"
@@ -27,7 +27,7 @@
     </mat-card-content>
   </mat-card>
 
-  <div class="d-flex flex-column w-50" *ngIf="loginService.isGM">
+  <div class="d-flex flex-column w-50" *ngIf="authService.isGM">
     <button mat-raised-button (click)="createCampaignAdventure()">Create new campaign</button>
   </div>
 </div>

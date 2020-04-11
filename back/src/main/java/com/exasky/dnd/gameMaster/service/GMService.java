@@ -15,6 +15,7 @@ import com.exasky.dnd.common.exception.ValidationCheckException;
 import com.exasky.dnd.gameMaster.repository.GMLayerElementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -48,10 +49,12 @@ public class GMService {
         this.characterService = characterService;
     }
 
+    @PreAuthorize("hasRole('ROLE_GM')")
     public List<LayerElement> getAddableElements() {
         return this.layerElementRepository.findAll();
     }
 
+    @PreAuthorize("hasRole('ROLE_GM')")
     public List<CharacterItem> getAllCharacterItems() {
         return this.characterItemRepository.findAll();
     }
@@ -64,10 +67,10 @@ public class GMService {
         return campaignRepository.findAll();
     }
 
-    @SuppressWarnings("ConstantConditions")
     public Campaign getCampaign(Long id) {
         Campaign foundCampaign = campaignRepository.getOne(id);
 
+        //noinspection ConstantConditions
         if (Objects.isNull(foundCampaign)) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
         }
@@ -75,6 +78,7 @@ public class GMService {
         return foundCampaign;
     }
 
+    @PreAuthorize("hasRole('ROLE_GM')")
     @Transactional
     public Campaign create(Campaign toCreate) {
         Campaign attachedCampaign = this.campaignRepository.save(new Campaign());

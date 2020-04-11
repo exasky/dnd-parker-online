@@ -5,7 +5,7 @@ export class User {
   username: string;
   role: string;
 
-  FcurrentCharacters: Character[];
+  currentCharacters: Character[];
 
   // Current jwt token
   token: string;

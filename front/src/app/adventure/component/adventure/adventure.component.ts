@@ -11,7 +11,7 @@ import {Adventure, Board, LayerElement, LayerElementType, LayerItem} from "../..
 import {AdventureService} from "../../service/adventure.service";
 import {GmService} from "../../service/gm.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {LoginService} from "../../../login/login.service";
+import {AuthService} from "../../../login/auth.service";
 import {ROLE_GM} from "../../../user/user";
 import {AdventureWebsocketService} from "../../../common/service/adventure.websocket.service";
 import {SocketResponse} from "../../../common/model";
@@ -54,7 +54,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   constructor(private adventureService: AdventureService,
               private mjService: GmService,
-              public loginService: LoginService,
+              public authService: AuthService,
               private route: ActivatedRoute,
               private adventureWS: AdventureWebsocketService,
               private drawnCardWS: DrawnCardWebsocketService,
@@ -66,7 +66,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.mjService.getAddableElements().subscribe(elements => this.addableLayerElements = elements);
     this.adventureService.getAdventure(this.route.snapshot.paramMap.get("id")).subscribe(adventure => {
       this.adventure = adventure;
-      const currentUser = this.loginService.currentUserValue;
+      const currentUser = this.authService.currentUserValue;
       currentUser.currentCharacters = this.adventure.characters.filter(character => character.userId === currentUser.id);
 
       this.gamePanelYSize = this.adventure.boards.length;
@@ -87,7 +87,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
           } else if (message.type === AdventureMessageType.MOUSE_MOVE) {
             const mouseMoveEvent: MouseMove = message.message;
             // Do not add own cursor
-            if (mouseMoveEvent.userId !== this.loginService.currentUserValue.id) {
+            if (mouseMoveEvent.userId !== this.authService.currentUserValue.id) {
               // Mouse out
               if (mouseMoveEvent.x === mouseMoveEvent.y && mouseMoveEvent.y === -1) {
                 let playerCursorIxd = this.otherPlayersCursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
@@ -209,7 +209,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     mouseMove.y = e.pageY;
     mouseMove.offsetX = this.boardPanel.nativeElement.getBoundingClientRect().left;
     mouseMove.offsetY = this.boardPanel.nativeElement.getBoundingClientRect().top;
-    mouseMove.userId = this.loginService.currentUserValue.id;
+    mouseMove.userId = this.authService.currentUserValue.id;
     this.adventureService.playerMouseMove(mouseMove)
   }
 
@@ -218,7 +218,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     const mouseMove = new MouseMove();
     mouseMove.x = -1;
     mouseMove.y = -1;
-    mouseMove.userId = this.loginService.currentUserValue.id;
+    mouseMove.userId = this.authService.currentUserValue.id;
     this.adventureService.playerMouseMove(mouseMove);
   }
 
@@ -316,7 +316,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   private isDragEnabledForItem(item: LayerItem): boolean {
-    const user = this.loginService.currentUserValue;
+    const user = this.authService.currentUserValue;
 
     return user.role === ROLE_GM || (
       item.element.type === LayerElementType.CHARACTER

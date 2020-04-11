@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <app-adventure-item-displayer *ngIf="loginService.isGM"
+    <app-adventure-item-displayer *ngIf="authService.isGM"
                                   [layerElements]="addableLayerElements"></app-adventure-item-displayer>
   </div>
 
@@ -109,7 +109,7 @@
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
             </div>
 
-            <button mat-mini-fab *ngIf="loginService.isGM" (mousedown)="removeItem(item, $event)">
+            <button mat-mini-fab *ngIf="authService.isGM" (mousedown)="removeItem(item, $event)">
               <mat-icon>delete</mat-icon>
             </button>
           </gridster-item>
