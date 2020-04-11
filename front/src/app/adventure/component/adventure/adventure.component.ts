@@ -1,4 +1,4 @@
-import {Component, HostBinding, OnDestroy, OnInit} from "@angular/core";
+import {Component, ElementRef, HostBinding, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {
   CompactType,
   DisplayGrid,
@@ -19,7 +19,9 @@ import {Subscription} from "rxjs";
 import {DrawnCardWebsocketService} from "../../../common/service/drawn-card.websocket.service";
 import {DrawnCardDialogComponent} from "./item/drawn-card-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
-import {AdventureMessage, AdventureMessageType} from "../../model/adventure-message";
+import {AdventureMessage, AdventureMessageType, MouseMove} from "../../model/adventure-message";
+import {UserEditCharacters} from "../../../user/model/user-edit";
+import {CharacterItem} from "../../model/character";
 
 @Component({
   selector: 'app-board',
@@ -28,6 +30,10 @@ import {AdventureMessage, AdventureMessageType} from "../../model/adventure-mess
 })
 export class AdventureComponent implements OnInit, OnDestroy {
   @HostBinding('class') cssClasses = "flex-grow d-flex flex-column";
+  @ViewChild('boardPanel', {read: ElementRef}) boardPanel: ElementRef;
+
+  private lastMouseMoveSend: number;
+  private mouseMoveDelay = 33; // 30fps
 
   adventureWSObs: Subscription;
   drawnCardWSObs: Subscription;
@@ -44,6 +50,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
   gamePanelXSize = 0;
   gamePanelYSize = 0;
 
+  otherPlayersCursors: MouseMove[] = [];
+
   constructor(private adventureService: AdventureService,
               private mjService: GmService,
               public loginService: LoginService,
@@ -59,7 +67,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventureService.getAdventure(this.route.snapshot.paramMap.get("id")).subscribe(adventure => {
       this.adventure = adventure;
       const currentUser = this.loginService.currentUserValue;
-      currentUser.currentCharacter = this.adventure.characters.find(character => character.userId === currentUser.id);
+      currentUser.currentCharacters = this.adventure.characters.filter(character => character.userId === currentUser.id);
 
       this.gamePanelYSize = this.adventure.boards.length;
       this.gamePanelXSize = this.adventure.boards.map((row: Board[]) => row.length).sort()[0];
@@ -75,7 +83,29 @@ export class AdventureComponent implements OnInit, OnDestroy {
           if (message.type === AdventureMessageType.GOTO) {
             this.router.navigateByUrl('adventure/' + message.message).then(() => {
               window.location.reload();
-            });;
+            });
+          } else if (message.type === AdventureMessageType.MOUSE_MOVE) {
+            const mouseMoveEvent: MouseMove = message.message;
+            // Do not add own cursor
+            if (mouseMoveEvent.userId !== this.loginService.currentUserValue.id) {
+              // Mouse out
+              if (mouseMoveEvent.x === mouseMoveEvent.y && mouseMoveEvent.y === -1) {
+                let playerCursorIxd = this.otherPlayersCursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
+                if (playerCursorIxd !== -1) {
+                  this.otherPlayersCursors.splice(playerCursorIxd, 1);
+                }
+              // Mouse mouve
+              } else {
+                mouseMoveEvent.x = mouseMoveEvent.x - mouseMoveEvent.offsetX;
+                mouseMoveEvent.y = mouseMoveEvent.y - mouseMoveEvent.offsetY;
+                let playerCursorIxd = this.otherPlayersCursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
+                if (playerCursorIxd === -1) {
+                  this.otherPlayersCursors.push(mouseMoveEvent);
+                } else {
+                  this.otherPlayersCursors[playerCursorIxd] = mouseMoveEvent;
+                }
+              }
+            }
           } else {
             this.adventure = message.message;
             // Update existing items of else create
@@ -169,6 +199,29 @@ export class AdventureComponent implements OnInit, OnDestroy {
     })
   }
 
+  onMouseMove(e: MouseEvent) {
+    if (Date.now() - this.lastMouseMoveSend < this.mouseMoveDelay) {
+      return;
+    }
+    this.lastMouseMoveSend = Date.now();
+    const mouseMove = new MouseMove();
+    mouseMove.x = e.pageX;
+    mouseMove.y = e.pageY;
+    mouseMove.offsetX = this.boardPanel.nativeElement.getBoundingClientRect().left;
+    mouseMove.offsetY = this.boardPanel.nativeElement.getBoundingClientRect().top;
+    mouseMove.userId = this.loginService.currentUserValue.id;
+    this.adventureService.playerMouseMove(mouseMove)
+  }
+
+
+  onMouseOut($event: MouseEvent) {
+    const mouseMove = new MouseMove();
+    mouseMove.x = -1;
+    mouseMove.y = -1;
+    mouseMove.userId = this.loginService.currentUserValue.id;
+    this.adventureService.playerMouseMove(mouseMove);
+  }
+
   changedOptions() {
     if (this.options.api && this.options.api.optionsChanged) {
       this.options.api.optionsChanged();
@@ -202,6 +255,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       : 0
   }
 
+  // region Item
   itemChange(item: GridsterItem, itemComponent: GridsterItemComponentInterface) {
     this.saveAdventure();
   }
@@ -265,7 +319,16 @@ export class AdventureComponent implements OnInit, OnDestroy {
     const user = this.loginService.currentUserValue;
 
     return user.role === ROLE_GM || (
-      item.element.type === LayerElementType.CHARACTER && item.element.icon.toLowerCase() === user.currentCharacter.name.toLowerCase())
+      item.element.type === LayerElementType.CHARACTER
+      && user.currentCharacters.find(char => char.name.toLowerCase() === item.element.icon.toLowerCase()) !== undefined
+    )
+  }
+
+  // endregion
+
+  getCharacterNamesFromId(userId) {
+    const characters = this.adventure.characters.filter(char => char.userId === userId);
+    return characters.length !== 0 ? characters : [{name: 'MJ', icon: ''}];
   }
 
   saveAdventure() {

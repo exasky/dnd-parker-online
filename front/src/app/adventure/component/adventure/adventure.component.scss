@@ -20,3 +20,16 @@ gridster {
   background: none !important;
 }
 
+.player-cursor {
+  position: absolute;
+  z-index: 100;
+  color: white;
+
+  mat-icon {
+    text-shadow: -2px 2px 2px black;
+  }
+
+  span {
+    text-shadow: 2px 2px 2px black;
+  }
+}

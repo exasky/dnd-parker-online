@@ -6,7 +6,7 @@ export class User {
   role: string;
 
   // TODO Updated at each level/adventure changes
-  currentCharacter: Character;
+  currentCharacters: Character[];
 
   // Current jwt token
   token: string;

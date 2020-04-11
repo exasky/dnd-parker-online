@@ -1,6 +1,7 @@
 package com.exasky.dnd.adventure.rest;
 
 import com.exasky.dnd.adventure.rest.dto.AdventureDto;
+import com.exasky.dnd.adventure.rest.dto.MouseMoveDto;
 import com.exasky.dnd.adventure.rest.dto.SimpleAdventureReadDto;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
@@ -37,6 +38,14 @@ public class AdventureRestController {
         return SimpleCampaignDto.toDto(this.adventureService.getCampaignsForCurrentUser());
     }
 
+    @PostMapping("/mouse-move")
+    public void userMouseMove(@RequestBody MouseMoveDto mouseMoveDto) {
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.MOUSE_MOVE);
+        wsDto.setMessage(mouseMoveDto);
+        this.messagingTemplate.convertAndSend("/topic/adventure", wsDto);
+    }
+
     @GetMapping("/{id}")
     public AdventureDto getAdventure(@PathVariable Long id) {
         return AdventureDto.toDto(this.adventureService.getById(id));
@@ -53,4 +62,5 @@ public class AdventureRestController {
 
         return returnDto;
     }
+
 }

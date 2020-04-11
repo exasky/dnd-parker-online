@@ -4,6 +4,7 @@ import {Adventure} from "../model/adventure";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {SimpleCampaign} from "../model/campaign";
+import {MouseMove} from "../model/adventure-message";
 
 @Injectable({
   providedIn: "root"
@@ -25,5 +26,9 @@ export class AdventureService {
 
   update(adventure: Adventure): Observable<Adventure> {
     return this.http.put<Adventure>(AdventureService.API_URL + '/' + adventure.id, adventure);
+  }
+
+  playerMouseMove(mouseMove: MouseMove) {
+    this.http.post(AdventureService.API_URL + '/mouse-move', mouseMove).subscribe();
   }
 }

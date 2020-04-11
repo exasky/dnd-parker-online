@@ -5,5 +5,14 @@ export class AdventureMessage {
 
 export enum AdventureMessageType {
   RELOAD = 'RELOAD',
-  GOTO = 'GOTO'
+  GOTO = 'GOTO',
+  MOUSE_MOVE = 'MOUSE_MOVE'
+}
+
+export class MouseMove {
+  userId: number;
+  x: number;
+  y: number;
+  offsetX: number;
+  offsetY: number;
 }

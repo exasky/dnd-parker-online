@@ -28,10 +28,25 @@
 
   <mat-drawer-container class="flex-grow d-flex flex-column">
     <mat-drawer-content class="flex-grow m-3">
-      <div [ngStyle]="{'width': gamePanelXSize * 700 + 'px',
+      <div #boardPanel
+           [ngStyle]="{'width': gamePanelXSize * 700 + 'px',
                        'height': gamePanelYSize * 700 + 'px',
                        'margin': '0 auto',
-                       'position': 'relative'}">
+                       'position': 'relative'}"
+           (mousemove)="onMouseMove($event)"
+      (mouseout)="onMouseOut($event)">
+        <ng-container *ngIf="otherPlayersCursors">
+          <div *ngFor="let pc of otherPlayersCursors"
+               class="player-cursor d-flex flex-column"
+               [ngStyle]="{'top': pc.y + 'px',
+                   'left': pc.x + 'px'}">
+            <mat-icon style="transform: rotate(-90deg)">near_me</mat-icon>
+            <span *ngFor="let char of getCharacterNamesFromId(pc.userId)">
+              {{char.name}}
+            </span>
+          </div>
+        </ng-container>
+
         <ng-template ngFor let-boardRow [ngForOf]="adventure.boards" let-rowIdx="index">
           <ng-template ngFor let-boardCol [ngForOf]="boardRow" let-colIdx="index">
             <img *ngIf="boardCol"

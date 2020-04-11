@@ -3,7 +3,8 @@ package com.exasky.dnd.gameMaster.rest.dto;
 public class AdventureMessageDto {
     public enum AdventureMessageType {
         RELOAD,
-        GOTO
+        GOTO,
+        MOUSE_MOVE
     }
 
     private AdventureMessageType type;
