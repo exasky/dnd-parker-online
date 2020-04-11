@@ -1,7 +1,8 @@
 import {InjectableRxStompConfig, RxStompService} from '@stomp/ng2-stompjs';
 
-import {SocketResponse} from '../model';
+import {SocketResponse} from '../../model';
 import {Injectable} from "@angular/core";
+import {SocketResponseType} from "../../model/websocket.response";
 
 /**
  * A WebSocket wraper that connect to back and provide addTopic method.
@@ -18,7 +19,7 @@ export class WebSocketWrapperService {
       console.log(str);
     }
   };
-  private pendingListeners: {endpoint: any, listener: any}[] = [];
+  private pendingListeners: { endpoint: any, listener: any }[] = [];
 
   constructor(private stompService: RxStompService) {
     // Initialise a list of possible subscribers.
@@ -41,7 +42,7 @@ export class WebSocketWrapperService {
   /**
    * On each connect / reconnect, we subscribe all broker clients.
    */
-  private onSocketConnect = frame => {
+  private onSocketConnect(frame) {
     this.pendingListeners.forEach(pendingListener => {
       this.stompService.stompClient.subscribe(pendingListener.endpoint, pendingListener.listener);
     })
@@ -55,11 +56,11 @@ export class WebSocketWrapperService {
     }
   }
 
-  private onSocketError = errorMsg => {
+  private onSocketError(errorMsg) {
     console.log('Broker reported error: ' + errorMsg);
 
     const response: SocketResponse = {
-      type: 'ERROR',
+      type: SocketResponseType.ERROR,
       message: errorMsg
     };
 

@@ -1,6 +1,7 @@
 import {WebSocketWrapperService} from './web-socket-wrapper.service';
-import {SocketResponse} from "../model";
+import {SocketResponse} from "../../model";
 import {Observable} from "rxjs";
+import {SocketResponseType} from "../../model/websocket.response";
 
 export abstract class AbstractWebsocket {
   protected obsStompConnection: Observable<any>;
@@ -38,13 +39,13 @@ export abstract class AbstractWebsocket {
 
   private socketListener(frame) {
     this.subscribers.forEach(subscriber => {
-      subscriber.observer.next(this.getMessage(frame));
+      subscriber.observer.next(AbstractWebsocket.getMessage(frame));
     });
   }
 
-  private getMessage(data) {
+  private static getMessage(data) {
     const response: SocketResponse = {
-      type: 'SUCCESS',
+      type: SocketResponseType.SUCCESS,
       message: JSON.parse(data.body)
     };
     return response;

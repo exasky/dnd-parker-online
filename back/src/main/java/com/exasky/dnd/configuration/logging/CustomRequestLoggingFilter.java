@@ -1,12 +1,17 @@
 package com.exasky.dnd.configuration.logging;
 
 import com.exasky.dnd.user.model.DnDUser;
+import com.exasky.dnd.user.rest.dto.LoginDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.AbstractRequestLoggingFilter;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.io.IOException;
+
+import static com.exasky.dnd.common.Constant.REST_UTL;
 import static com.exasky.dnd.common.Utils.getCurrentUser;
 
 @Component
@@ -60,6 +65,15 @@ public class CustomRequestLoggingFilter extends AbstractRequestLoggingFilter {
         if (isIncludePayload()) {
             String payload = getMessagePayload(request);
             if (payload != null) {
+                if (request.getRequestURI().equals(REST_UTL + "/login")) {
+                    try {
+                        LoginDto loginDto = new ObjectMapper().readValue(payload, LoginDto.class);
+                        loginDto.setPassword("*** HIDDEN ***");
+                        payload = new ObjectMapper().writeValueAsString(loginDto);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 msg.append(" - ").append(payload);
             }
         }

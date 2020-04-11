@@ -36,16 +36,18 @@ import {AdventureItemDisplayerComponent} from "./adventure/component/adventure/i
 import {NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
 import {CharacterTooltipDisplayerComponent} from "./adventure/component/adventure/character/character-tooltip-displayer.component";
 import {RxStompService} from "@stomp/ng2-stompjs";
-import {AdventureWebsocketService} from "./common/service/adventure.websocket.service";
+import {AdventureWebsocketService} from "./common/service/ws/adventure.websocket.service";
 import {ActionPanelComponent} from "./adventure/component/adventure/action/action-panel.component";
 import {DrawnCardDialogComponent} from "./adventure/component/adventure/item/drawn-card-dialog.component";
-import {DrawnCardWebsocketService} from "./common/service/drawn-card.websocket.service";
-import {WebSocketWrapperService} from "./common/service/web-socket-wrapper.service";
+import {DrawnCardWebsocketService} from "./common/service/ws/drawn-card.websocket.service";
+import {WebSocketWrapperService} from "./common/service/ws/web-socket-wrapper.service";
 import {DiceComponent} from "./adventure/component/adventure/dice/dice.component";
 import {DiceDialogComponent} from "./adventure/component/adventure/dice/dice-dialog.component";
-import {DiceWebsocketService} from "./common/service/dice.websocket.service";
+import {DiceWebsocketService} from "./common/service/ws/dice.websocket.service";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {ErrorInterceptor} from "./common/interceptor/error-interceptor.service";
+import {ToastrModule} from "ngx-toastr";
 
 @NgModule({
   declarations: [
@@ -90,12 +92,17 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     MatDialogModule,
     NgbTooltipModule,
     MatDividerModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right',
+      timeOut: 5000
+    })
   ],
   entryComponents: [ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ForbiddenInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     RxStompService,
     WebSocketWrapperService,
     AdventureWebsocketService,

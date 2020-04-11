@@ -34,7 +34,7 @@
                        'margin': '0 auto',
                        'position': 'relative'}"
            (mousemove)="onMouseMove($event)"
-      (mouseout)="onMouseOut($event)">
+           (mouseout)="onMouseOut()">
         <ng-container *ngIf="otherPlayersCursors">
           <div *ngFor="let pc of otherPlayersCursors"
                class="player-cursor d-flex flex-column"

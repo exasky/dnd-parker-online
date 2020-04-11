@@ -2,6 +2,7 @@ import {Component, HostBinding, OnInit} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "./auth.service";
+import {ToasterService} from "../common/service/toaster.service";
 
 @Component({
   selector: 'app-login',
@@ -16,12 +17,11 @@ export class LoginComponent implements OnInit {
   submitted = false;
   returnUrl: string;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private authService: AuthService
-  ) {
+  constructor(private formBuilder: FormBuilder,
+              private route: ActivatedRoute,
+              private router: Router,
+              private authService: AuthService,
+              private toasterService: ToasterService) {
     // redirect to home if already logged in
     if (this.authService.currentUserValue) {
       this.router.navigate(['/']);
@@ -33,6 +33,8 @@ export class LoginComponent implements OnInit {
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
+
+    this.toasterService.success("wollolo");
 
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
@@ -55,6 +57,9 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.f.username.value, this.f.password.value)
       .subscribe(
         () => this.router.navigate([this.returnUrl]),
-        () => this.loading = false);
+        () => {
+          this.loading = false;
+          this.loginForm.reset({})
+        });
   }
 }

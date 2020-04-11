@@ -5,10 +5,11 @@ import {Dice} from "../../../model/dice";
 import {Subscription} from "rxjs";
 import {DiceComponent} from "./dice.component";
 import {AuthService} from "../../../../login/auth.service";
-import {DiceWebsocketService} from "../../../../common/service/dice.websocket.service";
+import {DiceWebsocketService} from "../../../../common/service/ws/dice.websocket.service";
 import {DiceService} from "../../../service/dice.service";
 import {SocketResponse} from "../../../../common/model";
 import {DiceMessage, DiceMessageType} from "../../../model/dice-message";
+import {SocketResponseType} from "../../../../common/model/websocket.response";
 
 @Component({
   selector: 'app-dice-dialog',
@@ -36,7 +37,7 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
     this.disabled = !this.authService.isGM && !(this.authService.currentUserValue.id === this.data);
     this.gmService.getAllDices().subscribe(dices => this.allDices = dices);
     this.diceWS.getObservable().subscribe((receivedMsg: SocketResponse) => {
-      if (receivedMsg.type === 'SUCCESS') {
+      if (receivedMsg.type === SocketResponseType.SUCCESS) {
         const diceMessage: DiceMessage = receivedMsg.message;
         if (diceMessage.type === DiceMessageType.SELECT_DICES) {
           this.selectedDices

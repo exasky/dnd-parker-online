@@ -3,12 +3,13 @@ import {GmService} from "../../../service/gm.service";
 import {Adventure} from "../../../model/adventure";
 import {MatDialog} from "@angular/material/dialog";
 import {DiceDialogComponent} from "../dice/dice-dialog.component";
-import {DiceWebsocketService} from "../../../../common/service/dice.websocket.service";
+import {DiceWebsocketService} from "../../../../common/service/ws/dice.websocket.service";
 import {SocketResponse} from "../../../../common/model";
 import {DiceService} from "../../../service/dice.service";
 import {Subscription} from "rxjs";
 import {DiceMessage, DiceMessageType} from "../../../model/dice-message";
 import {AuthService} from "../../../../login/auth.service";
+import {SocketResponseType} from "../../../../common/model/websocket.response";
 
 @Component({
   selector: 'app-action-panel',
@@ -30,7 +31,7 @@ export class ActionPanelComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.diceWS.getObservable().subscribe((receivedMsg: SocketResponse) => {
-      if (receivedMsg.type === 'SUCCESS') {
+      if (receivedMsg.type === SocketResponseType.SUCCESS) {
         const diceMessage: DiceMessage = receivedMsg.message;
         if (diceMessage.type === DiceMessageType.OPEN_DIALOG) {
           this.dialog.open(DiceDialogComponent, {data: receivedMsg.message.message});

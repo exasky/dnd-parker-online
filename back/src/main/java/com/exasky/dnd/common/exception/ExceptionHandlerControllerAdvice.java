@@ -148,7 +148,7 @@ public class ExceptionHandlerControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionMessage> controllerDtoValidationExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException exception) {
-        var exceptionBuilder = ExceptionMessage.builder()
+        ExceptionMessage.Builder exceptionBuilder = ExceptionMessage.builder()
                 .date(LocalDateTime.now().format(formatter))
                 .path(request.getRequestURI() + "?" + request.getQueryString());
         exception.getBindingResult().getAllErrors()
@@ -174,7 +174,7 @@ public class ExceptionHandlerControllerAdvice {
     }
 
     private void logError(String message, Exception exception) {
-        var exceptionMessage = EXCEPTION_PREFIX;
+        String exceptionMessage = EXCEPTION_PREFIX;
         try {
             DnDUser currentUser = getCurrentUser();
             exceptionMessage += "for user " + currentUser.getUsername();

@@ -3,18 +3,18 @@ import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/com
 import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {AuthService} from "../auth.service";
+import {Router} from "@angular/router";
 
 @Injectable()
 export class ForbiddenInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService,
+              private router: Router) {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(catchError(err => {
-      if (err.status === 401) {
-        // auto logout if 401 response returned from api
+      if (err.status === 401 && this.router.url !== '/login') {
         this.authService.logout();
-        location.reload(true);
       }
 
       const error = err.error.message || err.statusText;

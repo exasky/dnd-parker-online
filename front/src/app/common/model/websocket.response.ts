@@ -1,4 +1,8 @@
 export class SocketResponse {
-  type: string;
+  type: SocketResponseType;
   message: any;
+}
+
+export enum SocketResponseType {
+  SUCCESS, ERROR
 }

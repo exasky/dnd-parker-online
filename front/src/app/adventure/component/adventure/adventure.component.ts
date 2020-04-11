@@ -13,15 +13,14 @@ import {GmService} from "../../service/gm.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../../login/auth.service";
 import {ROLE_GM} from "../../../user/user";
-import {AdventureWebsocketService} from "../../../common/service/adventure.websocket.service";
+import {AdventureWebsocketService} from "../../../common/service/ws/adventure.websocket.service";
 import {SocketResponse} from "../../../common/model";
 import {Subscription} from "rxjs";
-import {DrawnCardWebsocketService} from "../../../common/service/drawn-card.websocket.service";
+import {DrawnCardWebsocketService} from "../../../common/service/ws/drawn-card.websocket.service";
 import {DrawnCardDialogComponent} from "./item/drawn-card-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {AdventureMessage, AdventureMessageType, MouseMove} from "../../model/adventure-message";
-import {UserEditCharacters} from "../../../user/model/user-edit";
-import {CharacterItem} from "../../model/character";
+import {SocketResponseType} from "../../../common/model/websocket.response";
 
 @Component({
   selector: 'app-board',
@@ -78,7 +77,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
     this.adventureWSObs = this.adventureWS.getObservable().subscribe({
       next: (receivedMsg: SocketResponse) => {
-        if (receivedMsg.type === 'SUCCESS') {
+        if (receivedMsg.type === SocketResponseType.SUCCESS) {
           const message: AdventureMessage = receivedMsg.message;
           if (message.type === AdventureMessageType.GOTO) {
             this.router.navigateByUrl('adventure/' + message.message).then(() => {
@@ -129,7 +128,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     });
 
     this.drawnCardWSObs = this.drawnCardWS.getObservable().subscribe((receivedMsg: SocketResponse) => {
-      if (receivedMsg.type === 'SUCCESS') {
+      if (receivedMsg.type === SocketResponseType.SUCCESS) {
         this.dialog.open(DrawnCardDialogComponent, {data: receivedMsg.message});
       }
     })
@@ -213,8 +212,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventureService.playerMouseMove(mouseMove)
   }
 
-
-  onMouseOut($event: MouseEvent) {
+  onMouseOut() {
     const mouseMove = new MouseMove();
     mouseMove.x = -1;
     mouseMove.y = -1;
@@ -237,7 +235,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       elementId: elementToAdd.id,
       cols: elementToAdd.colSize,
       rows: elementToAdd.rowSize,
-      layerIndex: this.getLayerIndex(elementToAdd),
+      layerIndex: AdventureComponent.getLayerIndex(elementToAdd),
       icon: elementToAdd.icon,
       rotation: elementToAdd.rotation,
       type: elementToAdd.type
@@ -248,7 +246,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.saveAdventure();
   }
 
-  private getLayerIndex(element: LayerElement) {
+  private static getLayerIndex(element: LayerElement) {
     return ([LayerElementType.CHARACTER, LayerElementType.MONSTER, LayerElementType.PYLON, LayerElementType.TREE]
       .indexOf(element.type) !== -1)
       ? 1
