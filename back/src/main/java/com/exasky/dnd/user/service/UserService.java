@@ -1,12 +1,16 @@
 package com.exasky.dnd.user.service;
 
 import com.exasky.dnd.adventure.service.CharacterService;
+import com.exasky.dnd.common.Constant;
+import com.exasky.dnd.common.exception.ValidationCheckException;
 import com.exasky.dnd.user.model.DnDUser;
 import com.exasky.dnd.user.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,6 +53,11 @@ public class UserService {
     public DnDUser update(Long id, DnDUser toUpdate) {
         DnDUser attachedUser = userRepository.getOne(id);
 
+        //noinspection ConstantConditions
+        if (Objects.isNull(attachedUser)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.USER.NOT_FOUND);
+        }
+
         attachedUser.getCharacters().forEach(prevCharacter -> prevCharacter.setUser(null));
 
         attachedUser.setUsername(toUpdate.getUsername());
@@ -66,6 +75,11 @@ public class UserService {
     public DnDUser updatePassword(Long id, DnDUser toUpdate) {
         DnDUser attachedUser = userRepository.getOne(id);
 
+        //noinspection ConstantConditions
+        if (Objects.isNull(attachedUser)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.USER.NOT_FOUND);
+        }
+
         attachedUser.setPassword(loginService.encorePassword(toUpdate.getPassword()));
 
         return attachedUser;
@@ -74,6 +88,11 @@ public class UserService {
     @Transactional
     public void delete(Long id) {
         DnDUser attachedUser = userRepository.getOne(id);
+
+        //noinspection ConstantConditions
+        if (Objects.isNull(attachedUser)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.USER.NOT_FOUND);
+        }
 
         attachedUser.getCharacters().forEach(prevCharacter -> prevCharacter.setUser(null));
 

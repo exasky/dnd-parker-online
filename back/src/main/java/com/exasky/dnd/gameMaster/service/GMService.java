@@ -10,8 +10,11 @@ import com.exasky.dnd.adventure.repository.CharacterItemRepository;
 import com.exasky.dnd.adventure.repository.DiceRepository;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.adventure.service.CharacterService;
+import com.exasky.dnd.common.Constant;
+import com.exasky.dnd.common.exception.ValidationCheckException;
 import com.exasky.dnd.gameMaster.repository.GMLayerElementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -61,8 +64,15 @@ public class GMService {
         return campaignRepository.findAll();
     }
 
+    @SuppressWarnings("ConstantConditions")
     public Campaign getCampaign(Long id) {
-        return campaignRepository.getOne(id);
+        Campaign foundCampaign = campaignRepository.getOne(id);
+
+        if (Objects.isNull(foundCampaign)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+        }
+
+        return foundCampaign;
     }
 
     @Transactional
@@ -88,6 +98,11 @@ public class GMService {
     public Campaign update(Long id, Campaign toUpdate) {
         Campaign attachedCampaign = this.campaignRepository.getOne(id);
 
+        //noinspection ConstantConditions
+        if (Objects.isNull(attachedCampaign)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+        }
+
         attachedCampaign.updateAdventures(toUpdate.getAdventures().stream().
                 map(adventure -> adventureService.createOrUpdate(adventure, attachedCampaign))
                 .collect(Collectors.toList()));
@@ -107,7 +122,9 @@ public class GMService {
     public CharacterItem drawCard(Long adventureId) {
         Campaign campaign = this.campaignRepository.getByAdventureId(adventureId);
 
-        // TODO create ValidationCheckException to return errors & ErrorHandler (cf other project)
+        if (Objects.isNull(campaign)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+        }
 
         //noinspection OptionalGetWithoutIsPresent
         Short adventureLevel = campaign.getAdventures()

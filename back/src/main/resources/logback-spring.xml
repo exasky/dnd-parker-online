@@ -4,7 +4,6 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
     <property name="LOGS" value="logs" />
-<!--TODO Why not logging to file ?-->
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
         <encoder>

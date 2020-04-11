@@ -9,11 +9,9 @@ import {DOCUMENT} from "@angular/common";
 export class AppComponent implements OnInit {
   @HostBinding('class') cssClasses = "d-flex flex-column";
 
-  // TODO observe mouve players to display to others in adventure
-
-  // TODO add next adventure button
-
   isDarkTheme = false;
+
+  // TODO alert service + error interceptor
 
   constructor(public loginService: LoginService,
               @Inject(DOCUMENT) private document: Document) {
