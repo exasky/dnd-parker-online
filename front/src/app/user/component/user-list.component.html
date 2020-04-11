@@ -1,4 +1,4 @@
-<div class="flex-grow d-flex justify-content-center align-items-center">
+<div class="flex-grow d-flex justify-content-center align-items-center flex-wrap">
   <mat-card *ngFor="let user of users" class="m-3">
     <mat-card-header class="d-flex align-items-center">
       <mat-card-title>
@@ -53,10 +53,10 @@
 
     <mat-form-field>
       <mat-label>Characters</mat-label>
-      <mat-select multiple [(ngModel)]="newUser.characters">
+      <mat-select multiple [(ngModel)]="selectedCharacters">
         <mat-optgroup *ngFor="let campaign of campaigns" [label]="campaign.name">
           <mat-option *ngFor="let character of campaign.characters"
-                      [value]="{id: character.id,name: character.name,campaignId: campaign.id,campaignName: campaign.name}">
+                      [value]="character.id">
             {{character.name}}
           </mat-option>
         </mat-optgroup>
@@ -64,6 +64,7 @@
     </mat-form-field>
 
     <mat-card-actions class="d-flex justify-content-center">
+      <button mat-raised-button (click)="cancel()">Cancel</button>
       <button mat-raised-button (click)="saveUser()">Save User</button>
     </mat-card-actions>
   </mat-card>

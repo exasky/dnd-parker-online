@@ -17,6 +17,7 @@ export class UserListComponent implements OnInit {
   campaigns: SimpleCampaign[];
 
   newUser: UserEdit;
+  selectedCharacters: number[];
 
   constructor(private userService: UserService,
               private gmService: GmService,
@@ -31,10 +32,12 @@ export class UserListComponent implements OnInit {
   createUser() {
     this.newUser = new UserEdit();
     this.newUser.characters = [];
+    this.selectedCharacters = [];
   }
 
   editUser(user: UserEdit) {
     this.newUser = user;
+    this.selectedCharacters = user.characters ? user.characters.map(char => char.id) : [];
   }
 
   deleteUser(user: UserEdit) {
@@ -50,7 +53,20 @@ export class UserListComponent implements OnInit {
     });
   }
 
+  cancel() {
+    this.userService.getAll().subscribe(users => this.users = users);
+    this.newUser = null;
+  }
+
   saveUser() {
+    this.newUser.characters = this.selectedCharacters.map(charId => {
+      return {
+        id: charId,
+        name: '',
+        campaignId: null,
+        campaignName: ''
+      }
+    });
     if (this.newUser.id !== undefined) {
       this.userService.update(this.newUser).subscribe(() => {
         this.newUser = null;

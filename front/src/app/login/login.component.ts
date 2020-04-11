@@ -34,8 +34,6 @@ export class LoginComponent implements OnInit {
       password: ['', Validators.required]
     });
 
-    this.toasterService.success("wollolo");
-
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
