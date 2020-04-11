@@ -12,6 +12,7 @@ export interface Campaign {
 export interface SimpleCampaign {
   id: number;
   name: string;
-  currentAdventure: number;
+  currentAdventureId: number;
+  currentAdventureName: string;
   characters: {id: number, name: string}[];
 }

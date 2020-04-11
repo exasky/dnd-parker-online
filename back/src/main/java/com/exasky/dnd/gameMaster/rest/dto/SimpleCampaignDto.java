@@ -10,7 +10,8 @@ import java.util.stream.Collectors;
 public class SimpleCampaignDto {
     private Long id;
     private String name;
-    private Long currentAdventure;
+    private Long currentAdventureId;
+    private String currentAdventureName;
     private List<SimpleCharacterDto> characters = new ArrayList<>();
 
     public static List<SimpleCampaignDto> toDto(List<Campaign> bos) {
@@ -25,7 +26,8 @@ public class SimpleCampaignDto {
         dto.id = bo.getId();
         dto.name = bo.getName();
         if (Objects.nonNull(bo.getCurrentAdventure())) {
-            dto.currentAdventure = bo.getCurrentAdventure().getId();
+            dto.currentAdventureName = bo.getCurrentAdventure().getName();
+            dto.currentAdventureId = bo.getCurrentAdventure().getId();
         }
         dto.characters = SimpleCharacterDto.toDto(bo.getCharacters());
 
@@ -50,12 +52,20 @@ public class SimpleCampaignDto {
         this.name = name;
     }
 
-    public Long getCurrentAdventure() {
-        return currentAdventure;
+    public Long getCurrentAdventureId() {
+        return currentAdventureId;
     }
 
-    public void setCurrentAdventure(Long currentAdventure) {
-        this.currentAdventure = currentAdventure;
+    public void setCurrentAdventureId(Long currentAdventureId) {
+        this.currentAdventureId = currentAdventureId;
+    }
+
+    public String getCurrentAdventureName() {
+        return currentAdventureName;
+    }
+
+    public void setCurrentAdventureName(String currentAdventureName) {
+        this.currentAdventureName = currentAdventureName;
     }
 
     public List<SimpleCharacterDto> getCharacters() {

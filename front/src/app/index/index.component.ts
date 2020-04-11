@@ -10,10 +10,7 @@ import {SimpleCampaign} from "../adventure/model/campaign";
   templateUrl: './index.component.html'
 })
 export class IndexComponent implements OnInit {
-  @HostBinding('style.flex-grow') flexGrow = '1';
-  @HostBinding('style.min-height') minHeight = '0';
-  @HostBinding('style.min-width') minWidth = '0';
-  @HostBinding('style.display') display = 'flex';
+  @HostBinding('class') cssClass = "flex-grow d-flex justify-content-center";
 
   public adventures: { id: number; name: string }[];
   public campaigns: SimpleCampaign[];
