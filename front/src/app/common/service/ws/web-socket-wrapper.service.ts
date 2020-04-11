@@ -34,8 +34,8 @@ export class WebSocketWrapperService {
   private connect = () => {
     // @ts-ignore
     this.stompService.stompClient.configure(this.stompConfig);
-    this.stompService.stompClient.onConnect = this.onSocketConnect;
-    this.stompService.stompClient.onStompError = this.onSocketError;
+    this.stompService.stompClient.onConnect = this.onSocketConnect.bind(this);
+    this.stompService.stompClient.onStompError = this.onSocketError.bind(this);
     this.stompService.stompClient.activate();
   }
 
