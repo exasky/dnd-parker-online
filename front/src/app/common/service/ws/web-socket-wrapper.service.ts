@@ -6,7 +6,7 @@ import {SocketResponseType} from "../../model/websocket.response";
 import {environment} from "../../../../environments/environment";
 
 /**
- * A WebSocket wraper that connect to back and provide addTopic method.
+ * A WebSocket wrapper that connect to back and provide addTopic method.
  */
 @Injectable()
 export class WebSocketWrapperService {

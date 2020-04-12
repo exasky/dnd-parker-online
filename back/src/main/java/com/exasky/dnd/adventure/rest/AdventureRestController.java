@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(Constant.REST_UTL + "/adventure")
+@RequestMapping(Constant.REST_URL + "/adventure")
 public class AdventureRestController {
 
     private final AdventureService adventureService;

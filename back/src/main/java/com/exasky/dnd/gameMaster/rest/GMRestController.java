@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(Constant.REST_UTL + "/game-master")
+@RequestMapping(Constant.REST_URL + "/game-master")
 public class GMRestController {
 
     private final GMService gmService;

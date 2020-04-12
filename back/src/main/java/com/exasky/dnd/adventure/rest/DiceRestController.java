@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import static com.exasky.dnd.common.Utils.getCurrentUser;
 
 @RestController
-@RequestMapping(Constant.REST_UTL + "/dice")
+@RequestMapping(Constant.REST_URL + "/dice")
 public class DiceRestController {
 
     private final SimpMessageSendingOperations messagingTemplate;

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(Constant.REST_UTL + "/user")
+@RequestMapping(Constant.REST_URL + "/user")
 public class UserRestController {
 
     private final UserService userService;

@@ -1,13 +1,14 @@
 package com.exasky.dnd.common;
 
 public final class Constant {
-    public static final String REST_UTL = "/rest/v1";
+    public static final String REST_URL = "/rest/v1";
 
     /* **********************************
      *               ERRORS              *
      ** **********************************/
     public static final class Errors {
         public static final String AUTHENTICATION_ERROR = "AUTHENTICATION_ERROR";
+        public static final String JWT_EXPIRED = "JWT_EXPIRED";
 
         public static final class CAMPAIGN {
             private static final String PREFIX = "CAMPAIGN.";

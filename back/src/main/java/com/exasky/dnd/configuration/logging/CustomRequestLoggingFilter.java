@@ -10,7 +10,7 @@ import org.springframework.web.filter.AbstractRequestLoggingFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-import static com.exasky.dnd.common.Constant.REST_UTL;
+import static com.exasky.dnd.common.Constant.REST_URL;
 import static com.exasky.dnd.common.Utils.getCurrentUser;
 
 @Component
@@ -31,7 +31,7 @@ public class CustomRequestLoggingFilter extends AbstractRequestLoggingFilter {
 
     @Override
     protected boolean shouldLog(HttpServletRequest request) {
-        return !(REST_UTL + "/adventure/mouse-move").equals(request.getRequestURI());
+        return !(REST_URL + "/adventure/mouse-move").equals(request.getRequestURI());
     }
 
     @Override
@@ -69,7 +69,7 @@ public class CustomRequestLoggingFilter extends AbstractRequestLoggingFilter {
         if (isIncludePayload()) {
             String payload = getMessagePayload(request);
             if (payload != null) {
-                if (request.getRequestURI().equals(REST_UTL + "/login")) {
+                if (request.getRequestURI().equals(REST_URL + "/login")) {
                     try {
                         LoginDto loginDto = new ObjectMapper().readValue(payload, LoginDto.class);
                         loginDto.setPassword("*** HIDDEN ***");

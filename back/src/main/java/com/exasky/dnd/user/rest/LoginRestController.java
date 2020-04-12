@@ -8,7 +8,6 @@ import com.exasky.dnd.user.rest.dto.JwtDto;
 import com.exasky.dnd.user.rest.dto.LoginDto;
 import com.exasky.dnd.user.service.LoginService;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(Constant.REST_UTL)
+@RequestMapping(Constant.REST_URL)
 public class LoginRestController {
 
     private final LoginService loginService;
@@ -51,8 +50,6 @@ public class LoginRestController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (DisabledException e) {
             throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
         }
     }
 

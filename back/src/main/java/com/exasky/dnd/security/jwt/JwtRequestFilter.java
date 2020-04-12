@@ -1,5 +1,6 @@
 package com.exasky.dnd.security.jwt;
 
+import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.security.MyUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -41,9 +43,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             } catch (IllegalArgumentException e) {
                 System.out.println("Unable to get JWT Token");
             } catch (ExpiredJwtException e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 System.out.println("JWT Token has expired");
             }
-        } else if (!request.getRequestURI().equals("/stomp")){
+        } else if (!Arrays.asList(Constant.REST_URL + "/login", "/stomp")
+                .contains(request.getRequestURI())) {
             logger.warn("JWT Token does not begin with Bearer String");
         }
 
