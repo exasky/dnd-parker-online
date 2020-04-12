@@ -1,6 +1,6 @@
 {
   "name": "front",
-  "version": "1.0.0-RC.2",
+  "version": "1.0.0-GM",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
