@@ -3,35 +3,26 @@ import {InjectableRxStompConfig, RxStompService} from '@stomp/ng2-stompjs';
 import {SocketResponse} from '../../model';
 import {Injectable} from "@angular/core";
 import {SocketResponseType} from "../../model/websocket.response";
+import {environment} from "../../../../environments/environment";
 
 /**
  * A WebSocket wraper that connect to back and provide addTopic method.
  */
 @Injectable()
 export class WebSocketWrapperService {
-  private subscribers: Array<any> = [];
   private stompConfig: InjectableRxStompConfig = {
     heartbeatIncoming: 0,
     heartbeatOutgoing: 20000,
     reconnectDelay: 10000,
-    webSocketFactory: () => new WebSocket('ws://' + location.host + '/stomp'),
-    debug: (str) => {
-      console.log(str);
-    }
+    webSocketFactory: () => new WebSocket('ws://' + location.host + '/stomp')
   };
   private pendingListeners: { endpoint: any, listener: any }[] = [];
 
   constructor(private stompService: RxStompService) {
-    // Initialise a list of possible subscribers.
-    // this.createObservableSocket();
     // Activate subscription to broker.
-    this.connect();
-  }
-
-  /**
-   * Connect and activate the client to the broker.
-   */
-  private connect = () => {
+    if (!environment.production) {
+      this.stompConfig.debug = msg => console.log(msg);
+    }
     // @ts-ignore
     this.stompService.stompClient.configure(this.stompConfig);
     this.stompService.stompClient.onConnect = this.onSocketConnect.bind(this);
@@ -64,8 +55,8 @@ export class WebSocketWrapperService {
       message: errorMsg
     };
 
-    this.subscribers.forEach(subscriber => {
-      subscriber.observer.error(response);
+    this.pendingListeners.forEach(subscriber => {
+      subscriber.listener.error(response);
     });
   }
 
