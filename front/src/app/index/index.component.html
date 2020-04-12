@@ -18,6 +18,7 @@
                 mat-button
                 (click)="goToAdventure(campaign.currentAdventureId)">
           {{campaign.name}} - {{campaign.currentAdventureName}}
+          <ng-container *ngIf="!authService.isGM"> ({{campaign.currentCharacterDisplayName}})</ng-container>
         </button>
       </mat-card-content>
     </mat-card>

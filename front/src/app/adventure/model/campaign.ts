@@ -14,5 +14,6 @@ export interface SimpleCampaign {
   name: string;
   currentAdventureId: number;
   currentAdventureName: string;
+  currentCharacterDisplayName: string;
   characters: {id: number, name: string}[];
 }
