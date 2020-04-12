@@ -21,6 +21,7 @@ import {DrawnCardDialogComponent} from "./item/drawn-card-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {AdventureMessage, AdventureMessageType, MouseMove} from "../../model/adventure-message";
 import {SocketResponseType} from "../../../common/model/websocket.response";
+import {ToasterService} from "../../../common/service/toaster.service";
 
 @Component({
   selector: 'app-board',
@@ -54,6 +55,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   constructor(private adventureService: AdventureService,
               private mjService: GmService,
               public authService: AuthService,
+              private toaster: ToasterService,
               private route: ActivatedRoute,
               private adventureWS: AdventureWebsocketService,
               private drawnCardWS: DrawnCardWebsocketService,
@@ -79,46 +81,59 @@ export class AdventureComponent implements OnInit, OnDestroy {
       next: (receivedMsg: SocketResponse) => {
         if (receivedMsg.type === SocketResponseType.SUCCESS) {
           const message: AdventureMessage = receivedMsg.message;
-          if (message.type === AdventureMessageType.GOTO) {
-            this.router.navigateByUrl('adventure/' + message.message).then(() => {
-              window.location.reload();
-            });
-          } else if (message.type === AdventureMessageType.MOUSE_MOVE) {
-            const mouseMoveEvent: MouseMove = message.message;
-            // Do not add own cursor
-            if (mouseMoveEvent.userId !== this.authService.currentUserValue.id) {
-              // Mouse out
-              if (mouseMoveEvent.x === mouseMoveEvent.y && mouseMoveEvent.y === -1) {
-                let playerCursorIxd = this.otherPlayersCursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
-                if (playerCursorIxd !== -1) {
-                  this.otherPlayersCursors.splice(playerCursorIxd, 1);
-                }
-              // Mouse mouve
-              } else {
-                mouseMoveEvent.x = mouseMoveEvent.x - mouseMoveEvent.offsetX;
-                mouseMoveEvent.y = mouseMoveEvent.y - mouseMoveEvent.offsetY;
-                let playerCursorIxd = this.otherPlayersCursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
-                if (playerCursorIxd === -1) {
-                  this.otherPlayersCursors.push(mouseMoveEvent);
+          switch (message.type) {
+            case AdventureMessageType.GOTO:
+              this.router.navigateByUrl('adventure/' + message.message).then(() => {
+                window.location.reload();
+              });
+              break
+            case AdventureMessageType.MOUSE_MOVE:
+              const mouseMoveEvent: MouseMove = message.message;
+              // Do not add own cursor
+              if (mouseMoveEvent.userId !== this.authService.currentUserValue.id) {
+                // Mouse out
+                if (mouseMoveEvent.x === mouseMoveEvent.y && mouseMoveEvent.y === -1) {
+                  let playerCursorIxd = this.otherPlayersCursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
+                  if (playerCursorIxd !== -1) {
+                    this.otherPlayersCursors.splice(playerCursorIxd, 1);
+                  }
+                  // Mouse mouve
                 } else {
-                  this.otherPlayersCursors[playerCursorIxd] = mouseMoveEvent;
+                  mouseMoveEvent.x = mouseMoveEvent.x - mouseMoveEvent.offsetX;
+                  mouseMoveEvent.y = mouseMoveEvent.y - mouseMoveEvent.offsetY;
+                  let playerCursorIxd = this.otherPlayersCursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
+                  if (playerCursorIxd === -1) {
+                    this.otherPlayersCursors.push(mouseMoveEvent);
+                  } else {
+                    this.otherPlayersCursors[playerCursorIxd] = mouseMoveEvent;
+                  }
                 }
               }
-            }
-          } else {
-            this.adventure = message.message;
-            // Update existing items of else create
-            this.adventure.mjLayer.items.forEach(mjItem => {
-              this.updateItem(mjItem, 0);
-            });
-            this.adventure.characterLayer.items.forEach(characterItem => {
-              this.updateItem(characterItem, 1);
-            })
+              break;
+            case AdventureMessageType.RELOAD:
+              if (!message.message) {
+                this.toaster.warning("Your GM has deleted all adventures for this campaign... Such an idiot");
+                this.router.navigateByUrl('');
+              } else if (this.adventure.id !== message.message.id) {
+                this.router.navigateByUrl('adventure/' + message.message.id).then(() => {
+                  window.location.reload();
+                });
+              } else {
+                this.adventure = message.message;
+                // Update existing items of else create
+                this.adventure.mjLayer.items.forEach(mjItem => {
+                  this.updateItem(mjItem, 0);
+                });
+                this.adventure.characterLayer.items.forEach(characterItem => {
+                  this.updateItem(characterItem, 1);
+                })
 
-            // Remove others
-            const allLayerIds = this.adventure.mjLayer.items.map(value => value.id)
-              .concat(this.adventure.characterLayer.items.map(value => value.id));
-            this.removeUnusedItems(allLayerIds);
+                // Remove others
+                const allLayerIds = this.adventure.mjLayer.items.map(value => value.id)
+                  .concat(this.adventure.characterLayer.items.map(value => value.id));
+                this.removeUnusedItems(allLayerIds);
+              }
+              break
           }
         }
       },

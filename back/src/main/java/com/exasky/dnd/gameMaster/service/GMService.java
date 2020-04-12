@@ -5,9 +5,7 @@ import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.adventure.model.Dice;
 import com.exasky.dnd.adventure.model.card.CharacterItem;
 import com.exasky.dnd.adventure.model.layer.LayerElement;
-import com.exasky.dnd.adventure.repository.CampaignRepository;
-import com.exasky.dnd.adventure.repository.CharacterItemRepository;
-import com.exasky.dnd.adventure.repository.DiceRepository;
+import com.exasky.dnd.adventure.repository.*;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.adventure.service.CharacterService;
 import com.exasky.dnd.common.Constant;
@@ -24,27 +22,39 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-// TODO preauthorize gm
+// TODO refacto this class to call right services...
 public class GMService {
 
+    private final LayerRepository layerRepository;
+    private final LayerItemRepository layerItemRepository;
     private final GMLayerElementRepository layerElementRepository;
     private final CampaignRepository campaignRepository;
     private final CharacterItemRepository characterItemRepository;
     private final DiceRepository diceRepository;
+    private final BoardRepository boardRepository;
+    private final AdventureRepository adventureRepository;
     private final AdventureService adventureService;
     private final CharacterService characterService;
 
     @Autowired
-    public GMService(GMLayerElementRepository repository,
+    public GMService(LayerRepository layerRepository,
+                     LayerItemRepository layerItemRepository,
+                     GMLayerElementRepository repository,
                      CampaignRepository campaignRepository,
                      CharacterItemRepository characterItemRepository,
                      DiceRepository diceRepository,
+                     BoardRepository boardRepository,
+                     AdventureRepository adventureRepository,
                      AdventureService adventureService,
                      CharacterService characterService) {
+        this.layerRepository = layerRepository;
+        this.layerItemRepository = layerItemRepository;
         this.layerElementRepository = repository;
         this.campaignRepository = campaignRepository;
         this.characterItemRepository = characterItemRepository;
         this.diceRepository = diceRepository;
+        this.boardRepository = boardRepository;
+        this.adventureRepository = adventureRepository;
         this.adventureService = adventureService;
         this.characterService = characterService;
     }
@@ -68,9 +78,8 @@ public class GMService {
     }
 
     public Campaign getCampaign(Long id) {
-        Campaign foundCampaign = campaignRepository.getOne(id);
+        Campaign foundCampaign = campaignRepository.getById(id);
 
-        //noinspection ConstantConditions
         if (Objects.isNull(foundCampaign)) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
         }
@@ -80,7 +89,7 @@ public class GMService {
 
     @PreAuthorize("hasRole('ROLE_GM')")
     @Transactional
-    public Campaign create(Campaign toCreate) {
+    public Campaign createCampaign(Campaign toCreate) {
         Campaign attachedCampaign = this.campaignRepository.save(new Campaign());
 
         attachedCampaign.setName(toCreate.getName());
@@ -101,15 +110,14 @@ public class GMService {
     }
 
     @Transactional
-    public Campaign update(Long id, Campaign toUpdate) {
-        Campaign attachedCampaign = this.campaignRepository.getOne(id);
+    public Campaign updateCampaign(Long id, Campaign toUpdate) {
+        Campaign attachedCampaign = this.campaignRepository.getById(id);
 
-        attachedCampaign.setName(toUpdate.getName());
-
-        //noinspection ConstantConditions
         if (Objects.isNull(attachedCampaign)) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
         }
+
+        attachedCampaign.setName(toUpdate.getName());
 
         attachedCampaign.updateAdventures(toUpdate.getAdventures().stream().
                 map(adventure -> adventureService.createOrUpdate(adventure, attachedCampaign))
@@ -119,12 +127,59 @@ public class GMService {
                 .map(character -> characterService.createOrUpdate(character, attachedCampaign))
                 .collect(Collectors.toList()));
 
-        if (!attachedCampaign.getAdventures().isEmpty()
-                && Objects.isNull(attachedCampaign.getCurrentAdventure())) {
-            attachedCampaign.setCurrentAdventure(attachedCampaign.getAdventures().get(0));
+        if (!attachedCampaign.getAdventures().isEmpty()) {
+            if (Objects.nonNull(attachedCampaign.getCurrentAdventure()) &&
+                    attachedCampaign.getAdventures().stream()
+                            .noneMatch(adv -> adv.getId().equals(attachedCampaign.getCurrentAdventure().getId()))) {
+                attachedCampaign.setCurrentAdventure(attachedCampaign.getAdventures().get(0));
+            }
+            else if (Objects.isNull(attachedCampaign.getCurrentAdventure())) {
+                attachedCampaign.setCurrentAdventure(attachedCampaign.getAdventures().get(0));
+            }
+        } else {
+            attachedCampaign.setCurrentAdventure(null);
         }
 
         return attachedCampaign;
+    }
+
+    @Transactional
+    public void deleteCampaign(Long campaignId) {
+        Campaign campaign = this.campaignRepository.getById(campaignId);
+
+        if (Objects.isNull(campaign)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+        }
+
+        campaign.getAdventures().forEach(adventure -> {
+            adventure.getBoards().forEach(boardRepository::delete);
+            adventure.getBoards().clear();
+
+            if (Objects.nonNull(adventure.getMjLayer())) {
+                adventure.getMjLayer().getItems().forEach(layerItemRepository::delete);
+                adventure.getMjLayer().getItems().clear();
+                layerRepository.delete(adventure.getMjLayer());
+            }
+
+            if (Objects.nonNull(adventure.getCharacterLayer())) {
+                adventure.getCharacterLayer().getItems().forEach(layerItemRepository::delete);
+                adventure.getCharacterLayer().getItems().clear();
+                layerRepository.delete(adventure.getCharacterLayer());
+            }
+
+            adventureRepository.delete(adventure);
+        });
+        campaign.getAdventures().clear();
+
+        campaign.getCharacters().forEach(character -> {
+            character.getEquipments().clear();
+            character.getBackPack().clear();
+        });
+        campaign.getCharacters().clear();
+
+        campaign.getDrawnItems().clear();
+
+        campaignRepository.delete(campaign);
     }
 
     public CharacterItem drawCard(Long adventureId) {

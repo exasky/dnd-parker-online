@@ -18,6 +18,7 @@
   </div>
 
   <button mat-raised-button class="flex-shrink-0" (click)="saveCampaign()">Save !</button>
+  <button *ngIf="campaign.id" mat-raised-button color="warn" class="flex-shrink-0 mt-2" (click)="deleteCampaign()">Delete !</button>
 
 </div>
 

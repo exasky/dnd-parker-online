@@ -42,6 +42,10 @@ export class GmService {
       : this.http.post<Campaign>(GmService.API_URL + '/campaign', campaign);
   }
 
+  deleteCampaign(id: number | string): Observable<void> {
+    return this.http.delete<void>(GmService.API_URL + '/campaign/' + id);
+  }
+
   drawCard(adventureId: number | string): Observable<CharacterItem> {
     return this.http.get<CharacterItem>(GmService.API_URL + '/draw-card/' + adventureId);
   }

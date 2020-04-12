@@ -4,6 +4,9 @@ import {Campaign} from "../../../model/campaign";
 import {Character, CharacterItem} from "../../../model/character";
 import {GmService} from "../../../service/gm.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {ConfirmDialogComponent} from "../../../../common/confirm-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
+import {ToasterService} from "../../../../common/service/toaster.service";
 
 @Component({
   selector: 'app-campaign-creator',
@@ -20,6 +23,8 @@ export class CampaignCreatorComponent implements OnInit {
   selectedAdventure: Adventure;
 
   constructor(private gmService: GmService,
+              private dialog: MatDialog,
+              private toaster: ToasterService,
               private route: ActivatedRoute,
               private router: Router) {
   }
@@ -67,7 +72,25 @@ export class CampaignCreatorComponent implements OnInit {
 
   saveCampaign() {
     this.gmService.saveCampaign(this.campaign).subscribe(newCampaign => {
-      this.router.navigateByUrl('campaign-creator/' + newCampaign.id)
+      this.router.navigateByUrl('campaign-creator/' + newCampaign.id);
+      this.toaster.success('Success saving campaign ' + newCampaign.name);
+    });
+  }
+
+  deleteCampaign() {
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '250px',
+      data: {title: 'Campaign deletion', confirmMessage: 'Are ou sure you want to delete ' + this.campaign.name + '?'}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.gmService.deleteCampaign(this.campaign.id).subscribe(() => {
+          this.toaster.success("Campaign " + this.campaign.name + " deleted !");
+          this.router.navigateByUrl('');
+        });
+      }
     });
   }
 }

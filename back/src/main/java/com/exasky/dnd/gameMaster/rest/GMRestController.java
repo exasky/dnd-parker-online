@@ -11,6 +11,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(Constant.REST_URL + "/game-master")
@@ -54,19 +55,27 @@ public class GMRestController {
 
     @PostMapping("/campaign")
     public CreateCampaignDto createCampaign(@RequestBody CreateCampaignDto dto) {
-        return CreateCampaignDto.toDto(this.gmService.create(CreateCampaignDto.toBo(dto)));
+        return CreateCampaignDto.toDto(this.gmService.createCampaign(CreateCampaignDto.toBo(dto)));
     }
 
     @PutMapping("/campaign/{id}")
     public CreateCampaignDto updateCampaign(@PathVariable Long id, @RequestBody CreateCampaignDto dto) {
-        Campaign updatedCampaign = this.gmService.update(id, CreateCampaignDto.toBo(dto));
+        Campaign updatedCampaign = this.gmService.updateCampaign(id, CreateCampaignDto.toBo(dto));
+
 
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.RELOAD);
-        wsDto.setMessage(AdventureDto.toDto(updatedCampaign.getCurrentAdventure()));
+        if (Objects.nonNull(updatedCampaign.getCurrentAdventure())) {
+            wsDto.setMessage(AdventureDto.toDto(updatedCampaign.getCurrentAdventure()));
+        }
         this.messagingTemplate.convertAndSend("/topic/adventure", wsDto);
 
         return CreateCampaignDto.toDto(updatedCampaign);
+    }
+
+    @DeleteMapping("/campaign/{id}")
+    public void deleteCampaign(@PathVariable Long id) {
+        this.gmService.deleteCampaign(id);
     }
 
     @GetMapping("/draw-card/{adventureId}")
