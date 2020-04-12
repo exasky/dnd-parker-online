@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class CharacterForCreateCampaignDto {
     private Long id;
     private String name;
+    private String displayName;
 
     private Short hp;
     private Short maxHp;
@@ -30,6 +31,7 @@ public class CharacterForCreateCampaignDto {
         Character bo = new Character(dto.id);
 
         bo.setName(dto.name);
+        bo.setDisplayName(dto.getDisplayName());
         bo.setMaxHp(dto.maxHp);
         bo.setHp(Objects.nonNull(dto.hp) ? dto.hp : dto.maxHp);
         bo.setMaxMp(dto.maxMp);
@@ -57,6 +59,7 @@ public class CharacterForCreateCampaignDto {
         dto.maxMp = bo.getMaxMp();
         dto.mp = bo.getMp();
         dto.name = bo.getName();
+        dto.displayName = bo.getDisplayName();
         dto.backpackSize = bo.getBackPackSize();
         dto.backpackItems = CharacterItemDto.toDto(bo.getBackPack());
         dto.equippedItems = CharacterItemDto.toDto(bo.getEquipments());
@@ -80,6 +83,14 @@ public class CharacterForCreateCampaignDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public Short getMaxHp() {

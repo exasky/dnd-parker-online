@@ -6,6 +6,7 @@ import com.exasky.dnd.adventure.rest.dto.SimpleAdventureReadDto;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
+import com.exasky.dnd.adventure.rest.dto.CharacterTemplateDto;
 import com.exasky.dnd.gameMaster.rest.dto.SimpleCampaignDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -26,6 +27,11 @@ public class AdventureRestController {
                                    SimpMessageSendingOperations messagingTemplate)  {
         this.adventureService = adventureService;
         this.messagingTemplate = messagingTemplate;
+    }
+
+    @GetMapping("/character-templates")
+    public List<CharacterTemplateDto> getAllCharacterTemplate() {
+        return CharacterTemplateDto.toDto(this.adventureService.getAllCharacterTemplate());
     }
 
     @GetMapping

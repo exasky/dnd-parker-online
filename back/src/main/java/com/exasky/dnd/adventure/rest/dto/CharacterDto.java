@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class CharacterDto {
     private Long id;
     private String name;
+    private String displayName;
 
     private Short maxHp;
     private Short hp;
@@ -34,6 +35,7 @@ public class CharacterDto {
 
         dto.id = bo.getId();
         dto.name = bo.getName();
+        dto.displayName = bo.getDisplayName();
         dto.maxHp = bo.getMaxHp();
         dto.hp = bo.getHp();
         dto.maxMp = bo.getMaxMp();
@@ -64,6 +66,14 @@ public class CharacterDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public Short getMaxHp() {

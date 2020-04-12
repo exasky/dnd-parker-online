@@ -14,8 +14,11 @@ public class Character {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // TODO refacto to character_template_id
     @Column
     private String name;
+    @Column(name = "display_name")
+    private String displayName;
 
     @Column
     private Short hp;
@@ -86,6 +89,14 @@ public class Character {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public Short getHp() {

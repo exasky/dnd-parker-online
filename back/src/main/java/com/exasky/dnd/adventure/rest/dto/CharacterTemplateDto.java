@@ -1,29 +1,31 @@
-package com.exasky.dnd.gameMaster.rest.dto;
+package com.exasky.dnd.adventure.rest.dto;
 
-import com.exasky.dnd.adventure.model.Character;
+import com.exasky.dnd.adventure.model.CharacterTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class SimpleCharacterDto {
+public class CharacterTemplateDto {
     private Long id;
     private String name;
     private String displayName;
+    private Short backPackSize;
 
-    public static List<SimpleCharacterDto> toDto(List<Character> bos) {
+    public static List<CharacterTemplateDto> toDto(List<CharacterTemplate> bos) {
         return Objects.isNull(bos)
                 ? new ArrayList<>()
-                : bos.stream().map(SimpleCharacterDto::toDto).collect(Collectors.toList());
+                : bos.stream().map(CharacterTemplateDto::toDto).collect(Collectors.toList());
     }
 
-    public static SimpleCharacterDto toDto(Character bo) {
-        SimpleCharacterDto dto = new SimpleCharacterDto();
+    public static CharacterTemplateDto toDto(CharacterTemplate bo) {
+        CharacterTemplateDto dto = new CharacterTemplateDto();
 
         dto.id = bo.getId();
         dto.name = bo.getName();
         dto.displayName = bo.getDisplayName();
+        dto.backPackSize = bo.getBackPackSize();
 
         return dto;
     }
@@ -54,5 +56,14 @@ public class SimpleCharacterDto {
         this.displayName = displayName;
     }
 
+    public Short getBackPackSize() {
+        return backPackSize;
+    }
+
+    public void setBackPackSize(Short backPackSize) {
+        this.backPackSize = backPackSize;
+    }
+
     // endregion
+
 }

@@ -33,6 +33,7 @@ public class CharacterService {
 
         attachedCharacter.setCampaign(attachedCampaign);
         attachedCharacter.setName(character.getName());
+        attachedCharacter.setDisplayName(character.getDisplayName());
         attachedCharacter.setHp(character.getHp());
         attachedCharacter.setMaxHp(character.getMaxHp());
         attachedCharacter.setMp(character.getMp());

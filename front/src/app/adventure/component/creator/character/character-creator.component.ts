@@ -1,5 +1,6 @@
-import {Component, HostBinding, Input} from "@angular/core";
-import {Character, CharacterItem} from "../../../model/character";
+import {Component, EventEmitter, HostBinding, Input, Output} from "@angular/core";
+import {Character, CharacterItem, CharacterTemplate} from "../../../model/character";
+import {MatSelectChange} from "@angular/material/select";
 
 @Component({
   selector: 'app-character-creator',
@@ -19,8 +20,16 @@ export class CharacterCreatorComponent {
   allCharacters: Character[];
 
   @Input()
-  allCharacterItems: CharacterItem[]
+  availableCharacters: CharacterTemplate[];
 
+  @Input()
+  allCharacterItems: CharacterItem[];
+
+  @Output()
+  deleteEvent: EventEmitter<Character> = new EventEmitter<Character>();
+
+  @Output()
+  selectCharacterEvent: EventEmitter<CharacterTemplate> = new EventEmitter<CharacterTemplate>();
 
   addEquippedItem(ev: DragEvent) {
     this.transferItem(ev, this.character.equippedItems);
@@ -70,4 +79,14 @@ export class CharacterCreatorComponent {
     ev.dataTransfer.dropEffect = 'move';
   }
 
+  selectCharacter(event: MatSelectChange) {
+    const selectedCharacterTemplate = this.availableCharacters.find(ac => ac.displayName === event.value);
+    this.character.name = selectedCharacterTemplate.name;
+    this.character.displayName = selectedCharacterTemplate.displayName;
+    this.selectCharacterEvent.emit(selectedCharacterTemplate);
+  }
+
+  deleteCharacter() {
+    this.deleteEvent.emit(this.character);
+  }
 }

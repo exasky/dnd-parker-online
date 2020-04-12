@@ -1,12 +1,13 @@
 import {Component, HostBinding, OnInit} from "@angular/core";
 import {Adventure} from "../../../model/adventure";
 import {Campaign} from "../../../model/campaign";
-import {Character, CharacterItem} from "../../../model/character";
+import {Character, CharacterItem, CharacterTemplate} from "../../../model/character";
 import {GmService} from "../../../service/gm.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ConfirmDialogComponent} from "../../../../common/dialog/confirm-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {ToasterService} from "../../../../common/service/toaster.service";
+import {AdventureService} from "../../../service/adventure.service";
 
 @Component({
   selector: 'app-campaign-creator',
@@ -15,6 +16,8 @@ import {ToasterService} from "../../../../common/service/toaster.service";
 export class CampaignCreatorComponent implements OnInit {
   @HostBinding('class') cssClasses = "flex-grow d-flex";
 
+  characterTemplates: CharacterTemplate[];
+  selectedCharacterTemplates: CharacterTemplate[] = [];
   allCharacterItems: CharacterItem[];
 
   isCharacterCreatorSelected: boolean = true;
@@ -23,6 +26,7 @@ export class CampaignCreatorComponent implements OnInit {
   selectedAdventure: Adventure;
 
   constructor(private gmService: GmService,
+              private adventureService: AdventureService,
               private dialog: MatDialog,
               private toaster: ToasterService,
               private route: ActivatedRoute,
@@ -33,10 +37,14 @@ export class CampaignCreatorComponent implements OnInit {
   ngOnInit(): void {
     this.gmService.getAllCharacterItems().subscribe(value => this.allCharacterItems = value);
 
+
     const id = this.route.snapshot.paramMap.get("id");
     if (id !== null) {
       this.gmService.getCampaign(id).subscribe(campaign => {
         this.campaign = campaign;
+        this.adventureService.getCharacterTemplates().subscribe(value => {
+          this.characterTemplates = value.filter(ct => this.campaign.characters.findIndex(char => char.name === ct.name) === -1);
+        });
       });
     } else {
       this.campaign = {
@@ -45,6 +53,7 @@ export class CampaignCreatorComponent implements OnInit {
         characters: [],
         drawnItems: []
       }
+      this.adventureService.getCharacterTemplates().subscribe(value => this.characterTemplates = value);
     }
   }
 
@@ -70,6 +79,16 @@ export class CampaignCreatorComponent implements OnInit {
     this.campaign.characters.push(new Character());
   }
 
+  removeCharacter(event: Character) {
+    const characterIdx = this.campaign.characters.indexOf(event);
+    if (characterIdx !== -1) {
+      const characterTemplate = this.selectedCharacterTemplates.find(sct => sct.name === event.name);
+      this.characterTemplates.push(characterTemplate);
+      this.selectedCharacterTemplates.splice(this.selectedCharacterTemplates.indexOf(characterTemplate), 1);
+      this.campaign.characters.splice(characterIdx, 1);
+    }
+  }
+
   saveCampaign() {
     this.gmService.saveCampaign(this.campaign).subscribe(newCampaign => {
       this.router.navigateByUrl('campaign-creator/' + newCampaign.id);
@@ -78,7 +97,6 @@ export class CampaignCreatorComponent implements OnInit {
   }
 
   deleteCampaign() {
-
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
       data: {title: 'Campaign deletion', confirmMessage: 'Are ou sure you want to delete ' + this.campaign.name + '?'}
@@ -92,5 +110,15 @@ export class CampaignCreatorComponent implements OnInit {
         });
       }
     });
+  }
+
+  removeAvailableCharacter(event: CharacterTemplate) {
+    const idx = this.characterTemplates.findIndex(ct => ct.name === event.name);
+    if (idx !== -1) {
+      this.selectedCharacterTemplates.push(event);
+      this.characterTemplates.splice(idx, 1);
+    } else {
+      console.log('Error on removing available character');
+    }
   }
 }

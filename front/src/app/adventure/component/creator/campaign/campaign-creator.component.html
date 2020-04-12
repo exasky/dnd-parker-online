@@ -18,7 +18,9 @@
   </div>
 
   <button mat-raised-button class="flex-shrink-0" (click)="saveCampaign()">Save !</button>
-  <button *ngIf="campaign.id" mat-raised-button color="warn" class="flex-shrink-0 mt-2" (click)="deleteCampaign()">Delete !</button>
+  <button *ngIf="campaign.id" mat-raised-button color="warn" class="flex-shrink-0 mt-2" (click)="deleteCampaign()">
+    Delete !
+  </button>
 
 </div>
 
@@ -27,11 +29,15 @@
   <div *ngIf="isCharacterCreatorSelected" class="flex-grow d-flex flex-column">
     <div class="flex-grow d-flex">
       <div class="flex-grow d-flex overflow flex-wrap justify-content-center align-items-center flex-3">
-        <mat-card *ngFor="let character of campaign.characters; let index = index" class="m-3 flex-grow d-flex flex-column">
+        <mat-card *ngFor="let character of campaign.characters; let index = index"
+                  class="m-3 flex-grow d-flex flex-column">
           <app-character-creator [character]="character"
                                  [positionInList]="index"
+                                 [availableCharacters]="characterTemplates"
                                  [allCharacters]="campaign.characters"
-                                 [allCharacterItems]="allCharacterItems"></app-character-creator>
+                                 [allCharacterItems]="allCharacterItems"
+                                 (selectCharacterEvent)="removeAvailableCharacter($event)"
+                                 (deleteEvent)="removeCharacter($event)"></app-character-creator>
         </mat-card>
 
       </div>

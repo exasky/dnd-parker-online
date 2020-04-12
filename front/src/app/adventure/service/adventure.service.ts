@@ -5,6 +5,7 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {SimpleCampaign} from "../model/campaign";
 import {MouseMove} from "../model/adventure-message";
+import {CharacterTemplate} from "../model/character";
 
 @Injectable({
   providedIn: "root"
@@ -14,6 +15,10 @@ export class AdventureService {
   private static API_URL = environment.apiUrl + '/adventure';
 
   constructor(private http: HttpClient) {
+  }
+
+  getCharacterTemplates(): Observable<CharacterTemplate[]> {
+    return this.http.get<CharacterTemplate[]>(AdventureService.API_URL + '/character-templates');
   }
 
   getCampaignsForCurrentUser(): Observable<SimpleCampaign[]> {

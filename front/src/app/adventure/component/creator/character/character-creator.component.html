@@ -24,7 +24,13 @@
   <div class="d-flex justify-content-center">
     <mat-form-field style="max-width: 8rem">
       <mat-label>Name</mat-label>
-      <input matInput [(ngModel)]="character.name" autocomplete="false">
+      <mat-select *ngIf="!character.displayName"  (selectionChange)="selectCharacter($event)">
+        <mat-option *ngFor="let characterTemplate of availableCharacters"
+                    [value]="characterTemplate.displayName">
+          {{characterTemplate.displayName}}
+        </mat-option>
+      </mat-select>
+      <input matInput *ngIf="character.displayName" [value]="character.displayName" disabled>
     </mat-form-field>
   </div>
   <div class="d-flex justify-content-around">
@@ -51,14 +57,15 @@
 </div>
 
 <!-- Backpack items-->
-<div class="d-flex flex-2"
+<div class="d-flex flex-2 position-relative"
      (dragover)="$event.preventDefault()"
      (drop)="addBackPackItem($event)">
   <div *ngIf="character.backpackItems.length === 0">
     Drag & Drop items here
   </div>
-  <div *ngIf="character.backpackItems.length !== 0" class="d-flex flex-wrap">
-    <div style="position:relative;" *ngFor="let item of character.backpackItems">
+  <div *ngIf="character.backpackItems.length !== 0"
+       class="flex-grow d-flex flex-wrap justify-content-around align-items-center">
+    <div class="position-relative" *ngFor="let item of character.backpackItems">
       <img [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
            draggable="true"
            (dragstart)="backpackDragStartHandler($event, item)"
@@ -71,5 +78,9 @@
     </div>
 
   </div>
-
+  <button mat-raised-button color="accent"
+          class="position-absolute mb-1 mr-1" style="bottom: 0; right: 0"
+          (click)="deleteCharacter()">
+    Delete
+  </button>
 </div>
