@@ -110,7 +110,10 @@
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
             </div>
 
-            <button mat-mini-fab *ngIf="authService.isGM" (mousedown)="removeItem(item, $event)">
+            <button *ngIf="authService.isGM"
+                    mat-mini-fab
+                    class="item-delete"
+                    (mousedown)="removeItem(item, $event)">
               <mat-icon>delete</mat-icon>
             </button>
           </gridster-item>

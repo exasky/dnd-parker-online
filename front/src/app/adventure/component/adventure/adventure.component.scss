@@ -20,6 +20,19 @@ gridster {
   background: none !important;
 }
 
+.item-delete {
+  width: 30px;
+  height: 30px;
+
+  .mat-button-wrapper {
+    padding: 0 !important;
+  }
+
+  mat-icon {
+    font-size: 17px;
+  }
+}
+
 .player-cursor {
   position: absolute;
   z-index: 100;
