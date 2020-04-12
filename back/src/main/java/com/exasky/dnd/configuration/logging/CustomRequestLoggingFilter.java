@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.AbstractRequestLoggingFilter;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.IOException;
 
 import static com.exasky.dnd.common.Constant.REST_UTL;
@@ -28,6 +27,11 @@ public class CustomRequestLoggingFilter extends AbstractRequestLoggingFilter {
         setBeforeMessageSuffix("");
         setAfterMessagePrefix("");
         setAfterMessageSuffix("");
+    }
+
+    @Override
+    protected boolean shouldLog(HttpServletRequest request) {
+        return !(REST_UTL + "/adventure/mouse-move").equals(request.getRequestURI());
     }
 
     @Override
