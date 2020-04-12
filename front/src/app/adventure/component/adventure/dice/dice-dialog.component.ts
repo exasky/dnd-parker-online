@@ -36,7 +36,7 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.disabled = !this.authService.isGM && !(this.authService.currentUserValue.id === this.data);
     this.gmService.getAllDices().subscribe(dices => this.allDices = dices);
-    this.diceWS.getObservable().subscribe((receivedMsg: SocketResponse) => {
+    this.diceWSObs = this.diceWS.getObservable().subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {
         const diceMessage: DiceMessage = receivedMsg.message;
         if (diceMessage.type === DiceMessageType.SELECT_DICES) {
