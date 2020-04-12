@@ -1,5 +1,5 @@
-<button mat-raised-button color="accent" class="m-2" (click)="drawCard()">Draw card</button>
-<button mat-raised-button color="accent" class="m-2" (click)="rollDices()">Roll dices</button>
+<button mat-raised-button color="accent" class="m-2" (click)="drawCard()" [disabled]="disableActions">Draw card</button>
+<button mat-raised-button color="accent" class="m-2" (click)="rollDices()" [disabled]="disableActions">Roll dices</button>
 
 <mat-divider class="m-2" [inset]="false"></mat-divider>
 

@@ -23,6 +23,10 @@ import {AdventureMessage, AdventureMessageType, MouseMove} from "../../model/adv
 import {SocketResponseType} from "../../../common/model/websocket.response";
 import {ToasterService} from "../../../common/service/toaster.service";
 import {DialogUtils} from "../../../common/dialog/dialog.utils";
+import {DiceMessage, DiceMessageType} from "../../model/dice-message";
+import {DiceDialogComponent} from "./dice/dice-dialog.component";
+import {DiceWebsocketService} from "../../../common/service/ws/dice.websocket.service";
+import {MatDrawer} from "@angular/material/sidenav";
 
 @Component({
   selector: 'app-board',
@@ -33,11 +37,14 @@ export class AdventureComponent implements OnInit, OnDestroy {
   @HostBinding('class') cssClasses = "flex-grow d-flex flex-column";
   @ViewChild('boardPanel', {read: ElementRef}) boardPanel: ElementRef;
 
+  @ViewChild('drawer', {read: MatDrawer}) drawer: MatDrawer;
+
   private lastMouseMoveSend: number;
   private mouseMoveDelay = 33; // 30fps
 
   adventureWSObs: Subscription;
   drawnCardWSObs: Subscription;
+  diceWSObs: Subscription;
 
   layerElementType = LayerElementType;
 
@@ -53,6 +60,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   otherPlayersCursors: MouseMove[] = [];
 
+  disableActions: boolean = false;
+
   constructor(private adventureService: AdventureService,
               private mjService: GmService,
               public authService: AuthService,
@@ -60,6 +69,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private adventureWS: AdventureWebsocketService,
               private drawnCardWS: DrawnCardWebsocketService,
+              private diceWS: DiceWebsocketService,
               private router: Router,
               private dialog: MatDialog) {
   }
@@ -145,14 +155,36 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
     this.drawnCardWSObs = this.drawnCardWS.getObservable().subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {
-        this.dialog.open(DrawnCardDialogComponent, DialogUtils.getDefaultConfig(receivedMsg.data));
+        const drawerOpenedSaved = this.drawer.opened;
+        this.disableActions = this.drawer.opened = true;
+        this.dialog.open(DrawnCardDialogComponent, DialogUtils.getDefaultConfig(receivedMsg.data))
+          .beforeClosed().subscribe(() => {
+          this.disableActions = false;
+          this.drawer.opened = drawerOpenedSaved;
+        });
       }
     })
+
+    this.diceWSObs = this.diceWS.getObservable().subscribe((receivedMsg: SocketResponse) => {
+      if (receivedMsg.type === SocketResponseType.SUCCESS) {
+        const diceMessage: DiceMessage = receivedMsg.data;
+        if (diceMessage.type === DiceMessageType.OPEN_DIALOG) {
+          const drawerOpenedSaved = this.drawer.opened;
+          this.disableActions = this.drawer.opened = true;
+          this.dialog.open(DiceDialogComponent, DialogUtils.getDefaultConfig(receivedMsg.data.message))
+            .beforeClosed().subscribe(() => {
+            this.disableActions = false;
+            this.drawer.opened = drawerOpenedSaved;
+          });
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
     this.adventureWSObs.unsubscribe();
     this.drawnCardWSObs.unsubscribe();
+    this.diceWSObs.unsubscribe();
   }
 
   private initGridsterConf() {
