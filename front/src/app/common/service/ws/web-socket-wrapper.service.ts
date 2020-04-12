@@ -52,7 +52,7 @@ export class WebSocketWrapperService {
 
     const response: SocketResponse = {
       type: SocketResponseType.ERROR,
-      message: errorMsg
+      data: errorMsg
     };
 
     this.pendingListeners.forEach(subscriber => {

@@ -29,7 +29,7 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatMenuModule} from "@angular/material/menu";
 import {UserListComponent} from "./user/component/user-list.component";
-import {ConfirmDialogComponent} from "./common/confirm-dialog.component";
+import {ConfirmDialogComponent} from "./common/dialog/confirm-dialog.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {UserDetailComponent} from "./user/component/user-detail.component";
 import {AdventureItemDisplayerComponent} from "./adventure/component/adventure/item/adventure-item-displayer.component";

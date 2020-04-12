@@ -4,7 +4,7 @@ import {Campaign} from "../../../model/campaign";
 import {Character, CharacterItem} from "../../../model/character";
 import {GmService} from "../../../service/gm.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {ConfirmDialogComponent} from "../../../../common/confirm-dialog.component";
+import {ConfirmDialogComponent} from "../../../../common/dialog/confirm-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {ToasterService} from "../../../../common/service/toaster.service";
 

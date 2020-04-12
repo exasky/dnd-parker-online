@@ -1,6 +1,7 @@
 package com.exasky.dnd.adventure.rest;
 
 
+import com.exasky.dnd.adventure.rest.dto.SimpleUserDto;
 import com.exasky.dnd.adventure.rest.dto.dice.DiceMessageDto;
 import com.exasky.dnd.adventure.rest.dto.dice.SelectDicesDto;
 import com.exasky.dnd.common.Constant;
@@ -26,7 +27,7 @@ public class DiceRestController {
     public void openDiceRoller() {
         DiceMessageDto dto = new DiceMessageDto();
         dto.setType(DiceMessageDto.DiceMessageType.OPEN_DIALOG);
-        dto.setMessage(getCurrentUser().getId());
+        dto.setMessage(SimpleUserDto.toDto(getCurrentUser()));
 
         this.messagingTemplate.convertAndSend("/topic/dice", dto);
     }

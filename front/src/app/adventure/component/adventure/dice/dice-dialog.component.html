@@ -14,12 +14,18 @@
               (click)="removeDiceFromList(dice)"></app-dice>
   </div>
 </mat-dialog-content>
-<mat-dialog-actions class="d-flex justify-content-center">
+<mat-dialog-actions class="d-flex justify-content-center position-relative">
   <button mat-raised-button
           #rollButton
           (click)="rollDices()"
           [disabled]="disabled">
     Roll dices !
   </button>
-  <div *ngIf="rollButton.disabled">C'est pas ton tour !</div>
+  <button mat-raised-button color="accent"
+          class="position-absolute"
+          style="right: 0"
+          (click)="dialogRef.close()">
+    Close
+  </button>
+  <div *ngIf="rollButton.disabled">C'est pas ton tour ! (À {{data.username}})</div>
 </mat-dialog-actions>

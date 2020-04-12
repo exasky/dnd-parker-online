@@ -46,7 +46,7 @@ export abstract class AbstractWebsocket {
   private static getMessage(data) {
     const response: SocketResponse = {
       type: SocketResponseType.SUCCESS,
-      message: JSON.parse(data.body)
+      data: JSON.parse(data.body)
     };
     return response;
   }

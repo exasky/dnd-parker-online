@@ -1,6 +1,6 @@
 export class SocketResponse {
   type: SocketResponseType;
-  message: any;
+  data: any;
 }
 
 export enum SocketResponseType {

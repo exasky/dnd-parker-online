@@ -4,7 +4,7 @@ import {UserEdit} from "../model/user-edit"
 import {GmService} from "../../adventure/service/gm.service";
 import {SimpleCampaign} from "../../adventure/model/campaign";
 import {MatDialog} from "@angular/material/dialog";
-import {ConfirmDialogComponent} from "../../common/confirm-dialog.component";
+import {ConfirmDialogComponent} from "../../common/dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-user-list',

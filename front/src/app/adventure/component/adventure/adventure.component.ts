@@ -22,6 +22,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {AdventureMessage, AdventureMessageType, MouseMove} from "../../model/adventure-message";
 import {SocketResponseType} from "../../../common/model/websocket.response";
 import {ToasterService} from "../../../common/service/toaster.service";
+import {DialogUtils} from "../../../common/dialog/dialog.utils";
 
 @Component({
   selector: 'app-board',
@@ -80,7 +81,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventureWSObs = this.adventureWS.getObservable().subscribe({
       next: (receivedMsg: SocketResponse) => {
         if (receivedMsg.type === SocketResponseType.SUCCESS) {
-          const message: AdventureMessage = receivedMsg.message;
+          const message: AdventureMessage = receivedMsg.data;
           switch (message.type) {
             case AdventureMessageType.GOTO:
               this.router.navigateByUrl('adventure/' + message.message).then(() => {
@@ -144,7 +145,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
     this.drawnCardWSObs = this.drawnCardWS.getObservable().subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {
-        this.dialog.open(DrawnCardDialogComponent, {data: receivedMsg.message});
+        this.dialog.open(DrawnCardDialogComponent, DialogUtils.getDefaultConfig(receivedMsg.data));
       }
     })
   }
