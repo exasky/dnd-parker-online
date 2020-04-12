@@ -104,7 +104,7 @@ export class AdventureCreatorComponent implements OnInit {
 
   emptyCellDropCallback(event: MouseEvent, item: GridsterItem) {
     const boardNumber = +(event as any).dataTransfer.getData('text');
-    const boardToAdd = this.availableBoards.find(board => board.boardNumber === boardNumber);
+    const boardToAdd = JSON.parse(JSON.stringify(this.availableBoards.find(board => board.boardNumber === boardNumber)));
     this.gridsterBoards.push({
       ...item,
       board: boardToAdd
