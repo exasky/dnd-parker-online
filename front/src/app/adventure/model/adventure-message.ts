@@ -11,6 +11,7 @@ export enum AdventureMessageType {
 
 export class MouseMove {
   userId: number;
+  username: string;
   x: number;
   y: number;
   offsetX: number;

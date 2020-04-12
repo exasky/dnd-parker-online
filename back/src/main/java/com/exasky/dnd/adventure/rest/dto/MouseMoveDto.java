@@ -2,17 +2,27 @@ package com.exasky.dnd.adventure.rest.dto;
 
 public class MouseMoveDto {
     private Long userId;
+    private String username;
     private Long x;
     private Long y;
     private Long offsetX;
     private Long offsetY;
 
+    // region Getters & Setters
     public Long getUserId() {
         return userId;
     }
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getX() {
@@ -46,4 +56,5 @@ public class MouseMoveDto {
     public void setOffsetY(Long offsetY) {
         this.offsetY = offsetY;
     }
+    // endregion
 }

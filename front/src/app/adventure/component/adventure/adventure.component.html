@@ -37,13 +37,14 @@
            (mouseout)="onMouseOut()">
         <ng-container *ngIf="otherPlayersCursors">
           <div *ngFor="let pc of otherPlayersCursors"
-               class="player-cursor d-flex flex-column"
+               class="player-cursor d-flex flex-column player-{{getCharacterNamesFromId(pc.userId)[0].name}}"
                [ngStyle]="{'top': pc.y + 'px',
                    'left': pc.x + 'px'}">
             <mat-icon style="transform: rotate(-90deg)">near_me</mat-icon>
             <span *ngFor="let char of getCharacterNamesFromId(pc.userId)">
               {{char.name}}
             </span>
+            ({{pc.username}})
           </div>
         </ng-container>
 

@@ -225,6 +225,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     mouseMove.offsetX = this.boardPanel.nativeElement.getBoundingClientRect().left;
     mouseMove.offsetY = this.boardPanel.nativeElement.getBoundingClientRect().top;
     mouseMove.userId = this.authService.currentUserValue.id;
+    mouseMove.username = this.authService.currentUserValue.username;
     this.adventureService.playerMouseMove(mouseMove)
   }
 
