@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.exasky</groupId>
 	<artifactId>dnd</artifactId>
-	<version>1.0.0-GM</version>
+	<version>1.0.0</version>
 	<name>dnd</name>
 	<description>Back end of DnD board game</description>
 
