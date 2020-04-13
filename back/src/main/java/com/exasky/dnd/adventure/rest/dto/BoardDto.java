@@ -38,6 +38,9 @@ public class BoardDto {
     }
 
     public static BoardDto[][] toDto(List<Board> bos) {
+        if (bos.isEmpty()) {
+            return new BoardDto[][]{};
+        }
         @SuppressWarnings("OptionalGetWithoutIsPresent")
         Integer maxCol = bos.stream().map(Board::getPositionX).max(Comparator.comparingInt(o -> o)).get();
         @SuppressWarnings("OptionalGetWithoutIsPresent")
