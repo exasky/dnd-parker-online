@@ -45,6 +45,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             } catch (ExpiredJwtException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 System.out.println("JWT Token has expired");
+                return;
             }
         } else if (!Arrays.asList(Constant.REST_URL + "/login", "/stomp")
                 .contains(request.getRequestURI())) {

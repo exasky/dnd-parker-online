@@ -78,6 +78,7 @@ public class GMRestController {
         this.gmService.deleteCampaign(id);
     }
 
+    // TODO move to adventureController
     @GetMapping("/draw-card/{adventureId}")
     public CharacterItemDto drawCard(@PathVariable Long adventureId) {
         CharacterItemDto dto = CharacterItemDto.toDto(this.gmService.drawCard(adventureId));
