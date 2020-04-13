@@ -1,0 +1,8 @@
+id,col_size,row_size,icon,rotation,type
+1,1,1,chest.png,NONE,CHEST
+2,1,2,vertical-door-vertical-opened.jpg,NONE,VERTICAL_DOOR_VERTICAL_OPENED
+3,1,2,vertical-door-vertical-closed.jpg,NONE,VERTICAL_DOOR_VERTICAL_CLOSED
+4,2,1,vertical-door-opened.jpg,NONE,VERTICAL_DOOR_HORIZONTAL_OPENED
+5,2,1,vertical-door-closed.jpg,NONE,VERTICAL_DOOR_HORIZONTAL_CLOSED
+6,1,1,trap-activated.jpg,NONE,TRAP_ACTIVATED
+7,1,1,trap-deactivated.jpg,NONE,TRAP_DEACTIVATED

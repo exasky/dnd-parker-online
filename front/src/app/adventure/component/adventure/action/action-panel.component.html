@@ -1,0 +1,25 @@
+<button mat-raised-button color="accent" class="m-2" (click)="drawCard()" [disabled]="disableActions">Draw card</button>
+<button mat-raised-button color="accent" class="m-2" (click)="rollDices()" [disabled]="disableActions">Roll dices</button>
+
+<mat-divider class="m-2" [inset]="false"></mat-divider>
+
+<button *ngFor="let character of adventure.characters"
+        mat-raised-button color="primary"
+        class="m-2"
+        style="text-transform: capitalize"
+        [ngbTooltip]="tooltipContent"
+        [container]="'body'"
+        tooltipClass="w-75"
+        placement="left">
+  {{character.name}}
+  <ng-template #tooltipContent>
+    <app-character-tooltip-displayer [character]="character"
+                                     cardWidth="200"
+                                     cardHeight="300"></app-character-tooltip-displayer>
+  </ng-template>
+</button>
+
+<div class="flex-grow d-flex flex-column justify-content-end" *ngIf="authService.isGM">
+  <button mat-raised-button color="accent" class="m-2" (click)="prevAdventure()">Previous adventure</button>
+  <button mat-raised-button color="accent" class="m-2" (click)="nextAdventure()">Next adventure</button>
+</div>

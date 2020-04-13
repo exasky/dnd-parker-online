@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="exasky (generated)" id="1586271086067-1">
+        <createTable tableName="dnd_character">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="dnd_characterPK"/>
+            </column>
+            <column name="backPackSize" type="SMALLINT"/>
+            <column name="hp" type="SMALLINT"/>
+            <column name="maxHp" type="SMALLINT"/>
+            <column name="maxMp" type="SMALLINT"/>
+            <column name="mp" type="SMALLINT"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="campaign_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586271086067-2">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="dnd_character" constraintName="FK2imm7klgqp5fkyhflxal1g6wo" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="dnd_user" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586271086067-3">
+        <addForeignKeyConstraint baseColumnNames="character_id" baseTableName="character_backpack" constraintName="FK32a0qp88mercxkpigvyqrdy45" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="dnd_character" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586271086067-4">
+        <addForeignKeyConstraint baseColumnNames="campaign_id" baseTableName="dnd_character" constraintName="FKbh40yr7httg5ufbg84yioqwy6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="campaign" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586271086067-5">
+        <addForeignKeyConstraint baseColumnNames="character_id" baseTableName="character_equipment" constraintName="FKcofn12dhnj6pubx0pdf2i4jsg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="dnd_character" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586271086067-6">
+        <dropForeignKeyConstraint baseTableName="character" constraintName="FKba941srjut8hkfg8xmhw2q370"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586271086067-7">
+        <dropForeignKeyConstraint baseTableName="character_backpack" constraintName="FKcswj6raj6xkvajicrtojo0xj5"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586271086067-8">
+        <dropForeignKeyConstraint baseTableName="character" constraintName="FKeys5y4rw6ft2r9i81dbku1p6"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586271086067-9">
+        <dropForeignKeyConstraint baseTableName="character_equipment" constraintName="FKfd4pawd3ty10xgrc1kuhe97gl"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586271086067-10">
+        <dropTable tableName="character"/>
+    </changeSet>
+</databaseChangeLog>

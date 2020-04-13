@@ -1,0 +1,31 @@
+<div class="d-flex justify-content-evenly mat-elevation-z3 p-2" style="border-radius: 4px">
+  <div *ngFor="let dice of allDices" class="m-1">
+    <img height="70px" width="70px"
+         style="border-radius: 5px"
+         [src]="'assets/dice/' + dice.name + '/1.jpeg'"
+         (click)="addToDiceList(dice)">
+  </div>
+</div>
+<mat-dialog-content>
+  <div class="d-flex flex-wrap justify-content-evenly">
+    <app-dice *ngFor="let dice of selectedDices"
+              #diceCmp
+              [diceType]="dice.name"
+              (click)="removeDiceFromList(dice)"></app-dice>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class="d-flex justify-content-center position-relative">
+  <button mat-raised-button
+          #rollButton
+          (click)="rollDices()"
+          [disabled]="disabled">
+    Roll dices !
+  </button>
+  <button mat-raised-button color="accent"
+          class="position-absolute"
+          style="right: 0"
+          (click)="dialogRef.close()">
+    Close
+  </button>
+  <div *ngIf="rollButton.disabled">C'est pas ton tour ! (À {{data.username}})</div>
+</mat-dialog-actions>

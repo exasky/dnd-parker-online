@@ -1,0 +1,61 @@
+.adventure-container {
+  position: relative;
+}
+
+.adventure-board-background {
+  height: 700px;
+  width: 700px;
+  position: absolute
+}
+
+.adventure-board-item {
+  background-size: contain !important;
+  position: absolute;
+  background: none no-repeat center center;
+  height: 100%;
+  width: 100%;
+}
+
+gridster {
+  background: none !important;
+}
+
+.item-delete, .item-flippable{
+  width: 30px;
+  height: 30px;
+
+  .mat-button-wrapper {
+    padding: 0 !important;
+  }
+
+  mat-icon {
+    font-size: 17px;
+  }
+}
+
+.player-cursor {
+  position: absolute;
+  z-index: 100;
+  color: white;
+
+  mat-icon {
+    text-shadow: -2px 2px 2px black;
+  }
+
+  span {
+    text-shadow: 2px 2px 2px black;
+  }
+}
+
+.player-regdar {
+  color: red !important;
+}
+.player-mialye {
+  color: cornflowerblue !important;
+}
+.player-jozan {
+  color: lightgreen !important;
+}
+.player-lidda {
+  color: yellow !important;
+}

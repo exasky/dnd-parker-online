@@ -1,0 +1,114 @@
+/*Downloaded from https://www.codeseek.co/acjdesigns/zelda-treasure-chest-ZQZooa */
+@keyframes cardRise {
+  0% {
+    bottom: 40px;
+    z-index: 4;
+    width: 80px;
+    height: 120px;
+  }
+  100% {
+    bottom: 110px;
+    z-index: 4;
+    width: 253px;
+    height: 380px;
+  }
+}
+
+@keyframes topChest {
+  0% {
+    margin-top: 0;
+  }
+  100% {
+    margin-top: -100px;
+  }
+}
+
+@keyframes zChange {
+  0% {
+    z-index: 5;
+  }
+  100% {
+    z-index: 5;
+  }
+}
+
+#treasurechest {
+  border-top: 10px solid #000;
+  border-left: 10px solid #000;
+  border-right: 10px solid #000;
+  position: absolute;
+  display: block;
+  left: 50%;
+  width: 200px;
+  height: 160px;
+  z-index: 3;
+  transform: translateX(-50%);
+  overflow: hidden;
+  bottom: 20px;
+
+  #treasurechest-top {
+    :before {
+      content: ' ';
+      width: 220px;
+      height: 190px;
+      display: block;
+      margin-left: -110px;
+    }
+
+    width: 10px;
+    height: 10px;
+    display: block;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    background: #ffbb00;
+    box-shadow: -95px 0px #ffbb00, -85px 0px #ffbb00, -75px 0px #000, -65px 0px #b52121, -55px 0px #b52121, -45px 0px #FFF, -35px 0px #b52121, -25px 0px #b52121, -15px 0px #000, -5px 0px #ffbb00, 5px 0px #ffbb00, 15px 0px #000, 25px 0px #b52121, 35px 0px #b52121, 45px 0px #FFF, 55px 0px #b52121, 65px 0px #b52121, 75px 0px #000, 85px 0px #ffbb00, 95px 0px #ffbb00, -95px 10px #ffbb00, -85px 10px #ffbb00, -75px 10px #000, -65px 10px #b52121, -55px 10px #b52121, -45px 10px #000, -35px 10px #b52121, -25px 10px #b52121, -15px 10px #000, -5px 10px #ffbb00, 5px 10px #ffbb00, 15px 10px #000, 25px 10px #b52121, 35px 10px #b52121, 45px 10px #000, 55px 10px #b52121, 65px 10px #b52121, 75px 10px #000, 85px 10px #ffbb00, 95px 10px #ffbb00, -95px 20px #FFF, -85px 20px #FFF, -75px 20px #000, -65px 20px #e15b5b, -55px 20px #e15b5b, -45px 20px #e15b5b, -35px 20px #e15b5b, -25px 20px #e15b5b, -15px 20px #000, -5px 20px #FFF, 5px 20px #FFF, 15px 20px #000, 25px 20px #e15b5b, 35px 20px #e15b5b, 45px 20px #e15b5b, 55px 20px #e15b5b, 65px 20px #e15b5b, 75px 20px #000, 85px 20px #FFF, 95px 20px #FFF, 105px 20px #000, -105px 30px #000, -95px 30px #FFF, -85px 30px #FFF, -75px 30px #000, -65px 30px #e15b5b, -55px 30px #e15b5b, -45px 30px #e15b5b, -35px 30px #e15b5b, -25px 30px #e15b5b, -15px 30px #000, -5px 30px #FFF, 5px 30px #FFF, 15px 30px #000, 25px 30px #e15b5b, 35px 30px #e15b5b, 45px 30px #e15b5b, 55px 30px #e15b5b, 65px 30px #e15b5b, 75px 30px #000, 85px 30px #FFF, 95px 30px #FFF, -95px 40px #ffbb00, -85px 40px #ffbb00, -75px 40px #000, -65px 40px #b52121, -55px 40px #b52121, -45px 40px #b52121, -35px 40px #b52121, -25px 40px #b52121, -15px 40px #000, -5px 40px #ffbb00, 5px 40px #ffbb00, 15px 40px #000, 25px 40px #b52121, 35px 40px #b52121, 45px 40px #b52121, 55px 40px #b52121, 65px 40px #b52121, 75px 40px #000, 85px 40px #ffbb00, 95px 40px #ffbb00, -95px 50px #ffbb00, -85px 50px #ffbb00, -75px 50px #000, -65px 50px #b52121, -55px 50px #b52121, -45px 50px #FFF, -35px 50px #b52121, -25px 50px #b52121, -15px 50px #000, -5px 50px #ffbb00, 5px 50px #ffbb00, 15px 50px #000, 25px 50px #b52121, 35px 50px #b52121, 45px 50px #FFF, 55px 50px #b52121, 65px 50px #b52121, 75px 50px #000, 85px 50px #ffbb00, 95px 50px #ffbb00, -95px 60px #ffbb00, -85px 60px #ffbb00, -75px 60px #000, -65px 60px #b52121, -55px 60px #b52121, -45px 60px #000, -35px 60px #b52121, -25px 60px #b52121, -15px 60px #000, -5px 60px #ffbb00, 5px 60px #ffbb00, 15px 60px #000, 25px 60px #b52121, 35px 60px #b52121, 45px 60px #000, 55px 60px #b52121, 65px 60px #b52121, 75px 60px #000, 85px 60px #ffbb00, 95px 60px #ffbb00, -95px 70px #ffbb00, -85px 70px #ffbb00, -75px 70px #000, -65px 70px #b52121, -55px 70px #b52121, -45px 70px #b52121, -35px 70px #b52121, -25px 70px #b52121, -15px 70px #000, -5px 70px #ffbb00, 5px 70px #ffbb00, 15px 70px #000, 25px 70px #b52121, 35px 70px #b52121, 45px 70px #b52121, 55px 70px #b52121, 65px 70px #b52121, 75px 70px #000, 85px 70px #ffbb00, 95px 70px #ffbb00, -95px 80px #ffbb00, -85px 80px #ffbb00, -75px 80px #000, -65px 80px #b52121, -55px 80px #b52121, -45px 80px #b52121, -35px 80px #b52121, -25px 80px #b52121, -15px 80px #000, -5px 80px #ffbb00, 5px 80px #ffbb00, 15px 80px #000, 25px 80px #b52121, 35px 80px #b52121, 45px 80px #b52121, 55px 80px #b52121, 65px 80px #b52121, 75px 80px #000, 85px 80px #ffbb00, 95px 80px #ffbb00, -95px 90px #ffbb00, -85px 90px #ffbb00, -75px 90px #000, -65px 90px #000, -55px 90px #000, -45px 90px #000, -35px 90px #000, -25px 90px #000, -15px 90px #000, -5px 90px #ffbb00, 5px 90px #ffbb00, 15px 90px #000, 25px 90px #000, 35px 90px #000, 45px 90px #000, 55px 90px #000, 65px 90px #000, 75px 90px #000, 85px 90px #ffbb00, 95px 90px #ffbb00, -95px 100px #ffbb00, -85px 100px #ffbb00, -75px 100px #ffbb00, -65px 100px #ffbb00, -55px 100px #ffbb00, -45px 100px #ffbb00, -35px 100px #ffbb00, -25px 100px #ffbb00, -15px 100px #FFF, -5px 100px #FFF, 5px 100px #FFF, 15px 100px #FFF, 25px 100px #ffbb00, 35px 100px #ffbb00, 45px 100px #ffbb00, 55px 100px #ffbb00, 65px 100px #ffbb00, 75px 100px #ffbb00, 75px 100px #ffbb00, 85px 100px #ffbb00, 95px 100px #ffbb00, -95px 110px #000, -85px 110px #000, -75px 110px #000, -65px 110px #000, -55px 110px #000, -45px 110px #000, -35px 110px #000, -25px 110px #000, -15px 110px #ffbb00, -5px 110px #000, 5px 110px #000, 15px 110px #ffbb00, 25px 110px #000, 35px 110px #000, 45px 110px #000, 55px 110px #000, 65px 110px #000, 75px 110px #000, 85px 110px #000, 95px 110px #000, -15px 120px #ffbb00, 15px 120px #ffbb00, -15px 130px #ffbb00, -5px 130px #ffbb00, 5px 130px #ffbb00, 15px 130px #ffbb00, -15px 140px #000, -5px 140px #000, 5px 140px #000, 15px 140px #000;
+
+    animation: topChest 1.5s linear 0s 1 forwards;
+  }
+}
+
+#treasurechest-bottom {
+  width: 10px;
+  height: 10px;
+  display: block;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  position: absolute;
+  bottom: 180px;
+  box-shadow: -105px 90px #000, -95px 90px #000, -85px 90px #000, -75px 90px #000, -65px 90px #000, -55px 90px #000, -45px 90px #000, -35px 90px #000, -25px 90px #000, -15px 90px #000, -5px 90px #000, 5px 90px #000, 15px 90px #000, 25px 90px #000, 35px 90px #000, 45px 90px #000, 55px 90px #000, 65px 90px #000, 75px 90px #000, 85px 90px #000, 95px 90px #000, 105px 90px #000, -105px 100px #000, -95px 100px #ffbb00, -85px 100px #ffbb00, -75px 100px #000, -65px 100px #b52121, -55px 100px #b52121, -45px 100px #b52121, -35px 100px #b52121, -25px 100px #b52121, -15px 100px #b52121, -5px 100px #b52121, 5px 100px #b52121, 15px 100px #b52121, 25px 100px #b52121, 35px 100px #b52121, 45px 100px #b52121, 55px 100px #b52121, 65px 100px #b52121, 75px 100px #000, 85px 100px #ffbb00, 95px 100px #ffbb00, 105px 100px #000, -105px 110px #000, -95px 110px #ffbb00, -85px 110px #ffbb00, -75px 110px #000, -65px 110px #b52121, -55px 110px #b52121, -45px 110px #b52121, -35px 110px #b52121, -25px 110px #b52121, -15px 110px #b52121, -5px 110px #b52121, 5px 110px #b52121, 15px 110px #b52121, 25px 110px #b52121, 35px 110px #b52121, 45px 110px #b52121, 55px 110px #b52121, 65px 110px #b52121, 75px 110px #000, 85px 110px #ffbb00, 95px 110px #ffbb00, 105px 110px #000, -105px 120px #000, -95px 120px #ffbb00, -85px 120px #ffbb00, -75px 120px #000, -65px 120px #b52121, -55px 120px #b52121, -45px 120px #b52121, -35px 120px #b52121, -25px 120px #b52121, -15px 120px #b52121, -5px 120px #b52121, 5px 120px #b52121, 15px 120px #b52121, 25px 120px #b52121, 35px 120px #b52121, 45px 120px #b52121, 55px 120px #b52121, 65px 120px #b52121, 75px 120px #000, 85px 120px #ffbb00, 95px 120px #ffbb00, 105px 120px #000, -105px 130px #000, -95px 130px #ffbb00, -85px 130px #ffbb00, -75px 130px #000, -65px 130px #b52121, -55px 130px #b52121, -45px 130px #b52121, -35px 130px #b52121, -25px 130px #b52121, -15px 130px #b52121, -5px 130px #b52121, 5px 130px #b52121, 15px 130px #b52121, 25px 130px #b52121, 35px 130px #b52121, 45px 130px #b52121, 55px 130px #b52121, 65px 130px #b52121, 75px 130px #000, 85px 130px #ffbb00, 95px 130px #ffbb00, 105px 130px #000, -105px 140px #000, -95px 140px #ffbb00, -85px 140px #ffbb00, -75px 140px #000, -65px 140px #000, -55px 140px #000, -45px 140px #000, -35px 140px #000, -25px 140px #000, -15px 140px #000, -5px 140px #000, 5px 140px #000, 15px 140px #000, 25px 140px #000, 35px 140px #000, 45px 140px #000, 55px 140px #000, 65px 140px #000, 75px 140px #000, 85px 140px #ffbb00, 95px 140px #ffbb00, 105px 140px #000, -105px 150px #000, -95px 150px #ffbb00, -85px 150px #ffbb00, -75px 150px #ffbb00, -65px 150px #ffbb00, -55px 150px #ffbb00, -45px 150px #ffbb00, -35px 150px #ffbb00, -25px 150px #ffbb00, -15px 150px #ffbb00, -5px 150px #ffbb00, 5px 150px #ffbb00, 15px 150px #ffbb00, 25px 150px #ffbb00, 35px 150px #ffbb00, 45px 150px #ffbb00, 55px 150px #ffbb00, 65px 150px #ffbb00, 75px 150px #ffbb00, 85px 150px #ffbb00, 95px 150px #ffbb00, 105px 150px #000, -105px 160px #000, -95px 160px #ffbb00, -85px 160px #ffbb00, -75px 160px #ffbb00, -65px 160px #ffbb00, -55px 160px #ffbb00, -45px 160px #ffbb00, -35px 160px #ffbb00, -25px 160px #ffbb00, -15px 160px #ffbb00, -5px 160px #ffbb00, 5px 160px #ffbb00, 15px 160px #ffbb00, 25px 160px #ffbb00, 35px 160px #ffbb00, 45px 160px #ffbb00, 55px 160px #ffbb00, 65px 160px #ffbb00, 75px 160px #ffbb00, 85px 160px #ffbb00, 95px 160px #ffbb00, 105px 160px #000, -105px 170px #000, -95px 170px #000, -85px 170px #000, -75px 170px #000, -65px 170px #000, -55px 170px #000, -45px 170px #000, -35px 170px #000, -25px 170px #000, -15px 170px #000, -5px 170px #000, 5px 170px #000, 15px 170px #000, 25px 170px #000, 35px 170px #000, 45px 170px #000, 55px 170px #000, 65px 170px #000, 75px 170px #000, 85px 170px #000, 95px 170px #000, 105px 170px #000;
+
+  animation: zChange 1s linear 1s 0 forwards;
+}
+
+#treasurechest-bg {
+  width: 10px;
+  height: 10px;
+  display: block;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+  position: absolute;
+  bottom: 160px;
+  background: #b52121;
+  box-shadow: -105px 0px #000, -95px 0px #5f1111, -85px 0px #5f1111, -75px 0px #5f1111, -65px 0px #5f1111, -55px 0px #5f1111, -45px 0px #5f1111, -35px 0px #5f1111, -25px 0px #5f1111, -15px 0px #5f1111, -5px 0px #5f1111, 5px 0px #5f1111, 15px 0px #5f1111, 25px 0px #5f1111, 35px 0px #5f1111, 45px 0px #5f1111, 55px 0px #5f1111, 65px 0px #5f1111, 75px 0px #5f1111, 85px 0px #5f1111, 95px 0px #5f1111, 105px 0px #000, -105px 10px #000, -95px 10px #5f1111, -85px 10px #5f1111, -75px 10px #5f1111, -65px 10px #5f1111, -55px 10px #5f1111, -45px 10px #5f1111, -35px 10px #5f1111, -25px 10px #5f1111, -15px 10px #5f1111, -5px 10px #5f1111, 5px 10px #5f1111, 15px 10px #5f1111, 25px 10px #5f1111, 35px 10px #5f1111, 45px 10px #5f1111, 55px 10px #5f1111, 65px 10px #5f1111, 75px 10px #5f1111, 85px 10px #5f1111, 95px 10px #5f1111, 105px 10px #000, -105px 20px #000, -95px 20px #5f1111, -85px 20px #5f1111, -75px 20px #5f1111, -65px 20px #5f1111, -55px 20px #5f1111, -45px 20px #5f1111, -35px 20px #5f1111, -25px 20px #5f1111, -15px 20px #5f1111, -5px 20px #5f1111, 5px 20px #5f1111, 15px 20px #5f1111, 25px 20px #5f1111, 35px 20px #5f1111, 45px 20px #5f1111, 55px 20px #5f1111, 65px 20px #5f1111, 75px 20px #5f1111, 85px 20px #5f1111, 95px 20px #5f1111, 105px 20px #000, -105px 30px #000, -95px 30px #5f1111, -85px 30px #5f1111, -75px 30px #5f1111, -65px 30px #5f1111, -55px 30px #5f1111, -45px 30px #5f1111, -35px 30px #5f1111, -25px 30px #5f1111, -15px 30px #5f1111, -5px 30px #5f1111, 5px 30px #5f1111, 15px 30px #5f1111, 25px 30px #5f1111, 35px 30px #5f1111, 45px 30px #5f1111, 55px 30px #5f1111, 65px 30px #5f1111, 75px 30px #5f1111, 85px 30px #5f1111, 95px 30px #5f1111, 105px 30px #000, -105px 40px #000, -95px 40px #5f1111, -85px 40px #5f1111, -75px 40px #5f1111, -65px 40px #5f1111, -55px 40px #5f1111, -45px 40px #5f1111, -35px 40px #5f1111, -25px 40px #5f1111, -15px 40px #5f1111, -5px 40px #5f1111, 5px 40px #5f1111, 15px 40px #5f1111, 25px 40px #5f1111, 35px 40px #5f1111, 45px 40px #5f1111, 55px 40px #5f1111, 65px 40px #5f1111, 75px 40px #5f1111, 85px 40px #5f1111, 95px 40px #5f1111, 105px 40px #000, -105px 50px #000, -95px 50px #5f1111, -85px 50px #5f1111, -75px 50px #5f1111, -65px 50px #5f1111, -55px 50px #5f1111, -45px 50px #5f1111, -35px 50px #5f1111, -25px 50px #5f1111, -15px 50px #5f1111, -5px 50px #5f1111, 5px 50px #5f1111, 15px 50px #5f1111, 25px 50px #5f1111, 35px 50px #5f1111, 45px 50px #5f1111, 55px 50px #5f1111, 65px 50px #5f1111, 75px 50px #5f1111, 85px 50px #5f1111, 95px 50px #5f1111, 105px 50px #000, -105px 60px #000, -95px 60px #5f1111, -85px 60px #5f1111, -75px 60px #5f1111, -65px 60px #5f1111, -55px 60px #5f1111, -45px 60px #5f1111, -35px 60px #5f1111, -25px 60px #5f1111, -15px 60px #5f1111, -5px 60px #5f1111, 5px 60px #5f1111, 15px 60px #5f1111, 25px 60px #5f1111, 35px 60px #5f1111, 45px 60px #5f1111, 55px 60px #5f1111, 65px 60px #5f1111, 75px 60px #5f1111, 85px 60px #5f1111, 95px 60px #5f1111, 105px 60px #000, -105px 70px #000, -95px 70px #5f1111, -85px 70px #5f1111, -75px 70px #5f1111, -65px 70px #5f1111, -55px 70px #5f1111, -45px 70px #5f1111, -35px 70px #5f1111, -25px 70px #5f1111, -15px 70px #5f1111, -5px 70px #5f1111, 5px 70px #5f1111, 15px 70px #5f1111, 25px 70px #5f1111, 35px 70px #5f1111, 45px 70px #5f1111, 55px 70px #5f1111, 65px 70px #5f1111, 75px 70px #5f1111, 85px 70px #5f1111, 95px 70px #5f1111, 105px 70px #000;
+}
+
+#card {
+  width: 80px;
+  height: 100px;
+  max-width: 400px;
+  max-height: 500px;
+  display: block;
+  left: 50%;
+  transform: translateX(-50%);
+  position: absolute;
+  bottom: 80px;
+  z-index: 0;
+  background: #000;
+  margin-left: -5px;
+
+  animation: cardRise 1.5s linear 1.5s 1 forwards;
+}

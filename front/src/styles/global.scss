@@ -1,0 +1,24 @@
+@import "material/material";
+@import "~bootstrap/scss/bootstrap";
+
+@import '~ngx-toastr/toastr';
+
+@import "flex";
+@import "bootstrap/bootstrap";
+
+/* You can add global styles to this file, and also import other style files */
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.overflow {
+  overflow: auto;
+}
+
+.w-0 {
+  //noinspection CssRedundantUnit
+  width: 0px;
+}
+
+.tooltip-inner {
+  max-width: unset !important;
+}

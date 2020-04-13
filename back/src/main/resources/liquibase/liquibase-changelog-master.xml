@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <include file="liquibase/init/liquibase-init.xml"/>
+    <include file="liquibase/init/liquibase-init-data.xml"/>
+    <include file="liquibase/changelog/liquibase-diff-20200406-174806.xml"/>
+    <include file="liquibase/changelog/liquibase-diff-20200407-070538.xml"/>
+    <include file="liquibase/changelog/liquibase-diff-20200407-115036.xml"/>
+    <include file="liquibase/init/liquibase-init-character-items.xml"/>
+    <include file="liquibase/changelog/liquibase-diff-20200407-145121.xml"/>
+    <include file="liquibase/changelog/liquibase-diff-20200407-145400.xml"/>
+    <include file="liquibase/changelog/liquibase-diff-20200408-053720.xml"/>
+    <include file="liquibase/changelog/liquibase-diff-20200408-074912.xml"/>
+    <include file="liquibase/changelog/liquibase-diff-20200408-133145.xml"/>
+    <include file="liquibase/init/liquibase-init-data-2.xml"/>
+    <include file="liquibase/changelog/liquibase-diff-20200410-152519.xml"/>
+    <include file="liquibase/init/liquibase-init-dices.xml"/>
+    <include file="liquibase/changelog/liquibase-diff-20200412-200948.xml"/>
+    <include file="liquibase/init/liquibase-init-character-templates.xml"/>
+    <include file="liquibase/changelog/liquibase-diff-20200412-203620.xml"/>
+</databaseChangeLog>

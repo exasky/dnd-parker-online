@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Drawn card</h1>
+
+<div mat-dialog-content class="position-relative" style="width: 700px; height: 500px">
+  <div id="treasurechest">
+    <div id="treasurechest-top"></div>
+  </div>
+  <div id="treasurechest-bottom"></div>
+  <div id="treasurechest-bg"></div>
+
+  <img id="card"
+       [src]="'assets/card/' + data.type.toLowerCase() + '/' + data.level + '/' + data.name + '.jpg'">
+</div>
+
+<mat-dialog-actions class="d-flex justify-content-center">
+  <button mat-button (click)="dialogRef.close(true)">Close</button>
+</mat-dialog-actions>

@@ -1,0 +1,17 @@
+.draggable-board {
+  display: inline-block;
+  width: 250px;
+  height: 250px;
+  margin-right: 10px;
+}
+
+.selected-board-gridster-background {
+  background-size: contain;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+.mat-horizontal-content-container {
+  flex-grow: 1;
+}

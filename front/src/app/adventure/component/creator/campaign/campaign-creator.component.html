@@ -1,0 +1,61 @@
+<!--  Buttons of characters, new adventure-->
+<div class="d-flex flex-column m-3" *ngIf="campaign">
+  <div class="flex-grow d-flex flex-column overflow">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput [(ngModel)]="campaign.name" autocomplete="false">
+    </mat-form-field>
+    <button mat-raised-button
+            class="mb-2 flex-shrink-0"
+            (click)="isCharacterCreatorSelected = true">Characters
+    </button>
+    <button mat-raised-button class="mb-2 flex-shrink-0"
+            *ngFor="let adventure of campaign.adventures"
+            (click)="selectAdventure(adventure)">{{adventure.name}}</button>
+    <button mat-raised-button class="flex-shrink-0"
+            (click)="addNewAdventure()">Add adventure
+    </button>
+  </div>
+
+  <button mat-raised-button class="flex-shrink-0" (click)="saveCampaign()">Save !</button>
+  <button *ngIf="campaign.id" mat-raised-button color="warn" class="flex-shrink-0 mt-2" (click)="deleteCampaign()">
+    Delete !
+  </button>
+
+</div>
+
+<!-- Current content Adventure of characters-->
+<div class="flex-grow d-flex m-3" *ngIf="campaign">
+  <div *ngIf="isCharacterCreatorSelected" class="flex-grow d-flex flex-column">
+    <div class="flex-grow d-flex">
+      <div class="flex-grow d-flex overflow flex-wrap justify-content-center align-items-center flex-3">
+        <mat-card *ngFor="let character of campaign.characters; let index = index"
+                  class="m-3 flex-grow d-flex flex-column">
+          <app-character-creator [character]="character"
+                                 [positionInList]="index"
+                                 [availableCharacters]="characterTemplates"
+                                 [allCharacters]="campaign.characters"
+                                 [allCharacterItems]="allCharacterItems"
+                                 (selectCharacterEvent)="removeAvailableCharacter($event)"
+                                 (deleteEvent)="removeCharacter($event)"></app-character-creator>
+        </mat-card>
+
+      </div>
+      <app-character-item-displayer style="flex: 1"
+                                    *ngIf="allCharacterItems"
+                                    [characterItems]="allCharacterItems"></app-character-item-displayer>
+    </div>
+
+    <button mat-raised-button
+            class="flex-shrink-0"
+            (click)="addNewCharacter()">Add new character
+    </button>
+  </div>
+
+  <ng-container *ngIf="selectedAdventure && !isCharacterCreatorSelected">
+    <app-adventure-creator class="flex-grow"
+                           [adventure]="selectedAdventure"
+                           (adventureDeleted)="deleteSelectedAdventure()"></app-adventure-creator>
+  </ng-container>
+
+</div>

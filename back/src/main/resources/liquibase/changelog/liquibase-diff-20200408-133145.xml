@@ -1,0 +1,11 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="exasky (generated)" id="1586352710110-2">
+        <addColumn tableName="campaign">
+            <column name="current_adventure_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586352710110-3">
+        <addForeignKeyConstraint baseColumnNames="current_adventure_id" baseTableName="campaign" constraintName="FKluk1xoo4fhkmu5y31d0ou4agw" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="adventure" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

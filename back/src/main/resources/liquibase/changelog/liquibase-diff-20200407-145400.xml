@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="exasky (generated)" id="1586271245047-1">
+        <addColumn tableName="dnd_character">
+            <column name="back_pack_size" type="smallint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586271245047-2">
+        <addColumn tableName="dnd_character">
+            <column name="max_hp" type="smallint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586271245047-3">
+        <addColumn tableName="dnd_character">
+            <column name="max_mp" type="smallint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586271245047-4">
+        <dropColumn columnName="backPackSize" tableName="dnd_character"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586271245047-5">
+        <dropColumn columnName="maxHp" tableName="dnd_character"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1586271245047-6">
+        <dropColumn columnName="maxMp" tableName="dnd_character"/>
+    </changeSet>
+</databaseChangeLog>

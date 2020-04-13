@@ -1,0 +1,25 @@
+<mat-form-field>
+  <input matInput placeholder="Search" (input)="filterChanged($event.target.value)">
+</mat-form-field>
+
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="overflow d-flex" style="background-color: unset">
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding
+                 draggable="true"
+                 (dragstart)="dragStartHandler($event, node.item)"
+                 [ngSwitch]="node.item.type">
+    <img *ngSwitchCase="layerElementType.CHARACTER"
+         style="width: 70px; height: 70px" [src]="'assets/character/' + node.item.icon + '-token.jpg'">
+    <img *ngSwitchCase="layerElementType.MONSTER"
+         style="width: 70px; height: 70px" [src]="'assets/monster/' + node.item.icon + '-token.jpg'">
+    <img *ngSwitchDefault
+         style="max-width: 70px; max-height: 70px" [src]="'assets/item/' + node.item.icon">
+    {{node.name.split('_').join(' ')}}
+  </mat-tree-node>
+
+  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+    <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
+      <mat-icon>{{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}</mat-icon>
+    </button>
+    {{node.name}}
+  </mat-tree-node>
+</mat-tree>
