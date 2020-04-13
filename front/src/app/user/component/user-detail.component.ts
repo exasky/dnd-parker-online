@@ -2,6 +2,7 @@ import {Component, HostBinding} from "@angular/core";
 import {AuthService} from "../../login/auth.service";
 import {UserService} from "../service/user.service";
 import {UserEdit} from "../model/user-edit";
+import {ToasterService} from "../../common/service/toaster.service";
 
 @Component({
   selector: 'app-user-detail',
@@ -12,7 +13,8 @@ export class UserDetailComponent {
   currentUser: UserEdit;
 
   constructor(private authService: AuthService,
-              private userService: UserService) {
+              private userService: UserService,
+              private toaster: ToasterService) {
 
     this.userService.getById(this.authService.currentUserValue.id).subscribe(userEdit => this.currentUser = userEdit);
   }
@@ -20,6 +22,7 @@ export class UserDetailComponent {
   updatePassword() {
     this.userService.updatePassword(this.currentUser).subscribe(updatedUser => {
       this.currentUser = updatedUser;
+      this.toaster.success("Password updated !");
     });
   }
 

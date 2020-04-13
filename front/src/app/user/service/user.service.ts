@@ -30,7 +30,7 @@ export class UserService {
   }
 
   updatePassword(user: UserEdit): Observable<UserEdit> {
-    return this.http.put<UserEdit>(UserService.API_URL + '/update-password/' + user.id, user);
+    return this.http.put<UserEdit>(UserService.API_URL + '/update-password/' + user.id, {id: user.id, password: user.password});
   }
 
   delete(id: number) {

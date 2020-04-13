@@ -41,9 +41,7 @@ public class BoardDto {
         if (bos.isEmpty()) {
             return new BoardDto[][]{};
         }
-        @SuppressWarnings("OptionalGetWithoutIsPresent")
         Integer maxCol = bos.stream().map(Board::getPositionX).max(Comparator.comparingInt(o -> o)).get();
-        @SuppressWarnings("OptionalGetWithoutIsPresent")
         Integer maxRow = bos.stream().map(Board::getPositionY).max(Comparator.comparingInt(o -> o)).get();
 
         BoardDto[][] dtos = new BoardDto[maxRow + 1][maxCol + 1];

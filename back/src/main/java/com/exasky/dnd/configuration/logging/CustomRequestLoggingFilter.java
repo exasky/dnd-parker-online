@@ -1,6 +1,7 @@
 package com.exasky.dnd.configuration.logging;
 
 import com.exasky.dnd.user.model.DnDUser;
+import com.exasky.dnd.user.rest.dto.DnDUserUpdatePasswordDto;
 import com.exasky.dnd.user.rest.dto.LoginDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +78,16 @@ public class CustomRequestLoggingFilter extends AbstractRequestLoggingFilter {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                } else if (request.getRequestURI().startsWith(REST_URL + "/user/update-password/")) {
+                    try {
+                        DnDUserUpdatePasswordDto dto = new ObjectMapper().readValue(payload, DnDUserUpdatePasswordDto.class);
+                        dto.setPassword("*** HIDDEN ***");
+                        payload = new ObjectMapper().writeValueAsString(dto);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+
                 msg.append(" - ").append(payload);
             }
         }
