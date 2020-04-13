@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface CharacterItemRepository extends JpaRepository<CharacterItem, Long> {
     List<CharacterItem> findAllByIdNotInAndLevelLessThanEqual(Collection<Long> ids, Short level);
-
-    void deleteAllById(Collection<Long> ids);
+    List<CharacterItem> findAllByLevelLessThanEqual(Short level);
 }

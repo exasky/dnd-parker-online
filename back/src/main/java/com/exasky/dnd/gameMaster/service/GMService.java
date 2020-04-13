@@ -132,8 +132,7 @@ public class GMService {
                     attachedCampaign.getAdventures().stream()
                             .noneMatch(adv -> adv.getId().equals(attachedCampaign.getCurrentAdventure().getId()))) {
                 attachedCampaign.setCurrentAdventure(attachedCampaign.getAdventures().get(0));
-            }
-            else if (Objects.isNull(attachedCampaign.getCurrentAdventure())) {
+            } else if (Objects.isNull(attachedCampaign.getCurrentAdventure())) {
                 attachedCampaign.setCurrentAdventure(attachedCampaign.getAdventures().get(0));
             }
         } else {
@@ -207,14 +206,17 @@ public class GMService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
-        List<CharacterItem> availableCards
-                = characterItemRepository.findAllByIdNotInAndLevelLessThanEqual(usedItemIds, adventureLevel);
+        List<CharacterItem> availableCards = usedItemIds.isEmpty()
+                ? characterItemRepository.findAllByLevelLessThanEqual(adventureLevel)
+                : characterItemRepository.findAllByIdNotInAndLevelLessThanEqual(usedItemIds, adventureLevel);
 
         // Clear the discard
         if (availableCards.isEmpty()) {
             campaign.getDrawnItems().clear();
             campaignRepository.save(campaign);
-            availableCards = characterItemRepository.findAllByIdNotInAndLevelLessThanEqual(itemOnCharacterIds, adventureLevel);
+            availableCards = itemOnCharacterIds.isEmpty()
+                    ? characterItemRepository.findAllByLevelLessThanEqual(adventureLevel)
+                    : characterItemRepository.findAllByIdNotInAndLevelLessThanEqual(usedItemIds, adventureLevel);
         }
         CharacterItem drawnCard = availableCards.get(new Random().nextInt(availableCards.size()));
 
