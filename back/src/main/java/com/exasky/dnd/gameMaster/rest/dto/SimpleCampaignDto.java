@@ -7,7 +7,6 @@ import com.exasky.dnd.common.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SimpleCampaignDto {
@@ -15,7 +14,7 @@ public class SimpleCampaignDto {
     private String name;
     private Long currentAdventureId;
     private String currentAdventureName;
-    private String currentCharacterDisplayName;
+    private List<String> currentCharacterDisplayName;
     private List<SimpleCharacterDto> characters = new ArrayList<>();
 
     public static List<SimpleCampaignDto> toDto(List<Campaign> bos) {
@@ -34,11 +33,10 @@ public class SimpleCampaignDto {
             dto.currentAdventureId = bo.getCurrentAdventure().getId();
         }
         dto.characters = SimpleCharacterDto.toDto(bo.getCharacters());
-        Optional<Character> optCurrentCharacter = bo.getCharacters().stream()
+        dto.currentCharacterDisplayName = bo.getCharacters().stream()
                 .filter(character -> Objects.nonNull(character.getUser()) && Utils.getCurrentUser().getId().equals(character.getUser().getId()))
-                .findFirst();
-        optCurrentCharacter.ifPresent(character -> dto.currentCharacterDisplayName = character.getDisplayName());
-
+                .map(Character::getDisplayName)
+                .collect(Collectors.toList());
 
         return dto;
     }
@@ -77,11 +75,11 @@ public class SimpleCampaignDto {
         this.currentAdventureName = currentAdventureName;
     }
 
-    public String getCurrentCharacterDisplayName() {
+    public List<String> getCurrentCharacterDisplayName() {
         return currentCharacterDisplayName;
     }
 
-    public void setCurrentCharacterDisplayName(String currentCharacterDisplayName) {
+    public void setCurrentCharacterDisplayName(List<String> currentCharacterDisplayName) {
         this.currentCharacterDisplayName = currentCharacterDisplayName;
     }
 
