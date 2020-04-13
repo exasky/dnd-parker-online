@@ -11,6 +11,8 @@ import {SocketResponse} from "../../../../common/model";
 import {DiceMessage, DiceMessageType} from "../../../model/dice-message";
 import {SocketResponseType} from "../../../../common/model/websocket.response";
 import {SimpleUser} from "../../../model/simple-user";
+import {Toast} from "ngx-toastr";
+import {ToasterService} from "../../../../common/service/toaster.service";
 
 @Component({
   selector: 'app-dice-dialog',
@@ -31,6 +33,7 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
               public authService: AuthService,
               private diceWS: DiceWebsocketService,
               private diceService: DiceService,
+              private toaster: ToasterService,
               public dialogRef: MatDialogRef<DiceDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: SimpleUser) {
   }
@@ -47,11 +50,13 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
         } else if (diceMessage.type === DiceMessageType.ROLL_RESULT) {
           const results: number[] = diceMessage.message;
           if (results.length !== this.diceComponents.length) {
-            throw new Error('[WS:ROLL_RESULT] Result length incorrect');
+            console.log('[WS:ROLL_RESULT] Result length incorrect');
+            this.toaster.warning('A player is doing shit... Please stop');
+          } else {
+            this.diceComponents.forEach((diceComp, index) => {
+              diceComp.value = results[index];
+            });
           }
-          this.diceComponents.forEach((diceComp, index) => {
-            diceComp.value = results[index];
-          });
         }
       }
     })
