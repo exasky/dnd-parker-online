@@ -344,10 +344,16 @@ export class AdventureComponent implements OnInit, OnDestroy {
     if (!dashboardItem) {
       this.addItem(item, layerIndex);
     } else {
-      // Update item only if position unchanged
+      // Update item only if position unchanged or icon
       if (dashboardItem.x !== item.positionX || dashboardItem.y !== item.positionY) {
         dashboardItem.x = item.positionX;
         dashboardItem.y = item.positionY;
+        this.dashboard.splice(this.dashboard.indexOf(dashboardItem), 1);
+        this.dashboard.push({...dashboardItem}); // Force re-insert with different reference
+      } else if (dashboardItem.elementId !== item.element.id) {
+        dashboardItem.elementId = item.element.id;
+        dashboardItem.icon = item.element.icon;
+        dashboardItem.type = item.element.type;
         this.dashboard.splice(this.dashboard.indexOf(dashboardItem), 1);
         this.dashboard.push({...dashboardItem}); // Force re-insert with different reference
       }
@@ -369,6 +375,41 @@ export class AdventureComponent implements OnInit, OnDestroy {
       item.element.type === LayerElementType.CHARACTER
       && user.currentCharacters.find(char => char.name.toLowerCase() === item.element.icon.toLowerCase()) !== undefined
     )
+  }
+
+  isItemFlippable(type: LayerElementType) {
+    return type.startsWith('TRAP_') || type.indexOf('_DOOR_') !== -1;
+  }
+
+  flipItem(item: GridsterItem) {
+    let newLayerItem: LayerElement;
+    switch (item.type) {
+      case LayerElementType.TRAP_DEACTIVATED:
+        newLayerItem = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_ACTIVATED);
+        break;
+      case LayerElementType.TRAP_ACTIVATED:
+        newLayerItem = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_DEACTIVATED);
+        break;
+      case LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED:
+        newLayerItem = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED);
+        break;
+      case LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED:
+        newLayerItem = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED);
+        break;
+      case LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED:
+        newLayerItem = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED);
+        break;
+      case LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED:
+        newLayerItem = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED);
+        break;
+    }
+
+    if (newLayerItem) {
+      item.type = newLayerItem.type;
+      item.elementId = newLayerItem.id;
+      item.icon = newLayerItem.icon;
+      this.saveAdventure();
+    }
   }
 
   // endregion

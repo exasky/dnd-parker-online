@@ -46,6 +46,7 @@ public class LayerItemService {
 
         attachedToUpdate.setPositionY(toUpdate.getPositionY());
         attachedToUpdate.setPositionX(toUpdate.getPositionX());
+        attachedToUpdate.setLayerElement(layerElementService.findById(toUpdate.getLayerElement().getId()));
 
         return layerItemRepository.save(attachedToUpdate);
     }
