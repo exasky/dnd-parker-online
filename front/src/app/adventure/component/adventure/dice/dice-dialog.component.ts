@@ -21,7 +21,7 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
 
   @ViewChildren('diceCmp') diceComponents: QueryList<DiceComponent>;
 
-  disabled = true;
+  rollDisabled = true;
 
   allDices: Dice[];
   selectedDices: Dice[] = [];
@@ -38,7 +38,7 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.disabled = !this.authService.isGM && !(this.authService.currentUserValue.id === this.data.user.id);
+    this.rollDisabled = !this.authService.isGM && !(this.authService.currentUserValue.id === this.data.user.id);
     this.gmService.getAllDices().subscribe(dices => this.allDices = dices);
     this.diceWSObs = this.diceWS.getObservable(this.data.adventureId).subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {
@@ -66,14 +66,14 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
   }
 
   addToDiceList(dice: Dice) {
-    if (!this.disabled) {
+    if (!this.rollDisabled) {
       this.selectedDices.push(dice);
       this.diceService.selectDices(this.data.adventureId, this.selectedDices.map(dice => dice.id));
     }
   }
 
   removeDiceFromList(dice: Dice) {
-    if (!this.disabled) {
+    if (!this.rollDisabled) {
       this.selectedDices.splice(this.selectedDices.indexOf(dice), 1);
       this.diceService.selectDices(this.data.adventureId, this.selectedDices.map(dice => dice.id));
     }
