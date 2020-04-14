@@ -25,7 +25,7 @@
     <div class="status-bar-text">MP : {{character.mp}} / {{character.maxMp}}</div>
   </section>
 
-  <img *ngIf="character.name" width="300px" [src]="'assets/character/' + character.name.toLowerCase() + '.jpg'">
+  <img *ngIf="character.name" [width]="characterWidth" [src]="'assets/character/' + character.name.toLowerCase() + '.jpg'">
 </div>
 
 <!-- Backpack items-->
