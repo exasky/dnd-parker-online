@@ -146,11 +146,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
               break
             case AdventureMessageType.ADD_LAYER_ITEM:
               const newLayerItem = message.message;
-              this.addItem(newLayerItem, AdventureComponent.getLayerIndex(newLayerItem));
+              this.addItem(newLayerItem, AdventureComponent.getLayerIndex(newLayerItem.element));
               break;
             case AdventureMessageType.UPDATE_LAYER_ITEM:
               const updatedLayerItem = message.message;
-              this.updateItem(updatedLayerItem, AdventureComponent.getLayerIndex(updatedLayerItem));
+              this.updateItem(updatedLayerItem, AdventureComponent.getLayerIndex(updatedLayerItem.element));
               break;
             case AdventureMessageType.REMOVE_LAYER_ITEM:
               const layerItemId = message.message;
