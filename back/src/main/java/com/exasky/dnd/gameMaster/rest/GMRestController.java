@@ -89,7 +89,7 @@ public class GMRestController {
         dto.setType(AdventureMessageDto.AdventureMessageType.GOTO);
         dto.setMessage(gmService.findPreviousAdventureId(adventureId));
 
-        this.messagingTemplate.convertAndSend("/topic/adventure", dto);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, dto);
     }
 
     @GetMapping("/next-adventure/{adventureId}")
@@ -98,6 +98,6 @@ public class GMRestController {
         dto.setType(AdventureMessageDto.AdventureMessageType.GOTO);
         dto.setMessage(gmService.findNextAdventureId(adventureId));
 
-        this.messagingTemplate.convertAndSend("/topic/adventure", dto);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, dto);
     }
 }
