@@ -92,6 +92,9 @@ export class CampaignCreatorComponent implements OnInit {
   saveCampaign() {
     this.gmService.saveCampaign(this.campaign).subscribe(newCampaign => {
       this.campaign = newCampaign;
+      if (this.selectedAdventure) {
+        this.selectedAdventure = this.campaign.adventures.find(campAdv => campAdv.id === this.selectedAdventure.id);
+      }
       this.adventureService.getCharacterTemplates().subscribe(value => {
         this.characterTemplates = value.filter(ct => this.campaign.characters.findIndex(char => char.name === ct.name) === -1);
       });
