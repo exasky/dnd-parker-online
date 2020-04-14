@@ -107,7 +107,10 @@ import {ToastrModule} from "ngx-toastr";
     WebSocketWrapperService,
     AdventureWebsocketService,
     DrawnCardWebsocketService,
-    DiceWebsocketService
+    DiceWebsocketService,
+    AdventureWebsocketService,
+    DrawnCardWebsocketService,
+    DiceWebsocketService,
   ],
   bootstrap: [AppComponent]
 })

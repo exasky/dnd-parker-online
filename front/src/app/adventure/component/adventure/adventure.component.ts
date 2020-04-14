@@ -13,7 +13,6 @@ import {GmService} from "../../service/gm.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../../login/auth.service";
 import {ROLE_GM} from "../../../user/user";
-import {AdventureWebsocketService} from "../../../common/service/ws/adventure.websocket.service";
 import {SocketResponse} from "../../../common/model";
 import {Subscription} from "rxjs";
 import {DrawnCardWebsocketService} from "../../../common/service/ws/drawn-card.websocket.service";
@@ -27,6 +26,7 @@ import {DiceMessage, DiceMessageType} from "../../model/dice-message";
 import {DiceDialogComponent} from "./dice/dice-dialog.component";
 import {DiceWebsocketService} from "../../../common/service/ws/dice.websocket.service";
 import {MatDrawer} from "@angular/material/sidenav";
+import {AdventureWebsocketService} from "../../../common/service/ws/adventure.websocket.service";
 
 @Component({
   selector: 'app-board',
@@ -75,8 +75,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.mjService.getAddableElements().subscribe(elements => this.addableLayerElements = elements);
-    this.adventureService.getAdventure(this.route.snapshot.paramMap.get("id")).subscribe(adventure => {
+    if (this.authService.isGM) {
+      this.mjService.getAddableElements().subscribe(elements => this.addableLayerElements = elements);
+    }
+    const adventureId = this.route.snapshot.paramMap.get("id");
+    this.adventureService.getAdventure(adventureId).subscribe(adventure => {
       this.adventure = adventure;
       const currentUser = this.authService.currentUserValue;
       currentUser.currentCharacters = this.adventure.characters.filter(character => character.userId === currentUser.id);
@@ -88,7 +91,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       this.initDashboard();
     });
 
-    this.adventureWSObs = this.adventureWS.getObservable().subscribe({
+    this.adventureWSObs = this.adventureWS.getObservable(adventureId).subscribe({
       next: (receivedMsg: SocketResponse) => {
         if (receivedMsg.type === SocketResponseType.SUCCESS) {
           const message: AdventureMessage = receivedMsg.data;
@@ -156,7 +159,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.drawnCardWSObs = this.drawnCardWS.getObservable().subscribe((receivedMsg: SocketResponse) => {
+    this.drawnCardWSObs = this.drawnCardWS.getObservable(adventureId).subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {
         const drawerOpenedSaved = this.drawer.opened;
         this.disableActions = this.drawer.opened = true;
@@ -168,13 +171,13 @@ export class AdventureComponent implements OnInit, OnDestroy {
       }
     })
 
-    this.diceWSObs = this.diceWS.getObservable().subscribe((receivedMsg: SocketResponse) => {
+    this.diceWSObs = this.diceWS.getObservable(adventureId).subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {
         const diceMessage: DiceMessage = receivedMsg.data;
         if (diceMessage.type === DiceMessageType.OPEN_DIALOG) {
           const drawerOpenedSaved = this.drawer.opened;
           this.disableActions = this.drawer.opened = true;
-          this.dialog.open(DiceDialogComponent, DialogUtils.getDefaultConfig(receivedMsg.data.message))
+          this.dialog.open(DiceDialogComponent, DialogUtils.getDefaultConfig({adventureId, user: receivedMsg.data.message}))
             .beforeClosed().subscribe(() => {
             this.disableActions = false;
             this.drawer.opened = drawerOpenedSaved;
@@ -261,7 +264,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     mouseMove.offsetY = this.boardPanel.nativeElement.getBoundingClientRect().top;
     mouseMove.userId = this.authService.currentUserValue.id;
     mouseMove.username = this.authService.currentUserValue.username;
-    this.adventureService.playerMouseMove(mouseMove)
+    this.adventureService.playerMouseMove(this.adventure.id, mouseMove);
   }
 
   onMouseOut() {
@@ -269,7 +272,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     mouseMove.x = -1;
     mouseMove.y = -1;
     mouseMove.userId = this.authService.currentUserValue.id;
-    this.adventureService.playerMouseMove(mouseMove);
+    this.adventureService.playerMouseMove(this.adventure.id, mouseMove);
   }
 
   changedOptions() {

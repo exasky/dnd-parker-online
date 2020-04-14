@@ -3,20 +3,23 @@ package com.exasky.dnd.adventure.service;
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.adventure.model.CharacterTemplate;
+import com.exasky.dnd.adventure.model.card.CharacterItem;
 import com.exasky.dnd.adventure.model.layer.Layer;
 import com.exasky.dnd.adventure.model.layer.LayerItem;
 import com.exasky.dnd.adventure.repository.AdventureRepository;
 import com.exasky.dnd.adventure.repository.CampaignRepository;
+import com.exasky.dnd.adventure.repository.CharacterItemRepository;
 import com.exasky.dnd.adventure.repository.CharacterTemplateRepository;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.common.exception.ValidationCheckException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.exasky.dnd.adventure.model.layer.LayerElementType.*;
 import static com.exasky.dnd.common.Utils.getCurrentUser;
@@ -26,6 +29,7 @@ public class AdventureService {
 
     private final AdventureRepository repository;
     private final CampaignRepository campaignRepository;
+    private final CharacterItemRepository characterItemRepository;
     private final CharacterTemplateRepository characterTemplateRepository;
     private final LayerItemService layerItemService;
     private final BoardService boardService;
@@ -33,11 +37,13 @@ public class AdventureService {
     @Autowired
     public AdventureService(AdventureRepository repository,
                             CampaignRepository campaignRepository,
+                            CharacterItemRepository characterItemRepository,
                             CharacterTemplateRepository characterTemplateRepository,
                             LayerItemService layerItemService,
                             BoardService boardService) {
         this.repository = repository;
         this.campaignRepository = campaignRepository;
+        this.characterItemRepository = characterItemRepository;
         this.characterTemplateRepository = characterTemplateRepository;
         this.layerItemService = layerItemService;
         this.boardService = boardService;
@@ -103,15 +109,6 @@ public class AdventureService {
         int idx = layerToUpdate.getItems().indexOf(previousLayerItem);
         layerToUpdate.getItems().set(idx, attachedLayerItem);
 
-//        int index;
-//        for (index = 0; index < layerToUpdate.getItems().size(); index++) {
-//            LayerItem currentLayerItem = layerToUpdate.getItems().get(index);
-//            if (currentLayerItem.getId().equals(attachedLayerItem.getId())) {
-//                break;
-//            }
-//        }
-//        layerToUpdate.getItems().set(index, attachedLayerItem);
-
         return attachedLayerItem;
     }
 
@@ -128,5 +125,50 @@ public class AdventureService {
         return Arrays.asList(CHARACTER, MONSTER, TREE, PYLON).contains(layerItem.getLayerElement().getType())
                 ? attachedAdventure.getCharacterLayer()
                 : attachedAdventure.getMjLayer();
+    }
+
+    public CharacterItem drawCard(Long adventureId) {
+        Campaign campaign = this.campaignRepository.getByAdventureId(adventureId);
+
+        if (Objects.isNull(campaign)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+        }
+
+        //noinspection OptionalGetWithoutIsPresent
+        Short adventureLevel = campaign.getAdventures()
+                .stream()
+                .filter(a -> a.getId().equals(adventureId)).findFirst().get().getLevel();
+
+        List<Long> itemOnCharacterIds = campaign.getCharacters().stream()
+                .flatMap(c -> Stream.of(c.getEquipments(), c.getBackPack()).flatMap(Collection::stream))
+                .map(CharacterItem::getId)
+                .collect(Collectors.toList());
+
+        List<Long> drawnCardIds = campaign.getDrawnItems().stream()
+                .map(CharacterItem::getId)
+                .collect(Collectors.toList());
+
+        Set<Long> usedItemIds = Stream.of(itemOnCharacterIds, drawnCardIds)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+
+        List<CharacterItem> availableCards = usedItemIds.isEmpty()
+                ? characterItemRepository.findAllByLevelLessThanEqual(adventureLevel)
+                : characterItemRepository.findAllByIdNotInAndLevelLessThanEqual(usedItemIds, adventureLevel);
+
+        // Clear the discard
+        if (availableCards.isEmpty()) {
+            campaign.getDrawnItems().clear();
+            campaignRepository.save(campaign);
+            availableCards = itemOnCharacterIds.isEmpty()
+                    ? characterItemRepository.findAllByLevelLessThanEqual(adventureLevel)
+                    : characterItemRepository.findAllByIdNotInAndLevelLessThanEqual(usedItemIds, adventureLevel);
+        }
+        CharacterItem drawnCard = availableCards.get(new Random().nextInt(availableCards.size()));
+
+        campaign.getDrawnItems().add(drawnCard);
+        campaignRepository.save(campaign);
+
+        return drawnCard;
     }
 }

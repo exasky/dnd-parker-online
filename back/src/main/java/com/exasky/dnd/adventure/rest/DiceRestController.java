@@ -23,26 +23,26 @@ public class DiceRestController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @GetMapping("/open")
-    public void openDiceRoller() {
+    @GetMapping("/open/{adventureId}")
+    public void openDiceRoller(@PathVariable Long adventureId) {
         DiceMessageDto dto = new DiceMessageDto();
         dto.setType(DiceMessageDto.DiceMessageType.OPEN_DIALOG);
         dto.setMessage(SimpleUserDto.toDto(getCurrentUser()));
 
-        this.messagingTemplate.convertAndSend("/topic/dice", dto);
+        this.messagingTemplate.convertAndSend("/topic/dice/" + adventureId, dto);
     }
 
-    @PostMapping("/select-dices")
-    public void selectDices(@RequestBody SelectDicesDto dto) {
+    @PostMapping("/select-dices/{adventureId}")
+    public void selectDices(@PathVariable Long adventureId, @RequestBody SelectDicesDto dto) {
         DiceMessageDto responseDto = new DiceMessageDto();
         responseDto.setType(DiceMessageDto.DiceMessageType.SELECT_DICES);
         responseDto.setMessage(dto.getIds());
 
-        this.messagingTemplate.convertAndSend("/topic/dice", responseDto);
+        this.messagingTemplate.convertAndSend("/topic/dice/" + adventureId, responseDto);
     }
 
-    @PostMapping("/roll-dices")
-    public void rollDices(@RequestBody SelectDicesDto dto) {
+    @PostMapping("/roll-dices/{adventureId}")
+    public void rollDices(@PathVariable Long adventureId, @RequestBody SelectDicesDto dto) {
         DiceMessageDto responseDto = new DiceMessageDto();
         responseDto.setType(DiceMessageDto.DiceMessageType.ROLL_RESULT);
 
@@ -51,6 +51,6 @@ public class DiceRestController {
                 dto.getIds().stream().map(id -> r.nextInt(6) + 1).collect(Collectors.toList())
         );
 
-        this.messagingTemplate.convertAndSend("/topic/dice", responseDto);
+        this.messagingTemplate.convertAndSend("/topic/dice/" + adventureId, responseDto);
     }
 }

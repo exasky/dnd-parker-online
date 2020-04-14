@@ -8,6 +8,7 @@ import com.exasky.dnd.adventure.rest.dto.layer.LayerItemDto;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
+import com.exasky.dnd.gameMaster.rest.dto.CharacterItemDto;
 import com.exasky.dnd.gameMaster.rest.dto.SimpleCampaignDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -45,12 +46,19 @@ public class AdventureRestController {
         return SimpleCampaignDto.toDto(this.adventureService.getCampaignsForCurrentUser());
     }
 
-    @PostMapping("/mouse-move")
-    public void userMouseMove(@RequestBody MouseMoveDto mouseMoveDto) {
+    @PostMapping("/mouse-move/{adventureId}")
+    public void userMouseMove(@PathVariable Long adventureId, @RequestBody MouseMoveDto mouseMoveDto) {
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.MOUSE_MOVE);
         wsDto.setMessage(mouseMoveDto);
-        this.messagingTemplate.convertAndSend("/topic/adventure", wsDto);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+    }
+
+    @GetMapping("/draw-card/{adventureId}")
+    public void drawCard(@PathVariable Long adventureId) {
+        CharacterItemDto dto = CharacterItemDto.toDto(this.adventureService.drawCard(adventureId));
+
+        this.messagingTemplate.convertAndSend("/topic/drawn-card/" + adventureId, dto);
     }
 
     @GetMapping("/{id}")
@@ -65,7 +73,7 @@ public class AdventureRestController {
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.ADD_LAYER_ITEM);
         wsDto.setMessage(returnDto);
-        this.messagingTemplate.convertAndSend("/topic/adventure", wsDto);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 
     @PutMapping("/update-layer-item/{adventureId}")
@@ -75,7 +83,7 @@ public class AdventureRestController {
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_LAYER_ITEM);
         wsDto.setMessage(returnDto);
-        this.messagingTemplate.convertAndSend("/topic/adventure", wsDto);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 
     @DeleteMapping("/delete-layer-item/{adventureId}/{layerItemId}")
@@ -85,6 +93,6 @@ public class AdventureRestController {
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.REMOVE_LAYER_ITEM);
         wsDto.setMessage(layerItemId);
-        this.messagingTemplate.convertAndSend("/topic/adventure", wsDto);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 }

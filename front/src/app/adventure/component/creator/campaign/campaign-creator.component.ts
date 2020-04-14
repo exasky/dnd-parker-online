@@ -37,7 +37,6 @@ export class CampaignCreatorComponent implements OnInit {
   ngOnInit(): void {
     this.gmService.getAllCharacterItems().subscribe(value => this.allCharacterItems = value);
 
-
     const id = this.route.snapshot.paramMap.get("id");
     if (id !== null) {
       this.gmService.getCampaign(id).subscribe(campaign => {
@@ -91,6 +90,9 @@ export class CampaignCreatorComponent implements OnInit {
 
   saveCampaign() {
     this.gmService.saveCampaign(this.campaign).subscribe(newCampaign => {
+      if (this.campaign.id !== newCampaign.id) {
+        this.router.navigate([newCampaign.id], {relativeTo: this.route});
+      }
       this.campaign = newCampaign;
       if (this.selectedAdventure) {
         this.selectedAdventure = this.campaign.adventures.find(campAdv => campAdv.id === this.selectedAdventure.id);

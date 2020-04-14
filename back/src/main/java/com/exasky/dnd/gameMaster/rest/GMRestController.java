@@ -1,5 +1,6 @@
 package com.exasky.dnd.gameMaster.rest;
 
+import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.adventure.rest.dto.AdventureDto;
 import com.exasky.dnd.adventure.rest.dto.layer.LayerElementDto;
@@ -58,17 +59,20 @@ public class GMRestController {
         return CreateCampaignDto.toDto(this.gmService.createCampaign(CreateCampaignDto.toBo(dto)));
     }
 
-    @PutMapping("/campaign/{id}")
-    public CreateCampaignDto updateCampaign(@PathVariable Long id, @RequestBody CreateCampaignDto dto) {
-        Campaign updatedCampaign = this.gmService.updateCampaign(id, CreateCampaignDto.toBo(dto));
+    @PutMapping("/campaign/{campaignId}")
+    public CreateCampaignDto updateCampaign(@PathVariable Long campaignId, @RequestBody CreateCampaignDto dto) {
+        Adventure previousCurrentAdventure = this.gmService.getCampaign(campaignId).getCurrentAdventure();
 
+        Campaign updatedCampaign = this.gmService.updateCampaign(campaignId, CreateCampaignDto.toBo(dto));
 
-        AdventureMessageDto wsDto = new AdventureMessageDto();
-        wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_CHARACTERS);
-        if (Objects.nonNull(updatedCampaign.getCurrentAdventure())) {
-            wsDto.setMessage(AdventureDto.toDto(updatedCampaign.getCurrentAdventure()));
+        if (Objects.nonNull(previousCurrentAdventure)) {
+            AdventureMessageDto wsDto = new AdventureMessageDto();
+            wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_CHARACTERS);
+            if (Objects.nonNull(updatedCampaign.getCurrentAdventure())) {
+                wsDto.setMessage(AdventureDto.toDto(updatedCampaign.getCurrentAdventure()));
+            }
+            this.messagingTemplate.convertAndSend("/topic/adventure/" + previousCurrentAdventure.getId(), wsDto);
         }
-        this.messagingTemplate.convertAndSend("/topic/adventure", wsDto);
 
         return CreateCampaignDto.toDto(updatedCampaign);
     }
@@ -76,16 +80,6 @@ public class GMRestController {
     @DeleteMapping("/campaign/{id}")
     public void deleteCampaign(@PathVariable Long id) {
         this.gmService.deleteCampaign(id);
-    }
-
-    // TODO move to adventureController
-    @GetMapping("/draw-card/{adventureId}")
-    public CharacterItemDto drawCard(@PathVariable Long adventureId) {
-        CharacterItemDto dto = CharacterItemDto.toDto(this.gmService.drawCard(adventureId));
-
-        this.messagingTemplate.convertAndSend("/topic/drawn-card", dto);
-
-        return dto;
     }
 
     @GetMapping("/previous-adventure/{adventureId}")

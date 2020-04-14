@@ -27,5 +27,5 @@
           (click)="dialogRef.close()">
     Close
   </button>
-  <div *ngIf="rollButton.disabled">C'est pas ton tour ! (À {{data.username}})</div>
+  <div *ngIf="rollButton.disabled">C'est pas ton tour ! (À {{data.user.username}})</div>
 </mat-dialog-actions>

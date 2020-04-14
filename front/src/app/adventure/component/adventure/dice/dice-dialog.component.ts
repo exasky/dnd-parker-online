@@ -11,7 +11,6 @@ import {SocketResponse} from "../../../../common/model";
 import {DiceMessage, DiceMessageType} from "../../../model/dice-message";
 import {SocketResponseType} from "../../../../common/model/websocket.response";
 import {SimpleUser} from "../../../model/simple-user";
-import {Toast} from "ngx-toastr";
 import {ToasterService} from "../../../../common/service/toaster.service";
 
 @Component({
@@ -35,13 +34,13 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
               private diceService: DiceService,
               private toaster: ToasterService,
               public dialogRef: MatDialogRef<DiceDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: SimpleUser) {
+              @Inject(MAT_DIALOG_DATA) public data: {adventureId: string, user: SimpleUser}) {
   }
 
   ngOnInit(): void {
-    this.disabled = !this.authService.isGM && !(this.authService.currentUserValue.id === this.data.id);
+    this.disabled = !this.authService.isGM && !(this.authService.currentUserValue.id === this.data.user.id);
     this.gmService.getAllDices().subscribe(dices => this.allDices = dices);
-    this.diceWSObs = this.diceWS.getObservable().subscribe((receivedMsg: SocketResponse) => {
+    this.diceWSObs = this.diceWS.getObservable(this.data.adventureId).subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {
         const diceMessage: DiceMessage = receivedMsg.data;
         if (diceMessage.type === DiceMessageType.SELECT_DICES) {
@@ -69,18 +68,18 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
   addToDiceList(dice: Dice) {
     if (!this.disabled) {
       this.selectedDices.push(dice);
-      this.diceService.selectDices(this.selectedDices.map(dice => dice.id));
+      this.diceService.selectDices(this.data.adventureId, this.selectedDices.map(dice => dice.id));
     }
   }
 
   removeDiceFromList(dice: Dice) {
     if (!this.disabled) {
       this.selectedDices.splice(this.selectedDices.indexOf(dice), 1);
-      this.diceService.selectDices(this.selectedDices.map(dice => dice.id));
+      this.diceService.selectDices(this.data.adventureId, this.selectedDices.map(dice => dice.id));
     }
   }
 
   rollDices() {
-    this.diceService.rollDices(this.selectedDices.map(dice => dice.id));
+    this.diceService.rollDices(this.data.adventureId, this.selectedDices.map(dice => dice.id));
   }
 }

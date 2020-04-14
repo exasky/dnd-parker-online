@@ -4,6 +4,7 @@ import {Adventure} from "../../../model/adventure";
 import {MatDialog} from "@angular/material/dialog";
 import {DiceService} from "../../../service/dice.service";
 import {AuthService} from "../../../../login/auth.service";
+import {AdventureService} from "../../../service/adventure.service";
 
 @Component({
   selector: 'app-action-panel',
@@ -19,6 +20,7 @@ export class ActionPanelComponent {
   adventure: Adventure;
 
   constructor(private gmService: GmService,
+              private adventureService: AdventureService,
               private dialog: MatDialog,
               private diceService: DiceService,
               public authService: AuthService) {
@@ -27,14 +29,13 @@ export class ActionPanelComponent {
   drawCard() {
     if (!this.disableActions) {
       // Do nothing as get card from websocket
-      this.gmService.drawCard(this.adventure.id).subscribe(() => {
-      });
+      this.adventureService.drawCard(this.adventure.id);
     }
   }
 
   rollDices() {
     if (!this.disableActions) {
-      this.diceService.openDiceDialog();
+      this.diceService.openDiceDialog(this.adventure.id);
     }
   }
 
