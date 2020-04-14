@@ -9,7 +9,7 @@
             class="mb-2 flex-shrink-0"
             (click)="isCharacterCreatorSelected = true">Characters
     </button>
-    <button mat-raised-button class="mb-2 flex-shrink-0"
+    <button mat-raised-button class="mb-2 flex-shrink-0" style="min-height: 10px"
             *ngFor="let adventure of campaign.adventures"
             (click)="selectAdventure(adventure)">{{adventure.name}}</button>
     <button mat-raised-button class="flex-shrink-0"

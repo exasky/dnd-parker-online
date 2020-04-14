@@ -7,6 +7,7 @@ import com.exasky.dnd.user.rest.dto.DnDUserUpdatePasswordDto;
 import com.exasky.dnd.user.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -30,12 +31,12 @@ public class UserRestController {
     }
 
     @PostMapping
-    public DnDUserDto create(@RequestBody DnDCreateUserDto dto) {
+    public DnDUserDto create(@Valid @RequestBody DnDCreateUserDto dto) {
         return DnDUserDto.toDto(this.userService.create(DnDCreateUserDto.toBo(dto)));
     }
 
     @PutMapping("/{id}")
-    public DnDUserDto update(@PathVariable Long id, @RequestBody DnDUserDto dto) {
+    public DnDUserDto update(@PathVariable Long id, @Valid @RequestBody DnDUserDto dto) {
         return DnDUserDto.toDto(this.userService.update(id, DnDUserDto.toBo(dto)));
     }
 

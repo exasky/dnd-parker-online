@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,12 +56,12 @@ public class GMRestController {
     }
 
     @PostMapping("/campaign")
-    public CreateCampaignDto createCampaign(@RequestBody CreateCampaignDto dto) {
+    public CreateCampaignDto createCampaign(@Valid @RequestBody CreateCampaignDto dto) {
         return CreateCampaignDto.toDto(this.gmService.createCampaign(CreateCampaignDto.toBo(dto)));
     }
 
     @PutMapping("/campaign/{campaignId}")
-    public CreateCampaignDto updateCampaign(@PathVariable Long campaignId, @RequestBody CreateCampaignDto dto) {
+    public CreateCampaignDto updateCampaign(@PathVariable Long campaignId, @Valid @RequestBody CreateCampaignDto dto) {
         Adventure previousCurrentAdventure = this.gmService.getCampaign(campaignId).getCurrentAdventure();
 
         Campaign updatedCampaign = this.gmService.updateCampaign(campaignId, CreateCampaignDto.toBo(dto));
