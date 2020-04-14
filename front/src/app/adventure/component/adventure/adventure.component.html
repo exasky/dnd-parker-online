@@ -103,6 +103,7 @@
 
             <div *ngSwitchCase="layerElementType.CHARACTER"
                  class="adventure-board-item"
+                 [class.selected]="selectedCharacterId === item.character.id"
                  [ngStyle]="{'background-image': 'url(\'assets/character/' + item.icon + '-token.jpg\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
             </div>

@@ -5,6 +5,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DiceService} from "../../../service/dice.service";
 import {AuthService} from "../../../../login/auth.service";
 import {AdventureService} from "../../../service/adventure.service";
+import {Character} from "../../../model/character";
 
 @Component({
   selector: 'app-action-panel',
@@ -36,6 +37,12 @@ export class ActionPanelComponent {
   rollDices() {
     if (!this.disableActions) {
       this.diceService.openDiceDialog(this.adventure.id);
+    }
+  }
+
+  selectCharacter(character: Character) {
+    if (!this.disableActions) {
+      this.adventureService.selectCharacter(this.adventure.id, character.id);
     }
   }
 

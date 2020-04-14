@@ -48,4 +48,8 @@ export class AdventureService {
   deleteLayerItem(adventureId, layerItemId) {
     this.http.delete(AdventureService.API_URL + '/delete-layer-item/' + adventureId + '/' + layerItemId).subscribe();
   }
+
+  selectCharacter(adventureId, characterId) {
+    this.http.get(AdventureService.API_URL + '/select-character/' + adventureId + '/' + characterId).subscribe();
+  }
 }

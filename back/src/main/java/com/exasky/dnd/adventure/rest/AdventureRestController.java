@@ -95,4 +95,12 @@ public class AdventureRestController {
         wsDto.setMessage(layerItemId);
         this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
+
+    @GetMapping("/select-character/{adventureId}/{characterId}")
+    public void selectCharacter(@PathVariable Long adventureId, @PathVariable Long characterId) {
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.SELECT_CHARACTER);
+        wsDto.setMessage(characterId);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+    }
 }

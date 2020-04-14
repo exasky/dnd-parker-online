@@ -1,5 +1,6 @@
 <button mat-raised-button color="accent" class="m-2" (click)="drawCard()" [disabled]="disableActions">Draw card</button>
-<button mat-raised-button color="accent" class="m-2" (click)="rollDices()" [disabled]="disableActions">Roll dices</button>
+<button mat-raised-button color="accent" class="m-2" (click)="rollDices()" [disabled]="disableActions">Roll dices
+</button>
 
 <mat-divider class="m-2" [inset]="false"></mat-divider>
 
@@ -10,7 +11,8 @@
         [ngbTooltip]="tooltipContent"
         [container]="'body'"
         tooltipClass="w-75"
-        placement="left">
+        placement="left"
+        (click)="selectCharacter(character)">
   {{character.name}}
   <ng-template #tooltipContent>
     <app-character-tooltip-displayer [character]="character"

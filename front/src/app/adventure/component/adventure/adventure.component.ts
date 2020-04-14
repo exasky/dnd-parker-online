@@ -65,6 +65,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   monsters: Monster[] = [];
   selectedMonsterLayerItemId: number;
+  selectedCharacterId: number;
 
   constructor(private adventureService: AdventureService,
               private mjService: GmService,
@@ -155,6 +156,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
               const layerItemId = message.message;
               const itemToRemove = this.dashboard.find(dashboardItem => dashboardItem.id === layerItemId);
               this.removeItem(itemToRemove);
+              break;
+            case AdventureMessageType.SELECT_CHARACTER:
+              this.selectedCharacterId = message.message;
+              break;
           }
         }
       },

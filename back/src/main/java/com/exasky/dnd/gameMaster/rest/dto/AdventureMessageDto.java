@@ -7,7 +7,8 @@ public class AdventureMessageDto {
         MOUSE_MOVE,
         ADD_LAYER_ITEM,
         UPDATE_LAYER_ITEM,
-        REMOVE_LAYER_ITEM
+        REMOVE_LAYER_ITEM,
+        SELECT_CHARACTER
     }
 
     private AdventureMessageType type;
