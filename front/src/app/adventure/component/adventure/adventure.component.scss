@@ -14,6 +14,10 @@
   background: none no-repeat center center;
   height: 100%;
   width: 100%;
+
+  &.selected {
+    border: red 1px solid;
+  }
 }
 
 gridster {

@@ -27,6 +27,7 @@ import {DiceDialogComponent} from "./dice/dice-dialog.component";
 import {DiceWebsocketService} from "../../../common/service/ws/dice.websocket.service";
 import {MatDrawer} from "@angular/material/sidenav";
 import {AdventureWebsocketService} from "../../../common/service/ws/adventure.websocket.service";
+import {Monster} from "../../model/monster";
 
 @Component({
   selector: 'app-board',
@@ -61,6 +62,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
   otherPlayersCursors: MouseMove[] = [];
 
   disableActions: boolean = false;
+
+  monsters: Monster[] = [];
+  selectedMonsterLayerItemId: number;
 
   constructor(private adventureService: AdventureService,
               private mjService: GmService,
@@ -177,7 +181,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
         if (diceMessage.type === DiceMessageType.OPEN_DIALOG) {
           const drawerOpenedSaved = this.drawer.opened;
           this.disableActions = this.drawer.opened = true;
-          this.dialog.open(DiceDialogComponent, DialogUtils.getDefaultConfig({adventureId, user: receivedMsg.data.message}))
+          this.dialog.open(DiceDialogComponent, DialogUtils.getDefaultConfig({
+            adventureId,
+            user: receivedMsg.data.message
+          }))
             .beforeClosed().subscribe(() => {
             this.disableActions = false;
             this.drawer.opened = drawerOpenedSaved;
@@ -342,8 +349,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     this.adventureService.deleteLayerItem(this.adventure.id, item.id);
   }
-  // endregion
 
+  // endregion
 
   private static getLayerIndex(element: LayerElement) {
     return ([LayerElementType.CHARACTER, LayerElementType.MONSTER, LayerElementType.PYLON, LayerElementType.TREE]
@@ -369,6 +376,17 @@ export class AdventureComponent implements OnInit, OnDestroy {
     };
     this.addSpecificToDashboardItem(itemToPush, item.element);
     this.dashboard.push(itemToPush)
+    if (itemToPush.type === LayerElementType.MONSTER) {
+      if (!this.monsters.some(monster => monster.layerItemId === itemToPush.id)) {
+        const monsterIdx = this.monsters.length !== 0 ? this.monsters[this.monsters.length - 1].index + 1 : 0;
+        this.monsters.push({
+          layerItemId: itemToPush.id,
+          hp: 0,
+          name: itemToPush.icon,
+          index: monsterIdx
+        })
+      }
+    }
   }
 
   updateItem(item: LayerItem, layerIndex = 0) {
@@ -383,6 +401,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   removeItem(item: GridsterItem) {
     this.dashboard.splice(this.dashboard.indexOf(item), 1);
+    if (item.type === LayerElementType.MONSTER) {
+      this.monsters.splice(this.monsters.findIndex(monster => monster.layerItemId === item.id), 1);
+    }
   }
 
   private addSpecificToDashboardItem(dashboardItem: GridsterItem, layerElement: LayerElement) {
@@ -408,6 +429,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   isItemFlippable(type: LayerElementType) {
     return type.startsWith('TRAP_') || type.indexOf('_DOOR_') !== -1;
   }
+
   // endregion
 
   getCharacterNamesFromId(userId) {

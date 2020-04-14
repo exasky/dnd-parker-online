@@ -48,6 +48,7 @@ import {MatDividerModule} from "@angular/material/divider";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {ErrorInterceptor} from "./common/interceptor/error-interceptor.service";
 import {ToastrModule} from "ngx-toastr";
+import {GmActionPanelComponent} from "./adventure/component/adventure/gm/gm-action-panel.component";
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import {ToastrModule} from "ngx-toastr";
     AdventureItemDisplayerComponent,
     CharacterTooltipDisplayerComponent,
     ActionPanelComponent,
+    GmActionPanelComponent,
     DrawnCardDialogComponent,
     DiceComponent,
     DiceDialogComponent
