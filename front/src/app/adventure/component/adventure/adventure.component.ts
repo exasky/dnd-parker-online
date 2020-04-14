@@ -121,7 +121,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
                 }
               }
               break;
-            case AdventureMessageType.RELOAD:
+            case AdventureMessageType.UPDATE_CHARACTERS:
               if (!message.message) {
                 this.toaster.warning("Your GM has deleted all adventures for this campaign... Such an idiot");
                 this.router.navigateByUrl('');
@@ -131,20 +131,23 @@ export class AdventureComponent implements OnInit, OnDestroy {
                 });
               } else {
                 this.adventure = message.message;
-                // Update existing items of else create
-                this.adventure.mjLayer.items.forEach(mjItem => {
-                  this.updateItem(mjItem, 0);
-                });
-                this.adventure.characterLayer.items.forEach(characterItem => {
-                  this.updateItem(characterItem, 1);
-                })
-
-                // Remove others
-                const allLayerIds = this.adventure.mjLayer.items.map(value => value.id)
-                  .concat(this.adventure.characterLayer.items.map(value => value.id));
-                this.removeUnusedItems(allLayerIds);
+                this.adventure.characterLayer.items
+                  .filter(layerItem => layerItem.element.type === LayerElementType.CHARACTER)
+                  .forEach(layerItem => this.updateItem(layerItem, 1));
               }
               break
+            case AdventureMessageType.ADD_LAYER_ITEM:
+              const newLayerItem = message.message;
+              this.addItem(newLayerItem, AdventureComponent.getLayerIndex(newLayerItem));
+              break;
+            case AdventureMessageType.UPDATE_LAYER_ITEM:
+              const updatedLayerItem = message.message;
+              this.updateItem(updatedLayerItem, AdventureComponent.getLayerIndex(updatedLayerItem));
+              break;
+            case AdventureMessageType.REMOVE_LAYER_ITEM:
+              const layerItemId = message.message;
+              const itemToRemove = this.dashboard.find(dashboardItem => dashboardItem.id === layerItemId);
+              this.removeItem(itemToRemove);
           }
         }
       },
@@ -275,6 +278,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
+  // region grid update to call back
   emptyCellDropCallback(event: MouseEvent, item: GridsterItem) {
     const layerElementId = +(event as any).dataTransfer.getData('text');
     const elementToAdd = this.addableLayerElements.find(le => le.id === layerElementId);
@@ -289,11 +293,52 @@ export class AdventureComponent implements OnInit, OnDestroy {
       rotation: elementToAdd.rotation,
       type: elementToAdd.type
     };
-    this.addSpecificToDashboardItem(itemToPush, elementToAdd);
-    this.dashboard.push(itemToPush)
 
-    this.saveAdventure();
+    this.adventureService.addLayerItem(this.adventure.id, AdventureComponent.gristerItemToLayerItem(itemToPush));
   }
+
+  itemChange(item: GridsterItem, itemComponent: GridsterItemComponentInterface) {
+    this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gristerItemToLayerItem(item));
+  }
+
+  clickOnFlipIcon(item: GridsterItem) {
+    let newLayerElement: LayerElement;
+    switch (item.type) {
+      case LayerElementType.TRAP_DEACTIVATED:
+        newLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_ACTIVATED);
+        break;
+      case LayerElementType.TRAP_ACTIVATED:
+        newLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_DEACTIVATED);
+        break;
+      case LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED:
+        newLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED);
+        break;
+      case LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED:
+        newLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED);
+        break;
+      case LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED:
+        newLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED);
+        break;
+      case LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED:
+        newLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED);
+        break;
+    }
+
+    if (newLayerElement) {
+      item.type = newLayerElement.type;
+      item.elementId = newLayerElement.id;
+      item.icon = newLayerElement.icon;
+      this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gristerItemToLayerItem(item));
+    }
+  }
+
+  clickOnDeleteIcon(item: GridsterItem, event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.adventureService.deleteLayerItem(this.adventure.id, item.id);
+  }
+  // endregion
+
 
   private static getLayerIndex(element: LayerElement) {
     return ([LayerElementType.CHARACTER, LayerElementType.MONSTER, LayerElementType.PYLON, LayerElementType.TREE]
@@ -303,24 +348,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   // region Item
-  itemChange(item: GridsterItem, itemComponent: GridsterItemComponentInterface) {
-    this.saveAdventure();
-  }
-
-  removeItem(item: GridsterItem, $event?) {
-    if ($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-    }
-    this.dashboard.splice(this.dashboard.indexOf(item), 1);
-    this.saveAdventure();
-  }
-
-  removeUnusedItems(existingIds: number[]) {
-    const dashboardItemsToRemove = this.dashboard.filter(dashboardItem => existingIds.indexOf(dashboardItem.id) === -1);
-    dashboardItemsToRemove.forEach(toRemove => this.removeItem(toRemove, null));
-  }
-
   addItem(item: LayerItem, layerIndex = 0) {
     const itemToPush = {
       id: item.id,
@@ -361,6 +388,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
+  removeItem(item: GridsterItem) {
+    this.dashboard.splice(this.dashboard.indexOf(item), 1);
+  }
+
   private addSpecificToDashboardItem(dashboardItem: GridsterItem, layerElement: LayerElement) {
     if (layerElement.type === LayerElementType.CHARACTER) {
       dashboardItem['character']
@@ -380,38 +411,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
   isItemFlippable(type: LayerElementType) {
     return type.startsWith('TRAP_') || type.indexOf('_DOOR_') !== -1;
   }
-
-  flipItem(item: GridsterItem) {
-    let newLayerItem: LayerElement;
-    switch (item.type) {
-      case LayerElementType.TRAP_DEACTIVATED:
-        newLayerItem = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_ACTIVATED);
-        break;
-      case LayerElementType.TRAP_ACTIVATED:
-        newLayerItem = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_DEACTIVATED);
-        break;
-      case LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED:
-        newLayerItem = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED);
-        break;
-      case LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED:
-        newLayerItem = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED);
-        break;
-      case LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED:
-        newLayerItem = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED);
-        break;
-      case LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED:
-        newLayerItem = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED);
-        break;
-    }
-
-    if (newLayerItem) {
-      item.type = newLayerItem.type;
-      item.elementId = newLayerItem.id;
-      item.icon = newLayerItem.icon;
-      this.saveAdventure();
-    }
-  }
-
   // endregion
 
   getCharacterNamesFromId(userId) {
@@ -419,27 +418,20 @@ export class AdventureComponent implements OnInit, OnDestroy {
     return characters.length !== 0 ? characters : [{name: 'MJ', icon: ''}];
   }
 
-  saveAdventure() {
-    this.adventure.mjLayer.items = [];
-    this.adventure.characterLayer.items = [];
-    this.dashboard.forEach(value => {
-      const currentLayer = value.layerIndex === 0 ? this.adventure.mjLayer : this.adventure.characterLayer;
-      currentLayer.items.push({
-        id: value.id,
-        positionX: value.x,
-        positionY: value.y,
-        element: {
-          id: value.elementId,
-          colSize: value.cols,
-          rowSize: value.rows,
-          type: value.type,
-          icon: value.icon,
-          rotation: value.rotation
-        }
-      })
-    })
-    this.adventureService.update(this.adventure).subscribe(() => {
-    });
+  private static gristerItemToLayerItem(item: GridsterItem): LayerItem {
+    return {
+      id: item.id,
+      positionX: item.x,
+      positionY: item.y,
+      element: {
+        id: item.elementId,
+        colSize: item.cols,
+        rowSize: item.rows,
+        type: item.type,
+        icon: item.icon,
+        rotation: item.rotation
+      }
+    }
   }
 
 }

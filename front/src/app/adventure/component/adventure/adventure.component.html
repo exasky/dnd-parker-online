@@ -113,13 +113,13 @@
             <ng-container *ngIf="authService.isGM">
               <button mat-mini-fab
                       class="item-delete"
-                      (mousedown)="removeItem(item, $event)">
+                      (mousedown)="clickOnDeleteIcon(item, $event)">
                 <mat-icon>delete</mat-icon>
               </button>
               <button *ngIf="isItemFlippable(item.type)"
                       mat-mini-fab
                       class="item-flippable"
-                      (mousedown)="flipItem(item)">
+                      (mousedown)="clickOnFlipIcon(item)">
                 <mat-icon>flip</mat-icon>
               </button>
             </ng-container>

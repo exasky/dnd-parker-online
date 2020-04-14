@@ -19,7 +19,7 @@ public class LayerItemDto {
                 : dtos.stream().map(LayerItemDto::toBo).collect(Collectors.toList());
     }
 
-    private static LayerItem toBo(LayerItemDto dto) {
+    public static LayerItem toBo(LayerItemDto dto) {
         LayerItem layerItem = new LayerItem(dto.id);
 
         layerItem.setPositionX(dto.positionX);
@@ -35,7 +35,7 @@ public class LayerItemDto {
                 : bos.stream().map(LayerItemDto::toDto).collect(Collectors.toList());
     }
 
-    private static LayerItemDto toDto(LayerItem bo) {
+    public static LayerItemDto toDto(LayerItem bo) {
         LayerItemDto dto = new LayerItemDto();
 
         dto.setId(bo.getId());

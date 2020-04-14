@@ -4,9 +4,12 @@ export class AdventureMessage {
 }
 
 export enum AdventureMessageType {
-  RELOAD = 'RELOAD',
+  UPDATE_CHARACTERS = 'UPDATE_CHARACTERS',
   GOTO = 'GOTO',
-  MOUSE_MOVE = 'MOUSE_MOVE'
+  MOUSE_MOVE = 'MOUSE_MOVE',
+  ADD_LAYER_ITEM = 'ADD_LAYER_ITEM',
+  UPDATE_LAYER_ITEM = 'UPDATE_LAYER_ITEM',
+  REMOVE_LAYER_ITEM = 'REMOVE_LAYER_ITEM'
 }
 
 export class MouseMove {

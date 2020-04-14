@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
-import {Adventure} from "../model/adventure";
+import {Adventure, LayerItem} from "../model/adventure";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {SimpleCampaign} from "../model/campaign";
@@ -29,11 +29,19 @@ export class AdventureService {
     return this.http.get<Adventure>(AdventureService.API_URL + '/' + id);
   }
 
-  update(adventure: Adventure): Observable<Adventure> {
-    return this.http.put<Adventure>(AdventureService.API_URL + '/' + adventure.id, adventure);
-  }
-
   playerMouseMove(mouseMove: MouseMove) {
     this.http.post(AdventureService.API_URL + '/mouse-move', mouseMove).subscribe();
+  }
+
+  addLayerItem(adventureId, layerItem: LayerItem) {
+    this.http.post(AdventureService.API_URL + '/add-layer-item/' + adventureId, layerItem).subscribe();
+  }
+
+  updateLayerItem(adventureId, layerItem: LayerItem) {
+    this.http.put(AdventureService.API_URL + '/update-layer-item/' + adventureId, layerItem).subscribe();
+  }
+
+  deleteLayerItem(adventureId, layerItemId) {
+    this.http.delete(AdventureService.API_URL + '/delete-layer-item/' + adventureId + '/' + layerItemId).subscribe();
   }
 }

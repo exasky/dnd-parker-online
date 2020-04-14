@@ -23,11 +23,14 @@ public class LayerItemService {
 
     public List<LayerItem> createOrUpdate(List<LayerItem> items, Layer attachedLayer) {
         return items.stream()
-                .map(layerItem ->
-                        Objects.isNull(layerItem.getId())
-                                ? create(layerItem, attachedLayer)
-                                : update(layerItem)
-                ).collect(Collectors.toList());
+                .map(layerItem -> createOrUpdate(layerItem, attachedLayer))
+                .collect(Collectors.toList());
+    }
+
+    public LayerItem createOrUpdate(LayerItem layerItem, Layer attachedLayer) {
+        return Objects.isNull(layerItem.getId())
+                ? create(layerItem, attachedLayer)
+                : update(layerItem);
     }
 
     private LayerItem create(LayerItem toCreate, Layer attachedLayer) {
@@ -42,12 +45,16 @@ public class LayerItemService {
     }
 
     private LayerItem update(LayerItem toUpdate) {
-        LayerItem attachedToUpdate = layerItemRepository.getOne(toUpdate.getId());
+        LayerItem attachedToUpdate = getOne(toUpdate.getId());
 
         attachedToUpdate.setPositionY(toUpdate.getPositionY());
         attachedToUpdate.setPositionX(toUpdate.getPositionX());
         attachedToUpdate.setLayerElement(layerElementService.findById(toUpdate.getLayerElement().getId()));
 
         return layerItemRepository.save(attachedToUpdate);
+    }
+
+    public LayerItem getOne(Long id) {
+        return layerItemRepository.getOne(id);
     }
 }
