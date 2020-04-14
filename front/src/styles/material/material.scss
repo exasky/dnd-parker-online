@@ -43,6 +43,10 @@ $my-dark-theme-background: map_merge($mat-dark-theme-background, (background: #3
         background: $my-dark-theme-background)
   );
 
+  app-root {
+    background-image: url('/assets/wallpaper/dark.jpg') !important;
+  }
+
   img {
     -webkit-filter: brightness(80%);
     -moz-filter: brightness(80%);
