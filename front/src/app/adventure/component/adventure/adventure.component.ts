@@ -304,33 +304,35 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gristerItemToLayerItem(item));
   }
 
-  clickOnFlipIcon(item: GridsterItem) {
-    let newLayerElement: LayerElement;
+  clickOnFlipIcon(item: GridsterItem, event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    let nextLayerElement: LayerElement;
     switch (item.type) {
       case LayerElementType.TRAP_DEACTIVATED:
-        newLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_ACTIVATED);
+        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_ACTIVATED);
         break;
       case LayerElementType.TRAP_ACTIVATED:
-        newLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_DEACTIVATED);
+        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_DEACTIVATED);
         break;
       case LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED:
-        newLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED);
+        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED);
         break;
       case LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED:
-        newLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED);
+        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED);
         break;
       case LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED:
-        newLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED);
+        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED);
         break;
       case LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED:
-        newLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED);
+        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED);
         break;
     }
 
-    if (newLayerElement) {
-      item.type = newLayerElement.type;
-      item.elementId = newLayerElement.id;
-      item.icon = newLayerElement.icon;
+    if (nextLayerElement) {
+      item.type = nextLayerElement.type;
+      item.elementId = nextLayerElement.id;
+      item.icon = nextLayerElement.icon;
       this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gristerItemToLayerItem(item));
     }
   }
@@ -374,20 +376,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
     if (!dashboardItem) {
       this.addItem(item, layerIndex);
     } else {
-      // Update item only if position unchanged or icon
-      if (dashboardItem.x !== item.positionX || dashboardItem.y !== item.positionY) {
-        dashboardItem.x = item.positionX;
-        dashboardItem.y = item.positionY;
-        this.dashboard.splice(this.dashboard.indexOf(dashboardItem), 1);
-        this.dashboard.push({...dashboardItem}); // Force re-insert with different reference
-      } else if (dashboardItem.elementId !== item.element.id) {
-        dashboardItem.elementId = item.element.id;
-        dashboardItem.icon = item.element.icon;
-        dashboardItem.type = item.element.type;
-        this.dashboard.splice(this.dashboard.indexOf(dashboardItem), 1);
-        this.dashboard.push({...dashboardItem}); // Force re-insert with different reference
-      }
-      this.addSpecificToDashboardItem(dashboardItem, item.element);
+      this.dashboard.splice(this.dashboard.indexOf(dashboardItem), 1);
+      this.addItem(item, layerIndex);
     }
   }
 
@@ -399,6 +389,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
     if (layerElement.type === LayerElementType.CHARACTER) {
       dashboardItem['character']
         = this.adventure.characters.find(char => layerElement.icon.toLowerCase().indexOf(char.name.toLowerCase()) !== -1);
+    } else if (layerElement.type === LayerElementType.TRAP_ACTIVATED) {
+      dashboardItem['hidden'] = true;
+    } else if (layerElement.type === LayerElementType.TRAP_DEACTIVATED) {
+      dashboardItem['hidden'] = false;
     }
   }
 

@@ -104,10 +104,12 @@
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
             </div>
 
-            <div *ngSwitchDefault
-                 class="adventure-board-item"
-                 [ngStyle]="{'background-image': 'url(\'assets/item/' + item.icon + '\')',
+            <div *ngSwitchDefault>
+              <div *ngIf="authService.isGM || item.hidden !== true"
+                   class="adventure-board-item"
+                   [ngStyle]="{'background-image': 'url(\'assets/item/' + item.icon + '\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
+              </div>
             </div>
 
             <ng-container *ngIf="authService.isGM">
@@ -119,7 +121,7 @@
               <button *ngIf="isItemFlippable(item.type)"
                       mat-mini-fab
                       class="item-flippable"
-                      (mousedown)="clickOnFlipIcon(item)">
+                      (mousedown)="clickOnFlipIcon(item, $event)">
                 <mat-icon>flip</mat-icon>
               </button>
             </ng-container>
