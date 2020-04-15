@@ -29,6 +29,7 @@ import {MatDrawer} from "@angular/material/sidenav";
 import {AdventureWebsocketService} from "../../../common/service/ws/adventure.websocket.service";
 import {Monster} from "../../model/monster";
 import {MatMenuTrigger} from "@angular/material/menu";
+import {AlertMessage, AlertMessageType} from "../../model/alert-message";
 
 @Component({
   selector: 'app-board',
@@ -171,6 +172,22 @@ export class AdventureComponent implements OnInit, OnDestroy {
               const trapLayerItemId = message.message;
               const trapItem = this.dashboard.find(item => item.id === trapLayerItemId);
               trapItem['hidden'] = false;
+              break;
+            case AdventureMessageType.ALERT:
+              const alert: AlertMessage = message.message;
+              if (!alert.characterId || this.authService.currentUserValue.currentCharacters.some(char => char.id === alert.characterId)) {
+                switch(alert.type) {
+                  case AlertMessageType.SUCCESS:
+                    this.toaster.success(alert.message);
+                    break;
+                  case AlertMessageType.WARN:
+                    this.toaster.warning(alert.message);
+                    break;
+                  case AlertMessageType.ERROR:
+                    this.toaster.error(alert.message);
+                    break;
+                }
+              }
               break;
           }
         }

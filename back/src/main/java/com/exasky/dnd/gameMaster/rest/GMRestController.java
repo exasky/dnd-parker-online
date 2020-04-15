@@ -3,6 +3,7 @@ package com.exasky.dnd.gameMaster.rest;
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.adventure.rest.dto.AdventureDto;
+import com.exasky.dnd.adventure.rest.dto.AlertMessageDto;
 import com.exasky.dnd.adventure.rest.dto.layer.LayerElementDto;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.*;
@@ -99,5 +100,13 @@ public class GMRestController {
         dto.setMessage(gmService.findNextAdventureId(adventureId));
 
         this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, dto);
+    }
+
+    @PostMapping("/send-alert/{adventureId}")
+    public void sendAlert(@PathVariable Long adventureId, @RequestBody AlertMessageDto alertMessage) {
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.ALERT);
+        wsDto.setMessage(alertMessage);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 }

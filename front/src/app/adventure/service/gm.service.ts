@@ -6,6 +6,7 @@ import {HttpClient} from "@angular/common/http";
 import {CharacterItem} from "../model/character";
 import {Campaign, SimpleCampaign} from "../model/campaign";
 import {Dice} from "../model/dice";
+import {AlertMessage} from "../model/alert-message";
 
 @Injectable({
   providedIn: "root"
@@ -52,5 +53,9 @@ export class GmService {
 
   nextAdventure(adventureId: number | string) {
     return this.http.get(GmService.API_URL + '/next-adventure/' + adventureId).subscribe(() => {});
+  }
+
+  sendAlert(adventureId: number | string, alertMessage: AlertMessage) {
+    return this.http.post(GmService.API_URL + '/send-alert/' + adventureId, alertMessage).subscribe(() => {});
   }
 }

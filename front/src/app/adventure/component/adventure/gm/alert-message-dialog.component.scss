@@ -1,0 +1,17 @@
+.alert-SUCCESS {
+  ::ng-deep.mat-form-field-flex {
+    background-color: rgba(43, 230, 21, 0.5);
+  }
+}
+
+.alert-WARN {
+  ::ng-deep.mat-form-field-flex {
+    background-color: rgba(251, 175, 61, 0.50);
+  }
+}
+
+.alert-ERROR {
+  ::ng-deep.mat-form-field-flex {
+    background-color: rgba(255, 0, 0, 0.5);
+  }
+}

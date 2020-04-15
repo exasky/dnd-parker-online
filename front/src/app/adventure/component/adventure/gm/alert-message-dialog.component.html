@@ -1,0 +1,31 @@
+<h1 mat-dialog-title>Send alert</h1>
+<div mat-dialog-content class="d-flex flex-column alert-{{type}}">
+  <mat-form-field appearance="fill">
+    <mat-label>Enter alert</mat-label>
+    <textarea matInput [(ngModel)]="message"></textarea>
+  </mat-form-field>
+</div>
+<div class="d-flex">
+  <mat-form-field>
+    <mat-label>Select character ?</mat-label>
+    <mat-select [(ngModel)]="selectedCharacter">
+      <mat-option [value]="null">All</mat-option>
+      <mat-option *ngFor="let character of this.data.characters"
+                  [value]="character">
+        {{character.displayName}} (TODO Player name)
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Select type</mat-label>
+    <mat-select [(ngModel)]="type">
+      <mat-option *ngFor="let type of Object.keys(AlertMessageType)"
+                  [value]="type">
+        {{type}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<mat-dialog-actions>
+  <button mat-button (click)="sendAlert()">Send</button>
+</mat-dialog-actions>

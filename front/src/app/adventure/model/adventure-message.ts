@@ -11,7 +11,8 @@ export enum AdventureMessageType {
   UPDATE_LAYER_ITEM = 'UPDATE_LAYER_ITEM',
   REMOVE_LAYER_ITEM = 'REMOVE_LAYER_ITEM',
   SELECT_CHARACTER = 'SELECT_CHARACTER',
-  SHOW_TRAP = 'SHOW_TRAP'
+  SHOW_TRAP = 'SHOW_TRAP',
+  ALERT = 'ALERT'
 }
 
 export class MouseMove {

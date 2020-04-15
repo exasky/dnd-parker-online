@@ -31,7 +31,9 @@
   <mat-drawer-container class="flex-grow d-flex flex-column">
     <mat-drawer #drawer2 mode="side" position="start" style="z-index: 1001">
       <div class="d-flex flex-column h-100" style="min-width: 150px">
-        <app-gm-action-panel [monsters]="monsters"
+        <app-gm-action-panel [adventureId]="adventure.id"
+                             [monsters]="monsters"
+                             [characters]="adventure.characters"
                              [(selectedMonster)]="selectedMonster"></app-gm-action-panel>
       </div>
     </mat-drawer>

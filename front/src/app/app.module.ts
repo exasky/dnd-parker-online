@@ -50,6 +50,7 @@ import {ErrorInterceptor} from "./common/interceptor/error-interceptor.service";
 import {ToastrModule} from "ngx-toastr";
 import {GmActionPanelComponent} from "./adventure/component/adventure/gm/gm-action-panel.component";
 import {MatExpansionModule} from "@angular/material/expansion";
+import {AlertMessageDialogComponent} from "./adventure/component/adventure/gm/alert-message-dialog.component";
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import {MatExpansionModule} from "@angular/material/expansion";
     GmActionPanelComponent,
     DrawnCardDialogComponent,
     DiceComponent,
-    DiceDialogComponent
+    DiceDialogComponent,
+    AlertMessageDialogComponent
   ],
     imports: [
         BrowserModule,
@@ -102,7 +104,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
         }),
         MatExpansionModule
     ],
-  entryComponents: [ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent],
+  entryComponents: [AlertMessageDialogComponent, ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ForbiddenInterceptor, multi: true},

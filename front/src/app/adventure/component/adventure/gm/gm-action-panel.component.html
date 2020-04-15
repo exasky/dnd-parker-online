@@ -1,12 +1,18 @@
-<mat-accordion class="d-flex">
-  <mat-expansion-panel class="d-flex flex-column">
+<mat-accordion class="d-flex flex-column" [multi]="true">
+  <mat-expansion-panel class="d-flex flex-column" style="flex: 0 0 auto;">
     <mat-expansion-panel-header class="flex-shrink-0">
-      <mat-panel-title>
-        Monsters
-      </mat-panel-title>
+      <mat-panel-title>Tools</mat-panel-title>
     </mat-expansion-panel-header>
 
-    <ng-template matExpansionPanelContent class="overflow">
+    <div class="d-flex flex-column">
+      <button mat-raised-button (click)="sendAlert()">Send alert</button>
+    </div>
+  </mat-expansion-panel>
+  <mat-expansion-panel class="d-flex flex-column mt-2" style="flex: 0 1 auto;">
+    <mat-expansion-panel-header class="flex-shrink-0">
+      <mat-panel-title>Monsters</mat-panel-title>
+    </mat-expansion-panel-header>
+
     <div class="d-flex flex-column">
       <div *ngFor="let monster of monsters"
            class="d-flex flex-column align-items-center p-1 mb-2"
@@ -21,6 +27,5 @@
         </div>
       </div>
     </div>
-    </ng-template>
   </mat-expansion-panel>
 </mat-accordion>

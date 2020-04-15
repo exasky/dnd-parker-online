@@ -9,7 +9,8 @@ public class AdventureMessageDto {
         UPDATE_LAYER_ITEM,
         REMOVE_LAYER_ITEM,
         SELECT_CHARACTER,
-        SHOW_TRAP
+        SHOW_TRAP,
+        ALERT
     }
 
     private AdventureMessageType type;
