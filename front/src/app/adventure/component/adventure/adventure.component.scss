@@ -16,8 +16,12 @@
   width: 100%;
 
   &.selected {
-    border: white 3px solid;
+    border: red 3px solid;
   }
+}
+
+.selected {
+  border: white 3px solid;
 }
 
 .trap-visible {

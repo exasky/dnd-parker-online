@@ -34,10 +34,12 @@
         <app-gm-action-panel [adventureId]="adventure.id"
                              [monsters]="monsters"
                              [characters]="adventure.characters"
-                             [(selectedMonster)]="selectedMonster"></app-gm-action-panel>
+                             [selectedItem]="selectedItem"
+                             (selectMonster)="selectItem($event)"></app-gm-action-panel>
       </div>
     </mat-drawer>
-    <mat-drawer-content class="flex-grow">
+
+    <mat-drawer-content #drawerContent class="flex-grow" tabindex="1" (keyup)="onKeyboard($event)">
       <div #boardPanel
            class="ml-auto mr-auto mt-3"
            [ngStyle]="{'width': gamePanelXSize * 700 + 'px',
@@ -85,6 +87,7 @@
                          [disableTooltip]="tooltipDisabled(item.type)"
                          [container]="'body'"
                          #t="ngbTooltip"
+                         [class.selected]="selectedItem && selectedItem.id === item.id"
                          (mousedown)="t.close()"
                          (contextmenu)="onContextMenu($event, item)">
 
@@ -114,7 +117,6 @@
 
             <div *ngSwitchCase="layerElementType.MONSTER"
                  class="adventure-board-item"
-                 [class.selected]="selectedMonster && selectedMonster.layerItemId === item.id"
                  [ngStyle]="{'background-image': 'url(\'assets/monster/' + item.icon + '-token.jpg\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
             </div>

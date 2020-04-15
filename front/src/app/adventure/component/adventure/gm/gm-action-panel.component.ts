@@ -3,6 +3,7 @@ import {Monster} from "../../../model/monster";
 import {MatDialog} from "@angular/material/dialog";
 import {Character} from "../../../model/character";
 import {AlertMessageDialogComponent} from "./alert-message-dialog.component";
+import {LayerGridsterItem} from "../../../model/layer-gridster-item";
 
 @Component({
   selector: 'app-gm-action-panel',
@@ -21,8 +22,11 @@ export class GmActionPanelComponent {
   @Input()
   monsters: Monster[];
 
+  @Input()
+  selectedItem: LayerGridsterItem;
+
   @Output()
-  selectedMonsterChange: EventEmitter<Monster> = new EventEmitter<Monster>();
+  selectMonster: EventEmitter<number> = new EventEmitter<number>();
 
   constructor(private dialog: MatDialog) {
   }
@@ -34,17 +38,5 @@ export class GmActionPanelComponent {
         characters: this.characters
       }
     });
-  }
-
-  private _selectedMonster: Monster;
-
-  @Input()
-  get selectedMonster(): Monster {
-    return this._selectedMonster;
-  }
-
-  set selectedMonster(monster: Monster) {
-    this._selectedMonster = monster;
-    this.selectedMonsterChange.emit(monster);
   }
 }

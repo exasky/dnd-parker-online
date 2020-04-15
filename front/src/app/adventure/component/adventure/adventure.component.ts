@@ -30,6 +30,7 @@ import {AdventureWebsocketService} from "../../../common/service/ws/adventure.we
 import {Monster} from "../../model/monster";
 import {MatMenuTrigger} from "@angular/material/menu";
 import {AlertMessage, AlertMessageType} from "../../model/alert-message";
+import {LayerGridsterItem} from "../../model/layer-gridster-item";
 
 @Component({
   selector: 'app-board',
@@ -42,6 +43,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
   @ViewChild('boardPanel', {read: ElementRef}) boardPanel: ElementRef;
 
   @ViewChild('drawer', {read: MatDrawer}) drawer: MatDrawer;
+
+  @ViewChild('drawerContent', {read: ElementRef}) drawerContent: ElementRef;
 
   private lastMouseMoveSend: number;
   private mouseMoveDelay = 33; // 30fps
@@ -57,7 +60,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   addableLayerElements: LayerElement[];
 
   options: GridsterConfig;
-  dashboard: GridsterItem[];
+  dashboard: LayerGridsterItem[];
 
   gamePanelXSize = 0;
   gamePanelYSize = 0;
@@ -67,10 +70,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
   disableActions: boolean = false;
 
   monsters: Monster[] = [];
-  selectedMonster: Monster;
   selectedCharacterId: number;
 
-  selectedItem: GridsterItem;
+  selectedItem: LayerGridsterItem;
+  // increased each time a player/monster move in order to keep the last moving item on top
+  currentLayerIndexForSelectedItem = 1;
 
   @ViewChild(MatMenuTrigger) contextMenu: MatMenuTrigger;
   contextMenuPosition = {x: '0px', y: '0px'};
@@ -154,11 +158,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
               break
             case AdventureMessageType.ADD_LAYER_ITEM:
               const newLayerItem = message.message;
-              this.addItem(newLayerItem, AdventureComponent.getLayerIndex(newLayerItem.element));
+              this.addItem(newLayerItem, this.getLayerIndex(newLayerItem.element));
               break;
             case AdventureMessageType.UPDATE_LAYER_ITEM:
               const updatedLayerItem = message.message;
-              this.updateItem(updatedLayerItem, AdventureComponent.getLayerIndex(updatedLayerItem.element));
+              this.updateItem(updatedLayerItem, this.getLayerIndex(updatedLayerItem.element));
               break;
             case AdventureMessageType.REMOVE_LAYER_ITEM:
               const layerItemId = message.message;
@@ -176,7 +180,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             case AdventureMessageType.ALERT:
               const alert: AlertMessage = message.message;
               if (!alert.characterId || this.authService.currentUserValue.currentCharacters.some(char => char.id === alert.characterId)) {
-                switch(alert.type) {
+                switch (alert.type) {
                   case AlertMessageType.SUCCESS:
                     this.toaster.success(alert.message);
                     break;
@@ -267,7 +271,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
       ignoreMarginInRow: false,
       draggable: {
         enabled: true,
-        start: this.startItemDrag.bind(this),
         stop: this.stopItemDrag.bind(this)
       },
       swap: false,
@@ -291,20 +294,20 @@ export class AdventureComponent implements OnInit, OnDestroy {
       this.updateItem(mjItem, 0);
     });
     this.adventure.characterLayer.items.forEach(characterItem => {
-      this.updateItem(characterItem, 1);
+      this.updateItem(characterItem, this.getLayerIndex(characterItem.element));
     })
   }
 
-  startItemDrag(item: GridsterItem) {
-    this.selectedItem = item;
-  }
-
-  stopItemDrag(item: GridsterItem, itemComponent: GridsterItemComponentInterface) {
-    if (this.selectedItem.x === itemComponent.$item.x && this.selectedItem.y === itemComponent.$item.y) { // Represent the click (item didn't move)
-      if (item.type === LayerElementType.MONSTER) {
-        const monsterFromItem = this.monsters.find(m => m.layerItemId === item.id);
-        this.selectedMonster = monsterFromItem === this.selectedMonster ? null : monsterFromItem;
+  stopItemDrag(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
+    if (item.x === itemComponent.$item.x && item.y === itemComponent.$item.y) { // Case click
+      if (this.selectedItem && this.selectedItem.id === item.id) { // Click on case selected case
+        this.selectedItem = null;
+      } else {
+        this.selectedItem = item;
+        this.drawerContent.nativeElement.focus();
       }
+    } else { // Case drag&drop
+      this.selectedItem = null;
     }
   }
 
@@ -329,6 +332,39 @@ export class AdventureComponent implements OnInit, OnDestroy {
     mouseMove.y = -1;
     mouseMove.userId = this.authService.currentUserValue.id;
     this.adventureService.playerMouseMove(this.adventure.id, mouseMove);
+  }
+
+  onKeyboard(e: KeyboardEvent) {
+
+    // TODO prevent scrolling
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+    if (this.selectedItem) {
+      let layerItem;
+      switch (e.code) {
+        case "ArrowLeft":
+          layerItem = AdventureComponent.gristerItemToLayerItem(this.selectedItem);
+          layerItem.positionX -= 1;
+          this.adventureService.updateLayerItem(this.adventure.id, layerItem);
+          break;
+        case "ArrowUp":
+          layerItem = AdventureComponent.gristerItemToLayerItem(this.selectedItem);
+          layerItem.positionY -= 1;
+          this.adventureService.updateLayerItem(this.adventure.id, layerItem);
+          break
+        case "ArrowRight":
+          layerItem = AdventureComponent.gristerItemToLayerItem(this.selectedItem);
+          layerItem.positionX += 1;
+          this.adventureService.updateLayerItem(this.adventure.id, layerItem);
+          break
+        case "ArrowDown":
+          layerItem = AdventureComponent.gristerItemToLayerItem(this.selectedItem);
+          layerItem.positionY += 1;
+          this.adventureService.updateLayerItem(this.adventure.id, layerItem);
+          break
+      }
+    }
   }
 
   onContextMenu(event: MouseEvent, item: GridsterItem) {
@@ -362,7 +398,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       elementId: elementToAdd.id,
       cols: elementToAdd.colSize,
       rows: elementToAdd.rowSize,
-      layerIndex: AdventureComponent.getLayerIndex(elementToAdd),
+      layerIndex: this.getLayerIndex(elementToAdd),
       icon: elementToAdd.icon,
       rotation: elementToAdd.rotation,
       type: elementToAdd.type
@@ -371,13 +407,13 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventureService.addLayerItem(this.adventure.id, AdventureComponent.gristerItemToLayerItem(itemToPush));
   }
 
-  itemChange(item: GridsterItem, itemComponent: GridsterItemComponentInterface) {
+  itemChange(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
     if (this.dashboard.indexOf(item) !== -1) {
       this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gristerItemToLayerItem(item));
     }
   }
 
-  flipElement(item: GridsterItem, event: MouseEvent) {
+  flipElement(item: LayerGridsterItem, event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
     let nextLayerElement: LayerElement;
@@ -412,10 +448,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   // endregion
 
-  private static getLayerIndex(element: LayerElement) {
+  private getLayerIndex(element: LayerElement) {
     return ([LayerElementType.CHARACTER, LayerElementType.MONSTER, LayerElementType.PILLAR, LayerElementType.TREE]
       .indexOf(element.type) !== -1)
-      ? 1
+      ? this.currentLayerIndexForSelectedItem++
       : 0
   }
 
@@ -436,7 +472,12 @@ export class AdventureComponent implements OnInit, OnDestroy {
       dragEnabled: this.isDragEnabledForItem(item)
     };
     this.addSpecificToDashboardItem(itemToPush, item.element);
-    this.dashboard.push(itemToPush)
+    this.dashboard.push(itemToPush);
+
+    if (this.selectedItem && this.selectedItem.id === itemToPush.id) {
+      this.selectedItem = itemToPush;
+    }
+
     if (itemToPush.type === LayerElementType.MONSTER) {
       if (!this.monsters.some(monster => monster.layerItemId === itemToPush.id)) {
         const monsterIdx = this.monsters.length !== 0 ? this.monsters[this.monsters.length - 1].index + 1 : 0;
@@ -461,7 +502,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeItem(item: GridsterItem) {
+  selectItem(layerItemId: number) {
+    this.selectedItem = this.dashboard.find(item => item.id === layerItemId);
+  }
+
+  removeItem(item: LayerGridsterItem) {
     if (!item) return;
     this.dashboard.splice(this.dashboard.indexOf(item), 1);
     if (item.type === LayerElementType.MONSTER) {
@@ -500,7 +545,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     return characters.length !== 0 ? characters : [{name: 'MJ', icon: ''}];
   }
 
-  private static gristerItemToLayerItem(item: GridsterItem): LayerItem {
+  private static gristerItemToLayerItem(item: LayerGridsterItem): LayerItem {
     return {
       id: item.id,
       positionX: item.x,
