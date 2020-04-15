@@ -122,7 +122,7 @@ public class AdventureService {
     }
 
     private Layer getLayerForLayerElement(Adventure attachedAdventure, LayerItem layerItem) {
-        return Arrays.asList(CHARACTER, MONSTER, TREE, PYLON).contains(layerItem.getLayerElement().getType())
+        return Arrays.asList(CHARACTER, MONSTER, TREE, PILLAR).contains(layerItem.getLayerElement().getType())
                 ? attachedAdventure.getCharacterLayer()
                 : attachedAdventure.getMjLayer();
     }

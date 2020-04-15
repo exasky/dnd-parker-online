@@ -358,7 +358,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   // endregion
 
   private static getLayerIndex(element: LayerElement) {
-    return ([LayerElementType.CHARACTER, LayerElementType.MONSTER, LayerElementType.PYLON, LayerElementType.TREE]
+    return ([LayerElementType.CHARACTER, LayerElementType.MONSTER, LayerElementType.PILLAR, LayerElementType.TREE]
       .indexOf(element.type) !== -1)
       ? 1
       : 0

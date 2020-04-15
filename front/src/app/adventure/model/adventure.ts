@@ -61,7 +61,7 @@ export enum LayerElementType {
   CHARACTER = 'CHARACTER',
   MONSTER = 'MONSTER',
   TREE = 'TREE',
-  PYLON = 'PYLON'
+  PILLAR = 'PILLAR'
 }
 
 export enum ImageRotation {
