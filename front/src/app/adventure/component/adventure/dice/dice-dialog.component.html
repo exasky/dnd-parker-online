@@ -15,6 +15,10 @@
   </div>
 </mat-dialog-content>
 <mat-dialog-actions class="d-flex justify-content-center position-relative">
+  <div class="position-absolute"
+       style="left: 0">
+    À {{data.user.username}}
+  </div>
   <button *ngIf="!rollDisabled" mat-raised-button
           #rollButton
           (click)="rollDices()"
@@ -27,5 +31,5 @@
           (click)="dialogRef.close()">
     Close
   </button>
-  <div *ngIf="rollDisabled">C'est pas ton tour ! (À {{data.user.username}})</div>
+  <div *ngIf="rollDisabled">C'est pas ton tour !</div>
 </mat-dialog-actions>
