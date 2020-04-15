@@ -13,7 +13,7 @@
            [class.selected]="monster === selectedMonster">
         <mat-card-subtitle>{{monster.name}} n°{{monster.index}}</mat-card-subtitle>
         <div class="d-flex align-items-center">
-          <img [src]="'assets/monster/' + monster.name + '.jpg'" width="150px" (click)="internalSelectMonster(monster)">
+          <img [src]="'assets/monster/' + monster.name + '.jpg'" width="150px" (click)="selectedMonster = monster">
           <mat-form-field class="mx-2" style="max-width: 50px">
             <mat-label>HP</mat-label>
             <input matInput [(ngModel)]="monster.hp" type="number" min="0">

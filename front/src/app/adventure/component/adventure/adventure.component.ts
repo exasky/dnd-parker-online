@@ -37,6 +37,7 @@ import {MatMenuTrigger} from "@angular/material/menu";
 })
 export class AdventureComponent implements OnInit, OnDestroy {
   @HostBinding('class') cssClasses = "flex-grow d-flex flex-column";
+
   @ViewChild('boardPanel', {read: ElementRef}) boardPanel: ElementRef;
 
   @ViewChild('drawer', {read: MatDrawer}) drawer: MatDrawer;
@@ -48,7 +49,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   drawnCardWSObs: Subscription;
   diceWSObs: Subscription;
 
-  layerElementType = LayerElementType;
+  layerElementType = LayerElementType; // Used to access LayerElementType in html
 
   adventure: Adventure;
 
@@ -65,7 +66,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   disableActions: boolean = false;
 
   monsters: Monster[] = [];
-  selectedMonsterLayerItemId: number;
+  selectedMonster: Monster;
   selectedCharacterId: number;
 
   selectedItem: GridsterItem;
@@ -122,7 +123,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
                   if (playerCursorIxd !== -1) {
                     this.otherPlayersCursors.splice(playerCursorIxd, 1);
                   }
-                  // Mouse mouve
+                  // Mouse move
                 } else {
                   mouseMoveEvent.x = mouseMoveEvent.x - mouseMoveEvent.offsetX;
                   mouseMoveEvent.y = mouseMoveEvent.y - mouseMoveEvent.offsetY;
@@ -244,7 +245,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
       ignoreMarginInRow: false,
       draggable: {
         enabled: true,
-        start: this.startItemDrag.bind(this)
+        start: this.startItemDrag.bind(this),
+        stop: this.stopItemDrag.bind(this)
       },
       swap: false,
       disablePushOnDrag: false,
@@ -272,8 +274,15 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   startItemDrag(item: GridsterItem) {
-    if (item.dragEnabled && [LayerElementType.MONSTER, LayerElementType.CHARACTER].indexOf(item.type) !== -1) {
-      this.selectedItem = item;
+    this.selectedItem = item;
+  }
+
+  stopItemDrag(item: GridsterItem, itemComponent: GridsterItemComponentInterface) {
+    if (this.selectedItem.x === itemComponent.$item.x && this.selectedItem.y === itemComponent.$item.y) { // Represent the click (item didn't move)
+      if (item.type === LayerElementType.MONSTER) {
+        const monsterFromItem = this.monsters.find(m => m.layerItemId === item.id);
+        this.selectedMonster = monsterFromItem === this.selectedMonster ? null : monsterFromItem;
+      }
     }
   }
 
@@ -346,7 +355,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
-  clickOnFlipIcon(item: GridsterItem, event: MouseEvent) {
+  flipElement(item: GridsterItem, event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
     let nextLayerElement: LayerElement;

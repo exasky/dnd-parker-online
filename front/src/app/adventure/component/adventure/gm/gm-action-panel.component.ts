@@ -9,16 +9,21 @@ import {Monster} from "../../../model/monster";
 export class GmActionPanelComponent {
   @HostBinding('class') cssClasses = 'd-flex';
 
-  selectedMonster: Monster;
+  private _selectedMonster: Monster;
+
+  @Input()
+  get selectedMonster(): Monster {
+    return this._selectedMonster;
+  }
 
   @Input()
   monsters: Monster[];
 
   @Output()
-  selectMonster: EventEmitter<number> = new EventEmitter<number>();
+  selectedMonsterChange: EventEmitter<Monster> = new EventEmitter<Monster>();
 
-  internalSelectMonster(monster: Monster) {
-    this.selectedMonster = monster;
-    this.selectMonster.emit(monster.layerItemId);
+  set selectedMonster(monster: Monster) {
+    this._selectedMonster = monster;
+    this.selectedMonsterChange.emit(monster);
   }
 }
