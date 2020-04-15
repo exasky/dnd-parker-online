@@ -16,7 +16,7 @@
   width: 100%;
 
   &.selected {
-    border: red 1px solid;
+    border: white 3px solid;
   }
 }
 
@@ -24,7 +24,7 @@ gridster {
   background: none !important;
 }
 
-.item-delete, .item-flippable{
+.item-delete, .item-flippable {
   width: 30px;
   height: 30px;
 
@@ -54,12 +54,15 @@ gridster {
 .player-regdar {
   color: red !important;
 }
+
 .player-mialye {
   color: cornflowerblue !important;
 }
+
 .player-jozan {
   color: lightgreen !important;
 }
+
 .player-lidda {
   color: yellow !important;
 }

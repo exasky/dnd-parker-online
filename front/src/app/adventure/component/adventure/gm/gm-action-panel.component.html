@@ -1,12 +1,26 @@
-<div class="d-flex flex-column">
-  <div *ngFor="let monster of monsters" class="d-flex flex-column align-items-center mb-2">
-    <mat-card-subtitle>{{monster.name}} n°{{monster.index}}</mat-card-subtitle>
-    <div class="d-flex align-items-center">
-      <img [src]="'assets/monster/' + monster.name + '.jpg'" width="150px" (click)="selectMonster.emit(monster.layerItemId)">
-      <mat-form-field class="mx-2" style="max-width: 50px">
-        <mat-label>HP</mat-label>
-        <input matInput [(ngModel)]="monster.hp" type="number" min="0">
-      </mat-form-field>
+<mat-accordion class="d-flex">
+  <mat-expansion-panel class="d-flex flex-column">
+    <mat-expansion-panel-header class="flex-shrink-0">
+      <mat-panel-title>
+        Monsters
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <ng-template matExpansionPanelContent class="overflow">
+    <div class="d-flex flex-column">
+      <div *ngFor="let monster of monsters"
+           class="d-flex flex-column align-items-center p-1 mb-2"
+           [class.selected]="monster === selectedMonster">
+        <mat-card-subtitle>{{monster.name}} n°{{monster.index}}</mat-card-subtitle>
+        <div class="d-flex align-items-center">
+          <img [src]="'assets/monster/' + monster.name + '.jpg'" width="150px" (click)="internalSelectMonster(monster)">
+          <mat-form-field class="mx-2" style="max-width: 50px">
+            <mat-label>HP</mat-label>
+            <input matInput [(ngModel)]="monster.hp" type="number" min="0">
+          </mat-form-field>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+    </ng-template>
+  </mat-expansion-panel>
+</mat-accordion>

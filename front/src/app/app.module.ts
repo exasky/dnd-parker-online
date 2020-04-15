@@ -49,6 +49,7 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {ErrorInterceptor} from "./common/interceptor/error-interceptor.service";
 import {ToastrModule} from "ngx-toastr";
 import {GmActionPanelComponent} from "./adventure/component/adventure/gm/gm-action-panel.component";
+import {MatExpansionModule} from "@angular/material/expansion";
 
 @NgModule({
   declarations: [
@@ -71,35 +72,36 @@ import {GmActionPanelComponent} from "./adventure/component/adventure/gm/gm-acti
     DiceComponent,
     DiceDialogComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    GridsterModule,
-    MatIconModule,
-    MatSelectModule,
-    FormsModule,
-    MatCheckboxModule,
-    MatInputModule,
-    MatButtonModule,
-    HttpClientModule,
-    MatCardModule,
-    ReactiveFormsModule,
-    MatStepperModule,
-    DragDropModule,
-    MatTreeModule,
-    MatToolbarModule,
-    MatSidenavModule,
-    MatMenuModule,
-    MatDialogModule,
-    NgbTooltipModule,
-    MatDividerModule,
-    MatProgressBarModule,
-    ToastrModule.forRoot({
-      positionClass: 'toast-bottom-right',
-      timeOut: 5000
-    })
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        GridsterModule,
+        MatIconModule,
+        MatSelectModule,
+        FormsModule,
+        MatCheckboxModule,
+        MatInputModule,
+        MatButtonModule,
+        HttpClientModule,
+        MatCardModule,
+        ReactiveFormsModule,
+        MatStepperModule,
+        DragDropModule,
+        MatTreeModule,
+        MatToolbarModule,
+        MatSidenavModule,
+        MatMenuModule,
+        MatDialogModule,
+        NgbTooltipModule,
+        MatDividerModule,
+        MatProgressBarModule,
+        ToastrModule.forRoot({
+            positionClass: 'toast-bottom-right',
+            timeOut: 5000
+        }),
+        MatExpansionModule
+    ],
   entryComponents: [ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},

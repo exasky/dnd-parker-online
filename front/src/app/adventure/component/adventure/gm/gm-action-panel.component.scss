@@ -1,0 +1,12 @@
+.selected {
+  background-color: rgb(160, 160, 160);
+  border-radius: 7px;
+}
+
+:host-context(.unicorn-dark-theme) .selected {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+::ng-deep.mat-expansion-panel-content {
+  overflow: auto !important;
+}
