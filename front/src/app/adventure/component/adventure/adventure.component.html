@@ -124,11 +124,6 @@
             </div>
 
             <ng-container *ngIf="authService.isGM">
-              <button mat-mini-fab
-                      class="item-delete"
-                      (mousedown)="clickOnDeleteIcon(item, $event)">
-                <mat-icon>delete</mat-icon>
-              </button>
               <button *ngIf="isItemFlippable(item.type)"
                       mat-mini-fab
                       class="item-flippable"
@@ -147,4 +142,12 @@
       </div>
     </mat-drawer>
   </mat-drawer-container>
+
+  <div class="admin-context-menu d-flex justify-content-center">
+    <button *ngIf="displayDeleteItem"
+            id="delete-item"
+            mat-mini-fab>
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
 </ng-container>

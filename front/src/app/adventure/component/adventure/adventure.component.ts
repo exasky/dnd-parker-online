@@ -67,6 +67,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
   selectedMonsterLayerItemId: number;
   selectedCharacterId: number;
 
+  displayDeleteItem: boolean = false;
+
   constructor(private adventureService: AdventureService,
               private mjService: GmService,
               public authService: AuthService,
@@ -237,7 +239,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
       emptyCellDragMaxRows: 50,
       ignoreMarginInRow: false,
       draggable: {
-        enabled: true
+        enabled: true,
+        start: this.startItemDrag.bind(this),
+        stop: this.stopItemDrag.bind(this)
       },
       swap: false,
       disablePushOnDrag: false,
@@ -262,6 +266,28 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventure.characterLayer.items.forEach(characterItem => {
       this.updateItem(characterItem, 1);
     })
+  }
+
+  startItemDrag() {
+    if (this.authService.isGM) {
+      this.displayDeleteItem = true;
+    }
+  }
+
+  stopItemDrag(item: GridsterItem, itemComponent: GridsterItemComponentInterface, event: MouseEvent) {
+    if (this.authService.isGM) {
+      this.displayDeleteItem = false;
+      event.preventDefault();
+      event.stopPropagation();
+
+      const target: HTMLElement = event.target as HTMLElement;
+      if ((target.tagName === 'MAT-ICON' && target.innerHTML === 'delete')
+        || (target.tagName === 'BUTTON' && target.getAttribute('id') === 'delete-item')
+        || (target.tagName === 'SPAN' && target.parentElement.tagName === 'BUTTON' && target.parentElement.getAttribute('id') === 'delete-item')) {
+        this.removeItem(item); // remove it to avoid check if exist in itemChange
+        this.adventureService.deleteLayerItem(this.adventure.id, item.id);
+      }
+    }
   }
 
   onMouseMove(e: MouseEvent) {
@@ -313,7 +339,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   itemChange(item: GridsterItem, itemComponent: GridsterItemComponentInterface) {
-    this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gristerItemToLayerItem(item));
+    if (this.dashboard.indexOf(item) !== -1) {
+      this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gristerItemToLayerItem(item));
+    }
   }
 
   clickOnFlipIcon(item: GridsterItem, event: MouseEvent) {
@@ -349,12 +377,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
-  clickOnDeleteIcon(item: GridsterItem, event: MouseEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.adventureService.deleteLayerItem(this.adventure.id, item.id);
-  }
-
   // endregion
 
   private static getLayerIndex(element: LayerElement) {
@@ -364,8 +386,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
       : 0
   }
 
-  // region Item
+  // region Item in gridster
   addItem(item: LayerItem, layerIndex = 0) {
+    if (!item) return;
     const itemToPush = {
       id: item.id,
       x: item.positionX,
@@ -395,6 +418,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   updateItem(item: LayerItem, layerIndex = 0) {
+    if (!item) return;
     const dashboardItem = this.dashboard.find(dashboardItem => dashboardItem.id === item.id);
     if (!dashboardItem) {
       this.addItem(item, layerIndex);
@@ -405,6 +429,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   removeItem(item: GridsterItem) {
+    if (!item) return;
     this.dashboard.splice(this.dashboard.indexOf(item), 1);
     if (item.type === LayerElementType.MONSTER) {
       this.monsters.splice(this.monsters.findIndex(monster => monster.layerItemId === item.id), 1);
