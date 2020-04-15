@@ -167,6 +167,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
             case AdventureMessageType.SELECT_CHARACTER:
               this.selectedCharacterId = message.message;
               break;
+            case AdventureMessageType.SHOW_TRAP:
+              const trapLayerItemId = message.message;
+              const trapItem = this.dashboard.find(item => item.id === trapLayerItemId);
+              trapItem['hidden'] = false;
+              break;
           }
         }
       },
@@ -496,5 +501,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   tooltipDisabled(itemType: LayerElementType): boolean {
     return [LayerElementType.CHARACTER, LayerElementType.MONSTER].indexOf(itemType) === -1;
+  }
+
+  showTrap(item: GridsterItem) {
+    this.adventureService.showTrap(this.adventure.id, item.id);
   }
 }

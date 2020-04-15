@@ -117,12 +117,18 @@
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
             </div>
 
-            <div *ngSwitchDefault>
-              <div *ngIf="authService.isGM || item.hidden !== true"
-                   class="adventure-board-item"
+            <div *ngSwitchCase="layerElementType.TRAP_ACTIVATED">
+              <div class="adventure-board-item"
+                   *ngIf="authService.isGM || item.hidden !== true"
+                   [class.trap-visible]="authService.isGM && item.hidden === false"
                    [ngStyle]="{'background-image': 'url(\'assets/item/' + item.icon + '\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
               </div>
+            </div>
+
+            <div *ngSwitchDefault class="adventure-board-item"
+                 [ngStyle]="{'background-image': 'url(\'assets/item/' + item.icon + '\')',
+                              'transform': 'rotate(' + item.rotation + 'deg)'}">
             </div>
           </gridster-item>
         </gridster>
@@ -152,6 +158,9 @@
       <mat-icon>flip</mat-icon>
       Flip
     </button>
-    <!--    TODO Context menu to show traps-->
+    <button *ngIf="item.hidden === true" mat-menu-item (click)="showTrap(item)">
+      <mat-icon>visibility</mat-icon>
+      Show trap
+    </button>
   </ng-template>
 </mat-menu>

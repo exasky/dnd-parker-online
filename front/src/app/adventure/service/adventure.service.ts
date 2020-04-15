@@ -52,4 +52,8 @@ export class AdventureService {
   selectCharacter(adventureId, characterId) {
     this.http.get(AdventureService.API_URL + '/select-character/' + adventureId + '/' + characterId).subscribe();
   }
+
+  showTrap(adventureId, trapLayerItemId) {
+    return this.http.get(AdventureService.API_URL + '/show-trap/' + adventureId + '/' + trapLayerItemId).subscribe();
+  }
 }
