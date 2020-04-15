@@ -80,10 +80,11 @@
                          [ngSwitch]="item.type"
                          style="background: none !important;"
                          [ngbTooltip]="tipContent"
+                         [disableTooltip]="tooltipDisabled(item.type)"
                          [container]="'body'"
                          #t="ngbTooltip"
                          (mousedown)="t.close()"
-          (contextmenu)="onContextMenu($event, item)">
+                         (contextmenu)="onContextMenu($event, item)">
 
             <div *ngIf="!item.dragEnabled && item.type === layerElementType.CHARACTER"
                  class="adventure-board-item"
@@ -144,11 +145,13 @@
 <mat-menu #contextMenu="matMenu">
   <ng-template matMenuContent let-item="item">
     <button mat-menu-item (click)="deleteItem(item)">
-      <mat-icon>delete</mat-icon> Delete
+      <mat-icon>delete</mat-icon>
+      Delete
     </button>
     <button *ngIf="isItemFlippable(item.type)" mat-menu-item (click)="flipElement(item, $event)">
-      <mat-icon>flip</mat-icon> Flip
+      <mat-icon>flip</mat-icon>
+      Flip
     </button>
-<!--    TODO Context menu to show traps-->
+    <!--    TODO Context menu to show traps-->
   </ng-template>
 </mat-menu>

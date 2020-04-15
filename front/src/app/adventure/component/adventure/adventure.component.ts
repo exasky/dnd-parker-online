@@ -494,4 +494,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
+  tooltipDisabled(itemType: LayerElementType): boolean {
+    return [LayerElementType.CHARACTER, LayerElementType.MONSTER].indexOf(itemType) === -1;
+  }
 }
