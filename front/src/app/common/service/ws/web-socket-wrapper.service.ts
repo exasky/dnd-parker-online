@@ -20,9 +20,9 @@ export class WebSocketWrapperService {
 
   constructor(private stompService: RxStompService) {
     // Activate subscription to broker.
-    if (!environment.production) {
-      this.stompConfig.debug = msg => console.log(msg);
-    }
+    // if (!environment.production) {
+    //   this.stompConfig.debug = msg => console.log(msg);
+    // }
     // @ts-ignore
     this.stompService.stompClient.configure(this.stompConfig);
     this.stompService.stompClient.onConnect = this.onSocketConnect.bind(this);

@@ -82,7 +82,8 @@
                          [ngbTooltip]="tipContent"
                          [container]="'body'"
                          #t="ngbTooltip"
-                         (mousedown)="t.close()">
+                         (mousedown)="t.close()"
+          (contextmenu)="onContextMenu($event, item)">
 
             <div *ngIf="!item.dragEnabled && item.type === layerElementType.CHARACTER"
                  class="adventure-board-item"
@@ -122,15 +123,6 @@
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
               </div>
             </div>
-
-            <ng-container *ngIf="authService.isGM">
-              <button *ngIf="isItemFlippable(item.type)"
-                      mat-mini-fab
-                      class="item-flippable"
-                      (mousedown)="clickOnFlipIcon(item, $event)">
-                <mat-icon>flip</mat-icon>
-              </button>
-            </ng-container>
           </gridster-item>
         </gridster>
       </div>
@@ -142,12 +134,21 @@
       </div>
     </mat-drawer>
   </mat-drawer-container>
-
-  <div class="admin-context-menu d-flex justify-content-center">
-    <button *ngIf="displayDeleteItem"
-            id="delete-item"
-            mat-mini-fab>
-      <mat-icon>delete</mat-icon>
-    </button>
-  </div>
 </ng-container>
+
+<div style="visibility: hidden; position: fixed"
+     [style.left]="contextMenuPosition.x"
+     [style.top]="contextMenuPosition.y"
+     [matMenuTriggerFor]="contextMenu">
+</div>
+<mat-menu #contextMenu="matMenu">
+  <ng-template matMenuContent let-item="item">
+    <button mat-menu-item (click)="deleteItem(item)">
+      <mat-icon>delete</mat-icon> Delete
+    </button>
+    <button *ngIf="isItemFlippable(item.type)" mat-menu-item (click)="clickOnFlipIcon(item, $event)">
+      <mat-icon>flip</mat-icon> Flip
+    </button>
+<!--    TODO Context menu to show traps-->
+  </ng-template>
+</mat-menu>

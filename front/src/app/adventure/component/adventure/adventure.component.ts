@@ -28,6 +28,7 @@ import {DiceWebsocketService} from "../../../common/service/ws/dice.websocket.se
 import {MatDrawer} from "@angular/material/sidenav";
 import {AdventureWebsocketService} from "../../../common/service/ws/adventure.websocket.service";
 import {Monster} from "../../model/monster";
+import {MatMenuTrigger} from "@angular/material/menu";
 
 @Component({
   selector: 'app-board',
@@ -67,7 +68,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
   selectedMonsterLayerItemId: number;
   selectedCharacterId: number;
 
-  displayDeleteItem: boolean = false;
+  selectedItem: GridsterItem;
+
+  @ViewChild(MatMenuTrigger) contextMenu: MatMenuTrigger;
+  contextMenuPosition = {x: '0px', y: '0px'};
 
   constructor(private adventureService: AdventureService,
               private mjService: GmService,
@@ -240,8 +244,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       ignoreMarginInRow: false,
       draggable: {
         enabled: true,
-        start: this.startItemDrag.bind(this),
-        stop: this.stopItemDrag.bind(this)
+        start: this.startItemDrag.bind(this)
       },
       swap: false,
       disablePushOnDrag: false,
@@ -268,25 +271,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
     })
   }
 
-  startItemDrag() {
-    if (this.authService.isGM) {
-      this.displayDeleteItem = true;
-    }
-  }
-
-  stopItemDrag(item: GridsterItem, itemComponent: GridsterItemComponentInterface, event: MouseEvent) {
-    if (this.authService.isGM) {
-      this.displayDeleteItem = false;
-      event.preventDefault();
-      event.stopPropagation();
-
-      const target: HTMLElement = event.target as HTMLElement;
-      if ((target.tagName === 'MAT-ICON' && target.innerHTML === 'delete')
-        || (target.tagName === 'BUTTON' && target.getAttribute('id') === 'delete-item')
-        || (target.tagName === 'SPAN' && target.parentElement.tagName === 'BUTTON' && target.parentElement.getAttribute('id') === 'delete-item')) {
-        this.removeItem(item); // remove it to avoid check if exist in itemChange
-        this.adventureService.deleteLayerItem(this.adventure.id, item.id);
-      }
+  startItemDrag(item: GridsterItem) {
+    if (item.dragEnabled && [LayerElementType.MONSTER, LayerElementType.CHARACTER].indexOf(item.type) !== -1) {
+      this.selectedItem = item;
     }
   }
 
@@ -313,13 +300,28 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventureService.playerMouseMove(this.adventure.id, mouseMove);
   }
 
+  onContextMenu(event: MouseEvent, item: GridsterItem) {
+    if (this.authService.isGM) {
+      event.preventDefault();
+      this.contextMenuPosition.x = event.clientX + 'px';
+      this.contextMenuPosition.y = event.clientY + 'px';
+      this.contextMenu.menuData = {'item': item};
+      this.contextMenu.menu.focusFirstItem('mouse');
+      this.contextMenu.openMenu();
+    }
+  }
+
+  deleteItem(item: GridsterItem) {
+    this.adventureService.deleteLayerItem(this.adventure.id, item.id);
+  }
+
   changedOptions() {
     if (this.options.api && this.options.api.optionsChanged) {
       this.options.api.optionsChanged();
     }
   }
 
-  // region grid update to call back
+  // region gridster update to call webservice
   emptyCellDropCallback(event: MouseEvent, item: GridsterItem) {
     const layerElementId = +(event as any).dataTransfer.getData('text');
     const elementToAdd = this.addableLayerElements.find(le => le.id === layerElementId);

@@ -24,29 +24,6 @@ gridster {
   background: none !important;
 }
 
-.admin-context-menu {
-  position: absolute;
-  bottom: 0;
-  margin-left: auto;
-  margin-right: auto;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-
-.item-delete, .item-flippable {
-  width: 30px;
-  height: 30px;
-
-  .mat-button-wrapper {
-    padding: 0 !important;
-  }
-
-  mat-icon {
-    font-size: 17px;
-  }
-}
-
 .player-cursor {
   position: absolute;
   z-index: 100;
