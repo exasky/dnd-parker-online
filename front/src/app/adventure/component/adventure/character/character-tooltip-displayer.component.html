@@ -12,20 +12,27 @@
   </div>
 </div>
 
-<div class="d-flex flex-column justify-content-around flex-1">
-  <div class="d-flex justify-content-center" style="text-transform: capitalize">{{character.name}}</div>
-  <section class="status-bar mx-2">
+<div class="d-flex flex-column justify-content-around align-items-center flex-1">
+  <img *ngIf="character.name && displayCard"
+       [width]="300"
+       [height]="450"
+       [src]="'assets/character/' + character.name.toLowerCase() + '-card.jpg'">
+
+  <div *ngIf="!displayCard" class="d-flex justify-content-center" style="text-transform: capitalize">{{character.name}}</div>
+  <section class="status-bar mx-2 w-100">
     <mat-progress-bar color="warn" mode="determinate" [value]="(character.hp * 100) / character.maxHp">
     </mat-progress-bar>
     <div class="status-bar-text">HP : {{character.hp}} / {{character.maxHp}}</div>
   </section>
-  <section class="status-bar mx-2" *ngIf="character.maxMp">
+  <section class="status-bar mx-2 w-100" *ngIf="character.maxMp">
     <mat-progress-bar color="accent" mode="determinate" [value]="(character.mp * 100) / character.maxMp">
     </mat-progress-bar>
     <div class="status-bar-text">MP : {{character.mp}} / {{character.maxMp}}</div>
   </section>
 
-  <img *ngIf="character.name" [width]="characterWidth" [src]="'assets/character/' + character.name.toLowerCase() + '.jpg'">
+  <img *ngIf="character.name"
+       [width]="characterWidth"
+       [src]="'assets/character/' + character.name.toLowerCase() + '.jpg'">
 </div>
 
 <!-- Backpack items-->
