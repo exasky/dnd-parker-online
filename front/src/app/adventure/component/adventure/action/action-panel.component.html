@@ -7,7 +7,7 @@
   <mat-divider class="m-2" [inset]="false"></mat-divider>
 
   <button *ngFor="let character of adventure.characters"
-          mat-raised-button color="primary"
+          mat-raised-button [color]="character.id === selectedCharacterId ? 'warn' : 'primary'"
           class="m-2"
           style="text-transform: capitalize"
           [ngbTooltip]="tooltipContent"

@@ -16,6 +16,9 @@ export class ActionPanelComponent {
   @HostBinding('class') cssClasses = "flex-grow d-flex flex-column";
 
   @Input()
+  selectedCharacterId: number;
+
+  @Input()
   disableActions: boolean = false;
 
   @Input()
@@ -44,7 +47,8 @@ export class ActionPanelComponent {
 
   selectCharacter(character: Character) {
     if (!this.disableActions) {
-      this.adventureService.selectCharacter(this.adventure.id, character.id);
+      this.adventureService.selectCharacter(this.adventure.id,
+        character.id === this.selectedCharacterId ? -1 : character.id);
     }
   }
 
