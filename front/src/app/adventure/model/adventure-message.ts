@@ -12,7 +12,8 @@ export enum AdventureMessageType {
   REMOVE_LAYER_ITEM = 'REMOVE_LAYER_ITEM',
   SELECT_CHARACTER = 'SELECT_CHARACTER',
   SHOW_TRAP = 'SHOW_TRAP',
-  ALERT = 'ALERT'
+  ALERT = 'ALERT',
+  SOUND = 'SOUND'
 }
 
 export class MouseMove {

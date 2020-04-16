@@ -109,4 +109,12 @@ public class GMRestController {
         wsDto.setMessage(alertMessage);
         this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
+
+    @GetMapping("/play-sound/{adventureId}/{audioFile}")
+    public void playSound(@PathVariable Long adventureId, @PathVariable String audioFile) {
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.SOUND);
+        wsDto.setMessage(audioFile);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+    }
 }

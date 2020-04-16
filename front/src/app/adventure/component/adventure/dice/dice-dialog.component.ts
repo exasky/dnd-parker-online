@@ -12,6 +12,7 @@ import {DiceMessage, DiceMessageType} from "../../../model/dice-message";
 import {SocketResponseType} from "../../../../common/model/websocket.response";
 import {SimpleUser} from "../../../model/simple-user";
 import {ToasterService} from "../../../../common/service/toaster.service";
+import {AudioService} from "../../../service/audio.service";
 
 @Component({
   selector: 'app-dice-dialog',
@@ -34,6 +35,7 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
               private diceService: DiceService,
               private toaster: ToasterService,
               public dialogRef: MatDialogRef<DiceDialogComponent>,
+              private audioService: AudioService,
               @Inject(MAT_DIALOG_DATA) public data: {adventureId: string, user: SimpleUser}) {
   }
 
@@ -55,6 +57,7 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
             this.diceComponents.forEach((diceComp, index) => {
               diceComp.value = results[index];
             });
+            this.audioService.playSound('/assets/sound/roll_dice.wav');
           }
         }
       }

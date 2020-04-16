@@ -51,6 +51,7 @@ import {ToastrModule} from "ngx-toastr";
 import {GmActionPanelComponent} from "./adventure/component/adventure/gm/gm-action-panel.component";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {AlertMessageDialogComponent} from "./adventure/component/adventure/gm/alert-message-dialog.component";
+import {MatSliderModule} from "@angular/material/slider";
 
 @NgModule({
   declarations: [
@@ -102,7 +103,8 @@ import {AlertMessageDialogComponent} from "./adventure/component/adventure/gm/al
             positionClass: 'toast-bottom-right',
             timeOut: 5000
         }),
-        MatExpansionModule
+        MatExpansionModule,
+        MatSliderModule
     ],
   entryComponents: [AlertMessageDialogComponent, ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent],
   providers: [

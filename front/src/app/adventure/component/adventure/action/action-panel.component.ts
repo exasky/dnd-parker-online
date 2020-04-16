@@ -6,6 +6,7 @@ import {DiceService} from "../../../service/dice.service";
 import {AuthService} from "../../../../login/auth.service";
 import {AdventureService} from "../../../service/adventure.service";
 import {Character} from "../../../model/character";
+import {AudioService} from "../../../service/audio.service";
 
 @Component({
   selector: 'app-action-panel',
@@ -24,7 +25,8 @@ export class ActionPanelComponent {
               private adventureService: AdventureService,
               private dialog: MatDialog,
               private diceService: DiceService,
-              public authService: AuthService) {
+              public authService: AuthService,
+              public audioService: AudioService) {
   }
 
   drawCard() {

@@ -31,6 +31,7 @@ import {Monster} from "../../model/monster";
 import {MatMenuTrigger} from "@angular/material/menu";
 import {AlertMessage, AlertMessageType} from "../../model/alert-message";
 import {LayerGridsterItem} from "../../model/layer-gridster-item";
+import {AudioService} from "../../service/audio.service";
 
 @Component({
   selector: 'app-board',
@@ -82,20 +83,21 @@ export class AdventureComponent implements OnInit, OnDestroy {
   contextMenuPosition = {x: '0px', y: '0px'};
 
   constructor(private adventureService: AdventureService,
-              private mjService: GmService,
+              private gmService: GmService,
               public authService: AuthService,
               private toaster: ToasterService,
               private route: ActivatedRoute,
               private adventureWS: AdventureWebsocketService,
               private drawnCardWS: DrawnCardWebsocketService,
               private diceWS: DiceWebsocketService,
+              private audioService: AudioService,
               private router: Router,
               private dialog: MatDialog) {
   }
 
   ngOnInit() {
     if (this.authService.isGM) {
-      this.mjService.getAddableElements().subscribe(elements => this.addableLayerElements = elements);
+      this.gmService.getAddableElements().subscribe(elements => this.addableLayerElements = elements);
     }
     const adventureId = this.route.snapshot.paramMap.get("id");
     this.adventureService.getAdventure(adventureId).subscribe(adventure => {
@@ -110,96 +112,95 @@ export class AdventureComponent implements OnInit, OnDestroy {
       this.initDashboard();
     });
 
-    this.adventureWSObs = this.adventureWS.getObservable(adventureId).subscribe({
-      next: (receivedMsg: SocketResponse) => {
-        if (receivedMsg.type === SocketResponseType.SUCCESS) {
-          const message: AdventureMessage = receivedMsg.data;
-          switch (message.type) {
-            case AdventureMessageType.GOTO:
-              this.router.navigateByUrl('adventure/' + message.message).then(() => {
+    this.adventureWSObs = this.adventureWS.getObservable(adventureId).subscribe((receivedMsg: SocketResponse) => {
+      if (receivedMsg.type === SocketResponseType.SUCCESS) {
+        const message: AdventureMessage = receivedMsg.data;
+        switch (message.type) {
+          case AdventureMessageType.GOTO:
+            this.router.navigateByUrl('adventure/' + message.message).then(() => {
+              window.location.reload();
+            });
+            break
+          case AdventureMessageType.MOUSE_MOVE:
+            const mouseMoveEvent: MouseMove = message.message;
+            // Do not add own cursor
+            if (mouseMoveEvent.userId !== this.authService.currentUserValue.id) {
+              // Mouse out
+              if (mouseMoveEvent.x === mouseMoveEvent.y && mouseMoveEvent.y === -1) {
+                let playerCursorIxd = this.otherPlayersCursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
+                if (playerCursorIxd !== -1) {
+                  this.otherPlayersCursors.splice(playerCursorIxd, 1);
+                }
+                // Mouse move
+              } else {
+                mouseMoveEvent.x = mouseMoveEvent.x - mouseMoveEvent.offsetX;
+                mouseMoveEvent.y = mouseMoveEvent.y - mouseMoveEvent.offsetY;
+                let playerCursorIxd = this.otherPlayersCursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
+                if (playerCursorIxd === -1) {
+                  this.otherPlayersCursors.push(mouseMoveEvent);
+                } else {
+                  this.otherPlayersCursors[playerCursorIxd] = mouseMoveEvent;
+                }
+              }
+            }
+            break;
+          case AdventureMessageType.UPDATE_CHARACTERS:
+            if (!message.message) {
+              this.toaster.warning("Your GM has deleted all adventures for this campaign... Such an idiot");
+              this.router.navigateByUrl('');
+            } else if (this.adventure.id !== message.message.id) {
+              this.router.navigateByUrl('adventure/' + message.message.id).then(() => {
                 window.location.reload();
               });
-              break
-            case AdventureMessageType.MOUSE_MOVE:
-              const mouseMoveEvent: MouseMove = message.message;
-              // Do not add own cursor
-              if (mouseMoveEvent.userId !== this.authService.currentUserValue.id) {
-                // Mouse out
-                if (mouseMoveEvent.x === mouseMoveEvent.y && mouseMoveEvent.y === -1) {
-                  let playerCursorIxd = this.otherPlayersCursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
-                  if (playerCursorIxd !== -1) {
-                    this.otherPlayersCursors.splice(playerCursorIxd, 1);
-                  }
-                  // Mouse move
-                } else {
-                  mouseMoveEvent.x = mouseMoveEvent.x - mouseMoveEvent.offsetX;
-                  mouseMoveEvent.y = mouseMoveEvent.y - mouseMoveEvent.offsetY;
-                  let playerCursorIxd = this.otherPlayersCursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
-                  if (playerCursorIxd === -1) {
-                    this.otherPlayersCursors.push(mouseMoveEvent);
-                  } else {
-                    this.otherPlayersCursors[playerCursorIxd] = mouseMoveEvent;
-                  }
-                }
+            } else {
+              this.adventure = message.message;
+              this.adventure.characterLayer.items
+                .filter(layerItem => layerItem.element.type === LayerElementType.CHARACTER)
+                .forEach(layerItem => this.updateItem(layerItem, 1));
+            }
+            break
+          case AdventureMessageType.ADD_LAYER_ITEM:
+            const newLayerItem = message.message;
+            this.addItem(newLayerItem, this.getLayerIndex(newLayerItem.element));
+            break;
+          case AdventureMessageType.UPDATE_LAYER_ITEM:
+            const updatedLayerItem = message.message;
+            this.updateItem(updatedLayerItem, this.getLayerIndex(updatedLayerItem.element));
+            break;
+          case AdventureMessageType.REMOVE_LAYER_ITEM:
+            const layerItemId = message.message;
+            const itemToRemove = this.dashboard.find(dashboardItem => dashboardItem.id === layerItemId);
+            this.removeItem(itemToRemove);
+            break;
+          case AdventureMessageType.SELECT_CHARACTER:
+            this.selectedCharacterId = message.message;
+            break;
+          case AdventureMessageType.SHOW_TRAP:
+            const trapLayerItemId = message.message;
+            const trapItem = this.dashboard.find(item => item.id === trapLayerItemId);
+            trapItem['hidden'] = false;
+            break;
+          case AdventureMessageType.ALERT:
+            const alert: AlertMessage = message.message;
+            if (!alert.characterId || this.authService.currentUserValue.currentCharacters.some(char => char.id === alert.characterId)) {
+              switch (alert.type) {
+                case AlertMessageType.SUCCESS:
+                  this.toaster.success(alert.message);
+                  break;
+                case AlertMessageType.WARN:
+                  this.toaster.warning(alert.message);
+                  break;
+                case AlertMessageType.ERROR:
+                  this.toaster.error(alert.message);
+                  break;
               }
-              break;
-            case AdventureMessageType.UPDATE_CHARACTERS:
-              if (!message.message) {
-                this.toaster.warning("Your GM has deleted all adventures for this campaign... Such an idiot");
-                this.router.navigateByUrl('');
-              } else if (this.adventure.id !== message.message.id) {
-                this.router.navigateByUrl('adventure/' + message.message.id).then(() => {
-                  window.location.reload();
-                });
-              } else {
-                this.adventure = message.message;
-                this.adventure.characterLayer.items
-                  .filter(layerItem => layerItem.element.type === LayerElementType.CHARACTER)
-                  .forEach(layerItem => this.updateItem(layerItem, 1));
-              }
-              break
-            case AdventureMessageType.ADD_LAYER_ITEM:
-              const newLayerItem = message.message;
-              this.addItem(newLayerItem, this.getLayerIndex(newLayerItem.element));
-              break;
-            case AdventureMessageType.UPDATE_LAYER_ITEM:
-              const updatedLayerItem = message.message;
-              this.updateItem(updatedLayerItem, this.getLayerIndex(updatedLayerItem.element));
-              break;
-            case AdventureMessageType.REMOVE_LAYER_ITEM:
-              const layerItemId = message.message;
-              const itemToRemove = this.dashboard.find(dashboardItem => dashboardItem.id === layerItemId);
-              this.removeItem(itemToRemove);
-              break;
-            case AdventureMessageType.SELECT_CHARACTER:
-              this.selectedCharacterId = message.message;
-              break;
-            case AdventureMessageType.SHOW_TRAP:
-              const trapLayerItemId = message.message;
-              const trapItem = this.dashboard.find(item => item.id === trapLayerItemId);
-              trapItem['hidden'] = false;
-              break;
-            case AdventureMessageType.ALERT:
-              const alert: AlertMessage = message.message;
-              if (!alert.characterId || this.authService.currentUserValue.currentCharacters.some(char => char.id === alert.characterId)) {
-                switch (alert.type) {
-                  case AlertMessageType.SUCCESS:
-                    this.toaster.success(alert.message);
-                    break;
-                  case AlertMessageType.WARN:
-                    this.toaster.warning(alert.message);
-                    break;
-                  case AlertMessageType.ERROR:
-                    this.toaster.error(alert.message);
-                    break;
-                }
-              }
-              break;
-          }
+            }
+            break;
+          case AdventureMessageType.SOUND:
+            const fileToPlay: string = message.message;
+            this.audioService.playSound('/assets/sound/' + fileToPlay);
+            break;
         }
-      },
-      error: err => {
-        console.log(err);
       }
     });
 
@@ -461,15 +462,19 @@ export class AdventureComponent implements OnInit, OnDestroy {
         nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_DEACTIVATED);
         break;
       case LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED:
+        this.gmService.playSound(this.adventure.id, 'door_open_0.wav');
         nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED);
         break;
       case LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED:
+        this.gmService.playSound(this.adventure.id, 'door_close_0.wav');
         nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED);
         break;
       case LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED:
+        this.gmService.playSound(this.adventure.id, 'door_open_1.wav');
         nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED);
         break;
       case LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED:
+        this.gmService.playSound(this.adventure.id, 'door_close_0.wav');
         nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED);
         break;
     }
@@ -478,6 +483,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       item.type = nextLayerElement.type;
       item.elementId = nextLayerElement.id;
       item.icon = nextLayerElement.icon;
+
       this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gridsterItemToLayerItem(item));
     }
   }

@@ -58,4 +58,8 @@ export class GmService {
   sendAlert(adventureId: number | string, alertMessage: AlertMessage) {
     return this.http.post(GmService.API_URL + '/send-alert/' + adventureId, alertMessage).subscribe(() => {});
   }
+
+  playSound(adventureId: number, audioFile: string) {
+    return this.http.get(GmService.API_URL + '/play-sound/' + adventureId + '/' + audioFile).subscribe(() => {});
+  }
 }
