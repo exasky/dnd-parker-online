@@ -57,7 +57,7 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
             this.diceComponents.forEach((diceComp, index) => {
               diceComp.value = results[index];
             });
-            this.audioService.playSound('/assets/sound/roll_dice.wav');
+            this.audioService.playSound('/assets/sound/roll_dice.mp3');
           }
         }
       }

@@ -465,19 +465,19 @@ export class AdventureComponent implements OnInit, OnDestroy {
         nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_DEACTIVATED);
         break;
       case LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED:
-        this.gmService.playSound(this.adventure.id, 'door_open_0.wav');
+        this.gmService.playSound(this.adventure.id, 'door_open_0.mp3');
         nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED);
         break;
       case LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED:
-        this.gmService.playSound(this.adventure.id, 'door_close_0.wav');
+        this.gmService.playSound(this.adventure.id, 'door_close_0.mp3');
         nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED);
         break;
       case LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED:
-        this.gmService.playSound(this.adventure.id, 'door_open_1.wav');
+        this.gmService.playSound(this.adventure.id, 'door_open_1.mp3');
         nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED);
         break;
       case LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED:
-        this.gmService.playSound(this.adventure.id, 'door_close_0.wav');
+        this.gmService.playSound(this.adventure.id, 'door_close_0.mp3');
         nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED);
         break;
     }

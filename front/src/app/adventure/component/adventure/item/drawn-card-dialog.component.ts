@@ -13,6 +13,6 @@ export class DrawnCardDialogComponent {
   constructor(public dialogRef: MatDialogRef<DrawnCardDialogComponent>,
               private audioService: AudioService,
               @Inject(MAT_DIALOG_DATA) public data: CharacterItem) {
-    this.audioService.playSound('/assets/sound/chest_open_0.wav');
+    this.audioService.playSound('/assets/sound/chest_open_0.mp3');
   }
 }
