@@ -6,3 +6,7 @@ mat-drawer-container {
   z-index: unset !important;
   background: transparent !important;
 }
+
+.mat-drawer-backdrop {
+  z-index: 100 !important;
+}

@@ -1,7 +1,7 @@
 import {Component, ElementRef, HostBinding, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {
   CompactType,
-  DisplayGrid,
+  DisplayGrid, GridsterComponent,
   GridsterConfig,
   GridsterItem,
   GridsterItemComponentInterface,
@@ -42,9 +42,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   @ViewChild('boardPanel', {read: ElementRef}) boardPanel: ElementRef;
 
-  @ViewChild('drawer', {read: MatDrawer}) drawer: MatDrawer;
+  @ViewChild('actionPanelDrawer', {read: MatDrawer}) actionPanelDrawer: MatDrawer;
 
-  @ViewChild('drawerContent', {read: ElementRef}) drawerContent: ElementRef;
+  @ViewChild('mainDrawerContainer', {read: ElementRef}) mainDrawerContainer: ElementRef;
+
+  @ViewChild('gridster', {read: GridsterComponent}) gridster: GridsterComponent;
 
   private lastMouseMoveSend: number;
   private mouseMoveDelay = 33; // 30fps
@@ -203,12 +205,12 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
     this.drawnCardWSObs = this.drawnCardWS.getObservable(adventureId).subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {
-        const drawerOpenedSaved = this.drawer.opened;
-        this.disableActions = this.drawer.opened = true;
+        const drawerOpenedSaved = this.actionPanelDrawer.opened;
+        this.disableActions = this.actionPanelDrawer.opened = true;
         this.dialog.open(DrawnCardDialogComponent, DialogUtils.getDefaultConfig(receivedMsg.data))
           .beforeClosed().subscribe(() => {
           this.disableActions = false;
-          this.drawer.opened = drawerOpenedSaved;
+          this.actionPanelDrawer.opened = drawerOpenedSaved;
         });
       }
     })
@@ -217,15 +219,15 @@ export class AdventureComponent implements OnInit, OnDestroy {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {
         const diceMessage: DiceMessage = receivedMsg.data;
         if (diceMessage.type === DiceMessageType.OPEN_DIALOG) {
-          const drawerOpenedSaved = this.drawer.opened;
-          this.disableActions = this.drawer.opened = true;
+          const drawerOpenedSaved = this.actionPanelDrawer.opened;
+          this.disableActions = this.actionPanelDrawer.opened = true;
           this.dialog.open(DiceDialogComponent, DialogUtils.getDefaultConfig({
             adventureId,
             user: receivedMsg.data.message
           }))
             .beforeClosed().subscribe(() => {
             this.disableActions = false;
-            this.drawer.opened = drawerOpenedSaved;
+            this.actionPanelDrawer.opened = drawerOpenedSaved;
           });
         }
       }
@@ -304,7 +306,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
         this.selectedItem = null;
       } else {
         this.selectedItem = item;
-        this.drawerContent.nativeElement.focus();
+        this.mainDrawerContainer.nativeElement.focus();
       }
     } else { // Case drag&drop
       this.selectedItem = null;
@@ -334,35 +336,69 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventureService.playerMouseMove(this.adventure.id, mouseMove);
   }
 
+  /**
+   * Move selected item with arrow keys
+   * @param e keyboard event
+   */
   onKeyboard(e: KeyboardEvent) {
+    if (e.code === 'Escape') {
+      this.selectedItem = null;
+    } else if (this.selectedItem && ['ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown'].indexOf(e.code) !== -1) {
+      e.preventDefault();
+      e.stopPropagation();
 
-    // TODO prevent scrolling
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    e.stopPropagation();
-    if (this.selectedItem) {
-      let layerItem;
+      const parentPos = this.mainDrawerContainer.nativeElement.getBoundingClientRect();
+      const childPos = this.gridster.el.getElementsByClassName('selected')[0].getBoundingClientRect();
+      const relativePos: any = {};
+
+      relativePos.top = childPos.top - parentPos.top;
+      relativePos.right = childPos.right - parentPos.right;
+      relativePos.bottom = childPos.bottom - parentPos.bottom;
+      relativePos.left = childPos.left - parentPos.left;
+
+      let layerItem = AdventureComponent.gridsterItemToLayerItem(this.selectedItem);
       switch (e.code) {
         case "ArrowLeft":
-          layerItem = AdventureComponent.gristerItemToLayerItem(this.selectedItem);
-          layerItem.positionX -= 1;
-          this.adventureService.updateLayerItem(this.adventure.id, layerItem);
+          relativePos.left -= childPos.width; // position left prediction
+          if (layerItem.positionX > 0) {
+            layerItem.positionX -= 1;
+            this.adventureService.updateLayerItem(this.adventure.id, layerItem);
+          }
           break;
         case "ArrowUp":
-          layerItem = AdventureComponent.gristerItemToLayerItem(this.selectedItem);
-          layerItem.positionY -= 1;
-          this.adventureService.updateLayerItem(this.adventure.id, layerItem);
+          relativePos.top -= childPos.height; // position top prediction
+          if (layerItem.positionY > 0) {
+            layerItem.positionY -= 1;
+            this.adventureService.updateLayerItem(this.adventure.id, layerItem);
+          }
           break
         case "ArrowRight":
-          layerItem = AdventureComponent.gristerItemToLayerItem(this.selectedItem);
-          layerItem.positionX += 1;
-          this.adventureService.updateLayerItem(this.adventure.id, layerItem);
+          relativePos.right += childPos.width; // position right prediction
+          if (layerItem.positionX < this.options.maxCols - 1) {
+            layerItem.positionX += 1;
+            this.adventureService.updateLayerItem(this.adventure.id, layerItem);
+          }
           break
         case "ArrowDown":
-          layerItem = AdventureComponent.gristerItemToLayerItem(this.selectedItem);
-          layerItem.positionY += 1;
-          this.adventureService.updateLayerItem(this.adventure.id, layerItem);
+          relativePos.bottom += childPos.height; // position down prediction
+          if (layerItem.positionY < this.options.maxRows - 1) {
+            layerItem.positionY += 1;
+            this.adventureService.updateLayerItem(this.adventure.id, layerItem);
+          }
           break
+      }
+      const drawerContent = this.mainDrawerContainer.nativeElement.getElementsByTagName('mat-drawer-content')[0];
+      if (relativePos.top < 0) {
+        drawerContent.scrollBy(0, relativePos.top);
+      }
+      if (relativePos.right > 0) {
+        drawerContent.scrollBy(relativePos.right, 0);
+      }
+      if (relativePos.left < 0) {
+        drawerContent.scrollBy(relativePos.left, 0);
+      }
+      if (relativePos.bottom > 0) {
+        drawerContent.scrollBy(0, relativePos.bottom);
       }
     }
   }
@@ -388,7 +424,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
-  // region gridster update to call webservice
+  // region Webservice calls to update item
   emptyCellDropCallback(event: MouseEvent, item: GridsterItem) {
     const layerElementId = +(event as any).dataTransfer.getData('text');
     const elementToAdd = this.addableLayerElements.find(le => le.id === layerElementId);
@@ -404,12 +440,12 @@ export class AdventureComponent implements OnInit, OnDestroy {
       type: elementToAdd.type
     };
 
-    this.adventureService.addLayerItem(this.adventure.id, AdventureComponent.gristerItemToLayerItem(itemToPush));
+    this.adventureService.addLayerItem(this.adventure.id, AdventureComponent.gridsterItemToLayerItem(itemToPush));
   }
 
   itemChange(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
     if (this.dashboard.indexOf(item) !== -1) {
-      this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gristerItemToLayerItem(item));
+      this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gridsterItemToLayerItem(item));
     }
   }
 
@@ -442,7 +478,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       item.type = nextLayerElement.type;
       item.elementId = nextLayerElement.id;
       item.icon = nextLayerElement.icon;
-      this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gristerItemToLayerItem(item));
+      this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gridsterItemToLayerItem(item));
     }
   }
 
@@ -455,7 +491,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       : 0
   }
 
-  // region Item in gridster
+  // region Update items in gridster
   addItem(item: LayerItem, layerIndex = 0) {
     if (!item) return;
     const itemToPush = {
@@ -545,7 +581,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     return characters.length !== 0 ? characters : [{name: 'MJ', icon: ''}];
   }
 
-  private static gristerItemToLayerItem(item: LayerGridsterItem): LayerItem {
+  private static gridsterItemToLayerItem(item: LayerGridsterItem): LayerItem {
     return {
       id: item.id,
       positionX: item.x,
