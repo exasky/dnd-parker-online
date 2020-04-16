@@ -429,19 +429,22 @@ export class AdventureComponent implements OnInit, OnDestroy {
   emptyCellDropCallback(event: MouseEvent, item: GridsterItem) {
     const layerElementId = +(event as any).dataTransfer.getData('text');
     const elementToAdd = this.addableLayerElements.find(le => le.id === layerElementId);
+    if (!elementToAdd) {
+      let itemToPush = {
+        ...item,
+        elementId: elementToAdd.id,
+        cols: elementToAdd.colSize,
+        rows: elementToAdd.rowSize,
+        layerIndex: this.getLayerIndex(elementToAdd),
+        icon: elementToAdd.icon,
+        rotation: elementToAdd.rotation,
+        type: elementToAdd.type
+      };
 
-    let itemToPush = {
-      ...item,
-      elementId: elementToAdd.id,
-      cols: elementToAdd.colSize,
-      rows: elementToAdd.rowSize,
-      layerIndex: this.getLayerIndex(elementToAdd),
-      icon: elementToAdd.icon,
-      rotation: elementToAdd.rotation,
-      type: elementToAdd.type
-    };
-
-    this.adventureService.addLayerItem(this.adventure.id, AdventureComponent.gridsterItemToLayerItem(itemToPush));
+      this.adventureService.addLayerItem(this.adventure.id, AdventureComponent.gridsterItemToLayerItem(itemToPush));
+    } else {
+      console.log('Cannot find element with layerId: ' + layerElementId);
+    }
   }
 
   itemChange(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
