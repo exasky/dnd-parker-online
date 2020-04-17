@@ -429,7 +429,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   emptyCellDropCallback(event: MouseEvent, item: GridsterItem) {
     const layerElementId = +(event as any).dataTransfer.getData('text');
     const elementToAdd = this.addableLayerElements.find(le => le.id === layerElementId);
-    if (!elementToAdd) {
+    if (elementToAdd) {
       let itemToPush = {
         ...item,
         elementId: elementToAdd.id,
