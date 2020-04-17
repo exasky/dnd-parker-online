@@ -5,7 +5,8 @@
   <div *ngIf="character.equippedItems.length === 0">
     Dran & Drop items here
   </div>
-  <div *ngIf="character.equippedItems.length !== 0" class="d-flex flex-wrap">
+  <div *ngIf="character.equippedItems.length !== 0"
+       class="flex-grow d-flex flex-wrap justify-content-around align-items-center">
     <div *ngFor="let item of character.equippedItems" style="position:relative;">
       <img [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
            draggable="true"
