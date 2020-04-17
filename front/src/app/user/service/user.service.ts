@@ -21,8 +21,8 @@ export class UserService {
     return this.http.get<UserEdit>(UserService.API_URL + '/' + id);
   }
 
-  create(user: UserEdit): Observable<void> {
-    return this.http.post<void>(UserService.API_URL, user);
+  create(user: UserEdit): Observable<UserEdit> {
+    return this.http.post<UserEdit>(UserService.API_URL, user);
   }
 
   update(user: UserEdit): Observable<UserEdit> {

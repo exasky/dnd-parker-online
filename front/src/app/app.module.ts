@@ -52,6 +52,7 @@ import {GmActionPanelComponent} from "./adventure/component/adventure/gm/gm-acti
 import {MatExpansionModule} from "@angular/material/expansion";
 import {AlertMessageDialogComponent} from "./adventure/component/adventure/gm/alert-message-dialog.component";
 import {MatSliderModule} from "@angular/material/slider";
+import {MatListModule} from "@angular/material/list";
 
 @NgModule({
   declarations: [
@@ -104,7 +105,8 @@ import {MatSliderModule} from "@angular/material/slider";
             timeOut: 5000
         }),
         MatExpansionModule,
-        MatSliderModule
+        MatSliderModule,
+        MatListModule
     ],
   entryComponents: [AlertMessageDialogComponent, ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent],
   providers: [
