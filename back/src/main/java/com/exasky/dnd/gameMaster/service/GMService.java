@@ -143,6 +143,26 @@ public class GMService {
         return attachedCampaign;
     }
 
+    public Campaign copyCampaign(Long campaignId) {
+        Campaign toCopy = this.campaignRepository.getById(campaignId);
+        if (Objects.isNull(toCopy)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+        }
+
+        Campaign newCampaign = new Campaign();
+        newCampaign.setName(toCopy.getName() + " - copy");
+
+        newCampaign.setAdventures(toCopy.getAdventures().stream()
+                .map(adventure -> adventureService.copy(adventure, newCampaign))
+                .collect(Collectors.toList()));
+
+        newCampaign.setCharacters(toCopy.getCharacters().stream()
+                .map(character -> characterService.copy(character, newCampaign))
+                .collect(Collectors.toList()));
+
+        return newCampaign;
+    }
+
     @Transactional
     public void deleteCampaign(Long campaignId) {
         Campaign campaign = this.campaignRepository.getById(campaignId);

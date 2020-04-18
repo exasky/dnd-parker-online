@@ -75,6 +75,30 @@ public class AdventureService {
         return attachedAdventure;
     }
 
+    public Adventure copy(Adventure toCopy, Campaign campaign) {
+        Adventure newAdventure = new Adventure(campaign);
+
+        newAdventure.setName(toCopy.getName());
+        newAdventure.setLevel(toCopy.getLevel());
+
+        newAdventure.setBoards(toCopy.getBoards().stream()
+                .map(board -> boardService.copy(newAdventure, board))
+                .collect(Collectors.toList()));
+
+        newAdventure.getMjLayer().setItems(
+                toCopy.getMjLayer().getItems().stream()
+                        .map(layerItem -> layerItemService.copy(layerItem, newAdventure.getMjLayer()))
+                        .collect(Collectors.toList()));
+
+        newAdventure.getCharacterLayer().setItems(
+                toCopy.getCharacterLayer().getItems().stream()
+                        .map(layerItem -> layerItemService.copy(layerItem, newAdventure.getCharacterLayer()))
+                        .collect(Collectors.toList())
+        );
+
+        return newAdventure;
+    }
+
     public List<Campaign> getCampaignsForCurrentUser() {
         return this.campaignRepository.findAllForUser(getCurrentUser().getId());
     }

@@ -1,6 +1,6 @@
 import {Component, HostBinding, OnInit} from "@angular/core";
 import {Adventure} from "../../../model/adventure";
-import {Campaign} from "../../../model/campaign";
+import {Campaign, SimpleCampaign} from "../../../model/campaign";
 import {Character, CharacterItem, CharacterTemplate} from "../../../model/character";
 import {GmService} from "../../../service/gm.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -8,6 +8,7 @@ import {ConfirmDialogComponent} from "../../../../common/dialog/confirm-dialog.c
 import {MatDialog} from "@angular/material/dialog";
 import {ToasterService} from "../../../../common/service/toaster.service";
 import {AdventureService} from "../../../service/adventure.service";
+import {MatSelectChange} from "@angular/material/select";
 
 @Component({
   selector: 'app-campaign-creator',
@@ -25,6 +26,8 @@ export class CampaignCreatorComponent implements OnInit {
   campaign: Campaign;
   selectedAdventure: Adventure;
 
+  allCampaigns: SimpleCampaign[];
+
   constructor(private gmService: GmService,
               private adventureService: AdventureService,
               private dialog: MatDialog,
@@ -35,6 +38,7 @@ export class CampaignCreatorComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.gmService.getAllCampaigns().subscribe(campaigns => this.allCampaigns = campaigns);
     this.gmService.getAllCharacterItems().subscribe(value => this.allCharacterItems = value);
 
     const id = this.route.snapshot.paramMap.get("id");
@@ -86,6 +90,14 @@ export class CampaignCreatorComponent implements OnInit {
       this.selectedCharacterTemplates.splice(this.selectedCharacterTemplates.indexOf(characterTemplate), 1);
       this.campaign.characters.splice(characterIdx, 1);
     }
+  }
+
+  copyFrom($event: MatSelectChange) {
+    const toCopyCampaignId = $event.value;
+    this.gmService.copyFrom(toCopyCampaignId).subscribe(newCampaign => {
+      this.campaign = newCampaign;
+
+    })
   }
 
   saveCampaign() {

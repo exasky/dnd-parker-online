@@ -33,7 +33,18 @@ public class LayerItemService {
                 : update(layerItem);
     }
 
-    private LayerItem create(LayerItem toCreate, Layer attachedLayer) {
+    public LayerItem copy(LayerItem toCopy, Layer layer) {
+        LayerItem toSave = new LayerItem();
+
+        toSave.setLayer(layer);
+        toSave.setPositionY(toCopy.getPositionY());
+        toSave.setPositionX(toCopy.getPositionX());
+        toSave.setLayerElement(layerElementService.findById(toCopy.getLayerElement().getId()));
+
+        return toSave;
+    }
+
+    public LayerItem create(LayerItem toCreate, Layer attachedLayer) {
         LayerItem toSave = new LayerItem();
 
         toSave.setLayer(attachedLayer);

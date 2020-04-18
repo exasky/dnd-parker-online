@@ -51,6 +51,11 @@ public class GMRestController {
         return SimpleCampaignDto.toDto(gmService.getAllCampaigns());
     }
 
+    @GetMapping("/campaign/copy/{id}")
+    public CreateCampaignDto copyCampaign(@PathVariable Long id) {
+        return CreateCampaignDto.toDto(this.gmService.copyCampaign(id));
+    }
+
     @GetMapping("/campaign/{id}")
     public CreateCampaignDto getCampaign(@PathVariable Long id) {
         return CreateCampaignDto.toDto(gmService.getCampaign(id));

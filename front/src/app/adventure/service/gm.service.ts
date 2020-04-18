@@ -37,6 +37,10 @@ export class GmService {
     return this.http.get<Campaign>(GmService.API_URL + '/campaign/' + id);
   }
 
+  copyFrom(id: number | string): Observable<Campaign> {
+    return this.http.get<Campaign>(GmService.API_URL + '/campaign/copy/' + id);
+  }
+
   saveCampaign(campaign: Campaign): Observable<Campaign> {
     return campaign.id
       ? this.http.put<Campaign>(GmService.API_URL + '/campaign/' + campaign.id, campaign)
