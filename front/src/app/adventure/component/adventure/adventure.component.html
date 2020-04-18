@@ -36,7 +36,9 @@
                              [monsters]="monsters"
                              [characters]="adventure.characters"
                              [selectedItem]="selectedItem"
-                             (selectMonster)="selectItem($event)"></app-gm-action-panel>
+                             [cursorEnabled]="showCursor"
+                             (selectMonster)="selectItem($event)"
+                             (toggleCursor)="showCursor = !showCursor"></app-gm-action-panel>
       </div>
     </mat-drawer>
 

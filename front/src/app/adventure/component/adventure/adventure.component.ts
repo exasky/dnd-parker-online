@@ -68,6 +68,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   gamePanelXSize = 0;
   gamePanelYSize = 0;
 
+  showCursor: boolean = true;
   otherPlayersCursors: MouseMove[] = [];
 
   disableActions: boolean = false;
@@ -317,6 +318,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   onMouseMove(e: MouseEvent) {
+    if (!this.showCursor) {
+      return;
+    }
     if (Date.now() - this.lastMouseMoveSend < this.mouseMoveDelay) {
       return;
     }

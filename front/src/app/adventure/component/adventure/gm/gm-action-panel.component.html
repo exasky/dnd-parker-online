@@ -7,6 +7,9 @@
 
     <div class="d-flex flex-column">
       <button mat-raised-button class="mb-1" (click)="sendAlert()">Send alert</button>
+      <button mat-raised-button class="mb-1" (click)="toggleCursor.emit()">
+        {{cursorEnabled ? 'Hide cursor' : 'Show cursor'}}
+      </button>
       <button mat-raised-button class="mb-1 position-relative" [matMenuTriggerFor]="soundMenu">
         Sounds
         <mat-icon class="position-absolute" style="right: 10px; top: 6px"

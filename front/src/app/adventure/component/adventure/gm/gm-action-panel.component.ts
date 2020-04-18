@@ -32,6 +32,12 @@ export class GmActionPanelComponent {
   @Output()
   selectMonster: EventEmitter<number> = new EventEmitter<number>();
 
+  @Input()
+  cursorEnabled = true;
+
+  @Output()
+  toggleCursor: EventEmitter<void> = new EventEmitter<void>();
+
   constructor(private dialog: MatDialog,
               private gmService: GmService) {
   }
