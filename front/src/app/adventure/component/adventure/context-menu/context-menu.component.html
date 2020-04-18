@@ -1,0 +1,33 @@
+<div style="visibility: hidden; position: fixed"
+     [style.left]="contextMenuPosition.x"
+     [style.top]="contextMenuPosition.y"
+     [matMenuTriggerFor]="contextMenu">
+</div>
+<mat-menu #contextMenu="matMenu">
+  <ng-template matMenuContent let-item="item">
+    <button *ngIf="authService.isGM && isItemFlippable(item.type)" mat-menu-item (click)="flipElement(item, $event)">
+      <mat-icon>flip</mat-icon>
+      Flip
+    </button>
+    <button *ngIf="authService.isGM && item.hidden === true" mat-menu-item (click)="showTrap(item)">
+      <mat-icon>visibility</mat-icon>
+      Show trap
+    </button>
+    <ng-container *ngIf="item.type === LayerElementType.CHEST">
+      <mat-divider></mat-divider>
+      <button *ngIf="authService.isGM" mat-menu-item (click)="setChestCard(item)">
+        <mat-icon style="transform: rotate(180deg)">open_in_browser</mat-icon>
+        Set card
+      </button>
+      <button mat-menu-item (click)="openChest(item)">
+        <mat-icon>open_in_browser</mat-icon>
+        Open chest
+      </button>
+      <mat-divider></mat-divider>
+    </ng-container>
+    <button *ngIf="authService.isGM" mat-menu-item (click)="deleteItem(item)">
+      <mat-icon>delete</mat-icon>
+      Delete
+    </button>
+  </ng-template>
+</mat-menu>

@@ -14,6 +14,7 @@ import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.common.exception.ValidationCheckException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -194,5 +195,16 @@ public class AdventureService {
         campaignRepository.save(campaign);
 
         return drawnCard;
+    }
+
+    @PreAuthorize("hasRole('ROLE_GM')")
+    public CharacterItem drawSpecificCard(Long characterItemId) {
+        Optional<CharacterItem> byId = characterItemRepository.findById(characterItemId);
+
+        if (!byId.isPresent()) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CHARACTER_ITEM.NOT_FOUND);
+        }
+
+        return byId.get();
     }
 }

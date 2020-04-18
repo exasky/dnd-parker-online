@@ -53,6 +53,8 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {AlertMessageDialogComponent} from "./adventure/component/adventure/gm/alert-message-dialog.component";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatListModule} from "@angular/material/list";
+import {ContextMenuComponent} from "./adventure/component/adventure/context-menu/context-menu.component";
+import {SelectCardDialogComponent} from "./adventure/component/adventure/context-menu/select-card-dialog.component";
 
 @NgModule({
   declarations: [
@@ -74,7 +76,9 @@ import {MatListModule} from "@angular/material/list";
     DrawnCardDialogComponent,
     DiceComponent,
     DiceDialogComponent,
-    AlertMessageDialogComponent
+    AlertMessageDialogComponent,
+    ContextMenuComponent,
+    SelectCardDialogComponent
   ],
     imports: [
         BrowserModule,
@@ -108,7 +112,10 @@ import {MatListModule} from "@angular/material/list";
         MatSliderModule,
         MatListModule
     ],
-  entryComponents: [AlertMessageDialogComponent, ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent],
+  entryComponents: [
+    AlertMessageDialogComponent, ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent,
+    SelectCardDialogComponent
+  ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ForbiddenInterceptor, multi: true},

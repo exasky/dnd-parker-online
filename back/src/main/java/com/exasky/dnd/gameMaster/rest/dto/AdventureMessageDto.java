@@ -11,7 +11,8 @@ public class AdventureMessageDto {
         SELECT_CHARACTER,
         SHOW_TRAP,
         ALERT,
-        SOUND
+        SOUND,
+        SET_CHEST_CARD
     }
 
     private AdventureMessageType type;

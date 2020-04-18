@@ -1,7 +1,8 @@
 import {Component, ElementRef, HostBinding, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {
   CompactType,
-  DisplayGrid, GridsterComponent,
+  DisplayGrid,
+  GridsterComponent,
   GridsterConfig,
   GridsterItem,
   GridsterItemComponentInterface,
@@ -28,7 +29,6 @@ import {DiceWebsocketService} from "../../../common/service/ws/dice.websocket.se
 import {MatDrawer} from "@angular/material/sidenav";
 import {AdventureWebsocketService} from "../../../common/service/ws/adventure.websocket.service";
 import {Monster} from "../../model/monster";
-import {MatMenuTrigger} from "@angular/material/menu";
 import {AlertMessage, AlertMessageType} from "../../model/alert-message";
 import {LayerGridsterItem} from "../../model/layer-gridster-item";
 import {AudioService} from "../../service/audio.service";
@@ -56,7 +56,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   drawnCardWSObs: Subscription;
   diceWSObs: Subscription;
 
-  layerElementType = LayerElementType; // Used to access LayerElementType in html
+  LayerElementType = LayerElementType; // Used to access LayerElementType in html
 
   adventure: Adventure;
 
@@ -78,9 +78,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
   selectedItem: LayerGridsterItem;
   // increased each time a player/monster move in order to keep the last moving item on top
   currentLayerIndexForSelectedItem = 1;
-
-  @ViewChild(MatMenuTrigger) contextMenu: MatMenuTrigger;
-  contextMenuPosition = {x: '0px', y: '0px'};
 
   constructor(private adventureService: AdventureService,
               private gmService: GmService,
@@ -199,6 +196,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
           case AdventureMessageType.SOUND:
             const fileToPlay: string = message.message;
             this.audioService.playSound('/assets/sound/' + fileToPlay);
+            break;
+          case AdventureMessageType.SET_CHEST_CARD:
+            const chestCard: { characterItemId: number; layerItemId: number } = message.message;
+            const chestItem = this.dashboard.find(item => item.id === chestCard.layerItemId);
+            chestItem['cardId'] = chestCard.characterItemId;
             break;
         }
       }
@@ -404,21 +406,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
-  onContextMenu(event: MouseEvent, item: GridsterItem) {
-    if (this.authService.isGM) {
-      event.preventDefault();
-      this.contextMenuPosition.x = event.clientX + 'px';
-      this.contextMenuPosition.y = event.clientY + 'px';
-      this.contextMenu.menuData = {'item': item};
-      this.contextMenu.menu.focusFirstItem('mouse');
-      this.contextMenu.openMenu();
-    }
-  }
-
-  deleteItem(item: GridsterItem) {
-    this.adventureService.deleteLayerItem(this.adventure.id, item.id);
-  }
-
   changedOptions() {
     if (this.options.api && this.options.api.optionsChanged) {
       this.options.api.optionsChanged();
@@ -449,44 +436,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   itemChange(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
     if (this.dashboard.indexOf(item) !== -1) {
-      this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gridsterItemToLayerItem(item));
-    }
-  }
-
-  flipElement(item: LayerGridsterItem, event: MouseEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    let nextLayerElement: LayerElement;
-    switch (item.type) {
-      case LayerElementType.TRAP_DEACTIVATED:
-        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_ACTIVATED);
-        break;
-      case LayerElementType.TRAP_ACTIVATED:
-        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_DEACTIVATED);
-        break;
-      case LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED:
-        this.gmService.playSound(this.adventure.id, 'door_open_0.mp3');
-        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED);
-        break;
-      case LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED:
-        this.gmService.playSound(this.adventure.id, 'door_close_0.mp3');
-        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED);
-        break;
-      case LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED:
-        this.gmService.playSound(this.adventure.id, 'door_open_1.mp3');
-        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED);
-        break;
-      case LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED:
-        this.gmService.playSound(this.adventure.id, 'door_close_0.mp3');
-        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED);
-        break;
-    }
-
-    if (nextLayerElement) {
-      item.type = nextLayerElement.type;
-      item.elementId = nextLayerElement.id;
-      item.icon = nextLayerElement.icon;
-
       this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gridsterItemToLayerItem(item));
     }
   }
@@ -579,10 +528,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
     )
   }
 
-  isItemFlippable(type: LayerElementType) {
-    return type.startsWith('TRAP_') || type.indexOf('_DOOR_') !== -1;
-  }
-
   // endregion
 
   getCharacterNamesFromId(userId) {
@@ -590,7 +535,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     return characters.length !== 0 ? characters : [{name: 'MJ', icon: ''}];
   }
 
-  private static gridsterItemToLayerItem(item: LayerGridsterItem): LayerItem {
+  static gridsterItemToLayerItem(item: LayerGridsterItem): LayerItem {
     return {
       id: item.id,
       positionX: item.x,
@@ -608,9 +553,5 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   tooltipDisabled(itemType: LayerElementType): boolean {
     return [LayerElementType.CHARACTER, LayerElementType.MONSTER].indexOf(itemType) === -1;
-  }
-
-  showTrap(item: GridsterItem) {
-    this.adventureService.showTrap(this.adventure.id, item.id);
   }
 }

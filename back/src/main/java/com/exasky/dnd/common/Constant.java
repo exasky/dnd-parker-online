@@ -33,6 +33,12 @@ public final class Constant {
             public static final String NAME_EMPTY = PREFIX + "NAME_EMPTY";
         }
 
+        public static final class CHARACTER_ITEM {
+            private static final String PREFIX = "CHARACTER_ITEM.";
+
+            public static final String NOT_FOUND = PREFIX + "NOT_FOUND";
+        }
+
         public static final class USER {
             private static final String PREFIX = "USER.";
 

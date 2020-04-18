@@ -58,6 +58,22 @@ public class AdventureRestController {
         this.messagingTemplate.convertAndSend("/topic/drawn-card/" + adventureId, dto);
     }
 
+    @PostMapping("/set-chest-specific-card/{adventureId}")
+    public void setChestSpecificCard(@PathVariable Long adventureId, @RequestBody ChestSpecificCardDto dto) {
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.SET_CHEST_CARD);
+        wsDto.setMessage(dto);
+
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+    }
+
+    @GetMapping("/draw-specific-card/{adventureId}/{characterItemId}")
+    public void drawSpecificCard(@PathVariable Long adventureId, @PathVariable Long characterItemId) {
+        CharacterItemDto dto = CharacterItemDto.toDto(this.adventureService.drawSpecificCard(characterItemId));
+
+        this.messagingTemplate.convertAndSend("/topic/drawn-card/" + adventureId, dto);
+    }
+
     @GetMapping("/{id}")
     public AdventureDto getAdventure(@PathVariable Long id) {
         return AdventureDto.toDto(this.adventureService.getById(id));

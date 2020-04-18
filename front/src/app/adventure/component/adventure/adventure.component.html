@@ -28,7 +28,8 @@
     </div>
   </div>
 
-  <mat-drawer-container class="flex-grow d-flex flex-column mt-3" #mainDrawerContainer tabindex="1" (keyup)="onKeyboard($event)">
+  <mat-drawer-container class="flex-grow d-flex flex-column mt-3" #mainDrawerContainer tabindex="1"
+                        (keyup)="onKeyboard($event)">
     <mat-drawer #drawer2 mode="side" position="start">
       <div class="d-flex flex-column h-100" style="min-width: 150px">
         <app-gm-action-panel [adventureId]="adventure.id"
@@ -88,18 +89,18 @@
                          #t="ngbTooltip"
                          [class.selected]="selectedItem && selectedItem.id === item.id"
                          (mousedown)="t.close()"
-                         (contextmenu)="onContextMenu($event, item)">
+                         (contextmenu)="contextMenu.openMenu($event, item)">
 
-            <div *ngIf="!item.dragEnabled && item.type === layerElementType.CHARACTER"
+            <div *ngIf="!item.dragEnabled && item.type === LayerElementType.CHARACTER"
                  class="adventure-board-item"
                  style="z-index: 5; background-color: rgba(0,0,0,0.5)">
             </div>
 
             <ng-template #tipContent [ngSwitch]="item.type">
-              <ng-template [ngSwitchCase]="layerElementType.CHARACTER">
+              <ng-template [ngSwitchCase]="LayerElementType.CHARACTER">
                 <app-character-tooltip-displayer [character]="item.character"></app-character-tooltip-displayer>
               </ng-template>
-              <ng-template [ngSwitchCase]="layerElementType.MONSTER">
+              <ng-template [ngSwitchCase]="LayerElementType.MONSTER">
                 Hello, monster <b>{{item.icon}}</b>!
               </ng-template>
               <div *ngSwitchDefault>
@@ -107,23 +108,31 @@
 
             </ng-template>
 
-            <div *ngSwitchCase="layerElementType.CHARACTER"
+            <div *ngSwitchCase="LayerElementType.CHARACTER"
                  class="adventure-board-item"
                  [class.selected]="selectedCharacterId === item.character.id"
                  [ngStyle]="{'background-image': 'url(\'assets/character/' + item.icon + '-token.jpg\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
             </div>
 
-            <div *ngSwitchCase="layerElementType.MONSTER"
+            <div *ngSwitchCase="LayerElementType.MONSTER"
                  class="adventure-board-item"
                  [ngStyle]="{'background-image': 'url(\'assets/monster/' + item.icon + '-token.jpg\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
             </div>
 
-            <div *ngSwitchCase="layerElementType.TRAP_ACTIVATED">
+            <div *ngSwitchCase="LayerElementType.TRAP_ACTIVATED">
               <div class="adventure-board-item"
                    *ngIf="authService.isGM || item.hidden !== true"
                    [class.trap-visible]="authService.isGM && item.hidden === false"
+                   [ngStyle]="{'background-image': 'url(\'assets/item/' + item.icon + '\')',
+                              'transform': 'rotate(' + item.rotation + 'deg)'}">
+              </div>
+            </div>
+
+            <div *ngSwitchCase="LayerElementType.CHEST">
+              <div class="adventure-board-item"
+                   [class.chest-with-card]="authService.isGM && item.cardId !== undefined"
                    [ngStyle]="{'background-image': 'url(\'assets/item/' + item.icon + '\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
               </div>
@@ -141,30 +150,12 @@
       <div class="d-flex flex-column h-100" style="min-width: 150px">
         <app-action-panel [adventure]="adventure"
                           [disableActions]="disableActions"
-        [selectedCharacterId]="selectedCharacterId"></app-action-panel>
+                          [selectedCharacterId]="selectedCharacterId"></app-action-panel>
       </div>
     </mat-drawer>
   </mat-drawer-container>
-</ng-container>
 
-<div style="visibility: hidden; position: fixed"
-     [style.left]="contextMenuPosition.x"
-     [style.top]="contextMenuPosition.y"
-     [matMenuTriggerFor]="contextMenu">
-</div>
-<mat-menu #contextMenu="matMenu">
-  <ng-template matMenuContent let-item="item">
-    <button mat-menu-item (click)="deleteItem(item)">
-      <mat-icon>delete</mat-icon>
-      Delete
-    </button>
-    <button *ngIf="isItemFlippable(item.type)" mat-menu-item (click)="flipElement(item, $event)">
-      <mat-icon>flip</mat-icon>
-      Flip
-    </button>
-    <button *ngIf="item.hidden === true" mat-menu-item (click)="showTrap(item)">
-      <mat-icon>visibility</mat-icon>
-      Show trap
-    </button>
-  </ng-template>
-</mat-menu>
+  <app-context-menu #contextMenu
+                    [adventureId]="adventure.id"
+                    [addableLayerElements]="addableLayerElements"></app-context-menu>
+</ng-container>

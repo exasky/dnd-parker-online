@@ -33,6 +33,14 @@ export class AdventureService {
     return this.http.get<CharacterItem>(AdventureService.API_URL + '/draw-card/' + adventureId).subscribe();
   }
 
+  setChestSpecificCard(adventureId: number, chestSpecificCard: { characterItemId: number; layerItemId: number }) {
+    return this.http.post(AdventureService.API_URL + '/set-chest-specific-card/' + adventureId, chestSpecificCard).subscribe();
+  }
+
+  drawSpecificCard(adventureId: number, cardId: number) {
+    return this.http.get<CharacterItem>(AdventureService.API_URL + '/draw-specific-card/' + adventureId + '/' + cardId).subscribe();
+  }
+
   playerMouseMove(adventureId, mouseMove: MouseMove) {
     this.http.post(AdventureService.API_URL + '/mouse-move/' + adventureId, mouseMove).subscribe();
   }

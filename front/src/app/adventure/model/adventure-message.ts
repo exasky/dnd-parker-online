@@ -13,7 +13,8 @@ export enum AdventureMessageType {
   SELECT_CHARACTER = 'SELECT_CHARACTER',
   SHOW_TRAP = 'SHOW_TRAP',
   ALERT = 'ALERT',
-  SOUND = 'SOUND'
+  SOUND = 'SOUND',
+  SET_CHEST_CARD = 'SET_CHEST_CARD'
 }
 
 export class MouseMove {
