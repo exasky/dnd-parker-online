@@ -2,7 +2,6 @@ import {Component, HostBinding, Inject, OnInit} from "@angular/core";
 import {GmService} from "../../../service/gm.service";
 import {CharacterItem} from "../../../model/character";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {SimpleUser} from "../../../model/simple-user";
 
 @Component({
   selector: 'app-select-card-dialog',
@@ -15,7 +14,7 @@ export class SelectCardDialogComponent implements OnInit {
 
   allCharacterItems: CharacterItem[];
 
-  selectedChestCard: CharacterItem;
+  selectedCard: CharacterItem;
 
   constructor(private gmService: GmService,
               public dialogRef: MatDialogRef<SelectCardDialogComponent>,
@@ -26,7 +25,7 @@ export class SelectCardDialogComponent implements OnInit {
     this.gmService.getAllCharacterItems().subscribe(value => {
       this.allCharacterItems = value;
       if (this.data !== undefined) {
-        this.selectedChestCard = this.allCharacterItems.find(item => item.id === this.data);
+        this.selectedCard = this.allCharacterItems.find(item => item.id === this.data);
       }
     });
   }
@@ -36,11 +35,11 @@ export class SelectCardDialogComponent implements OnInit {
     const itemId = +ev.dataTransfer.getData("text");
     const foundItem = this.allCharacterItems.find(allItem => allItem.id === itemId);
     if (foundItem) {
-      this.selectedChestCard = foundItem;
+      this.selectedCard = foundItem;
     }
   }
 
-  validateChestCard() {
-    this.dialogRef.close(this.selectedChestCard);
+  validateCard() {
+    this.dialogRef.close(this.selectedCard);
   }
 }

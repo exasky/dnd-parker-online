@@ -1,33 +1,125 @@
 <mat-card class="flex-grow m-2 overflow">
   <mat-card-content class="d-flex flex-column align-items-center">
-    <img *ngIf="character.name"
+    <img *ngIf="!editable && character.name"
          width="50%"
          [src]="'assets/character/' + character.name.toLowerCase() + '-card.jpg'">
 
-    <section class="status-bar w-100">
-      <mat-progress-bar color="warn" mode="determinate" [value]="(character.hp * 100) / character.maxHp">
-      </mat-progress-bar>
-      <div class="status-bar-text">HP : {{character.hp}} / {{character.maxHp}}</div>
-    </section>
-    <section class="status-bar w-100" *ngIf="character.maxMp">
-      <mat-progress-bar color="accent" mode="determinate" [value]="(character.mp * 100) / character.maxMp">
-      </mat-progress-bar>
-      <div class="status-bar-text">MP : {{character.mp}} / {{character.maxMp}}</div>
-    </section>
+    <ng-container *ngIf="editable">
+      <div class="d-flex w-100 justify-content-around">
+        <div class="d-flex flex-column">
+          <mat-label style="padding-left: 8px">HP</mat-label>
+          <mat-slider color="primary"
+                      [min]="0" [max]="character.maxHp" [step]="1"
+                      [thumbLabel]="true" [tickInterval]="1"
+                      [(ngModel)]="character.hp"
+                      (change)="updateCharacter(character)">
+          </mat-slider>
+        </div>
+        <div class="d-flex flex-column">
+          <mat-label style="padding-left: 8px">Max HP</mat-label>
+          <mat-slider color="primary"
+                      [min]="0" max="20" [step]="1"
+                      [thumbLabel]="true" [tickInterval]="1"
+                      [(ngModel)]="character.maxHp"
+                      (change)="updateCharacter(character)">
+          </mat-slider>
+        </div>
+      </div>
+      <div class="d-flex w-100 justify-content-around">
+        <div class="d-flex flex-column">
+          <mat-label style="padding-left: 8px">MP</mat-label>
+          <mat-slider color="primary"
+                      [min]="0" [max]="character.maxMp" [step]="1"
+                      [thumbLabel]="true" [tickInterval]="1"
+                      [(ngModel)]="character.mp"
+                      (change)="updateCharacter(character)">
+          </mat-slider>
+        </div>
+        <div class="d-flex flex-column">
+          <mat-label style="padding-left: 8px">Max MP</mat-label>
+          <mat-slider color="primary"
+                      [min]="0" max="20" [step]="1"
+                      [thumbLabel]="true" [tickInterval]="1"
+                      [(ngModel)]="character.maxMp"
+                      (change)="updateCharacter(character)">
+          </mat-slider>
+        </div>
+      </div>
+    </ng-container>
 
-    <div mat-subheader>Equipped items</div>
-    <div class="d-flex" style="overflow-y: hidden">
-      <img *ngFor="let item of character.equippedItems"
-           class="m-auto"
-           height="48%" width="48%"
-           [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'">
+    <ng-container *ngIf="!editable">
+      <section class="status-bar w-100">
+        <mat-progress-bar color="warn" mode="determinate" [value]="(character.hp * 100) / character.maxHp">
+        </mat-progress-bar>
+        <div class="status-bar-text">HP : {{character.hp}} / {{character.maxHp}}</div>
+      </section>
+      <section class="status-bar w-100" *ngIf="character.maxMp">
+        <mat-progress-bar color="accent" mode="determinate" [value]="(character.mp * 100) / character.maxMp">
+        </mat-progress-bar>
+        <div class="status-bar-text">MP : {{character.mp}} / {{character.maxMp}}</div>
+      </section>
+    </ng-container>
+
+    <div mat-subheader>
+      Equipped items
+      <button *ngIf="editable" mat-icon-button (click)="openSelectCardEquippedItem()">
+        <mat-icon>add</mat-icon>
+      </button>
     </div>
-    <div mat-subheader>Backpack items</div>
-    <div class="d-flex" style="overflow-y: hidden">
-      <img *ngFor="let item of character.backpackItems"
-           class="m-auto"
-           height="48%" width="48%"
-           [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'">
+    <div class="w-100 d-flex"
+         style="overflow-y: hidden"
+         (dragover)="$event.preventDefault()"
+         (drop)="addEquippedItem($event)">
+      <div *ngIf="character.equippedItems.length === 0">
+        Drag & Drop items here
+      </div>
+      <ng-container *ngIf="character.equippedItems.length !== 0">
+        <div *ngFor="let item of character.equippedItems"
+             class="m-auto"
+             style="position:relative;">
+          <img [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
+               draggable="true"
+               (dragstart)="equipmentDragStartHandler($event, item)"
+               width="150px" height="230px">
+          <button *ngIf="editable"
+                  mat-mini-fab
+                  style="position: absolute; top: 0; left: 73px"
+                  (click)="removeEquipmentItem(item)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </ng-container>
+    </div>
+    <div mat-subheader>
+      Backpack items
+      <button *ngIf="editable" mat-icon-button (click)="openSelectCardBackPackItem()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+    <div class="w-100 d-flex"
+         style="overflow-y: hidden"
+         (dragover)="$event.preventDefault()"
+         (drop)="addBackPackItem($event)">
+      <div *ngIf="character.backpackItems.length === 0">
+        Drag & Drop items here
+      </div>
+      <ng-container *ngIf="character.backpackItems.length !== 0">
+        <div *ngFor="let item of character.backpackItems"
+             class="m-auto"
+             style="position:relative;">
+          <img [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
+               draggable="true"
+               class="m-auto"
+               (dragstart)="backpackDragStartHandler($event, item)"
+               width="150px" height="230px">
+          <button *ngIf="editable"
+                  mat-mini-fab
+                  style="position: absolute; top: 0; left: 73px"
+                  (click)="removeBackpackItem(item)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </ng-container>
     </div>
   </mat-card-content>
 </mat-card>

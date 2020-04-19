@@ -3,7 +3,7 @@
      (dragover)="$event.preventDefault()"
      (drop)="addEquippedItem($event)">
   <div *ngIf="character.equippedItems.length === 0">
-    Dran & Drop items here
+    Drag & Drop items here
   </div>
   <div *ngIf="character.equippedItems.length !== 0"
        class="flex-grow d-flex flex-wrap justify-content-around align-items-center">

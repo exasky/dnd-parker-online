@@ -24,6 +24,19 @@ public class CharacterDto {
 
     private Long userId;
 
+    public static Character toBo(CharacterDto dto) {
+        Character character = new Character(dto.id);
+
+        character.setMaxHp(dto.maxHp);
+        character.setHp(dto.hp);
+        character.setMaxMp(dto.maxMp);
+        character.setMp(dto.mp);
+        character.setBackPack(CharacterItemDto.toBo(dto.getBackpackItems()));
+        character.setEquipments(CharacterItemDto.toBo(dto.getEquippedItems()));
+
+        return character;
+    }
+
     public static List<CharacterDto> toDto(List<Character> bos) {
         return Objects.isNull(bos)
                 ? new ArrayList<>()

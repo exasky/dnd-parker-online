@@ -119,8 +119,16 @@ public class AdventureService {
         }
 
         Character toUpdate = first.get();
+        toUpdate.setMaxHp(toBo.getMaxHp());
         toUpdate.setHp(toBo.getHp());
+        toUpdate.setMaxMp(toBo.getMaxMp());
         toUpdate.setMp(toBo.getMp());
+        toUpdate.updateEquipments(toBo.getEquipments().stream()
+                .map(characterItem -> characterItemRepository.getOne(characterItem.getId()))
+                .collect(Collectors.toList()));
+        toUpdate.updateBackPack(toBo.getBackPack().stream()
+                .map(characterItem -> characterItemRepository.getOne(characterItem.getId()))
+                .collect(Collectors.toList()));
 
         return characterRepository.save(toUpdate);
     }

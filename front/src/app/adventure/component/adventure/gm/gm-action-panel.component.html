@@ -79,7 +79,7 @@
     </div>
   </mat-expansion-panel>
 
-  <mat-expansion-panel class="d-flex flex-column">
+  <mat-expansion-panel class="d-none d-md-flex flex-column">
     <mat-expansion-panel-header class="flex-shrink-0">
       <mat-panel-title>Characters</mat-panel-title>
     </mat-expansion-panel-header>
@@ -87,9 +87,9 @@
     <div class="d-flex flex-column">
       <div *ngFor="let character of characters"
            class="flex-grow d-flex align-items-center justify-content-around">
-        {{character.name.charAt(0).toUpperCase() + character.name.slice(1)}}:
+        {{character.name.charAt(0).toUpperCase() + character.name.slice(1)}}
         <div class="d-flex flex-column">
-          <mat-label>HP</mat-label>
+          <mat-label style="padding-left: 8px">HP</mat-label>
           <mat-slider color="primary"
                       [min]="0" [max]="character.maxHp" [step]="1"
                       [thumbLabel]="true" [tickInterval]="1"
@@ -98,7 +98,7 @@
           </mat-slider>
         </div>
         <div class="d-flex flex-column">
-          <mat-label>MP</mat-label>
+          <mat-label style="padding-left: 8px">MP</mat-label>
           <mat-slider color="primary"
                       [min]="0" [max]="character.maxMp" [step]="1"
                       [thumbLabel]="true" [tickInterval]="1"

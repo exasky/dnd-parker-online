@@ -95,8 +95,12 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
             const character: Character = message.message;
             const toUpdate = this.adventure.characters.find(advChar => advChar.id === character.id);
             if (toUpdate) {
+              toUpdate.maxHp = character.maxHp;
               toUpdate.hp = character.hp;
+              toUpdate.maxMp = character.maxMp;
               toUpdate.mp = character.mp;
+              toUpdate.equippedItems = character.equippedItems;
+              toUpdate.backpackItems = character.backpackItems;
             }
             break;
           case AdventureMessageType.SELECT_MONSTER:

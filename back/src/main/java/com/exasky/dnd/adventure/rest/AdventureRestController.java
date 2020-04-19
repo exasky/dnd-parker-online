@@ -119,8 +119,8 @@ public class AdventureRestController {
     }
 
     @PostMapping("/update-character/{adventureId}/{characterId}")
-    public void updateCharacter(@PathVariable Long adventureId, @PathVariable Long characterId, @RequestBody CharacterUpdateDto dto) {
-        Character character = adventureService.updateCharacter(adventureId, characterId, CharacterUpdateDto.toBo(dto));
+    public void updateCharacter(@PathVariable Long adventureId, @PathVariable Long characterId, @RequestBody CharacterDto dto) {
+        Character character = adventureService.updateCharacter(adventureId, characterId, CharacterDto.toBo(dto));
 
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_CHARACTER);

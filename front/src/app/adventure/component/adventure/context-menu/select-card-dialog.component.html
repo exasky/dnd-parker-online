@@ -1,11 +1,12 @@
 <h1 mat-dialog-title>Select card</h1>
-<div class="flex-grow d-flex">
-  <div class="flex-1 d-flex justify-content-center align-items-center"
+<div class="flex-grow d-flex flex-column flex-md-row">
+  <div class="flex-shrink-0 flex-md-grow-1 flex-md-shrink-1 d-flex justify-content-center align-items-center"
+       style="flex-basis: 0"
        (dragover)="$event.preventDefault()"
        (drop)="setChestCard($event)">
-    <span *ngIf="!selectedChestCard">ICI QU'ON DROP</span>
-    <img *ngIf="selectedChestCard"
-         [src]="'assets/card/' + selectedChestCard.type.toLowerCase() + '/' + selectedChestCard.level + '/' + selectedChestCard.name + '.jpg'"
+    <span *ngIf="!selectedCard">ICI QU'ON DROP</span>
+    <img *ngIf="selectedCard"
+         [src]="'assets/card/' + selectedCard.type.toLowerCase() + '/' + selectedCard.level + '/' + selectedCard.name + '.jpg'"
          style="max-width: 80%; max-height: 80%;">
   </div>
 
@@ -16,5 +17,5 @@
 
 <mat-dialog-actions>
   <button mat-raised-button (click)="dialogRef.close()">Cancel</button>
-  <button mat-raised-button (click)="validateChestCard()">Validate chest card</button>
+  <button mat-raised-button (click)="validateCard()">Validate card</button>
 </mat-dialog-actions>

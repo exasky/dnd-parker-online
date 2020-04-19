@@ -11,7 +11,7 @@ import {Component, HostBinding, OnInit} from "@angular/core";
 export class AdventureIndexComponent implements OnInit {
   @HostBinding('class') cssClasses = "flex-grow d-flex";
 
-  isMobile;
+  isMobile: boolean;
 
   constructor(private breakpointObserver: BreakpointObserver) {
   }
