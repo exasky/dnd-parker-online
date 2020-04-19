@@ -2,14 +2,12 @@ package com.exasky.dnd.adventure.service;
 
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.Campaign;
+import com.exasky.dnd.adventure.model.Character;
 import com.exasky.dnd.adventure.model.CharacterTemplate;
 import com.exasky.dnd.adventure.model.card.CharacterItem;
 import com.exasky.dnd.adventure.model.layer.Layer;
 import com.exasky.dnd.adventure.model.layer.LayerItem;
-import com.exasky.dnd.adventure.repository.AdventureRepository;
-import com.exasky.dnd.adventure.repository.CampaignRepository;
-import com.exasky.dnd.adventure.repository.CharacterItemRepository;
-import com.exasky.dnd.adventure.repository.CharacterTemplateRepository;
+import com.exasky.dnd.adventure.repository.*;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.common.exception.ValidationCheckException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +28,7 @@ public class AdventureService {
 
     private final AdventureRepository repository;
     private final CampaignRepository campaignRepository;
+    private final CharacterRepository characterRepository;
     private final CharacterItemRepository characterItemRepository;
     private final CharacterTemplateRepository characterTemplateRepository;
     private final LayerItemService layerItemService;
@@ -38,12 +37,14 @@ public class AdventureService {
     @Autowired
     public AdventureService(AdventureRepository repository,
                             CampaignRepository campaignRepository,
+                            CharacterRepository characterRepository,
                             CharacterItemRepository characterItemRepository,
                             CharacterTemplateRepository characterTemplateRepository,
                             LayerItemService layerItemService,
                             BoardService boardService) {
         this.repository = repository;
         this.campaignRepository = campaignRepository;
+        this.characterRepository = characterRepository;
         this.characterItemRepository = characterItemRepository;
         this.characterTemplateRepository = characterTemplateRepository;
         this.layerItemService = layerItemService;
@@ -101,7 +102,27 @@ public class AdventureService {
     }
 
     public List<Campaign> getCampaignsForCurrentUser() {
-        return this.campaignRepository.findAllForUser(getCurrentUser().getId());
+        return campaignRepository.findAllForUser(getCurrentUser().getId());
+    }
+
+    public Character updateCharacter(Long adventureId, Long characterId, Character toBo) {
+        Campaign campaign = campaignRepository.getByAdventureId(adventureId);
+
+        if (Objects.isNull(campaign)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+        }
+
+        Optional<Character> first = campaign.getCharacters().stream().filter(character -> character.getId().equals(characterId)).findFirst();
+
+        if (!first.isPresent()) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CHARACTER.NOT_FOUND);
+        }
+
+        Character toUpdate = first.get();
+        toUpdate.setHp(toBo.getHp());
+        toUpdate.setMp(toBo.getMp());
+
+        return characterRepository.save(toUpdate);
     }
 
     @Transactional
@@ -207,4 +228,5 @@ public class AdventureService {
 
         return byId.get();
     }
+
 }

@@ -4,7 +4,8 @@ export class AdventureMessage {
 }
 
 export enum AdventureMessageType {
-  UPDATE_CHARACTERS = 'UPDATE_CHARACTERS',
+  UPDATE_CAMPAIGN = 'UPDATE_CAMPAIGN',
+  UPDATE_CHARACTER = 'UPDATE_CHARACTER',
   GOTO = 'GOTO',
   MOUSE_MOVE = 'MOUSE_MOVE',
   ADD_LAYER_ITEM = 'ADD_LAYER_ITEM',

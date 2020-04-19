@@ -32,6 +32,7 @@ import {Monster} from "../../model/monster";
 import {AlertMessage, AlertMessageType} from "../../model/alert-message";
 import {LayerGridsterItem} from "../../model/layer-gridster-item";
 import {AudioService} from "../../service/audio.service";
+import {Character} from "../../model/character";
 
 @Component({
   selector: 'app-adventure',
@@ -142,7 +143,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
               }
             }
             break;
-          case AdventureMessageType.UPDATE_CHARACTERS:
+          case AdventureMessageType.UPDATE_CAMPAIGN:
             if (!message.message) {
               this.toaster.warning("Your GM has deleted all adventures for this campaign... Such an idiot");
               this.router.navigateByUrl('');
@@ -156,7 +157,15 @@ export class AdventureComponent implements OnInit, OnDestroy {
                 .filter(layerItem => layerItem.element.type === LayerElementType.CHARACTER)
                 .forEach(layerItem => this.updateItem(layerItem, 1));
             }
-            break
+            break;
+          case AdventureMessageType.UPDATE_CHARACTER:
+            const character: Character = message.message;
+            const toUpdate = this.adventure.characters.find(advChar => advChar.id === character.id);
+            if (toUpdate) {
+              toUpdate.hp = character.hp;
+              toUpdate.mp = character.mp;
+            }
+            break;
           case AdventureMessageType.ADD_LAYER_ITEM:
             const newLayerItem = message.message;
             this.addItem(newLayerItem, this.getLayerIndex(newLayerItem.element));

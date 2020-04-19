@@ -1,5 +1,6 @@
 package com.exasky.dnd.adventure.rest;
 
+import com.exasky.dnd.adventure.model.Character;
 import com.exasky.dnd.adventure.rest.dto.*;
 import com.exasky.dnd.adventure.rest.dto.layer.LayerItemDto;
 import com.exasky.dnd.adventure.service.AdventureService;
@@ -114,6 +115,16 @@ public class AdventureRestController {
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.SELECT_CHARACTER);
         wsDto.setMessage(characterId);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+    }
+
+    @PostMapping("/update-character/{adventureId}/{characterId}")
+    public void updateCharacter(@PathVariable Long adventureId, @PathVariable Long characterId, @RequestBody CharacterUpdateDto dto) {
+        Character character = adventureService.updateCharacter(adventureId, characterId, CharacterUpdateDto.toBo(dto));
+
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_CHARACTER);
+        wsDto.setMessage(CharacterDto.toDto(character));
         this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 

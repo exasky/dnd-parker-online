@@ -31,6 +31,7 @@ public final class Constant {
             private static final String PREFIX = "CHARACTER.";
 
             public static final String NAME_EMPTY = PREFIX + "NAME_EMPTY";
+            public static final String NOT_FOUND = PREFIX + "NOT_FOUND";
         }
 
         public static final class CHARACTER_ITEM {

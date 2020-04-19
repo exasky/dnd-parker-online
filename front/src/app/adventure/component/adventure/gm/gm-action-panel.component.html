@@ -51,6 +51,7 @@
     </div>
 
   </mat-expansion-panel>
+
   <mat-expansion-panel class="d-flex flex-column">
     <mat-expansion-panel-header class="flex-shrink-0">
       <mat-panel-title>Monsters</mat-panel-title>
@@ -68,6 +69,45 @@
             <mat-label>HP</mat-label>
             <input matInput [(ngModel)]="monster.hp" type="number" min="0" inputmode="numeric" pattern="[0-9]*">
           </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel class="d-flex flex-column">
+    <mat-expansion-panel-header class="flex-shrink-0">
+      <mat-panel-title>Characters</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="d-flex flex-column">
+      <div *ngFor="let character of characters"
+           class="flex-grow d-flex align-items-center justify-content-around">
+        {{character.name.charAt(0).toUpperCase() + character.name.slice(1)}}:
+        <div class="d-flex flex-column">
+          <mat-label>HP</mat-label>
+          <mat-slider
+            color="primary"
+            [max]="character.maxHp"
+            [min]="0"
+            [step]="1"
+            [thumbLabel]="true"
+            [tickInterval]="1"
+            [(ngModel)]="character.hp"
+            (change)="updateCharacter(character)">
+          </mat-slider>
+        </div>
+        <div class="d-flex flex-column">
+          <mat-label>MP</mat-label>
+          <mat-slider
+            color="primary"
+            [max]="character.maxMp"
+            [min]="0"
+            [step]="1"
+            [thumbLabel]="true"
+            [tickInterval]="1"
+            [(ngModel)]="character.mp"
+            (change)="updateCharacter(character)">
+          </mat-slider>
         </div>
       </div>
     </div>

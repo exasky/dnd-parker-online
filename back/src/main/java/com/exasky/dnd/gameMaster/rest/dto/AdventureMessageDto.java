@@ -2,7 +2,8 @@ package com.exasky.dnd.gameMaster.rest.dto;
 
 public class AdventureMessageDto {
     public enum AdventureMessageType {
-        UPDATE_CHARACTERS,
+        UPDATE_CAMPAIGN,
+        UPDATE_CHARACTER,
         GOTO,
         MOUSE_MOVE,
         ADD_LAYER_ITEM,

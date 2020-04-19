@@ -5,6 +5,7 @@ import {Character} from "../../../model/character";
 import {AlertMessageDialogComponent} from "./alert-message-dialog.component";
 import {LayerGridsterItem} from "../../../model/layer-gridster-item";
 import {GmService} from "../../../service/gm.service";
+import {AdventureService} from "../../../service/adventure.service";
 
 @Component({
   selector: 'app-gm-action-panel',
@@ -39,7 +40,8 @@ export class GmActionPanelComponent {
   toggleCursor: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(private dialog: MatDialog,
-              private gmService: GmService) {
+              private gmService: GmService,
+              private adventureService: AdventureService) {
   }
 
   sendAlert() {
@@ -111,6 +113,10 @@ export class GmActionPanelComponent {
 
   private static randNumber(max: number, min: number = 0) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  updateCharacter(character: Character) {
+    this.adventureService.updateCharacter(this.adventureId, character.id, character);
   }
 }
 

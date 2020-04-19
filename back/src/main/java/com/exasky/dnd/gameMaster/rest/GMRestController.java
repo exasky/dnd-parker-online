@@ -74,7 +74,7 @@ public class GMRestController {
 
         if (Objects.nonNull(previousCurrentAdventure)) {
             AdventureMessageDto wsDto = new AdventureMessageDto();
-            wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_CHARACTERS);
+            wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_CAMPAIGN);
             if (Objects.nonNull(updatedCampaign.getCurrentAdventure())) {
                 wsDto.setMessage(AdventureDto.toDto(updatedCampaign.getCurrentAdventure()));
             }

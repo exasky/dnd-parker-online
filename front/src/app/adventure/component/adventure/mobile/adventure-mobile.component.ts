@@ -9,6 +9,7 @@ import {Adventure, LayerElementType, LayerItem} from "../../../model/adventure";
 import {AdventureService} from "../../../service/adventure.service";
 import {AuthService} from "../../../../login/auth.service";
 import {Monster} from "../../../model/monster";
+import {Character} from "../../../model/character";
 
 @Component({
   selector: 'app-adventure-mobile',
@@ -65,7 +66,7 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
           case AdventureMessageType.SELECT_CHARACTER:
             this.selectedCharacterId = message.message;
             break;
-          case AdventureMessageType.UPDATE_CHARACTERS:
+          case AdventureMessageType.UPDATE_CAMPAIGN:
             if (!message.message) {
               this.router.navigateByUrl('');
             } else if (this.adventure.id !== message.message.id) {
@@ -87,6 +88,13 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
               })
             }
             break;
+          case AdventureMessageType.UPDATE_CHARACTER:
+            const character: Character = message.message;
+            const toUpdate = this.adventure.characters.find(advChar => advChar.id === character.id);
+            if (toUpdate) {
+              toUpdate.hp = character.hp;
+              toUpdate.mp = character.mp;
+            }
         }
       }
     });
