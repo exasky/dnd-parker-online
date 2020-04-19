@@ -7,8 +7,13 @@
   <!--                         [cursorEnabled]="showCursor"-->
   <!--                         (selectMonster)="selectItem($event)"></app-gm-action-panel>-->
   <mat-tab-group *ngIf="!authService.isGM" class="flex-grow">
-    <mat-tab *ngFor="let character of adventure.characters"
-             label="{{character.name}}">
+    <mat-tab *ngFor="let character of adventure.characters">
+      <ng-template mat-tab-label>
+        <mat-icon *ngIf="selectedCharacterId === character.id"
+                  color="warn"
+                  class="mr-1">radio_button_checked</mat-icon>
+        {{character.name.charAt(0).toUpperCase() + character.name.slice(1)}}
+      </ng-template>
       <app-character-mobile-displayer [character]="character"></app-character-mobile-displayer>
     </mat-tab>
   </mat-tab-group>

@@ -1,5 +1,5 @@
-<div class="flex-grow d-flex flex-column overflow">
-  <div class="d-flex align-items-center mx-2">
+<div class="flex-grow d-flex flex-column overflow-y">
+  <div class="flex-shrink-0 d-flex align-items-center mx-2">
     <mat-icon *ngIf="audioService.volume === 0">volume_off</mat-icon>
     <mat-icon *ngIf="audioService.volume > 0 && audioService.volume <=0.33">volume_mute</mat-icon>
     <mat-icon *ngIf="audioService.volume > 0.33 && audioService.volume <= 0.66">volume_down</mat-icon>
@@ -15,16 +15,18 @@
 
   <mat-divider class="mx-2 mb-2 mt-0" [inset]="false"></mat-divider>
 
-  <button mat-raised-button color="accent" class="m-2" (click)="drawCard()" [disabled]="disableActions">Draw card
+  <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="drawCard()" [disabled]="disableActions">
+    Draw card
   </button>
-  <button mat-raised-button color="accent" class="m-2" (click)="rollDices()" [disabled]="disableActions">Roll dices
+  <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="rollDices()" [disabled]="disableActions">
+    Roll dices
   </button>
 
   <mat-divider class="m-2" [inset]="false"></mat-divider>
 
   <button *ngFor="let character of adventure.characters"
           mat-raised-button [color]="character.id === selectedCharacterId ? 'warn' : 'primary'"
-          class="m-2"
+          class="flex-shrink-0 m-2"
           style="text-transform: capitalize"
           [ngbTooltip]="tooltipContent"
           tooltipClass="mw-75"
@@ -42,7 +44,7 @@
   </button>
 </div>
 
-<div class="d-flex flex-column justify-content-end" *ngIf="authService.isGM">
-  <button mat-raised-button color="accent" class="m-2" (click)="prevAdventure()">Previous adventure</button>
-  <button mat-raised-button color="accent" class="m-2" (click)="nextAdventure()">Next adventure</button>
+<div class="flex-shrink-0 d-flex flex-column justify-content-end" *ngIf="authService.isGM">
+  <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="prevAdventure()">Previous adventure</button>
+  <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="nextAdventure()">Next adventure</button>
 </div>

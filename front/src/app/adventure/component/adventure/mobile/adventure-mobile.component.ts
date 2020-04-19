@@ -12,7 +12,8 @@ import {Monster} from "../../../model/monster";
 
 @Component({
   selector: 'app-adventure-mobile',
-  templateUrl: './adventure-mobile.component.html'
+  templateUrl: './adventure-mobile.component.html',
+  styleUrls: ['./adventure-mobile.component.scss']
 })
 export class AdventureMobileComponent implements OnInit, OnDestroy {
   @HostBinding('class') cssClasses = "flex-grow d-flex";
@@ -21,6 +22,8 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
   adventureWSObs: Subscription;
 
   monsters: Monster[] = [];
+
+  selectedCharacterId: number;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -58,6 +61,9 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
             const layerItemId = message.message;
             const monsterToRemove = this.monsters.find(monsterItem => monsterItem.layerItemId === layerItemId);
             this.removeMonster(monsterToRemove);
+            break;
+          case AdventureMessageType.SELECT_CHARACTER:
+            this.selectedCharacterId = message.message;
             break;
           case AdventureMessageType.UPDATE_CHARACTERS:
             if (!message.message) {

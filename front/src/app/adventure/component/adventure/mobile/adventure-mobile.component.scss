@@ -1,0 +1,12 @@
+::ng-deep.mat-tab-header-pagination {
+  display: none !important;
+}
+::ng-deep.mat-tab-header {
+  overflow: scroll !important;
+}
+::ng-deep.mat-tab-header::-webkit-scrollbar {
+  display: none !important;
+}
+::ng-deep.mat-tab-label-container {
+  overflow: initial !important;
+}
