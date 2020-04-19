@@ -18,9 +18,16 @@ body {
 }
 
 app-root {
-  background-image: url('/assets/wallpaper/light.jpg');
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.unicorn-light-theme {
+
+  app-root {
+    background-image: url('/assets/wallpaper/light.jpg') !important;
+  }
+
 }
 
 .overflow {

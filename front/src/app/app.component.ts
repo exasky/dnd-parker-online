@@ -21,7 +21,9 @@ export class AppComponent implements OnInit {
     this.isDarkTheme = !!localStorage.getItem('isDark');
     if (this.isDarkTheme) {
       this.document.body.classList.add('unicorn-dark-theme');
+      this.document.body.classList.remove('unicorn-light-theme');
     } else {
+      this.document.body.classList.add('unicorn-light-theme');
       this.document.body.classList.remove('unicorn-dark-theme');
     }
   }
