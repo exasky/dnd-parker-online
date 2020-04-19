@@ -1,7 +1,9 @@
 package com.exasky.dnd.gameMaster.rest.dto;
 
 import com.exasky.dnd.adventure.model.Character;
+import com.exasky.dnd.common.Constant;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -9,7 +11,9 @@ import java.util.stream.Collectors;
 
 public class CharacterForCreateCampaignDto {
     private Long id;
+    @NotEmpty(message = Constant.Errors.CHARACTER.NAME_EMPTY)
     private String name;
+    @NotEmpty(message = Constant.Errors.CHARACTER.NAME_EMPTY)
     private String displayName;
 
     private Short hp;

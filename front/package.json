@@ -1,6 +1,6 @@
 {
-  "name": "front",
-  "version": "1.0.0",
+  "name": "dnd-online-front",
+  "version": "2.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",

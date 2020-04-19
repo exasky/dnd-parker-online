@@ -1,34 +1,49 @@
-<mat-card class="d-flex flex-column" *ngIf="currentUser">
-  <mat-form-field>
-    <mat-label>Name</mat-label>
-    <input matInput [(ngModel)]="currentUser.username" placeholder="Username" required autocomplete="false">
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Password</mat-label>
-    <input matInput [(ngModel)]="currentUser.password" placeholder="Password" type="password" required
-           autocomplete="false">
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Role</mat-label>
-    <mat-select [value]="currentUser.role" disabled>
-      <mat-option value="ROLE_GM">GM</mat-option>
-      <mat-option value="ROLE_PLAYER">Player</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <div *ngFor="let character of currentUser.characters">
+<ng-container *ngIf="currentUser">
+  <mat-card class="d-flex flex-column">
     <mat-form-field>
-      <mat-label>Campaign</mat-label>
-      <input matInput [value]="character.campaignName" disabled>
+      <mat-label>Name</mat-label>
+      <input matInput [(ngModel)]="currentUser.username" placeholder="Username" required autocomplete="false">
     </mat-form-field>
     <mat-form-field>
-      <mat-label>Character</mat-label>
-      <input matInput [value]="character.name" disabled>
+      <mat-label>Role</mat-label>
+      <mat-select [value]="currentUser.role" disabled>
+        <mat-option value="ROLE_GM">GM</mat-option>
+        <mat-option value="ROLE_PLAYER">Player</mat-option>
+      </mat-select>
     </mat-form-field>
-  </div>
 
-  <mat-card-actions class="d-flex justify-content-center">
-    <button mat-raised-button (click)="updatePassword()">Update password</button>
-    <button mat-raised-button (click)="saveUser()">Save User</button>
-  </mat-card-actions>
-</mat-card>
+    <div *ngFor="let character of currentUser.characters">
+      <mat-form-field>
+        <mat-label>Campaign</mat-label>
+        <input matInput [value]="character.campaignName" disabled>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Character</mat-label>
+        <input matInput [value]="character.name" disabled>
+      </mat-form-field>
+    </div>
+
+    <mat-card-actions class="d-flex justify-content-center">
+      <button mat-raised-button (click)="saveUser()">Save User</button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="d-flex flex-column mt-2">
+    <form [formGroup]="passFormGroup" class="d-flex flex-column">
+      <mat-form-field>
+        <input matInput type="password" placeholder="Password" formControlName="password" (input)="onPasswordInput()">
+        <mat-error *ngIf="password.hasError('required')">Password is required</mat-error>
+        <mat-error *ngIf="password.hasError('minlength')">Password must have at least 3 characters</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="password" placeholder="Confirm password" formControlName="password2"
+               (input)="onPasswordInput()">
+        <mat-error *ngIf="password2.hasError('required')">Please confirm your password</mat-error>
+        <mat-error *ngIf="password2.invalid && !password2.hasError('required')">Passwords don't match</mat-error>
+      </mat-form-field>
+    </form>
+    <mat-card-actions class="d-flex justify-content-center">
+      <button mat-raised-button (click)="updatePassword()" [disabled]="passFormGroup.invalid">Update password</button>
+    </mat-card-actions>
+  </mat-card>
+</ng-container>

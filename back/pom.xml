@@ -10,8 +10,8 @@
 	</parent>
 	<groupId>com.exasky</groupId>
 	<artifactId>dnd</artifactId>
-	<version>1.0.0</version>
-	<name>dnd</name>
+	<version>2.0.0</version>
+	<name>dnd-online-back</name>
 	<description>Back end of DnD board game</description>
 
 	<properties>
@@ -107,6 +107,11 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -180,5 +185,23 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<spring.profiles.active>dev</spring.profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<id>production</id>
+			<properties>
+				<spring.profiles.active>production</spring.profiles.active>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>

@@ -50,4 +50,27 @@ public class CharacterService {
 
         return attachedCharacter;
     }
+
+    public Character copy(Character toCopy, Campaign campaign) {
+        Character attachedCharacter = new Character();
+
+        attachedCharacter.setCampaign(campaign);
+        attachedCharacter.setName(toCopy.getName());
+        attachedCharacter.setDisplayName(toCopy.getDisplayName());
+        attachedCharacter.setHp(toCopy.getHp());
+        attachedCharacter.setMaxHp(toCopy.getMaxHp());
+        attachedCharacter.setMp(toCopy.getMp());
+        attachedCharacter.setMaxMp(toCopy.getMaxMp());
+        attachedCharacter.setBackPackSize(toCopy.getBackPackSize());
+
+        attachedCharacter.updateBackPack(toCopy.getBackPack().stream()
+                .map(characterItem -> characterItemRepository.getOne(characterItem.getId()))
+                .collect(Collectors.toList()));
+
+        attachedCharacter.updateEquipments(toCopy.getEquipments().stream()
+                .map(characterItem -> characterItemRepository.getOne(characterItem.getId()))
+                .collect(Collectors.toList()));
+
+        return attachedCharacter;
+    }
 }

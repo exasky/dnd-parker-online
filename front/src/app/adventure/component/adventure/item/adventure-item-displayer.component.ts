@@ -32,7 +32,7 @@ export class AdventureItemDisplayerComponent {
   @Input()
   set layerElements(layerElements: LayerElement[]) {
     this._layerElements = layerElements;
-    this.filterDataSource('');
+    if (layerElements) this.filterDataSource('');
   }
 
   private _transformer = (node: ItemNode, level: number) => {

@@ -30,7 +30,19 @@ public class BoardService {
                 .collect(Collectors.toList());
     }
 
-    private Board create(Adventure attachedAdventure, Board toCreate) {
+    public Board copy(Adventure adventure, Board toCopy) {
+        Board toSave = new Board();
+
+        toSave.setAdventure(adventure);
+        toSave.setRotation(toCopy.getRotation());
+        toSave.setPositionX(toCopy.getPositionX());
+        toSave.setPositionY(toCopy.getPositionY());
+        toSave.setBoardNumber(toCopy.getBoardNumber());
+
+        return toSave;
+    }
+
+    public Board create(Adventure attachedAdventure, Board toCreate) {
         Board toSave = new Board();
 
         toSave.setAdventure(attachedAdventure);

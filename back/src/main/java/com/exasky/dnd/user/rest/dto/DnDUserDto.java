@@ -1,8 +1,11 @@
 package com.exasky.dnd.user.rest.dto;
 
+import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.user.model.DnDUser;
 import com.exasky.dnd.user.model.UserRole;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,8 +13,14 @@ import java.util.stream.Collectors;
 
 public class DnDUserDto {
     private Long id;
+
+    @NotNull(message = Constant.Errors.USER.NAME_EMPTY)
+    @NotEmpty(message = Constant.Errors.USER.NAME_EMPTY)
     private String username;
+
+    @NotNull(message = Constant.Errors.USER.ROLE_EMPTY)
     private UserRole role;
+
     private List<CharacterForUserDetailDto> characters = new ArrayList<>();
 
     public static List<DnDUserDto> toDto(List<DnDUser> bos) {

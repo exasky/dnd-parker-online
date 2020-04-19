@@ -12,7 +12,6 @@ export class AppComponent implements OnInit {
   isDarkTheme = false;
 
   // TODO i18n
-  // TODO WS by campaign
 
   constructor(public authService: AuthService,
               @Inject(DOCUMENT) private document: Document) {

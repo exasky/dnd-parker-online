@@ -1,0 +1,75 @@
+<mat-accordion class="d-flex flex-column" [multi]="true">
+  <mat-expansion-panel class="flex-shrink-0 d-flex flex-column mb-0">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Tools</mat-panel-title>
+    </mat-expansion-panel-header>
+
+
+    <div class="d-flex flex-column">
+      <button mat-raised-button class="mb-1" (click)="sendAlert()">Send alert</button>
+      <button mat-raised-button class="mb-1" (click)="toggleCursor.emit()">
+        {{cursorEnabled ? 'Hide cursor' : 'Show cursor'}}
+      </button>
+      <button mat-raised-button class="mb-1 position-relative" [matMenuTriggerFor]="soundMenu">
+        Sounds
+        <mat-icon class="position-absolute" style="right: 10px; top: 6px"
+                  [matMenuTriggerFor]="soundMenu"
+                  #soundMenuTrigger="matMenuTrigger"
+                  (mouseover)="soundMenuTrigger.openMenu()">keyboard_arrow_down
+        </mat-icon>
+      </button>
+      <mat-menu #soundMenu="matMenu" xPosition="before">
+        <button mat-menu-item class="mb-1" (click)="sendSound($event, SoundType.MELEE_SWORD)">Melee attack</button>
+        <button mat-menu-item class="mb-1" (click)="sendSound($event, SoundType.BOW)">Bow attack</button>
+        <button mat-menu-item class="mb-1" (click)="sendSound($event, SoundType.POTION)">Drink potion</button>
+        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundSpell">Spell</button>
+        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundMonster">Monster</button>
+        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundMisc">Misc</button>
+        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundMacro">Macro</button>
+      </mat-menu>
+      <mat-menu #soundSpell="matMenu">
+        <button mat-menu-item (click)="sendSound($event, SoundType.SPELL_FIRE)">Fire</button>
+        <button mat-menu-item (click)="sendSound($event, SoundType.SPELL_HEAL)">Heal</button>
+        <button mat-menu-item (click)="sendSound($event, SoundType.SPELL_GENERIC)">Generic</button>
+        <button mat-menu-item (click)="sendSound($event, 'magic_undo.mp3')">Undo spell</button>
+      </mat-menu>
+      <mat-menu #soundMonster="matMenu">
+        <button mat-menu-item (click)="sendSound($event, SoundType.MONSTER_HIT)">Monster hit/die</button>
+        <button mat-menu-item (click)="sendSound($event, 'weak_goblin_pain.mp3')">Weak goblin</button>
+      </mat-menu>
+      <mat-menu #soundMisc="matMenu">
+        <button mat-menu-item (click)="sendSound($event, 'ghost.mp3')">Ghost</button>
+        <button mat-menu-item (click)="sendSound($event, 'monster_breath.mp3')">Evil breath</button>
+        <button mat-menu-item (click)="sendSound($event, 'eat_flesh.mp3')">Eat flesh</button>
+        <button mat-menu-item (click)="sendSound($event, 'melee_sword_slime.mp3')">Sword slime</button>
+        <button mat-menu-item (click)="sendSound($event, 'liche_appear.mp3')">Liche appear</button>
+        <button mat-menu-item (click)="sendSound($event, 'meanwhile.mp3')">Meanwhile</button>
+      </mat-menu>
+      <mat-menu #soundMacro="matMenu">
+        <button mat-menu-item (click)="sendMacro($event, SoundMacroType.SWORDS_AND_ARROWS)">Swords & bows</button>
+      </mat-menu>
+    </div>
+
+  </mat-expansion-panel>
+  <mat-expansion-panel class="d-flex flex-column">
+    <mat-expansion-panel-header class="flex-shrink-0">
+      <mat-panel-title>Monsters</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="d-flex flex-column">
+      <div *ngFor="let monster of monsters"
+           class="d-flex flex-column align-items-center p-1 mb-2"
+           [class.selected]="selectedItem && monster.layerItemId === selectedItem.id">
+        <mat-card-subtitle>{{monster.name}} n°{{monster.index}}</mat-card-subtitle>
+        <div class="d-flex align-items-center">
+          <img [src]="'assets/monster/' + monster.name + '.jpg'" width="150px"
+               (click)="selectMonster.emit(monster.layerItemId)">
+          <mat-form-field class="mx-2" style="max-width: 50px">
+            <mat-label>HP</mat-label>
+            <input matInput [(ngModel)]="monster.hp" type="number" min="0">
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>

@@ -1,7 +1,9 @@
 package com.exasky.dnd.gameMaster.rest;
 
+import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.adventure.rest.dto.AdventureDto;
+import com.exasky.dnd.adventure.rest.dto.AlertMessageDto;
 import com.exasky.dnd.adventure.rest.dto.layer.LayerElementDto;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.*;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,27 +51,35 @@ public class GMRestController {
         return SimpleCampaignDto.toDto(gmService.getAllCampaigns());
     }
 
+    @GetMapping("/campaign/copy/{id}")
+    public CreateCampaignDto copyCampaign(@PathVariable Long id) {
+        return CreateCampaignDto.toDto(this.gmService.copyCampaign(id));
+    }
+
     @GetMapping("/campaign/{id}")
     public CreateCampaignDto getCampaign(@PathVariable Long id) {
         return CreateCampaignDto.toDto(gmService.getCampaign(id));
     }
 
     @PostMapping("/campaign")
-    public CreateCampaignDto createCampaign(@RequestBody CreateCampaignDto dto) {
+    public CreateCampaignDto createCampaign(@Valid @RequestBody CreateCampaignDto dto) {
         return CreateCampaignDto.toDto(this.gmService.createCampaign(CreateCampaignDto.toBo(dto)));
     }
 
-    @PutMapping("/campaign/{id}")
-    public CreateCampaignDto updateCampaign(@PathVariable Long id, @RequestBody CreateCampaignDto dto) {
-        Campaign updatedCampaign = this.gmService.updateCampaign(id, CreateCampaignDto.toBo(dto));
+    @PutMapping("/campaign/{campaignId}")
+    public CreateCampaignDto updateCampaign(@PathVariable Long campaignId, @Valid @RequestBody CreateCampaignDto dto) {
+        Adventure previousCurrentAdventure = this.gmService.getCampaign(campaignId).getCurrentAdventure();
 
+        Campaign updatedCampaign = this.gmService.updateCampaign(campaignId, CreateCampaignDto.toBo(dto));
 
-        AdventureMessageDto wsDto = new AdventureMessageDto();
-        wsDto.setType(AdventureMessageDto.AdventureMessageType.RELOAD);
-        if (Objects.nonNull(updatedCampaign.getCurrentAdventure())) {
-            wsDto.setMessage(AdventureDto.toDto(updatedCampaign.getCurrentAdventure()));
+        if (Objects.nonNull(previousCurrentAdventure)) {
+            AdventureMessageDto wsDto = new AdventureMessageDto();
+            wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_CHARACTERS);
+            if (Objects.nonNull(updatedCampaign.getCurrentAdventure())) {
+                wsDto.setMessage(AdventureDto.toDto(updatedCampaign.getCurrentAdventure()));
+            }
+            this.messagingTemplate.convertAndSend("/topic/adventure/" + previousCurrentAdventure.getId(), wsDto);
         }
-        this.messagingTemplate.convertAndSend("/topic/adventure", wsDto);
 
         return CreateCampaignDto.toDto(updatedCampaign);
     }
@@ -78,23 +89,13 @@ public class GMRestController {
         this.gmService.deleteCampaign(id);
     }
 
-    // TODO move to adventureController
-    @GetMapping("/draw-card/{adventureId}")
-    public CharacterItemDto drawCard(@PathVariable Long adventureId) {
-        CharacterItemDto dto = CharacterItemDto.toDto(this.gmService.drawCard(adventureId));
-
-        this.messagingTemplate.convertAndSend("/topic/drawn-card", dto);
-
-        return dto;
-    }
-
     @GetMapping("/previous-adventure/{adventureId}")
     public void previousAdventure(@PathVariable Long adventureId) {
         AdventureMessageDto dto = new AdventureMessageDto();
         dto.setType(AdventureMessageDto.AdventureMessageType.GOTO);
         dto.setMessage(gmService.findPreviousAdventureId(adventureId));
 
-        this.messagingTemplate.convertAndSend("/topic/adventure", dto);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, dto);
     }
 
     @GetMapping("/next-adventure/{adventureId}")
@@ -103,6 +104,22 @@ public class GMRestController {
         dto.setType(AdventureMessageDto.AdventureMessageType.GOTO);
         dto.setMessage(gmService.findNextAdventureId(adventureId));
 
-        this.messagingTemplate.convertAndSend("/topic/adventure", dto);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, dto);
+    }
+
+    @PostMapping("/send-alert/{adventureId}")
+    public void sendAlert(@PathVariable Long adventureId, @RequestBody AlertMessageDto alertMessage) {
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.ALERT);
+        wsDto.setMessage(alertMessage);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+    }
+
+    @GetMapping("/play-sound/{adventureId}/{audioFile}")
+    public void playSound(@PathVariable Long adventureId, @PathVariable String audioFile) {
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.SOUND);
+        wsDto.setMessage(audioFile);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 }

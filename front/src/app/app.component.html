@@ -18,8 +18,8 @@
 </mat-toolbar>
 
 
-<mat-drawer-container autosize class="flex-grow h-100">
-  <mat-drawer #drawer mode="over">
+<mat-drawer-container autosize class="flex-grow h-100" style="z-index: 100;">
+  <mat-drawer #drawer mode="over" style="z-index: 100;">
     <div *ngIf="authService.currentUserValue"
          class="d-flex flex-column m-3">
       <button mat-raised-button routerLink="/" (click)="drawer.toggle()">Home</button>

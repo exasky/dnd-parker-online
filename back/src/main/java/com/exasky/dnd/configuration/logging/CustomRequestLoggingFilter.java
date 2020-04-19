@@ -32,7 +32,7 @@ public class CustomRequestLoggingFilter extends AbstractRequestLoggingFilter {
 
     @Override
     protected boolean shouldLog(HttpServletRequest request) {
-        return !(REST_URL + "/adventure/mouse-move").equals(request.getRequestURI());
+        return !request.getRequestURI().startsWith(REST_URL + "/adventure/mouse-move/");
     }
 
     @Override

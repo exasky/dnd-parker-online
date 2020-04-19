@@ -48,6 +48,13 @@ import {MatDividerModule} from "@angular/material/divider";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {ErrorInterceptor} from "./common/interceptor/error-interceptor.service";
 import {ToastrModule} from "ngx-toastr";
+import {GmActionPanelComponent} from "./adventure/component/adventure/gm/gm-action-panel.component";
+import {MatExpansionModule} from "@angular/material/expansion";
+import {AlertMessageDialogComponent} from "./adventure/component/adventure/gm/alert-message-dialog.component";
+import {MatSliderModule} from "@angular/material/slider";
+import {MatListModule} from "@angular/material/list";
+import {ContextMenuComponent} from "./adventure/component/adventure/context-menu/context-menu.component";
+import {SelectCardDialogComponent} from "./adventure/component/adventure/context-menu/select-card-dialog.component";
 
 @NgModule({
   declarations: [
@@ -65,40 +72,50 @@ import {ToastrModule} from "ngx-toastr";
     AdventureItemDisplayerComponent,
     CharacterTooltipDisplayerComponent,
     ActionPanelComponent,
+    GmActionPanelComponent,
     DrawnCardDialogComponent,
     DiceComponent,
-    DiceDialogComponent
+    DiceDialogComponent,
+    AlertMessageDialogComponent,
+    ContextMenuComponent,
+    SelectCardDialogComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    GridsterModule,
-    MatIconModule,
-    MatSelectModule,
-    FormsModule,
-    MatCheckboxModule,
-    MatInputModule,
-    MatButtonModule,
-    HttpClientModule,
-    MatCardModule,
-    ReactiveFormsModule,
-    MatStepperModule,
-    DragDropModule,
-    MatTreeModule,
-    MatToolbarModule,
-    MatSidenavModule,
-    MatMenuModule,
-    MatDialogModule,
-    NgbTooltipModule,
-    MatDividerModule,
-    MatProgressBarModule,
-    ToastrModule.forRoot({
-      positionClass: 'toast-bottom-right',
-      timeOut: 5000
-    })
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        GridsterModule,
+        MatIconModule,
+        MatSelectModule,
+        FormsModule,
+        MatCheckboxModule,
+        MatInputModule,
+        MatButtonModule,
+        HttpClientModule,
+        MatCardModule,
+        ReactiveFormsModule,
+        MatStepperModule,
+        DragDropModule,
+        MatTreeModule,
+        MatToolbarModule,
+        MatSidenavModule,
+        MatMenuModule,
+        MatDialogModule,
+        NgbTooltipModule,
+        MatDividerModule,
+        MatProgressBarModule,
+        ToastrModule.forRoot({
+            positionClass: 'toast-bottom-right',
+            timeOut: 5000
+        }),
+        MatExpansionModule,
+        MatSliderModule,
+        MatListModule
+    ],
+  entryComponents: [
+    AlertMessageDialogComponent, ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent,
+    SelectCardDialogComponent
   ],
-  entryComponents: [ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ForbiddenInterceptor, multi: true},
@@ -107,7 +124,10 @@ import {ToastrModule} from "ngx-toastr";
     WebSocketWrapperService,
     AdventureWebsocketService,
     DrawnCardWebsocketService,
-    DiceWebsocketService
+    DiceWebsocketService,
+    AdventureWebsocketService,
+    DrawnCardWebsocketService,
+    DiceWebsocketService,
   ],
   bootstrap: [AppComponent]
 })

@@ -6,6 +6,7 @@ import {HttpClient} from "@angular/common/http";
 import {CharacterItem} from "../model/character";
 import {Campaign, SimpleCampaign} from "../model/campaign";
 import {Dice} from "../model/dice";
+import {AlertMessage} from "../model/alert-message";
 
 @Injectable({
   providedIn: "root"
@@ -36,6 +37,10 @@ export class GmService {
     return this.http.get<Campaign>(GmService.API_URL + '/campaign/' + id);
   }
 
+  copyFrom(id: number | string): Observable<Campaign> {
+    return this.http.get<Campaign>(GmService.API_URL + '/campaign/copy/' + id);
+  }
+
   saveCampaign(campaign: Campaign): Observable<Campaign> {
     return campaign.id
       ? this.http.put<Campaign>(GmService.API_URL + '/campaign/' + campaign.id, campaign)
@@ -46,15 +51,19 @@ export class GmService {
     return this.http.delete<void>(GmService.API_URL + '/campaign/' + id);
   }
 
-  drawCard(adventureId: number | string): Observable<CharacterItem> {
-    return this.http.get<CharacterItem>(GmService.API_URL + '/draw-card/' + adventureId);
-  }
-
   previousAdventure(adventureId: number | string) {
     return this.http.get(GmService.API_URL + '/previous-adventure/' + adventureId).subscribe(() => {});
   }
 
   nextAdventure(adventureId: number | string) {
     return this.http.get(GmService.API_URL + '/next-adventure/' + adventureId).subscribe(() => {});
+  }
+
+  sendAlert(adventureId: number | string, alertMessage: AlertMessage) {
+    return this.http.post(GmService.API_URL + '/send-alert/' + adventureId, alertMessage).subscribe(() => {});
+  }
+
+  playSound(adventureId: number, audioFile: string) {
+    return this.http.get(GmService.API_URL + '/play-sound/' + adventureId + '/' + audioFile).subscribe(() => {});
   }
 }

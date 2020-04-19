@@ -18,16 +18,31 @@
         <h3 class="mb-0">{{adventure.name}}</h3>
       </div>
       <div class="flex-1 d-flex justify-content-end align-items-center mr-2">
-        <button mat-raised-button (click)="drawer.toggle()">Show actions</button>
+        <button mat-raised-button (click)="actionPanelDrawer.toggle()">Show actions</button>
       </div>
     </div>
 
-    <app-adventure-item-displayer *ngIf="authService.isGM"
-                                  [layerElements]="addableLayerElements"></app-adventure-item-displayer>
+    <div class="d-flex align-items-center" *ngIf="authService.isGM">
+      <button mat-raised-button class="flex-shrink-0 h-100 mx-2" (click)="drawer2.toggle()">GM Panel</button>
+      <app-adventure-item-displayer [layerElements]="addableLayerElements"></app-adventure-item-displayer>
+    </div>
   </div>
 
-  <mat-drawer-container class="flex-grow d-flex flex-column">
-    <mat-drawer-content class="flex-grow m-3">
+  <mat-drawer-container class="flex-grow d-flex flex-column mt-3" #mainDrawerContainer tabindex="1"
+                        (keyup)="onKeyboard($event)">
+    <mat-drawer #drawer2 mode="side" position="start">
+      <div class="d-flex flex-column h-100" style="min-width: 150px">
+        <app-gm-action-panel [adventureId]="adventure.id"
+                             [monsters]="monsters"
+                             [characters]="adventure.characters"
+                             [selectedItem]="selectedItem"
+                             [cursorEnabled]="showCursor"
+                             (selectMonster)="selectItem($event)"
+                             (toggleCursor)="showCursor = !showCursor"></app-gm-action-panel>
+      </div>
+    </mat-drawer>
+
+    <mat-drawer-content>
       <div #boardPanel
            [ngStyle]="{'width': gamePanelXSize * 700 + 'px',
                        'height': gamePanelYSize * 700 + 'px',
@@ -65,26 +80,29 @@
           </ng-template>
         </ng-template>
 
-        <gridster [options]="options" style="flex-grow: 1; z-index: 10">
+        <gridster #gridster [options]="options" style="flex-grow: 1; z-index: 10">
           <gridster-item *ngFor="let item of dashboard"
                          [item]="item"
                          [ngSwitch]="item.type"
                          style="background: none !important;"
                          [ngbTooltip]="tipContent"
+                         [disableTooltip]="tooltipDisabled(item.type)"
                          [container]="'body'"
                          #t="ngbTooltip"
-                         (mousedown)="t.close()">
+                         [class.selected]="selectedItem && selectedItem.id === item.id"
+                         (mousedown)="t.close()"
+                         (contextmenu)="contextMenu.openMenu($event, item)">
 
-            <div *ngIf="!item.dragEnabled && item.type === layerElementType.CHARACTER"
+            <div *ngIf="!item.dragEnabled && item.type === LayerElementType.CHARACTER"
                  class="adventure-board-item"
                  style="z-index: 5; background-color: rgba(0,0,0,0.5)">
             </div>
 
             <ng-template #tipContent [ngSwitch]="item.type">
-              <ng-template [ngSwitchCase]="layerElementType.CHARACTER">
+              <ng-template [ngSwitchCase]="LayerElementType.CHARACTER">
                 <app-character-tooltip-displayer [character]="item.character"></app-character-tooltip-displayer>
               </ng-template>
-              <ng-template [ngSwitchCase]="layerElementType.MONSTER">
+              <ng-template [ngSwitchCase]="LayerElementType.MONSTER">
                 Hello, monster <b>{{item.icon}}</b>!
               </ng-template>
               <div *ngSwitchDefault>
@@ -92,46 +110,54 @@
 
             </ng-template>
 
-            <div *ngSwitchCase="layerElementType.CHARACTER"
+            <div *ngSwitchCase="LayerElementType.CHARACTER"
                  class="adventure-board-item"
+                 [class.selected]="selectedCharacterId === item.character.id"
                  [ngStyle]="{'background-image': 'url(\'assets/character/' + item.icon + '-token.jpg\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
             </div>
 
-            <div *ngSwitchCase="layerElementType.MONSTER"
+            <div *ngSwitchCase="LayerElementType.MONSTER"
                  class="adventure-board-item"
                  [ngStyle]="{'background-image': 'url(\'assets/monster/' + item.icon + '-token.jpg\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
             </div>
 
-            <div *ngSwitchDefault
-                 class="adventure-board-item"
+            <div *ngSwitchCase="LayerElementType.TRAP_ACTIVATED">
+              <div class="adventure-board-item"
+                   *ngIf="authService.isGM || item.hidden !== true"
+                   [class.trap-visible]="authService.isGM && item.hidden === false"
+                   [ngStyle]="{'background-image': 'url(\'assets/item/' + item.icon + '\')',
+                              'transform': 'rotate(' + item.rotation + 'deg)'}">
+              </div>
+            </div>
+
+            <div *ngSwitchCase="LayerElementType.CHEST">
+              <div class="adventure-board-item"
+                   [class.chest-with-card]="authService.isGM && item.cardId !== undefined"
+                   [ngStyle]="{'background-image': 'url(\'assets/item/' + item.icon + '\')',
+                              'transform': 'rotate(' + item.rotation + 'deg)'}">
+              </div>
+            </div>
+
+            <div *ngSwitchDefault class="adventure-board-item"
                  [ngStyle]="{'background-image': 'url(\'assets/item/' + item.icon + '\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
             </div>
-
-            <ng-container *ngIf="authService.isGM">
-              <button mat-mini-fab
-                      class="item-delete"
-                      (mousedown)="removeItem(item, $event)">
-                <mat-icon>delete</mat-icon>
-              </button>
-              <button *ngIf="isItemFlippable(item.type)"
-                      mat-mini-fab
-                      class="item-flippable"
-                      (mousedown)="flipItem(item)">
-                <mat-icon>flip</mat-icon>
-              </button>
-            </ng-container>
           </gridster-item>
         </gridster>
       </div>
     </mat-drawer-content>
-    <mat-drawer #drawer mode="side" position="end" style="z-index: 1001">
+    <mat-drawer #actionPanelDrawer mode="side" position="end">
       <div class="d-flex flex-column h-100" style="min-width: 150px">
         <app-action-panel [adventure]="adventure"
-                          [disableActions]="disableActions"></app-action-panel>
+                          [disableActions]="disableActions"
+                          [selectedCharacterId]="selectedCharacterId"></app-action-panel>
       </div>
     </mat-drawer>
   </mat-drawer-container>
+
+  <app-context-menu #contextMenu
+                    [adventureId]="adventure.id"
+                    [addableLayerElements]="addableLayerElements"></app-context-menu>
 </ng-container>

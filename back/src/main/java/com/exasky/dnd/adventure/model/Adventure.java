@@ -28,11 +28,11 @@ public class Adventure {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "mj_layer_id", referencedColumnName = "id")
-    private Layer mjLayer;
+    private Layer mjLayer = new Layer();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "character_layer_id", referencedColumnName = "id")
-    private Layer characterLayer;
+    private Layer characterLayer = new Layer();
 
     public Adventure() {
     }

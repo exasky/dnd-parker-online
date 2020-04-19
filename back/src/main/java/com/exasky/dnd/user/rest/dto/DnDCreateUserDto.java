@@ -1,18 +1,27 @@
 package com.exasky.dnd.user.rest.dto;
 
+import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.user.model.DnDUser;
 import com.exasky.dnd.user.model.UserRole;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class DnDCreateUserDto {
+    @NotNull(message = Constant.Errors.USER.NAME_EMPTY)
+    @NotEmpty(message = Constant.Errors.USER.NAME_EMPTY)
     private String username;
+
+    @NotNull(message = Constant.Errors.USER.ROLE_EMPTY)
     private UserRole role;
-    private List<CharacterForUserDetailDto> characters = new ArrayList<>();
+
+    @NotNull(message = Constant.Errors.USER.PASSWORD_EMPTY)
+    @NotEmpty(message = Constant.Errors.USER.PASSWORD_EMPTY)
     private String password;
+
+    private List<CharacterForUserDetailDto> characters = new ArrayList<>();
 
     public static DnDCreateUserDto toDto(DnDUser bo) {
         DnDCreateUserDto dto = new DnDCreateUserDto();

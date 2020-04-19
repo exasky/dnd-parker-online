@@ -11,5 +11,5 @@ public enum LayerElementType {
     CHARACTER,
     MONSTER,
     TREE,
-    PYLON
+    PILLAR
 }

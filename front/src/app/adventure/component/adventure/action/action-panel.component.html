@@ -1,25 +1,48 @@
-<button mat-raised-button color="accent" class="m-2" (click)="drawCard()" [disabled]="disableActions">Draw card</button>
-<button mat-raised-button color="accent" class="m-2" (click)="rollDices()" [disabled]="disableActions">Roll dices</button>
+<div class="flex-grow d-flex flex-column overflow">
+  <div class="d-flex align-items-center mx-2">
+    <mat-icon *ngIf="audioService.volume === 0">volume_off</mat-icon>
+    <mat-icon *ngIf="audioService.volume > 0 && audioService.volume <=0.33">volume_mute</mat-icon>
+    <mat-icon *ngIf="audioService.volume > 0.33 && audioService.volume <= 0.66">volume_down</mat-icon>
+    <mat-icon *ngIf="audioService.volume > 0.66">volume_up</mat-icon>
+    <mat-slider
+      [max]="1"
+      [min]="0"
+      [step]="0.01"
+      [value]="audioService.volume"
+      (input)="audioService.setVolume($event.value)">
+    </mat-slider>
+  </div>
 
-<mat-divider class="m-2" [inset]="false"></mat-divider>
+  <mat-divider class="mx-2 mb-2 mt-0" [inset]="false"></mat-divider>
 
-<button *ngFor="let character of adventure.characters"
-        mat-raised-button color="primary"
-        class="m-2"
-        style="text-transform: capitalize"
-        [ngbTooltip]="tooltipContent"
-        [container]="'body'"
-        tooltipClass="w-75"
-        placement="left">
-  {{character.name}}
-  <ng-template #tooltipContent>
-    <app-character-tooltip-displayer [character]="character"
-                                     cardWidth="200"
-                                     cardHeight="300"></app-character-tooltip-displayer>
-  </ng-template>
-</button>
+  <button mat-raised-button color="accent" class="m-2" (click)="drawCard()" [disabled]="disableActions">Draw card
+  </button>
+  <button mat-raised-button color="accent" class="m-2" (click)="rollDices()" [disabled]="disableActions">Roll dices
+  </button>
 
-<div class="flex-grow d-flex flex-column justify-content-end" *ngIf="authService.isGM">
+  <mat-divider class="m-2" [inset]="false"></mat-divider>
+
+  <button *ngFor="let character of adventure.characters"
+          mat-raised-button [color]="character.id === selectedCharacterId ? 'warn' : 'primary'"
+          class="m-2"
+          style="text-transform: capitalize"
+          [ngbTooltip]="tooltipContent"
+          tooltipClass="mw-75"
+          [container]="'body'"
+          placement="left"
+          (click)="selectCharacter(character)">
+    {{character.name}}
+    <ng-template #tooltipContent>
+      <app-character-tooltip-displayer [character]="character"
+                                       [displayCard]="true"
+                                       characterWidth="400"
+                                       cardWidth="200"
+                                       cardHeight="300"></app-character-tooltip-displayer>
+    </ng-template>
+  </button>
+</div>
+
+<div class="d-flex flex-column justify-content-end" *ngIf="authService.isGM">
   <button mat-raised-button color="accent" class="m-2" (click)="prevAdventure()">Previous adventure</button>
   <button mat-raised-button color="accent" class="m-2" (click)="nextAdventure()">Next adventure</button>
 </div>

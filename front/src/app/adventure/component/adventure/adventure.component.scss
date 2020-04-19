@@ -14,23 +14,26 @@
   background: none no-repeat center center;
   height: 100%;
   width: 100%;
+
+  &.selected {
+    border: red 3px solid;
+  }
+}
+
+.selected {
+  border: white 3px solid;
+}
+
+.trap-visible {
+  border: red 2px solid;
+}
+
+.chest-with-card {
+  border: gold 2px solid;
 }
 
 gridster {
   background: none !important;
-}
-
-.item-delete, .item-flippable{
-  width: 30px;
-  height: 30px;
-
-  .mat-button-wrapper {
-    padding: 0 !important;
-  }
-
-  mat-icon {
-    font-size: 17px;
-  }
 }
 
 .player-cursor {
@@ -50,12 +53,15 @@ gridster {
 .player-regdar {
   color: red !important;
 }
+
 .player-mialye {
   color: cornflowerblue !important;
 }
+
 .player-jozan {
   color: lightgreen !important;
 }
+
 .player-lidda {
   color: yellow !important;
 }

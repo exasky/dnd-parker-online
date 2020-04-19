@@ -11,17 +11,17 @@ export class DiceService {
   constructor(private http: HttpClient) {
   }
 
-  openDiceDialog(): void {
-    this.http.get<void>(DiceService.API_URL + '/open').subscribe(() => {});
+  openDiceDialog(adventureId): void {
+    this.http.get<void>(DiceService.API_URL + '/open/' + adventureId).subscribe();
   }
 
-  selectDices(diceIds: number[]) {
-    this.http.post(DiceService.API_URL + '/select-dices', {ids: diceIds}).subscribe(() => {});
+  selectDices(adventureId, diceIds: number[]) {
+    this.http.post(DiceService.API_URL + '/select-dices/' + adventureId, {ids: diceIds}).subscribe();
   }
 
-  rollDices(diceIds: number[]) {
+  rollDices(adventureId, diceIds: number[]) {
     // Is it really useful to send dice ids instead of the number of thrown dices ?
     // Now no, but if we want to generate results from backend, it can be nice to have the ids !
-    this.http.post(DiceService.API_URL + '/roll-dices', {ids: diceIds}).subscribe(() => {});
+    this.http.post(DiceService.API_URL + '/roll-dices/' + adventureId, {ids: diceIds}).subscribe();
   }
 }

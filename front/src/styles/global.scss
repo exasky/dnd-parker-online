@@ -7,16 +7,33 @@
 @import "bootstrap/bootstrap";
 
 /* You can add global styles to this file, and also import other style files */
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  overflow: hidden;
+}
+
+app-root {
+  background-image: url('/assets/wallpaper/light.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 
 .overflow {
-  overflow: auto;
+  overflow: auto !important;
 }
 
 .w-0 {
   //noinspection CssRedundantUnit
   width: 0px;
+}
+
+.mw-75 {
+  min-width: 75%;
 }
 
 .tooltip-inner {

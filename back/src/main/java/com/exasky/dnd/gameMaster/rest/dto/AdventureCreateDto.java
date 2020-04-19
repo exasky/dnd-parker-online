@@ -2,7 +2,12 @@ package com.exasky.dnd.gameMaster.rest.dto;
 
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.rest.dto.BoardDto;
+import com.exasky.dnd.common.Constant;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,8 +15,16 @@ import java.util.stream.Collectors;
 
 public class AdventureCreateDto {
     private Long id;
+
+    @NotEmpty(message = Constant.Errors.ADVENTURE.NAME_EMPTY)
     private String name;
+
+    @NotNull(message = Constant.Errors.ADVENTURE.LEVEL_DIFFICULTY)
+    @Min(value = 1, message = Constant.Errors.ADVENTURE.LEVEL_DIFFICULTY)
+    @Max(value = 3, message = Constant.Errors.ADVENTURE.LEVEL_DIFFICULTY)
     private Short level;
+
+    @NotNull(message = Constant.Errors.ADVENTURE.BOARD_EMPTY)
     private BoardDto[][] boards;
 
     public static List<Adventure> toBo(List<AdventureCreateDto> dto) {

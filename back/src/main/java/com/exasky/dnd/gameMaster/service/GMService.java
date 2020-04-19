@@ -17,9 +17,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 // TODO refacto this class to call right services...
@@ -109,6 +109,7 @@ public class GMService {
         return attachedCampaign;
     }
 
+    @PreAuthorize("hasRole('ROLE_GM')")
     @Transactional
     public Campaign updateCampaign(Long id, Campaign toUpdate) {
         Campaign attachedCampaign = this.campaignRepository.getById(id);
@@ -140,6 +141,26 @@ public class GMService {
         }
 
         return attachedCampaign;
+    }
+
+    public Campaign copyCampaign(Long campaignId) {
+        Campaign toCopy = this.campaignRepository.getById(campaignId);
+        if (Objects.isNull(toCopy)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+        }
+
+        Campaign newCampaign = new Campaign();
+        newCampaign.setName(toCopy.getName() + " - copy");
+
+        newCampaign.setAdventures(toCopy.getAdventures().stream()
+                .map(adventure -> adventureService.copy(adventure, newCampaign))
+                .collect(Collectors.toList()));
+
+        newCampaign.setCharacters(toCopy.getCharacters().stream()
+                .map(character -> characterService.copy(character, newCampaign))
+                .collect(Collectors.toList()));
+
+        return newCampaign;
     }
 
     @Transactional
@@ -179,51 +200,6 @@ public class GMService {
         campaign.getDrawnItems().clear();
 
         campaignRepository.delete(campaign);
-    }
-
-    public CharacterItem drawCard(Long adventureId) {
-        Campaign campaign = this.campaignRepository.getByAdventureId(adventureId);
-
-        if (Objects.isNull(campaign)) {
-            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
-        }
-
-        //noinspection OptionalGetWithoutIsPresent
-        Short adventureLevel = campaign.getAdventures()
-                .stream()
-                .filter(a -> a.getId().equals(adventureId)).findFirst().get().getLevel();
-
-        List<Long> itemOnCharacterIds = campaign.getCharacters().stream()
-                .flatMap(c -> Stream.of(c.getEquipments(), c.getBackPack()).flatMap(Collection::stream))
-                .map(CharacterItem::getId)
-                .collect(Collectors.toList());
-
-        List<Long> drawnCardIds = campaign.getDrawnItems().stream()
-                .map(CharacterItem::getId)
-                .collect(Collectors.toList());
-
-        Set<Long> usedItemIds = Stream.of(itemOnCharacterIds, drawnCardIds)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
-
-        List<CharacterItem> availableCards = usedItemIds.isEmpty()
-                ? characterItemRepository.findAllByLevelLessThanEqual(adventureLevel)
-                : characterItemRepository.findAllByIdNotInAndLevelLessThanEqual(usedItemIds, adventureLevel);
-
-        // Clear the discard
-        if (availableCards.isEmpty()) {
-            campaign.getDrawnItems().clear();
-            campaignRepository.save(campaign);
-            availableCards = itemOnCharacterIds.isEmpty()
-                    ? characterItemRepository.findAllByLevelLessThanEqual(adventureLevel)
-                    : characterItemRepository.findAllByIdNotInAndLevelLessThanEqual(usedItemIds, adventureLevel);
-        }
-        CharacterItem drawnCard = availableCards.get(new Random().nextInt(availableCards.size()));
-
-        campaign.getDrawnItems().add(drawnCard);
-        campaignRepository.save(campaign);
-
-        return drawnCard;
     }
 
     @Transactional

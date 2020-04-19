@@ -1,14 +1,24 @@
 package com.exasky.dnd.gameMaster.rest.dto;
 
 import com.exasky.dnd.adventure.model.Campaign;
+import com.exasky.dnd.common.Constant;
+import org.apache.tomcat.util.bcel.Const;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CreateCampaignDto {
     private Long id;
+
+    @NotEmpty(message = Constant.Errors.CAMPAIGN.NAME_EMPTY)
     private String name;
+
+    @Valid
     private List<AdventureCreateDto> adventures = new ArrayList<>();
+
+    @Valid
     private List<CharacterForCreateCampaignDto> characters = new ArrayList<>();
 
     public static Campaign toBo(CreateCampaignDto dto) {

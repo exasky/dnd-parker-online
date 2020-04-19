@@ -18,8 +18,15 @@ export class CharacterTooltipDisplayerComponent implements OnInit {
   @Input()
   cardHeight;
 
+  @Input()
+  characterWidth;
+
+  @Input()
+  displayCard: boolean = false
+
   ngOnInit(): void {
-    if (!this.cardWidth) this.cardWidth = "150";
-    if (!this.cardHeight) this.cardHeight = "230";
+    if (!this.cardWidth) this.cardWidth = '150';
+    if (!this.cardHeight) this.cardHeight = '230';
+    if (!this.characterWidth) this.characterWidth = '300';
   }
 }
