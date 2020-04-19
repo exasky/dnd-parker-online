@@ -37,21 +37,29 @@
   <div class="d-flex justify-content-around">
     <mat-form-field style="max-width: 4rem">
       <mat-label>Max HP</mat-label>
-      <input matInput [(ngModel)]="character.maxHp" autocomplete="false" type="number">
+      <input matInput [(ngModel)]="character.maxHp"
+             inputmode="numeric" pattern="[0-9]*" min="0"
+             autocomplete="false" type="number">
     </mat-form-field>
     <mat-form-field style="max-width: 4rem">
       <mat-label>HP</mat-label>
-      <input matInput [(ngModel)]="character.hp" autocomplete="false" type="number">
+      <input matInput [(ngModel)]="character.hp"
+             inputmode="numeric" pattern="[0-9]*" min="0"
+             autocomplete="false" type="number">
     </mat-form-field>
   </div>
   <div class="d-flex justify-content-around">
     <mat-form-field style="max-width: 4rem">
       <mat-label>Max MP</mat-label>
-      <input matInput [(ngModel)]="character.maxMp" autocomplete="false" type="number">
+      <input matInput [(ngModel)]="character.maxMp"
+             inputmode="numeric" pattern="[0-9]*" min="0"
+             autocomplete="false" type="number">
     </mat-form-field>
     <mat-form-field style="max-width: 4rem">
       <mat-label>MP</mat-label>
-      <input matInput [(ngModel)]="character.mp" autocomplete="false" type="number">
+      <input matInput [(ngModel)]="character.mp"
+             inputmode="numeric" pattern="[0-9]*" min="0"
+             autocomplete="false" type="number">
     </mat-form-field>
   </div>
   <img *ngIf="character.name" width="300px" [src]="'assets/character/' + character.name.toLowerCase() + '.jpg'">

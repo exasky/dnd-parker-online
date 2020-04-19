@@ -55,7 +55,9 @@
         </mat-form-field>
         <mat-form-field>
           <mat-label>Level</mat-label>
-          <input matInput type="number" min="1" max="3" [(ngModel)]="adventure.level" placeholder="Niveau" required autocomplete="false">
+          <input matInput type="number" min="1" max="3"
+                 inputmode="numeric" pattern="[0-9]*"
+                 [(ngModel)]="adventure.level" placeholder="Niveau" required autocomplete="false">
         </mat-form-field>
       </div>
 
