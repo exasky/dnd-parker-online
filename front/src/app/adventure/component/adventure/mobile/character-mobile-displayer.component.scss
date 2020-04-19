@@ -1,0 +1,26 @@
+.status-bar {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.status-bar-text {
+  position: absolute;
+  padding: 10px;
+  left: 0;
+  right: 0;
+  color: white;
+  display: flex;
+  justify-content: center;
+}
+
+.mat-progress-bar {
+  height: 30px;
+}
+
+::ng-deep.mat-tab-body-wrapper {
+  flex-grow: 1;
+  min-width: 0;
+  min-height: 0;
+}

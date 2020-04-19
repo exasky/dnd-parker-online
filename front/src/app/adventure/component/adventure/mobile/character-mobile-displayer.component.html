@@ -1,0 +1,33 @@
+<mat-card class="flex-grow m-2 overflow">
+  <mat-card-content class="d-flex flex-column align-items-center">
+    <img *ngIf="character.name"
+         width="50%"
+         [src]="'assets/character/' + character.name.toLowerCase() + '-card.jpg'">
+
+    <section class="status-bar w-100">
+      <mat-progress-bar color="warn" mode="determinate" [value]="(character.hp * 100) / character.maxHp">
+      </mat-progress-bar>
+      <div class="status-bar-text">HP : {{character.hp}} / {{character.maxHp}}</div>
+    </section>
+    <section class="status-bar w-100" *ngIf="character.maxMp">
+      <mat-progress-bar color="accent" mode="determinate" [value]="(character.mp * 100) / character.maxMp">
+      </mat-progress-bar>
+      <div class="status-bar-text">MP : {{character.mp}} / {{character.maxMp}}</div>
+    </section>
+
+    <div mat-subheader>Equipped items</div>
+    <div class="d-flex" style="overflow-y: hidden">
+      <img *ngFor="let item of character.equippedItems"
+           class="m-auto"
+           height="48%" width="48%"
+           [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'">
+    </div>
+    <div mat-subheader>Backpack items</div>
+    <div class="d-flex" style="overflow-y: hidden">
+      <img *ngFor="let item of character.backpackItems"
+           class="m-auto"
+           height="48%" width="48%"
+           [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'">
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -34,7 +34,7 @@ import {LayerGridsterItem} from "../../model/layer-gridster-item";
 import {AudioService} from "../../service/audio.service";
 
 @Component({
-  selector: 'app-board',
+  selector: 'app-adventure',
   templateUrl: './adventure.component.html',
   styleUrls: ['./adventure.component.scss']
 })

@@ -8,6 +8,7 @@ import {CampaignCreatorComponent} from "./adventure/component/creator/campaign/c
 import {UserListComponent} from "./user/component/user-list.component";
 import {UserDetailComponent} from "./user/component/user-detail.component";
 import {ProfileGuard} from "./login/guard/profile.guard";
+import {AdventureIndexComponent} from "./adventure/component/adventure/adventure-index.component";
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -21,7 +22,7 @@ const routes: Routes = [
           {path: ':id', component: CampaignCreatorComponent},
         ]
       },
-      {path: 'adventure/:id', component: AdventureComponent},
+      {path: 'adventure/:id', component: AdventureIndexComponent},
       {path: 'users', canActivate: [ProfileGuard], data: {roles: ['ROLE_GM']}, component: UserListComponent},
       {path: 'user-detail', component: UserDetailComponent}
     ]

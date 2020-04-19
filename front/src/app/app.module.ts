@@ -55,6 +55,11 @@ import {MatSliderModule} from "@angular/material/slider";
 import {MatListModule} from "@angular/material/list";
 import {ContextMenuComponent} from "./adventure/component/adventure/context-menu/context-menu.component";
 import {SelectCardDialogComponent} from "./adventure/component/adventure/context-menu/select-card-dialog.component";
+import {AdventureIndexComponent} from "./adventure/component/adventure/adventure-index.component";
+import {AdventureMobileComponent} from "./adventure/component/adventure/mobile/adventure-mobile.component";
+import {LayoutModule} from "@angular/cdk/layout";
+import {CharacterMobileDisplayerComponent} from "./adventure/component/adventure/mobile/character-mobile-displayer.component";
+import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
   declarations: [
@@ -78,40 +83,45 @@ import {SelectCardDialogComponent} from "./adventure/component/adventure/context
     DiceDialogComponent,
     AlertMessageDialogComponent,
     ContextMenuComponent,
-    SelectCardDialogComponent
+    SelectCardDialogComponent,
+    AdventureIndexComponent,
+    AdventureMobileComponent,
+    CharacterMobileDisplayerComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        GridsterModule,
-        MatIconModule,
-        MatSelectModule,
-        FormsModule,
-        MatCheckboxModule,
-        MatInputModule,
-        MatButtonModule,
-        HttpClientModule,
-        MatCardModule,
-        ReactiveFormsModule,
-        MatStepperModule,
-        DragDropModule,
-        MatTreeModule,
-        MatToolbarModule,
-        MatSidenavModule,
-        MatMenuModule,
-        MatDialogModule,
-        NgbTooltipModule,
-        MatDividerModule,
-        MatProgressBarModule,
-        ToastrModule.forRoot({
-            positionClass: 'toast-bottom-right',
-            timeOut: 5000
-        }),
-        MatExpansionModule,
-        MatSliderModule,
-        MatListModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    GridsterModule,
+    MatIconModule,
+    MatSelectModule,
+    FormsModule,
+    MatCheckboxModule,
+    MatInputModule,
+    MatButtonModule,
+    HttpClientModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    MatStepperModule,
+    DragDropModule,
+    MatTreeModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatMenuModule,
+    MatDialogModule,
+    NgbTooltipModule,
+    MatDividerModule,
+    MatProgressBarModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-right',
+      timeOut: 5000
+    }),
+    MatExpansionModule,
+    MatSliderModule,
+    MatListModule,
+    LayoutModule,
+    MatTabsModule
+  ],
   entryComponents: [
     AlertMessageDialogComponent, ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent,
     SelectCardDialogComponent

@@ -1,0 +1,15 @@
+<ng-container *ngIf="adventure">
+  <app-gm-action-panel *ngIf="authService.isGM"
+                       [adventureId]="adventure.id"
+                       [monsters]="monsters"
+                       [characters]="adventure.characters"></app-gm-action-panel>
+  <!--                         [selectedItem]="selectedItem"-->
+  <!--                         [cursorEnabled]="showCursor"-->
+  <!--                         (selectMonster)="selectItem($event)"></app-gm-action-panel>-->
+  <mat-tab-group *ngIf="!authService.isGM" class="flex-grow">
+    <mat-tab *ngFor="let character of adventure.characters"
+             label="{{character.name}}">
+      <app-character-mobile-displayer [character]="character"></app-character-mobile-displayer>
+    </mat-tab>
+  </mat-tab-group>
+</ng-container>
