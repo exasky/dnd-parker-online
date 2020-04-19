@@ -25,6 +25,7 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
   monsters: Monster[] = [];
 
   selectedCharacterId: number;
+  selectedMonsterId: number;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -56,7 +57,9 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
             break;
           case AdventureMessageType.ADD_LAYER_ITEM:
             const newLayerItem: LayerItem = message.message;
-            this.addMonster(newLayerItem);
+            if (newLayerItem.element.type === LayerElementType.MONSTER) {
+              this.addMonster(newLayerItem);
+            }
             break;
           case AdventureMessageType.REMOVE_LAYER_ITEM:
             const layerItemId = message.message;
@@ -95,6 +98,10 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
               toUpdate.hp = character.hp;
               toUpdate.mp = character.mp;
             }
+            break;
+          case AdventureMessageType.SELECT_MONSTER:
+            this.selectedMonsterId = message.message;
+            break;
         }
       }
     });
@@ -102,6 +109,11 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.adventureWSObs.unsubscribe();
+  }
+
+  selectMonster(layerItemId: number) {
+    this.selectedMonsterId = layerItemId;
+    this.adventureService.selectMonster(this.adventure.id, layerItemId);
   }
 
   private initMonsters() {

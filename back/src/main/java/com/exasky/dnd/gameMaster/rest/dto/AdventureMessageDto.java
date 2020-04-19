@@ -10,6 +10,7 @@ public class AdventureMessageDto {
         UPDATE_LAYER_ITEM,
         REMOVE_LAYER_ITEM,
         SELECT_CHARACTER,
+        SELECT_MONSTER,
         SHOW_TRAP,
         ALERT,
         SOUND,

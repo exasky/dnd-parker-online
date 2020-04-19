@@ -128,6 +128,14 @@ public class AdventureRestController {
         this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 
+    @GetMapping("/select-monster/{adventureId}/{layerItemId}")
+    public void selectMonster(@PathVariable Long adventureId, @PathVariable Long layerItemId) {
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.SELECT_MONSTER);
+        wsDto.setMessage(layerItemId);
+        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+    }
+
     @GetMapping("/show-trap/{adventureId}/{layerItemId}")
     public void showTrap(@PathVariable Long adventureId, @PathVariable Long layerItemId) {
         AdventureMessageDto wsDto = new AdventureMessageDto();

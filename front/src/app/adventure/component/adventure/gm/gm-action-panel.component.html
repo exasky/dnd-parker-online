@@ -1,4 +1,9 @@
 <mat-accordion class="flex-grow d-flex flex-column" [multi]="true">
+  <div *ngIf="exportable" class="d-flex justify-content-center">
+    <button mat-icon-button (click)="openMobileVersion()">
+      <mat-icon>open_in_new</mat-icon>
+    </button>
+  </div>
   <mat-expansion-panel class="flex-shrink-0 d-flex flex-column mb-0">
     <mat-expansion-panel-header>
       <mat-panel-title>Tools</mat-panel-title>
@@ -60,7 +65,7 @@
     <div class="d-flex flex-column">
       <div *ngFor="let monster of monsters"
            class="d-flex flex-column align-items-center p-1 mb-2"
-           [class.selected]="selectedItem && monster.layerItemId === selectedItem.id">
+           [class.selected]="monster.layerItemId === selectedMonsterId">
         <mat-card-subtitle>{{monster.name}} n°{{monster.index}}</mat-card-subtitle>
         <div class="d-flex align-items-center">
           <img [src]="'assets/monster/' + monster.name + '.jpg'" width="150px"
@@ -85,28 +90,20 @@
         {{character.name.charAt(0).toUpperCase() + character.name.slice(1)}}:
         <div class="d-flex flex-column">
           <mat-label>HP</mat-label>
-          <mat-slider
-            color="primary"
-            [max]="character.maxHp"
-            [min]="0"
-            [step]="1"
-            [thumbLabel]="true"
-            [tickInterval]="1"
-            [(ngModel)]="character.hp"
-            (change)="updateCharacter(character)">
+          <mat-slider color="primary"
+                      [min]="0" [max]="character.maxHp" [step]="1"
+                      [thumbLabel]="true" [tickInterval]="1"
+                      [(ngModel)]="character.hp"
+                      (change)="updateCharacter(character)">
           </mat-slider>
         </div>
         <div class="d-flex flex-column">
           <mat-label>MP</mat-label>
-          <mat-slider
-            color="primary"
-            [max]="character.maxMp"
-            [min]="0"
-            [step]="1"
-            [thumbLabel]="true"
-            [tickInterval]="1"
-            [(ngModel)]="character.mp"
-            (change)="updateCharacter(character)">
+          <mat-slider color="primary"
+                      [min]="0" [max]="character.maxMp" [step]="1"
+                      [thumbLabel]="true" [tickInterval]="1"
+                      [(ngModel)]="character.mp"
+                      (change)="updateCharacter(character)">
           </mat-slider>
         </div>
       </div>

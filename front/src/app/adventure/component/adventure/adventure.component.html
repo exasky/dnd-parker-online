@@ -23,21 +23,22 @@
     </div>
 
     <div class="d-flex align-items-center" *ngIf="authService.isGM">
-      <button mat-raised-button class="flex-shrink-0 h-100 mx-2" (click)="drawer2.toggle()">GM Panel</button>
+      <button mat-raised-button class="flex-shrink-0 h-100 mx-2" (click)="gmDrawer.toggle()">GM Panel</button>
       <app-adventure-item-displayer [layerElements]="addableLayerElements"></app-adventure-item-displayer>
     </div>
   </div>
 
   <mat-drawer-container class="flex-grow d-flex flex-column mt-3" #mainDrawerContainer tabindex="1"
                         (keyup)="onKeyboard($event)">
-    <mat-drawer #drawer2 mode="side" position="start">
+    <mat-drawer #gmDrawer mode="side" position="start">
       <div class="d-flex flex-column h-100" style="min-width: 150px">
         <app-gm-action-panel [adventureId]="adventure.id"
                              [monsters]="monsters"
                              [characters]="adventure.characters"
-                             [selectedItem]="selectedItem"
+                             [selectedMonsterId]="selectedMonsterId"
                              [cursorEnabled]="showCursor"
-                             (selectMonster)="selectItem($event)"
+                             [exportable]="gmDrawer"
+                             (selectMonster)="selectMonster($event)"
                              (toggleCursor)="showCursor = !showCursor"></app-gm-action-panel>
       </div>
     </mat-drawer>
@@ -119,6 +120,7 @@
 
             <div *ngSwitchCase="LayerElementType.MONSTER"
                  class="adventure-board-item"
+                 [class.selected]="selectedMonsterId === item.id"
                  [ngStyle]="{'background-image': 'url(\'assets/monster/' + item.icon + '-token.jpg\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
             </div>

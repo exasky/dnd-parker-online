@@ -65,6 +65,10 @@ export class AdventureService {
     this.http.post(AdventureService.API_URL + '/update-character/' + adventureId + '/' + characterId, character).subscribe();
   }
 
+  selectMonster(adventureId, layerItemId) {
+    this.http.get(AdventureService.API_URL + '/select-monster/' + adventureId + '/' + layerItemId).subscribe();
+  }
+
   showTrap(adventureId, trapLayerItemId) {
     return this.http.get(AdventureService.API_URL + '/show-trap/' + adventureId + '/' + trapLayerItemId).subscribe();
   }

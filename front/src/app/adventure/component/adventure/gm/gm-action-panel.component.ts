@@ -3,9 +3,10 @@ import {Monster} from "../../../model/monster";
 import {MatDialog} from "@angular/material/dialog";
 import {Character} from "../../../model/character";
 import {AlertMessageDialogComponent} from "./alert-message-dialog.component";
-import {LayerGridsterItem} from "../../../model/layer-gridster-item";
 import {GmService} from "../../../service/gm.service";
 import {AdventureService} from "../../../service/adventure.service";
+import {Router} from "@angular/router";
+import {MatDrawer} from "@angular/material/sidenav";
 
 @Component({
   selector: 'app-gm-action-panel',
@@ -28,7 +29,7 @@ export class GmActionPanelComponent {
   monsters: Monster[];
 
   @Input()
-  selectedItem: LayerGridsterItem;
+  selectedMonsterId: number;
 
   @Output()
   selectMonster: EventEmitter<number> = new EventEmitter<number>();
@@ -39,9 +40,13 @@ export class GmActionPanelComponent {
   @Output()
   toggleCursor: EventEmitter<void> = new EventEmitter<void>();
 
+  @Input()
+  exportable: MatDrawer;
+
   constructor(private dialog: MatDialog,
+              private router: Router,
               private gmService: GmService,
-              private adventureService: AdventureService) {
+              private adventureService: AdventureService,) {
   }
 
   sendAlert() {
@@ -117,6 +122,12 @@ export class GmActionPanelComponent {
 
   updateCharacter(character: Character) {
     this.adventureService.updateCharacter(this.adventureId, character.id, character);
+  }
+
+  openMobileVersion() {
+    const strWindowFeatures = "menubar=no,toolbar=no,location=no,resizable=yes,scrollbars=yes,status=no";
+    window.open(this.router.url,'_blank', strWindowFeatures);
+    this.exportable.close();
   }
 }
 

@@ -76,6 +76,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   monsters: Monster[] = [];
   selectedCharacterId: number;
+  selectedMonsterId: number;
 
   selectedItem: LayerGridsterItem;
   // increased each time a player/monster move in order to keep the last moving item on top
@@ -181,6 +182,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
             break;
           case AdventureMessageType.SELECT_CHARACTER:
             this.selectedCharacterId = message.message;
+            break;
+          case AdventureMessageType.SELECT_MONSTER:
+            this.selectedMonsterId = message.message;
             break;
           case AdventureMessageType.SHOW_TRAP:
             const trapLayerItemId = message.message;
@@ -318,7 +322,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
       if (this.selectedItem && this.selectedItem.id === item.id) { // Click on case selected case
         this.selectedItem = null;
       } else {
-        this.selectedItem = item;
+        if (item.type === LayerElementType.MONSTER) {
+          this.selectMonster(item.id);
+        } else {
+          this.selectedItem = item;
+        }
         this.mainDrawerContainer.nativeElement.focus();
       }
     } else { // Case drag&drop
@@ -509,8 +517,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectItem(layerItemId: number) {
+  selectMonster(layerItemId: number) {
     this.selectedItem = this.dashboard.find(item => item.id === layerItemId);
+    this.selectedMonsterId = layerItemId;
+    this.adventureService.selectMonster(this.adventure.id, layerItemId);
   }
 
   removeItem(item: LayerGridsterItem) {
