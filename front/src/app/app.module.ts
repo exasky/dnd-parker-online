@@ -134,10 +134,7 @@ import {MatTabsModule} from "@angular/material/tabs";
     WebSocketWrapperService,
     AdventureWebsocketService,
     DrawnCardWebsocketService,
-    DiceWebsocketService,
-    AdventureWebsocketService,
-    DrawnCardWebsocketService,
-    DiceWebsocketService,
+    DiceWebsocketService
   ],
   bootstrap: [AppComponent]
 })

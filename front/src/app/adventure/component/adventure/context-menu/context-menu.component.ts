@@ -10,7 +10,8 @@ import {AdventureComponent} from "../adventure.component";
 import {DialogUtils} from "../../../../common/dialog/dialog.utils";
 import {MatDialog} from "@angular/material/dialog";
 import {SelectCardDialogComponent} from "./select-card-dialog.component";
-import {CharacterItem} from "../../../model/character";
+import {Character, CharacterItem} from "../../../model/character";
+import {AdventureCardService} from "../../../service/adventure-card.service";
 
 @Component({
   selector: 'app-context-menu',
@@ -25,12 +26,16 @@ export class ContextMenuComponent {
   @Input()
   addableLayerElements: LayerElement[] = [];
 
+  @Input()
+  characters: Character[];
+
   LayerElementType = LayerElementType;
 
   contextMenuPosition = {x: '0px', y: '0px'};
 
   constructor(public authService: AuthService,
               private adventureService: AdventureService,
+              private adventureCardService: AdventureCardService,
               private gmService: GmService,
               private dialog: MatDialog) {
   }
@@ -98,11 +103,14 @@ export class ContextMenuComponent {
 
   openChest(item: LayerGridsterItem) {
     if (item.cardId !== undefined) {
-      this.adventureService.drawSpecificCard(this.adventureId, item.cardId);
+      this.adventureCardService.drawSpecificCard(this.adventureId, item.cardId);
       this.adventureService.deleteLayerItem(this.adventureId, item.id);
     } else {
-      this.adventureService.drawCard(this.adventureId);
-      this.adventureService.deleteLayerItem(this.adventureId, item.id);
+      const currentCharacter = this.characters.find(char => char.userId === this.authService.currentUserValue.id);
+      if (currentCharacter) {
+        this.adventureCardService.drawCard(this.adventureId, currentCharacter.id);
+        this.adventureService.deleteLayerItem(this.adventureId, item.id);
+      }
     }
   }
 
@@ -113,7 +121,7 @@ export class ContextMenuComponent {
   setChestCard(item: LayerGridsterItem) {
     this.dialog.open(SelectCardDialogComponent, DialogUtils.getDefaultConfig(item['cardId']))
       .afterClosed().subscribe((value: CharacterItem) => {
-      this.adventureService.setChestSpecificCard(this.adventureId, {
+      this.adventureCardService.setChestSpecificCard(this.adventureId, {
         characterItemId: value.id,
         layerItemId: item.id
       });

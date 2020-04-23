@@ -7,6 +7,7 @@ import {AuthService} from "../../../../login/auth.service";
 import {AdventureService} from "../../../service/adventure.service";
 import {Character} from "../../../model/character";
 import {AudioService} from "../../../service/audio.service";
+import {AdventureCardService} from "../../../service/adventure-card.service";
 
 @Component({
   selector: 'app-action-panel',
@@ -26,6 +27,7 @@ export class ActionPanelComponent {
 
   constructor(private gmService: GmService,
               private adventureService: AdventureService,
+              private adventureCardService: AdventureCardService,
               private dialog: MatDialog,
               private diceService: DiceService,
               public authService: AuthService,
@@ -35,7 +37,11 @@ export class ActionPanelComponent {
   drawCard() {
     if (!this.disableActions) {
       // Do nothing as get card from websocket
-      this.adventureService.drawCard(this.adventure.id);
+      // TODO do it with getCurrentCharacterToPlay future method :)
+      const character = this.adventure.characters.find(char => char.userId === this.authService.currentUserValue.id);
+      if (character) {
+        this.adventureCardService.drawCard(this.adventure.id, character.id);
+      }
     }
   }
 

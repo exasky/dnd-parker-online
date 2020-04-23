@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Drawn card</h1>
+<h1 mat-dialog-title>Drawn card for {{characterName}}</h1>
 
 <div mat-dialog-content class="position-relative" style="width: 700px; height: 500px">
   <div id="treasurechest">
@@ -8,9 +8,10 @@
   <div id="treasurechest-bg"></div>
 
   <img id="card"
-       [src]="'assets/card/' + data.type.toLowerCase() + '/' + data.level + '/' + data.name + '.jpg'">
+       [src]="'assets/card/' + data.characterItem.type.toLowerCase() + '/' + data.characterItem.level + '/' + data.characterItem.name + '.jpg'">
 </div>
 
-<mat-dialog-actions class="d-flex justify-content-center">
-  <button mat-button (click)="dialogRef.close(true)">Close</button>
+<mat-dialog-actions class="d-flex justify-content-center" *ngIf="authService.isGM">
+  <button mat-button (click)="this.close(false)">Cancel</button>
+  <button mat-button (click)="this.close(true)">Validate</button>
 </mat-dialog-actions>

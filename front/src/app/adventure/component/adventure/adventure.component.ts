@@ -18,7 +18,7 @@ import {SocketResponse} from "../../../common/model";
 import {Subscription} from "rxjs";
 import {DrawnCardWebsocketService} from "../../../common/service/ws/drawn-card.websocket.service";
 import {DrawnCardDialogComponent} from "./item/drawn-card-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {AdventureMessage, AdventureMessageType, MouseMove} from "../../model/adventure-message";
 import {SocketResponseType} from "../../../common/model/websocket.response";
 import {ToasterService} from "../../../common/service/toaster.service";
@@ -33,6 +33,8 @@ import {AlertMessage, AlertMessageType} from "../../model/alert-message";
 import {LayerGridsterItem} from "../../model/layer-gridster-item";
 import {AudioService} from "../../service/audio.service";
 import {Character} from "../../model/character";
+import {AdventureCardService} from "../../service/adventure-card.service";
+import {CardMessage, CardMessageType} from "../../model/card-message";
 
 @Component({
   selector: 'app-adventure',
@@ -82,7 +84,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
   // increased each time a player/monster move in order to keep the last moving item on top
   currentLayerIndexForSelectedItem = 1;
 
+  currentDialog: MatDialogRef<any>;
+
   constructor(private adventureService: AdventureService,
+              private adventureCardService: AdventureCardService,
               private gmService: GmService,
               public authService: AuthService,
               private toaster: ToasterService,
@@ -226,13 +231,27 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
     this.drawnCardWSObs = this.drawnCardWS.getObservable(adventureId).subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {
-        const drawerOpenedSaved = this.actionPanelDrawer.opened;
-        this.disableActions = this.actionPanelDrawer.opened = true;
-        this.dialog.open(DrawnCardDialogComponent, DialogUtils.getDefaultConfig(receivedMsg.data))
-          .beforeClosed().subscribe(() => {
-          this.disableActions = false;
-          this.actionPanelDrawer.opened = drawerOpenedSaved;
-        });
+        const message: CardMessage = receivedMsg.data;
+        switch (message.type) {
+          case CardMessageType.DRAW_CARD:
+            const drawerOpenedSaved = this.actionPanelDrawer.opened;
+            this.disableActions = this.actionPanelDrawer.opened = true;
+            this.currentDialog = this.dialog.open(DrawnCardDialogComponent,
+              DialogUtils.getDefaultConfig({...message.message, characters: this.adventure.characters}));
+            this.currentDialog.afterClosed().subscribe(() => {
+              this.disableActions = false;
+              this.actionPanelDrawer.opened = drawerOpenedSaved;
+            });
+            break;
+          case CardMessageType.CLOSE_DIALOG:
+            if (this.currentDialog) {
+              this.currentDialog.close();
+              this.currentDialog = null;
+            }
+            break
+          default:
+            break;
+        }
       }
     })
 

@@ -6,7 +6,6 @@ import com.exasky.dnd.adventure.rest.dto.layer.LayerItemDto;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
-import com.exasky.dnd.gameMaster.rest.dto.CharacterItemDto;
 import com.exasky.dnd.gameMaster.rest.dto.SimpleCampaignDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -50,29 +49,6 @@ public class AdventureRestController {
         wsDto.setType(AdventureMessageDto.AdventureMessageType.MOUSE_MOVE);
         wsDto.setMessage(mouseMoveDto);
         this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
-    }
-
-    @GetMapping("/draw-card/{adventureId}")
-    public void drawCard(@PathVariable Long adventureId) {
-        CharacterItemDto dto = CharacterItemDto.toDto(this.adventureService.drawCard(adventureId));
-
-        this.messagingTemplate.convertAndSend("/topic/drawn-card/" + adventureId, dto);
-    }
-
-    @PostMapping("/set-chest-specific-card/{adventureId}")
-    public void setChestSpecificCard(@PathVariable Long adventureId, @RequestBody ChestSpecificCardDto dto) {
-        AdventureMessageDto wsDto = new AdventureMessageDto();
-        wsDto.setType(AdventureMessageDto.AdventureMessageType.SET_CHEST_CARD);
-        wsDto.setMessage(dto);
-
-        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
-    }
-
-    @GetMapping("/draw-specific-card/{adventureId}/{characterItemId}")
-    public void drawSpecificCard(@PathVariable Long adventureId, @PathVariable Long characterItemId) {
-        CharacterItemDto dto = CharacterItemDto.toDto(this.adventureService.drawSpecificCard(characterItemId));
-
-        this.messagingTemplate.convertAndSend("/topic/drawn-card/" + adventureId, dto);
     }
 
     @GetMapping("/{id}")

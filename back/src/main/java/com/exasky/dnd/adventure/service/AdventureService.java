@@ -181,7 +181,7 @@ public class AdventureService {
                 : attachedAdventure.getMjLayer();
     }
 
-    public CharacterItem drawCard(Long adventureId) {
+    public CharacterItem getNextCardToDraw(Long adventureId) {
         Campaign campaign = this.campaignRepository.getByAdventureId(adventureId);
 
         if (Objects.isNull(campaign)) {
@@ -218,7 +218,24 @@ public class AdventureService {
                     ? characterItemRepository.findAllByLevelLessThanEqual(adventureLevel)
                     : characterItemRepository.findAllByIdNotInAndLevelLessThanEqual(usedItemIds, adventureLevel);
         }
-        CharacterItem drawnCard = availableCards.get(new Random().nextInt(availableCards.size()));
+
+        return availableCards.get(new Random().nextInt(availableCards.size()));
+    }
+
+    @PreAuthorize("hasRole('ROLE_GM')")
+    public CharacterItem drawCard(Long adventureId, Long characterItemId) {
+        Campaign campaign = campaignRepository.getByAdventureId(adventureId);
+
+        if (Objects.isNull(campaign)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+        }
+
+        Optional<CharacterItem> optCharacterItem = characterItemRepository.findById(characterItemId);
+        if (!optCharacterItem.isPresent()) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CHARACTER_ITEM.NOT_FOUND);
+        }
+
+        CharacterItem drawnCard = optCharacterItem.get();
 
         campaign.getDrawnItems().add(drawnCard);
         campaignRepository.save(campaign);
@@ -226,6 +243,9 @@ public class AdventureService {
         return drawnCard;
     }
 
+    /**
+     * Does not add the card to the drawn items because the card should be a unique item (like star level items)
+     */
     @PreAuthorize("hasRole('ROLE_GM')")
     public CharacterItem drawSpecificCard(Long characterItemId) {
         Optional<CharacterItem> byId = characterItemRepository.findById(characterItemId);
