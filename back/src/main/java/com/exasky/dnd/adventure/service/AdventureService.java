@@ -5,8 +5,7 @@ import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.adventure.model.Character;
 import com.exasky.dnd.adventure.model.CharacterTemplate;
 import com.exasky.dnd.adventure.model.card.CharacterItem;
-import com.exasky.dnd.adventure.model.layer.Layer;
-import com.exasky.dnd.adventure.model.layer.LayerItem;
+import com.exasky.dnd.adventure.model.layer.item.LayerItem;
 import com.exasky.dnd.adventure.repository.*;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.common.exception.ValidationCheckException;
@@ -20,7 +19,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.exasky.dnd.adventure.model.layer.LayerElementType.*;
 import static com.exasky.dnd.common.Utils.getCurrentUser;
 
 @Service
@@ -87,7 +85,7 @@ public class AdventureService {
                 .map(board -> boardService.copy(newAdventure, board))
                 .collect(Collectors.toList()));
 
-        newAdventure.getMjLayer().setItems(
+        /*newAdventure.getMjLayer().setItems(
                 toCopy.getMjLayer().getItems().stream()
                         .map(layerItem -> layerItemService.copy(layerItem, newAdventure.getMjLayer()))
                         .collect(Collectors.toList()));
@@ -96,7 +94,7 @@ public class AdventureService {
                 toCopy.getCharacterLayer().getItems().stream()
                         .map(layerItem -> layerItemService.copy(layerItem, newAdventure.getCharacterLayer()))
                         .collect(Collectors.toList())
-        );
+        );*/
 
         return newAdventure;
     }
@@ -134,51 +132,67 @@ public class AdventureService {
     }
 
     @Transactional
-    public LayerItem addLayerItem(Long id, LayerItem toAdd) {
+    public <T extends LayerItem> T addLayerItem(Long id, T toAdd) {
         Adventure attachedAdventure = repository.getOne(id);
 
-        Layer layerToAdd = getLayerForLayerElement(attachedAdventure, toAdd);
-        LayerItem attachedLayerItem = this.layerItemService.createOrUpdate(toAdd, layerToAdd);
-        layerToAdd.getItems().add(attachedLayerItem);
+        T orUpdate = layerItemService.createOrUpdate(toAdd, attachedAdventure);
+        List<T> elementListForLayerItem = getElementListForLayerItem(attachedAdventure, toAdd);
+        elementListForLayerItem.add(orUpdate);
 
-        return attachedLayerItem;
+//        Layer layerToAdd = getLayerForLayerElement(attachedAdventure, toAdd);
+//        LayerItem attachedLayerItem = this.layerItemService.createOrUpdate(toAdd, layerToAdd);
+//        layerToAdd.getItems().add(attachedLayerItem);
+
+//        return attachedLayerItem;
+        return null;
     }
 
     @Transactional
     public LayerItem updateLayerItem(Long adventureId, LayerItem toAdd) {
         Adventure attachedAdventure = repository.getOne(adventureId);
 
-        Layer layerToUpdate = getLayerForLayerElement(attachedAdventure, toAdd);
-        LayerItem attachedLayerItem = this.layerItemService.createOrUpdate(toAdd, layerToUpdate);
+//        Layer layerToUpdate = getLayerForLayerElement(attachedAdventure, toAdd);
+//        LayerItem attachedLayerItem = this.layerItemService.createOrUpdate(toAdd, layerToUpdate);
+//
+//        LayerItem previousLayerItem = layerToUpdate.getItems().stream()
+//                .filter(layerItem -> layerItem.getId().equals(attachedLayerItem.getId()))
+//                .findFirst()
+//                .orElse(null);
+//
+//        if (Objects.isNull(previousLayerItem)) {
+//            ValidationCheckException.throwError(Constant.Errors.ADVENTURE.LAYER_ITEM_NOT_FOUND);
+//        }
+//
+//        int idx = layerToUpdate.getItems().indexOf(previousLayerItem);
+//        layerToUpdate.getItems().set(idx, attachedLayerItem);
 
-        LayerItem previousLayerItem = layerToUpdate.getItems().stream()
-                .filter(layerItem -> layerItem.getId().equals(attachedLayerItem.getId()))
-                .findFirst()
-                .orElse(null);
-
-        if (Objects.isNull(previousLayerItem)) {
-            ValidationCheckException.throwError(Constant.Errors.ADVENTURE.LAYER_ITEM_NOT_FOUND);
-        }
-
-        int idx = layerToUpdate.getItems().indexOf(previousLayerItem);
-        layerToUpdate.getItems().set(idx, attachedLayerItem);
-
-        return attachedLayerItem;
+//        return attachedLayerItem;
+        return null;
     }
+
 
     @Transactional
     public void deleteLayerItem(Long adventureId, Long layerItemId) {
         Adventure attachedAdventure = repository.getOne(adventureId);
         LayerItem attachedLayerItem = this.layerItemService.getOne(layerItemId);
 
-        Layer layerForLayerElement = getLayerForLayerElement(attachedAdventure, attachedLayerItem);
-        layerForLayerElement.getItems().remove(attachedLayerItem);
+//        Layer layerForLayerElement = getLayerForLayerElement(attachedAdventure, attachedLayerItem);
+//        layerForLayerElement.getItems().remove(attachedLayerItem);
     }
 
-    private Layer getLayerForLayerElement(Adventure attachedAdventure, LayerItem layerItem) {
-        return Arrays.asList(CHARACTER, MONSTER, TREE, PILLAR).contains(layerItem.getLayerElement().getType())
-                ? attachedAdventure.getCharacterLayer()
-                : attachedAdventure.getMjLayer();
+//    private Layer getLayerForLayerElement(Adventure attachedAdventure, LayerItem layerItem) {
+//        return Arrays.asList(CHARACTER, MONSTER, TREE, PILLAR).contains(layerItem.getLayerElement().getType())
+//                ? attachedAdventure.getCharacterLayer()
+//                : attachedAdventure.getMjLayer();
+//    }
+
+    private <T extends LayerItem> List<T> getElementListForLayerItem(Adventure adv, T layerItem) {
+        switch (layerItem.getLayerElement().getType()) {
+            case DOOR:
+                return (List<T>) adv.getDoors();
+            default:
+                return (List<T>) adv.getOtherItems();
+        }
     }
 
     public CharacterItem getNextCardToDraw(Long adventureId) {

@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
 // TODO refacto this class to call right services...
 public class GMService {
 
-    private final LayerRepository layerRepository;
-    private final LayerItemRepository layerItemRepository;
     private final GMLayerElementRepository layerElementRepository;
     private final CampaignRepository campaignRepository;
     private final CharacterItemRepository characterItemRepository;
@@ -37,9 +35,7 @@ public class GMService {
     private final CharacterService characterService;
 
     @Autowired
-    public GMService(LayerRepository layerRepository,
-                     LayerItemRepository layerItemRepository,
-                     GMLayerElementRepository repository,
+    public GMService(GMLayerElementRepository repository,
                      CampaignRepository campaignRepository,
                      CharacterItemRepository characterItemRepository,
                      DiceRepository diceRepository,
@@ -47,8 +43,6 @@ public class GMService {
                      AdventureRepository adventureRepository,
                      AdventureService adventureService,
                      CharacterService characterService) {
-        this.layerRepository = layerRepository;
-        this.layerItemRepository = layerItemRepository;
         this.layerElementRepository = repository;
         this.campaignRepository = campaignRepository;
         this.characterItemRepository = characterItemRepository;
@@ -175,17 +169,17 @@ public class GMService {
             adventure.getBoards().forEach(boardRepository::delete);
             adventure.getBoards().clear();
 
-            if (Objects.nonNull(adventure.getMjLayer())) {
-                adventure.getMjLayer().getItems().forEach(layerItemRepository::delete);
-                adventure.getMjLayer().getItems().clear();
-                layerRepository.delete(adventure.getMjLayer());
-            }
-
-            if (Objects.nonNull(adventure.getCharacterLayer())) {
-                adventure.getCharacterLayer().getItems().forEach(layerItemRepository::delete);
-                adventure.getCharacterLayer().getItems().clear();
-                layerRepository.delete(adventure.getCharacterLayer());
-            }
+//            if (Objects.nonNull(adventure.getMjLayer())) {
+//                adventure.getMjLayer().getItems().forEach(layerItemRepository::delete);
+//                adventure.getMjLayer().getItems().clear();
+//                layerRepository.delete(adventure.getMjLayer());
+//            }
+//
+//            if (Objects.nonNull(adventure.getCharacterLayer())) {
+//                adventure.getCharacterLayer().getItems().forEach(layerItemRepository::delete);
+//                adventure.getCharacterLayer().getItems().clear();
+//                layerRepository.delete(adventure.getCharacterLayer());
+//            }
 
             adventureRepository.delete(adventure);
         });

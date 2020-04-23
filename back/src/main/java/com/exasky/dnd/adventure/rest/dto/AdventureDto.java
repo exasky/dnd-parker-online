@@ -1,7 +1,6 @@
 package com.exasky.dnd.adventure.rest.dto;
 
 import com.exasky.dnd.adventure.model.Adventure;
-import com.exasky.dnd.adventure.rest.dto.layer.LayerDto;
 
 import java.util.List;
 
@@ -10,8 +9,8 @@ public class AdventureDto {
     private String name;
     private Short level;
     private BoardDto[][] boards;
-    private LayerDto mjLayer;
-    private LayerDto characterLayer;
+//    private LayerDto mjLayer;
+//    private LayerDto characterLayer;
     private List<CharacterDto> characters;
 
     public static Adventure toBo(AdventureDto dto) {
@@ -20,8 +19,8 @@ public class AdventureDto {
         adventure.setName(dto.name);
         adventure.setLevel(dto.level);
         adventure.setBoards(BoardDto.toBo(dto.boards));
-        adventure.setMjLayer(LayerDto.toBo(dto.mjLayer));
-        adventure.setCharacterLayer(LayerDto.toBo(dto.characterLayer));
+//        adventure.setMjLayer(LayerDto.toBo(dto.mjLayer));
+//        adventure.setCharacterLayer(LayerDto.toBo(dto.characterLayer));
 
         return adventure;
     }
@@ -33,8 +32,8 @@ public class AdventureDto {
         dto.setName(bo.getName());
         dto.setLevel(bo.getLevel());
         dto.setBoards(BoardDto.toDto(bo.getBoards()));
-        dto.setMjLayer(LayerDto.toDto(bo.getMjLayer()));
-        dto.setCharacterLayer(LayerDto.toDto(bo.getCharacterLayer()));
+//        dto.setMjLayer(LayerDto.toDto(bo.getMjLayer()));
+//        dto.setCharacterLayer(LayerDto.toDto(bo.getCharacterLayer()));
         dto.setCharacters(CharacterDto.toDto(bo.getCampaign().getCharacters()));
 
         return dto;
@@ -73,21 +72,21 @@ public class AdventureDto {
         this.boards = boards;
     }
 
-    public LayerDto getMjLayer() {
-        return mjLayer;
-    }
-
-    public void setMjLayer(LayerDto mjLayer) {
-        this.mjLayer = mjLayer;
-    }
-
-    public LayerDto getCharacterLayer() {
-        return characterLayer;
-    }
-
-    public void setCharacterLayer(LayerDto characterLayer) {
-        this.characterLayer = characterLayer;
-    }
+//    public LayerDto getMjLayer() {
+//        return mjLayer;
+//    }
+//
+//    public void setMjLayer(LayerDto mjLayer) {
+//        this.mjLayer = mjLayer;
+//    }
+//
+//    public LayerDto getCharacterLayer() {
+//        return characterLayer;
+//    }
+//
+//    public void setCharacterLayer(LayerDto characterLayer) {
+//        this.characterLayer = characterLayer;
+//    }
 
     public List<CharacterDto> getCharacters() {
         return characters;

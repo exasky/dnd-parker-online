@@ -2,7 +2,6 @@ package com.exasky.dnd.adventure.rest;
 
 import com.exasky.dnd.adventure.model.Character;
 import com.exasky.dnd.adventure.rest.dto.*;
-import com.exasky.dnd.adventure.rest.dto.layer.LayerItemDto;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
@@ -56,36 +55,6 @@ public class AdventureRestController {
         return AdventureDto.toDto(this.adventureService.getById(id));
     }
 
-    @PostMapping("/add-layer-item/{adventureId}")
-    public void addLayerItem(@PathVariable Long adventureId, @RequestBody LayerItemDto dto) {
-        LayerItemDto returnDto = LayerItemDto.toDto(this.adventureService.addLayerItem(adventureId, LayerItemDto.toBo(dto)));
-
-        AdventureMessageDto wsDto = new AdventureMessageDto();
-        wsDto.setType(AdventureMessageDto.AdventureMessageType.ADD_LAYER_ITEM);
-        wsDto.setMessage(returnDto);
-        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
-    }
-
-    @PutMapping("/update-layer-item/{adventureId}")
-    public void updateLayerItem(@PathVariable Long adventureId, @RequestBody LayerItemDto dto) {
-        LayerItemDto returnDto = LayerItemDto.toDto(this.adventureService.updateLayerItem(adventureId, LayerItemDto.toBo(dto)));
-
-        AdventureMessageDto wsDto = new AdventureMessageDto();
-        wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_LAYER_ITEM);
-        wsDto.setMessage(returnDto);
-        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
-    }
-
-    @DeleteMapping("/delete-layer-item/{adventureId}/{layerItemId}")
-    public void deleteLayerItem(@PathVariable Long adventureId, @PathVariable Long layerItemId) {
-        this.adventureService.deleteLayerItem(adventureId, layerItemId);
-
-        AdventureMessageDto wsDto = new AdventureMessageDto();
-        wsDto.setType(AdventureMessageDto.AdventureMessageType.REMOVE_LAYER_ITEM);
-        wsDto.setMessage(layerItemId);
-        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
-    }
-
     @GetMapping("/select-character/{adventureId}/{characterId}")
     public void selectCharacter(@PathVariable Long adventureId, @PathVariable Long characterId) {
         AdventureMessageDto wsDto = new AdventureMessageDto();
@@ -108,14 +77,6 @@ public class AdventureRestController {
     public void selectMonster(@PathVariable Long adventureId, @PathVariable Long layerItemId) {
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.SELECT_MONSTER);
-        wsDto.setMessage(layerItemId);
-        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
-    }
-
-    @GetMapping("/show-trap/{adventureId}/{layerItemId}")
-    public void showTrap(@PathVariable Long adventureId, @PathVariable Long layerItemId) {
-        AdventureMessageDto wsDto = new AdventureMessageDto();
-        wsDto.setType(AdventureMessageDto.AdventureMessageType.SHOW_TRAP);
         wsDto.setMessage(layerItemId);
         this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }

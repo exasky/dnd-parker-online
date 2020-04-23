@@ -1,13 +1,14 @@
 package com.exasky.dnd.adventure.rest.dto.layer;
 
-import com.exasky.dnd.adventure.model.layer.LayerItem;
+import com.exasky.dnd.adventure.model.layer.item.LayerItem;
+import com.exasky.dnd.adventure.model.layer.item.SimpleLayerItem;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class LayerItemDto {
+public abstract class LayerItemDto {
     private Long id;
     private Integer positionX;
     private Integer positionY;
@@ -19,14 +20,12 @@ public class LayerItemDto {
                 : dtos.stream().map(LayerItemDto::toBo).collect(Collectors.toList());
     }
 
-    public static LayerItem toBo(LayerItemDto dto) {
-        LayerItem layerItem = new LayerItem(dto.id);
+    public abstract LayerItem toBo();
 
-        layerItem.setPositionX(dto.positionX);
-        layerItem.setPositionY(dto.positionY);
-        layerItem.setLayerElement(LayerElementDto.toBo(dto.element));
-
-        return layerItem;
+    protected void toBo(LayerItem bo) {
+        bo.setPositionX(positionX);
+        bo.setPositionY(positionY);
+        bo.setLayerElement(LayerElementDto.toBo(element));
     }
 
     public static List<LayerItemDto> toDto(List<LayerItem> bos) {
@@ -36,14 +35,15 @@ public class LayerItemDto {
     }
 
     public static LayerItemDto toDto(LayerItem bo) {
-        LayerItemDto dto = new LayerItemDto();
-
-        dto.setId(bo.getId());
-        dto.setPositionX(bo.getPositionX());
-        dto.setPositionY(bo.getPositionY());
-        dto.setElement(LayerElementDto.toDto(bo.getLayerElement()));
-
-        return dto;
+//        LayerItemDto dto = new SimpleLayerItemDto();
+//
+//        dto.setId(bo.getId());
+//        dto.setPositionX(bo.getPositionX());
+//        dto.setPositionY(bo.getPositionY());
+//        dto.setElement(LayerElementDto.toDto(bo.getLayerElement()));
+//
+//        return dto;
+        return null;
     }
 
     // region Getters & setters

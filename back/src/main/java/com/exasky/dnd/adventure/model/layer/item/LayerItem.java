@@ -1,17 +1,19 @@
-package com.exasky.dnd.adventure.model.layer;
+package com.exasky.dnd.adventure.model.layer.item;
+
+import com.exasky.dnd.adventure.model.Adventure;
+import com.exasky.dnd.adventure.model.layer.LayerElement;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "layer_item")
-public class LayerItem {
+@MappedSuperclass
+public abstract class LayerItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "layer_id")
-    private Layer layer;
+    @JoinColumn(name = "adventure_id")
+    private Adventure adventure;
 
     @Column(name = "position_x")
     private Integer positionX;
@@ -35,12 +37,12 @@ public class LayerItem {
         return id;
     }
 
-    public Layer getLayer() {
-        return layer;
+    public Adventure getAdventure() {
+        return adventure;
     }
 
-    public void setLayer(Layer layer) {
-        this.layer = layer;
+    public void setAdventure(Adventure adventure) {
+        this.adventure = adventure;
     }
 
     public Integer getPositionX() {

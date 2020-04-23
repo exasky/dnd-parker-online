@@ -1,6 +1,8 @@
 package com.exasky.dnd.adventure.model;
 
-import com.exasky.dnd.adventure.model.layer.Layer;
+import com.exasky.dnd.adventure.model.layer.item.DoorLayerItem;
+import com.exasky.dnd.adventure.model.layer.item.SimpleLayerItem;
+import com.exasky.dnd.adventure.model.layer.item.TrapLayerItem;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -26,13 +28,14 @@ public class Adventure {
     @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Board> boards = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "mj_layer_id", referencedColumnName = "id")
-    private Layer mjLayer = new Layer();
+    @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<DoorLayerItem> doors = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "character_layer_id", referencedColumnName = "id")
-    private Layer characterLayer = new Layer();
+    @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<TrapLayerItem> traps = new ArrayList<>();
+
+    @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<SimpleLayerItem> otherItems = new ArrayList<>();
 
     public Adventure() {
     }
@@ -79,20 +82,30 @@ public class Adventure {
         this.boards.addAll(boards);
     }
 
-    public Layer getMjLayer() {
-        return mjLayer;
+    public List<DoorLayerItem> getDoors() {
+        return doors;
     }
 
-    public void setMjLayer(Layer mjLayer) {
-        this.mjLayer = mjLayer;
+    public void setDoors(List<DoorLayerItem> doors) {
+        this.doors = doors;
     }
 
-    public Layer getCharacterLayer() {
-        return characterLayer;
+    public void updateDoors(List<DoorLayerItem> doors) {
+        this.doors.clear();
+        this.doors.addAll(doors);
     }
 
-    public void setCharacterLayer(Layer characterLayer) {
-        this.characterLayer = characterLayer;
+    public List<SimpleLayerItem> getOtherItems() {
+        return otherItems;
+    }
+
+    public void setOtherItems(List<SimpleLayerItem> otherItems) {
+        this.otherItems = otherItems;
+    }
+
+    public void updateOtherItems(List<SimpleLayerItem> otherItems) {
+        this.otherItems.clear();
+        this.otherItems.addAll(otherItems);
     }
 
     public Campaign getCampaign() {
