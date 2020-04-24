@@ -539,7 +539,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   updateItem(item: LayerItem, layerIndex = 0) {
     if (!item) return;
-    const dashboardItem = this.dashboard.find(dashboardItem => dashboardItem.id === item.id);
+    const dashboardItem = this.dashboard
+      .find(dashboardItem => dashboardItem.id === item.id && dashboardItem.type === item.element.type);
     if (!dashboardItem) {
       this.addItem(item, layerIndex);
     } else {
