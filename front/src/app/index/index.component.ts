@@ -4,6 +4,7 @@ import {AuthService} from "../login/auth.service";
 import {Router} from "@angular/router";
 import {GmService} from "../adventure/service/gm.service";
 import {SimpleCampaign} from "../adventure/model/campaign";
+import {CampaignService} from "../adventure/service/campaign.service";
 
 @Component({
   selector: 'app-index',
@@ -17,13 +18,14 @@ export class IndexComponent implements OnInit {
 
   constructor(private adventureService: AdventureService,
               private gmService: GmService,
+              private campaignService: CampaignService,
               public authService: AuthService,
               private router: Router) {
   }
 
   ngOnInit(): void {
     if (this.authService.isGM) {
-      this.gmService.getAllCampaigns().subscribe(campaigns => this.campaigns = campaigns);
+      this.campaignService.getAllCampaigns().subscribe(campaigns => this.campaigns = campaigns);
     } else {
       this.adventureService.getCampaignsForCurrentUser().subscribe(campaigns => this.campaigns = campaigns);
     }

@@ -104,6 +104,10 @@ public class AdventureService {
         return newAdventure;
     }
 
+    public void delete(Adventure attachedAdventure) {
+        repository.delete(attachedAdventure);
+    }
+
     public List<Campaign> getCampaignsForCurrentUser() {
         return campaignRepository.findAllForUser(getCurrentUser().getId());
     }

@@ -9,6 +9,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {ToasterService} from "../../../../common/service/toaster.service";
 import {AdventureService} from "../../../service/adventure.service";
 import {MatSelectChange} from "@angular/material/select";
+import {CampaignService} from "../../../service/campaign.service";
 
 @Component({
   selector: 'app-campaign-creator',
@@ -29,6 +30,7 @@ export class CampaignCreatorComponent implements OnInit {
   allCampaigns: SimpleCampaign[];
 
   constructor(private gmService: GmService,
+              private campaignService: CampaignService,
               private adventureService: AdventureService,
               private dialog: MatDialog,
               private toaster: ToasterService,
@@ -38,12 +40,12 @@ export class CampaignCreatorComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.gmService.getAllCampaigns().subscribe(campaigns => this.allCampaigns = campaigns);
+    this.campaignService.getAllCampaigns().subscribe(campaigns => this.allCampaigns = campaigns);
     this.gmService.getAllCharacterItems().subscribe(value => this.allCharacterItems = value);
 
     const id = this.route.snapshot.paramMap.get("id");
     if (id !== null) {
-      this.gmService.getCampaign(id).subscribe(campaign => {
+      this.campaignService.getCampaign(id).subscribe(campaign => {
         this.campaign = campaign;
         this.adventureService.getCharacterTemplates().subscribe(value => {
           this.characterTemplates = value.filter(ct => this.campaign.characters.findIndex(char => char.name === ct.name) === -1);
@@ -94,14 +96,13 @@ export class CampaignCreatorComponent implements OnInit {
 
   copyFrom($event: MatSelectChange) {
     const toCopyCampaignId = $event.value;
-    this.gmService.copyFrom(toCopyCampaignId).subscribe(newCampaign => {
+    this.campaignService.copyFrom(toCopyCampaignId).subscribe(newCampaign => {
       this.campaign = newCampaign;
-
     })
   }
 
   saveCampaign() {
-    this.gmService.saveCampaign(this.campaign).subscribe(newCampaign => {
+    this.campaignService.saveCampaign(this.campaign).subscribe(newCampaign => {
       if (this.campaign.id !== newCampaign.id) {
         this.router.navigate([newCampaign.id], {relativeTo: this.route});
       }
@@ -124,7 +125,7 @@ export class CampaignCreatorComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.gmService.deleteCampaign(this.campaign.id).subscribe(() => {
+        this.campaignService.deleteCampaign(this.campaign.id).subscribe(() => {
           this.toaster.success("Campaign " + this.campaign.name + " deleted !");
           this.router.navigateByUrl('');
         });

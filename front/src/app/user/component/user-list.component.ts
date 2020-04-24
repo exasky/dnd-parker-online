@@ -7,6 +7,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {ConfirmDialogComponent} from "../../common/dialog/confirm-dialog.component";
 import {MatCheckboxChange} from "@angular/material/checkbox/checkbox";
 import {ToasterService} from "../../common/service/toaster.service";
+import {CampaignService} from "../../adventure/service/campaign.service";
 
 @Component({
   selector: 'app-user-list',
@@ -25,6 +26,7 @@ export class UserListComponent implements OnInit {
 
   constructor(private userService: UserService,
               private gmService: GmService,
+              private campaignService: CampaignService,
               private toaster: ToasterService,
               private dialog: MatDialog) {
   }
@@ -32,7 +34,7 @@ export class UserListComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getAll().subscribe(users => this.users = users
       .sort((a, b) => (a.username.toLowerCase() < b.username.toLowerCase()) ? -1 : 1));
-    this.gmService.getAllCampaigns().subscribe(campaigns => {
+    this.campaignService.getAllCampaigns().subscribe(campaigns => {
       this.campaigns = campaigns;
       this.campaigns.forEach(campaign => campaign.characters
         .sort((a, b) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1));

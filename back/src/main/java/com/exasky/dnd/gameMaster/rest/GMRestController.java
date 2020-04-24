@@ -41,49 +41,6 @@ public class GMRestController {
         return CharacterItemDto.toDto(this.gmService.getAllCharacterItems());
     }
 
-    @GetMapping("/campaign")
-    public List<SimpleCampaignDto> getAllCampaigns() {
-        return SimpleCampaignDto.toDto(gmService.getAllCampaigns());
-    }
-
-    @GetMapping("/campaign/copy/{id}")
-    public CreateCampaignDto copyCampaign(@PathVariable Long id) {
-        return CreateCampaignDto.toDto(this.gmService.copyCampaign(id));
-    }
-
-    @GetMapping("/campaign/{id}")
-    public CreateCampaignDto getCampaign(@PathVariable Long id) {
-        return CreateCampaignDto.toDto(gmService.getCampaign(id));
-    }
-
-    @PostMapping("/campaign")
-    public CreateCampaignDto createCampaign(@Valid @RequestBody CreateCampaignDto dto) {
-        return CreateCampaignDto.toDto(this.gmService.createCampaign(CreateCampaignDto.toBo(dto)));
-    }
-
-    @PutMapping("/campaign/{campaignId}")
-    public CreateCampaignDto updateCampaign(@PathVariable Long campaignId, @Valid @RequestBody CreateCampaignDto dto) {
-        Adventure previousCurrentAdventure = this.gmService.getCampaign(campaignId).getCurrentAdventure();
-
-        Campaign updatedCampaign = this.gmService.updateCampaign(campaignId, CreateCampaignDto.toBo(dto));
-
-        if (Objects.nonNull(previousCurrentAdventure)) {
-            AdventureMessageDto wsDto = new AdventureMessageDto();
-            wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_CAMPAIGN);
-            if (Objects.nonNull(updatedCampaign.getCurrentAdventure())) {
-                wsDto.setMessage(AdventureDto.toDto(updatedCampaign.getCurrentAdventure()));
-            }
-            this.messagingTemplate.convertAndSend("/topic/adventure/" + previousCurrentAdventure.getId(), wsDto);
-        }
-
-        return CreateCampaignDto.toDto(updatedCampaign);
-    }
-
-    @DeleteMapping("/campaign/{id}")
-    public void deleteCampaign(@PathVariable Long id) {
-        this.gmService.deleteCampaign(id);
-    }
-
     @GetMapping("/previous-adventure/{adventureId}")
     public void previousAdventure(@PathVariable Long adventureId) {
         AdventureMessageDto dto = new AdventureMessageDto();

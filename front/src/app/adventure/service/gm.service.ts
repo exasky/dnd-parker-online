@@ -24,28 +24,6 @@ export class GmService {
     return this.http.get<CharacterItem[]>(GmService.API_URL + '/character-items');
   }
 
-  getAllCampaigns(): Observable<SimpleCampaign[]> {
-    return this.http.get<SimpleCampaign[]>(GmService.API_URL + '/campaign');
-  }
-
-  getCampaign(id: number | string): Observable<Campaign> {
-    return this.http.get<Campaign>(GmService.API_URL + '/campaign/' + id);
-  }
-
-  copyFrom(id: number | string): Observable<Campaign> {
-    return this.http.get<Campaign>(GmService.API_URL + '/campaign/copy/' + id);
-  }
-
-  saveCampaign(campaign: Campaign): Observable<Campaign> {
-    return campaign.id
-      ? this.http.put<Campaign>(GmService.API_URL + '/campaign/' + campaign.id, campaign)
-      : this.http.post<Campaign>(GmService.API_URL + '/campaign', campaign);
-  }
-
-  deleteCampaign(id: number | string): Observable<void> {
-    return this.http.delete<void>(GmService.API_URL + '/campaign/' + id);
-  }
-
   previousAdventure(adventureId: number | string) {
     return this.http.get(GmService.API_URL + '/previous-adventure/' + adventureId).subscribe(() => {});
   }
