@@ -31,10 +31,12 @@ export class AppComponent implements OnInit {
   switchDarkTheme() {
     if (this.isDarkTheme) {
       this.isDarkTheme = false;
+      this.document.body.classList.add('unicorn-light-theme');
       this.document.body.classList.remove('unicorn-dark-theme');
       localStorage.removeItem('isDark');
     } else {
       this.isDarkTheme = true;
+      this.document.body.classList.remove('unicorn-light-theme');
       this.document.body.classList.add('unicorn-dark-theme');
       localStorage.setItem('isDark', 'Y');
     }
