@@ -90,7 +90,7 @@
                          [disableTooltip]="tooltipDisabled(item.type)"
                          [container]="'body'"
                          #t="ngbTooltip"
-                         [class.selected]="selectedItem && selectedItem.id === item.id"
+                         [class.selected]="selectedItem && selectedItem.id === item.id && selectedItem.type === item.type"
                          (mousedown)="t.close()"
                          (contextmenu)="contextMenu.openMenu($event, item)">
 
@@ -114,15 +114,13 @@
             <div *ngSwitchCase="LayerElementType.CHARACTER"
                  class="adventure-board-item"
                  [class.selected]="selectedCharacterId === item.character.id"
-                 [ngStyle]="{'background-image': 'url(\'assets/character/' + item.name + '-token.jpg\')',
-                              'transform': 'rotate(' + item.rotation + 'deg)'}">
+                 [ngStyle]="{'background-image': 'url(\'assets/character/' + item.name + '-token.jpg\')'}">
             </div>
 
             <div *ngSwitchCase="LayerElementType.MONSTER"
                  class="adventure-board-item"
                  [class.selected]="selectedMonsterId === item.id"
-                 [ngStyle]="{'background-image': 'url(\'assets/monster/' + item.name + '-token.jpg\')',
-                              'transform': 'rotate(' + item.rotation + 'deg)'}">
+                 [ngStyle]="{'background-image': 'url(\'assets/monster/' + item.name + '-token.jpg\')'}">
             </div>
 
             <div *ngSwitchCase="LayerElementType.TRAP">
@@ -130,8 +128,7 @@
                    *ngIf="authService.isGM || item.shown === true || item.deactivated === true"
                    [class.trap-visible]="authService.isGM && item.shown === true"
                    [ngStyle]="{
-                   'background-image': 'url(\'assets/item/' + item.name + '-' + (item.deactivated ? 'deactivated' : 'activated') + '.jpg\')',
-                   'transform': 'rotate(' + item.rotation + 'deg)'
+                   'background-image': 'url(\'assets/item/' + item.name + '-' + (item.deactivated ? 'deactivated' : 'activated') + '.jpg\')'
                    }">
               </div>
             </div>
@@ -139,8 +136,7 @@
             <div *ngSwitchCase="LayerElementType.DOOR">
               <div class="adventure-board-item"
                    [ngStyle]="{
-                   'background-image': 'url(\'assets/item/door-' + item.name + '-' + (item.open ? 'opened' : 'closed') + '.jpg\')',
-                   'transform': 'rotate(' + item.rotation + 'deg)'
+                   'background-image': 'url(\'assets/item/door-' + item.name + '-' + (item.open ? 'opened' : 'closed') + '.jpg\')'
                    }">
               </div>
             </div>
@@ -148,14 +144,12 @@
             <div *ngSwitchCase="LayerElementType.CHEST">
               <div class="adventure-board-item"
                    [class.chest-with-card]="authService.isGM && item.specificCard"
-                   [ngStyle]="{'background-image': 'url(\'assets/item/' + item.name + '\')',
-                              'transform': 'rotate(' + item.rotation + 'deg)'}">
+                   [ngStyle]="{'background-image': 'url(\'assets/item/' + item.name + '\')'}">
               </div>
             </div>
 
             <div *ngSwitchDefault class="adventure-board-item"
-                 [ngStyle]="{'background-image': 'url(\'assets/item/' + item.name + '\')',
-                              'transform': 'rotate(' + item.rotation + 'deg)'}">
+                 [ngStyle]="{'background-image': 'url(\'assets/item/' + item.name + '\')'}">
             </div>
           </gridster-item>
         </gridster>

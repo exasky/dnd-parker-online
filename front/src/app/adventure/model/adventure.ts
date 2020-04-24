@@ -58,7 +58,6 @@ export interface LayerElement {
   type: LayerElementType;
   rowSize: number;
   colSize: number;
-  rotation?: ImageRotation;
   name: string;
 }
 

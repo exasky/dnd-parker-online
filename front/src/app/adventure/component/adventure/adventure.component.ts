@@ -469,7 +469,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   // region Webservice calls to update item
   emptyCellDropCallback(event: MouseEvent, item: GridsterItem) {
     const layerElementId = +(event as any).dataTransfer.getData('text');
-    const elementToAdd = this.addableLayerElements.find(le => le.id === layerElementId);
+    const elementToAdd: LayerElement = this.addableLayerElements.find(le => le.id === layerElementId);
     if (elementToAdd) {
       let itemToPush = {
         ...item,
@@ -478,7 +478,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
         rows: elementToAdd.rowSize,
         layerIndex: this.getLayerIndex(elementToAdd),
         name: elementToAdd.name,
-        rotation: elementToAdd.rotation,
         type: elementToAdd.type
       };
 
@@ -515,7 +514,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
       rows: item.element.rowSize,
       cols: item.element.colSize,
       name: item.element.name,
-      rotation: item.element.rotation,
       type: item.element.type,
       dragEnabled: this.isDragEnabledForItem(item)
     };
@@ -619,7 +617,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
         rowSize: item.rows,
         type: item.type,
         name: item.name,
-        rotation: item.rotation
       }
     };
     switch (baseLayerItem.element.type) {
