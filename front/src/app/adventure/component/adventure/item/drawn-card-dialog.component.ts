@@ -8,7 +8,7 @@ import {AdventureCardService} from "../../../service/adventure-card.service";
 @Component({
   selector: 'app-drawn-card-dialog',
   templateUrl: './drawn-card-dialog.component.html',
-  styleUrls: ['./draw-card-dialog.component.scss']
+  styleUrls: ['./drawn-card-dialog.component.scss']
 })
 export class DrawnCardDialogComponent {
 

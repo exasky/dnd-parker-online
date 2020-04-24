@@ -20,15 +20,15 @@
     À {{data.user.username}}
   </div>
   <button *ngIf="!rollDisabled" mat-raised-button
-          #rollButton
           (click)="rollDices()"
           [disabled]="selectedDices.length === 0">
     Roll dices !
   </button>
   <button mat-raised-button color="accent"
+          *ngIf="authService.isGM"
           class="position-absolute"
           style="right: 0"
-          (click)="dialogRef.close()">
+          (click)="this.close()">
     Close
   </button>
   <div *ngIf="rollDisabled">C'est pas ton tour !</div>

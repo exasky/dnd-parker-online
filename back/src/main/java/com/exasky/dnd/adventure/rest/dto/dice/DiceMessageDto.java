@@ -4,7 +4,8 @@ public class DiceMessageDto {
     public enum DiceMessageType {
         OPEN_DIALOG,
         SELECT_DICES,
-        ROLL_RESULT
+        ROLL_RESULT,
+        CLOSE_DIALOG
     }
 
     private DiceMessageType type;

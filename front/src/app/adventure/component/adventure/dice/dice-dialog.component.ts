@@ -85,4 +85,8 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
   rollDices() {
     this.diceService.rollDices(this.data.adventureId, this.selectedDices.map(dice => dice.id));
   }
+
+  close() {
+    this.diceService.closeDialog(this.data.adventureId);
+  }
 }

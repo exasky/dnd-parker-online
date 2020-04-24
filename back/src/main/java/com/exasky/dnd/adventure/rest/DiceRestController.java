@@ -53,4 +53,11 @@ public class DiceRestController {
 
         this.messagingTemplate.convertAndSend("/topic/dice/" + adventureId, responseDto);
     }
+
+    @GetMapping("/close/{adventureId}")
+    public void closeDialog(@PathVariable Long adventureId) {
+        DiceMessageDto responseDto = new DiceMessageDto();
+        responseDto.setType(DiceMessageDto.DiceMessageType.CLOSE_DIALOG);
+        this.messagingTemplate.convertAndSend("/topic/dice/" + adventureId, responseDto);
+    }
 }

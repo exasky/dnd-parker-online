@@ -21,7 +21,12 @@ export class DiceService {
 
   rollDices(adventureId, diceIds: number[]) {
     // Is it really useful to send dice ids instead of the number of thrown dices ?
-    // Now no, but if we want to generate results from backend, it can be nice to have the ids !
+    // Not now, but if we want to generate results from backend, it can be nice to have the ids !
     this.http.post(DiceService.API_URL + '/roll-dices/' + adventureId, {ids: diceIds}).subscribe();
+  }
+
+
+  closeDialog(adventureId: string) {
+    this.http.get(DiceService.API_URL + '/close/' + adventureId).subscribe();
   }
 }

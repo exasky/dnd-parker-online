@@ -262,17 +262,25 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.diceWSObs = this.diceWS.getObservable(adventureId).subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {
         const diceMessage: DiceMessage = receivedMsg.data;
-        if (diceMessage.type === DiceMessageType.OPEN_DIALOG) {
-          const drawerOpenedSaved = this.actionPanelDrawer.opened;
-          this.disableActions = this.actionPanelDrawer.opened = true;
-          this.dialog.open(DiceDialogComponent, DialogUtils.getDefaultConfig({
-            adventureId,
-            user: receivedMsg.data.message
-          }))
-            .beforeClosed().subscribe(() => {
-            this.disableActions = false;
-            this.actionPanelDrawer.opened = drawerOpenedSaved;
-          });
+        switch (diceMessage.type) {
+          case DiceMessageType.OPEN_DIALOG:
+            const drawerOpenedSaved = this.actionPanelDrawer.opened;
+            this.disableActions = this.actionPanelDrawer.opened = true;
+            this.currentDialog = this.dialog.open(DiceDialogComponent, DialogUtils.getDefaultConfig({
+              adventureId,
+              user: receivedMsg.data.message
+            }));
+            this.currentDialog.afterClosed().subscribe(() => {
+              this.disableActions = false;
+              this.actionPanelDrawer.opened = drawerOpenedSaved;
+            });
+            break;
+          case DiceMessageType.CLOSE_DIALOG:
+            if (this.currentDialog) {
+              this.currentDialog.close();
+              this.currentDialog = null;
+            }
+            break;
         }
       }
     });
