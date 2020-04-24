@@ -1,11 +1,11 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {Adventure, LayerItem} from "../model/adventure";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {SimpleCampaign} from "../model/campaign";
 import {MouseMove} from "../model/adventure-message";
-import {CharacterItem, CharacterTemplate} from "../model/character";
+import {CharacterTemplate} from "../model/character";
 
 @Injectable({
   providedIn: "root"
@@ -41,8 +41,14 @@ export class AdventureService {
     this.http.put(AdventureService.API_URL + '/update-layer-item/' + adventureId, layerItem).subscribe();
   }
 
-  deleteLayerItem(adventureId, layerItemId) {
-    this.http.delete(AdventureService.API_URL + '/delete-layer-item/' + adventureId + '/' + layerItemId).subscribe();
+  deleteLayerItem(adventureId, layerItem: LayerItem) {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      body: layerItem
+    };
+    this.http.delete(AdventureService.API_URL + '/delete-layer-item/' + adventureId, options).subscribe();
   }
 
   selectCharacter(adventureId, characterId) {
@@ -55,9 +61,5 @@ export class AdventureService {
 
   selectMonster(adventureId, layerItemId) {
     this.http.get(AdventureService.API_URL + '/select-monster/' + adventureId + '/' + layerItemId).subscribe();
-  }
-
-  showTrap(adventureId, trapLayerItemId) {
-    return this.http.get(AdventureService.API_URL + '/show-trap/' + adventureId + '/' + trapLayerItemId).subscribe();
   }
 }

@@ -86,18 +86,20 @@ export class ContextMenuComponent {
   openChest(item: LayerGridsterItem) {
     if (item.cardId !== undefined) {
       this.adventureCardService.drawSpecificCard(this.adventureId, item.cardId);
-      this.adventureService.deleteLayerItem(this.adventureId, item.id);
+      // this.adventureService.deleteLayerItem(this.adventureId, item.id);
+      // TODO remove chest only if mj accepted
     } else {
       const currentCharacter = this.characters.find(char => char.userId === this.authService.currentUserValue.id);
       if (currentCharacter) {
         this.adventureCardService.drawCard(this.adventureId, currentCharacter.id);
-        this.adventureService.deleteLayerItem(this.adventureId, item.id);
+        // this.adventureService.deleteLayerItem(this.adventureId, item.id);
+        // TODO remove chest only if mj accepted
       }
     }
   }
 
-  deleteItem(item: GridsterItem) {
-    this.adventureService.deleteLayerItem(this.adventureId, item.id);
+  deleteItem(item: LayerGridsterItem) {
+    this.adventureService.deleteLayerItem(this.adventureId, AdventureComponent.gridsterItemToLayerItem(item));
   }
 
   setChestCard(item: LayerGridsterItem) {
