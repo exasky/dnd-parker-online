@@ -11,6 +11,7 @@ import {
 import {
   Adventure,
   Board,
+  ChestLayerItem,
   DoorLayerItem,
   LayerElement,
   LayerElementType,
@@ -38,7 +39,12 @@ import {MatDrawer} from "@angular/material/sidenav";
 import {AdventureWebsocketService} from "../../../common/service/ws/adventure.websocket.service";
 import {Monster} from "../../model/monster";
 import {AlertMessage, AlertMessageType} from "../../model/alert-message";
-import {DoorLayerGridsterItem, LayerGridsterItem, TrapLayerGridsterItem} from "../../model/layer-gridster-item";
+import {
+  ChestLayerGridsterItem,
+  DoorLayerGridsterItem,
+  LayerGridsterItem,
+  TrapLayerGridsterItem
+} from "../../model/layer-gridster-item";
 import {AudioService} from "../../service/audio.service";
 import {Character} from "../../model/character";
 import {AdventureCardService} from "../../service/adventure-card.service";
@@ -223,11 +229,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
             const fileToPlay: string = message.message;
             this.audioService.playSound('/assets/sound/' + fileToPlay);
             break;
-          case AdventureMessageType.SET_CHEST_CARD:
-            const chestCard: { characterItemId: number; layerItemId: number } = message.message;
-            const chestItem = this.dashboard.find(item => item.id === chestCard.layerItemId);
-            chestItem['cardId'] = chestCard.characterItemId;
-            break;
         }
       }
     });
@@ -337,14 +338,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.dashboard = [];
     this.adventure.traps.forEach(trap => this.updateItem(trap, 0));
     this.adventure.doors.forEach(door => this.updateItem(door, 0));
-    //this.adventure.chests.forEach(door => this.updateItem(door, 0)); // TODO
+    this.adventure.chests.forEach(door => this.updateItem(door, 0));
     this.adventure.otherItems.forEach(item => this.updateItem(item, this.getLayerIndex(item.element)));
-    // this.adventure.mjLayer.items.forEach(mjItem => {
-    //   this.updateItem(mjItem, 0);
-    // });
-    // this.adventure.characterLayer.items.forEach(characterItem => {
-    //   this.updateItem(characterItem, this.getLayerIndex(characterItem.element));
-    // })
   }
 
   stopItemDrag(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
@@ -579,6 +574,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
         trapGridsterItem.shown = trapItem.shown;
         trapGridsterItem.deactivated = trapItem.deactivated;
         break;
+      case LayerElementType.CHEST:
+        const chestItem = layerItem as ChestLayerItem;
+        const chestGridsterItem = dashboardItem as ChestLayerGridsterItem;
+        chestGridsterItem.specificCard = chestItem.specificCard;
+        break;
       default:
         break;
     }
@@ -624,6 +624,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
         const trapLayerItem = item as TrapLayerGridsterItem;
         (baseLayerItem as TrapLayerItem).deactivated = trapLayerItem.deactivated !== undefined ? trapLayerItem.deactivated : false;
         (baseLayerItem as TrapLayerItem).shown = trapLayerItem.shown !== undefined ? trapLayerItem.shown : false;
+        break;
+      case LayerElementType.CHEST:
+        const chestLayerItem = item as ChestLayerGridsterItem;
+        (baseLayerItem as ChestLayerItem).specificCard = chestLayerItem.specificCard;
         break;
       default:
         break;

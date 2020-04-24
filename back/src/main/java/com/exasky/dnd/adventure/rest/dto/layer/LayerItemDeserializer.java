@@ -30,6 +30,8 @@ public class LayerItemDeserializer extends StdDeserializer<LayerItemDto> {
                 return mapper.treeToValue(node, TrapLayerItemDto.class);
             case DOOR:
                 return mapper.treeToValue(node, DoorLayerItemDto.class);
+            case CHEST:
+                return mapper.treeToValue(node, ChestLayerItemDto.class);
             default:
                 return mapper.treeToValue(node, SimpleLayerItemDto.class);
         }

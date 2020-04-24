@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="exasky (generated)" id="1587732235428-2">
+        <createTable tableName="layer_item_chest">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="layer_item_chestPK"/>
+            </column>
+            <column name="position_x" type="INT"/>
+            <column name="position_y" type="INT"/>
+            <column name="adventure_id" type="BIGINT"/>
+            <column name="layer_element_id" type="BIGINT"/>
+            <column name="character_item_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587732235428-3">
+        <addForeignKeyConstraint baseColumnNames="character_item_id" baseTableName="layer_item_chest" constraintName="FKbc4hnhbrn0382chhhmui34pd1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="character_item" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587732235428-4">
+        <addForeignKeyConstraint baseColumnNames="adventure_id" baseTableName="layer_item_chest" constraintName="FKko5ifq52qs3il2ehicbvlmqek" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="adventure" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587732235428-5">
+        <addForeignKeyConstraint baseColumnNames="layer_element_id" baseTableName="layer_item_chest" constraintName="FKs5v4f14rsa6mqn01hjttb4pat" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="layer_element" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

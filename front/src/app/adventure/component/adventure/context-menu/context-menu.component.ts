@@ -1,9 +1,13 @@
 import {Component, Input, ViewChild} from "@angular/core";
 import {MatMenuTrigger} from "@angular/material/menu";
-import {DoorLayerGridsterItem, LayerGridsterItem, TrapLayerGridsterItem} from "../../../model/layer-gridster-item";
+import {
+  ChestLayerGridsterItem,
+  DoorLayerGridsterItem,
+  LayerGridsterItem,
+  TrapLayerGridsterItem
+} from "../../../model/layer-gridster-item";
 import {LayerElement, LayerElementType} from "../../../model/adventure";
 import {AuthService} from "../../../../login/auth.service";
-import {GridsterItem} from "angular-gridster2";
 import {AdventureService} from "../../../service/adventure.service";
 import {GmService} from "../../../service/gm.service";
 import {AdventureComponent} from "../adventure.component";
@@ -83,13 +87,13 @@ export class ContextMenuComponent {
     this.adventureService.updateLayerItem(this.adventureId, AdventureComponent.gridsterItemToLayerItem(item));
   }
 
-  openChest(item: LayerGridsterItem) {
-    if (item.cardId !== undefined) {
-      this.adventureCardService.drawSpecificCard(this.adventureId, item.cardId);
+  openChest(item: ChestLayerGridsterItem) {
+    const currentCharacter = this.characters.find(char => char.userId === this.authService.currentUserValue.id);
+    if (item.specificCard) {
+      this.adventureCardService.drawCard(this.adventureId, currentCharacter.id, item.specificCard.id);
       // this.adventureService.deleteLayerItem(this.adventureId, item.id);
       // TODO remove chest only if mj accepted
     } else {
-      const currentCharacter = this.characters.find(char => char.userId === this.authService.currentUserValue.id);
       if (currentCharacter) {
         this.adventureCardService.drawCard(this.adventureId, currentCharacter.id);
         // this.adventureService.deleteLayerItem(this.adventureId, item.id);
@@ -102,13 +106,11 @@ export class ContextMenuComponent {
     this.adventureService.deleteLayerItem(this.adventureId, AdventureComponent.gridsterItemToLayerItem(item));
   }
 
-  setChestCard(item: LayerGridsterItem) {
+  setChestCard(item: ChestLayerGridsterItem) {
     this.dialog.open(SelectCardDialogComponent, DialogUtils.getDefaultConfig(item['cardId']))
       .afterClosed().subscribe((value: CharacterItem) => {
-      this.adventureCardService.setChestSpecificCard(this.adventureId, {
-        characterItemId: value.id,
-        layerItemId: item.id
-      });
+        item.specificCard = value;
+        this.adventureService.updateLayerItem(this.adventureId, AdventureComponent.gridsterItemToLayerItem(item));
     });
   }
 }

@@ -128,7 +128,8 @@
                 <version>${liquibase.version}</version>
                 <configuration>
                     <driver>com.mysql.cj.jdbc.Driver</driver>
-                    <url>jdbc:mysql://localhost:32781/dnd?useSSL=false&amp;allowPublicKeyRetrieval=true</url>
+<!--                    <url>jdbc:mysql://localhost:32781/dnd?useSSL=false&amp;allowPublicKeyRetrieval=true</url>-->
+                    <url>jdbc:mysql://localhost:33000/dnd?useSSL=false&amp;allowPublicKeyRetrieval=true</url>
                     <username>root</username>
                     <password>root</password>
                     <changeLogFile>${liquibase.folder}/liquibase-changelog-master.xml</changeLogFile>

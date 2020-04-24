@@ -1,5 +1,6 @@
 import {GridsterItem} from "angular-gridster2";
 import {ImageRotation, LayerElementType} from "./adventure";
+import {CharacterItem} from "./character";
 
 export interface LayerGridsterItem extends GridsterItem {
   id?: number;
@@ -17,4 +18,8 @@ export interface TrapLayerGridsterItem extends LayerGridsterItem {
 export interface DoorLayerGridsterItem extends LayerGridsterItem {
   vertical: boolean;
   open: boolean
+}
+
+export interface ChestLayerGridsterItem extends LayerGridsterItem {
+  specificCard: CharacterItem;
 }

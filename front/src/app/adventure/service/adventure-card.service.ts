@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
-import {CharacterItem} from "../model/character";
 
 @Injectable({
   providedIn: "root"
@@ -13,8 +12,8 @@ export class AdventureCardService {
   constructor(private http: HttpClient) {
   }
 
-  drawCard(adventureId, characterId) {
-    return this.http.post(AdventureCardService.API_URL + '/draw-card', {adventureId, characterId}).subscribe();
+  drawCard(adventureId, characterId, characterItemId?) {
+    return this.http.post(AdventureCardService.API_URL + '/draw-card', {adventureId, characterId, characterItemId}).subscribe();
   }
 
   validateDrawnCard(adventureId, characterItemId, validation) {
@@ -23,13 +22,5 @@ export class AdventureCardService {
       characterItemId,
       validation
     }).subscribe();
-  }
-
-  setChestSpecificCard(adventureId: number, chestSpecificCard: { characterItemId: number; layerItemId: number }) {
-    return this.http.post(AdventureCardService.API_URL + '/set-chest-specific-card/' + adventureId, chestSpecificCard).subscribe();
-  }
-
-  drawSpecificCard(adventureId: number, cardId: number) {
-    return this.http.get<CharacterItem>(AdventureCardService.API_URL + '/draw-specific-card/' + adventureId + '/' + cardId).subscribe();
   }
 }

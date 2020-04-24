@@ -147,7 +147,7 @@
 
             <div *ngSwitchCase="LayerElementType.CHEST">
               <div class="adventure-board-item"
-                   [class.chest-with-card]="authService.isGM && item.cardId !== undefined"
+                   [class.chest-with-card]="authService.isGM && item.specificCard"
                    [ngStyle]="{'background-image': 'url(\'assets/item/' + item.name + '\')',
                               'transform': 'rotate(' + item.rotation + 'deg)'}">
               </div>
@@ -172,5 +172,6 @@
 
   <app-context-menu #contextMenu
                     [adventureId]="adventure.id"
+                    [characters]="adventure.characters"
                     [addableLayerElements]="addableLayerElements"></app-context-menu>
 </ng-container>

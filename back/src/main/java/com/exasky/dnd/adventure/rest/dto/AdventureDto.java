@@ -1,6 +1,7 @@
 package com.exasky.dnd.adventure.rest.dto;
 
 import com.exasky.dnd.adventure.model.Adventure;
+import com.exasky.dnd.adventure.rest.dto.layer.ChestLayerItemDto;
 import com.exasky.dnd.adventure.rest.dto.layer.DoorLayerItemDto;
 import com.exasky.dnd.adventure.rest.dto.layer.SimpleLayerItemDto;
 import com.exasky.dnd.adventure.rest.dto.layer.TrapLayerItemDto;
@@ -15,6 +16,7 @@ public class AdventureDto {
 
     private List<TrapLayerItemDto> traps;
     private List<DoorLayerItemDto> doors;
+    private List<ChestLayerItemDto> chests;
     private List<SimpleLayerItemDto> otherItems;
 
     private List<CharacterDto> characters;
@@ -27,6 +29,7 @@ public class AdventureDto {
         adventure.setBoards(BoardDto.toBo(dto.getBoards()));
         adventure.setTraps(TrapLayerItemDto.toBo(dto.getTraps()));
         adventure.setDoors(DoorLayerItemDto.toBo(dto.getDoors()));
+        adventure.setChests(ChestLayerItemDto.toBo(dto.getChests()));
         adventure.setOtherItems(SimpleLayerItemDto.toBo(dto.getOtherItems()));
 
         return adventure;
@@ -41,6 +44,7 @@ public class AdventureDto {
         dto.setBoards(BoardDto.toDto(bo.getBoards()));
         dto.setTraps(TrapLayerItemDto.toDto(bo.getTraps(), new TrapLayerItemDto()));
         dto.setDoors(DoorLayerItemDto.toDto(bo.getDoors(), new DoorLayerItemDto()));
+        dto.setChests(ChestLayerItemDto.toDto(bo.getChests(), new ChestLayerItemDto()));
         dto.setOtherItems(SimpleLayerItemDto.toDto(bo.getOtherItems(), new SimpleLayerItemDto()));
         dto.setCharacters(CharacterDto.toDto(bo.getCampaign().getCharacters()));
 
@@ -94,6 +98,14 @@ public class AdventureDto {
 
     public void setDoors(List<DoorLayerItemDto> doors) {
         this.doors = doors;
+    }
+
+    public List<ChestLayerItemDto> getChests() {
+        return chests;
+    }
+
+    public void setChests(List<ChestLayerItemDto> chests) {
+        this.chests = chests;
     }
 
     public List<SimpleLayerItemDto> getOtherItems() {

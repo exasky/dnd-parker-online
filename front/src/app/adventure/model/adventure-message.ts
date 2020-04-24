@@ -15,7 +15,6 @@ export enum AdventureMessageType {
   SELECT_MONSTER = 'SELECT_MONSTER',
   ALERT = 'ALERT',
   SOUND = 'SOUND',
-  SET_CHEST_CARD = 'SET_CHEST_CARD'
 }
 
 export class MouseMove {

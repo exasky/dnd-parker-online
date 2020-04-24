@@ -5,10 +5,7 @@ import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.adventure.model.Character;
 import com.exasky.dnd.adventure.model.CharacterTemplate;
 import com.exasky.dnd.adventure.model.card.CharacterItem;
-import com.exasky.dnd.adventure.model.layer.item.DoorLayerItem;
-import com.exasky.dnd.adventure.model.layer.item.LayerItem;
-import com.exasky.dnd.adventure.model.layer.item.SimpleLayerItem;
-import com.exasky.dnd.adventure.model.layer.item.TrapLayerItem;
+import com.exasky.dnd.adventure.model.layer.item.*;
 import com.exasky.dnd.adventure.repository.*;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.common.exception.ValidationCheckException;
@@ -93,6 +90,10 @@ public class AdventureService {
                 .collect(Collectors.toList()));
 
         newAdventure.setDoors(toCopy.getDoors().stream()
+                .map(trap -> layerItemService.copy(trap, newAdventure))
+                .collect(Collectors.toList()));
+
+        newAdventure.setChests(toCopy.getChests().stream()
                 .map(trap -> layerItemService.copy(trap, newAdventure))
                 .collect(Collectors.toList()));
 
@@ -184,6 +185,8 @@ public class AdventureService {
             return (List<T>) adv.getTraps();
         } else if (layerItem instanceof DoorLayerItem) {
             return (List<T>) adv.getDoors();
+        } else if (layerItem instanceof ChestLayerItem){
+            return (List<T>) adv.getChests();
         } else {
             throw new RuntimeException("Unable to find service for LayerItem type: " + layerItem.getLayerElement().getType());
         }
@@ -230,8 +233,22 @@ public class AdventureService {
         return availableCards.get(new Random().nextInt(availableCards.size()));
     }
 
+    /**
+     * Does not add the card to the drawn items because the card should be a unique item (like star level items)
+     */
     @PreAuthorize("hasRole('ROLE_GM')")
-    public CharacterItem drawCard(Long adventureId, Long characterItemId) {
+    public CharacterItem drawSpecificCard(Long characterItemId) {
+        Optional<CharacterItem> byId = characterItemRepository.findById(characterItemId);
+
+        if (!byId.isPresent()) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CHARACTER_ITEM.NOT_FOUND);
+        }
+
+        return byId.get();
+    }
+
+    @PreAuthorize("hasRole('ROLE_GM')")
+    public CharacterItem validateDrawnCard(Long adventureId, Long characterItemId) {
         Campaign campaign = campaignRepository.getByAdventureId(adventureId);
 
         if (Objects.isNull(campaign)) {
@@ -250,19 +267,4 @@ public class AdventureService {
 
         return drawnCard;
     }
-
-    /**
-     * Does not add the card to the drawn items because the card should be a unique item (like star level items)
-     */
-    @PreAuthorize("hasRole('ROLE_GM')")
-    public CharacterItem drawSpecificCard(Long characterItemId) {
-        Optional<CharacterItem> byId = characterItemRepository.findById(characterItemId);
-
-        if (!byId.isPresent()) {
-            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CHARACTER_ITEM.NOT_FOUND);
-        }
-
-        return byId.get();
-    }
-
 }

@@ -1,5 +1,6 @@
 package com.exasky.dnd.adventure.model;
 
+import com.exasky.dnd.adventure.model.layer.item.ChestLayerItem;
 import com.exasky.dnd.adventure.model.layer.item.DoorLayerItem;
 import com.exasky.dnd.adventure.model.layer.item.SimpleLayerItem;
 import com.exasky.dnd.adventure.model.layer.item.TrapLayerItem;
@@ -33,6 +34,9 @@ public class Adventure {
 
     @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<TrapLayerItem> traps = new ArrayList<>();
+
+    @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<ChestLayerItem> chests = new ArrayList<>();
 
     @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<SimpleLayerItem> otherItems = new ArrayList<>();
@@ -106,6 +110,19 @@ public class Adventure {
     public void updateTraps(List<TrapLayerItem> traps) {
         this.traps.clear();
         this.traps.addAll(traps);
+    }
+
+    public List<ChestLayerItem> getChests() {
+        return chests;
+    }
+
+    public void setChests(List<ChestLayerItem> chests) {
+        this.chests = chests;
+    }
+
+    public void updateChests(List<ChestLayerItem> chests) {
+        this.chests.clear();
+        this.chests.addAll(chests);
     }
 
     public List<SimpleLayerItem> getOtherItems() {

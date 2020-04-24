@@ -1,14 +1,8 @@
 package com.exasky.dnd.adventure.service;
 
 import com.exasky.dnd.adventure.model.Adventure;
-import com.exasky.dnd.adventure.model.layer.item.DoorLayerItem;
-import com.exasky.dnd.adventure.model.layer.item.LayerItem;
-import com.exasky.dnd.adventure.model.layer.item.SimpleLayerItem;
-import com.exasky.dnd.adventure.model.layer.item.TrapLayerItem;
-import com.exasky.dnd.adventure.service.layer.DoorLayerItemService;
-import com.exasky.dnd.adventure.service.layer.ParentLayerItemService;
-import com.exasky.dnd.adventure.service.layer.SimpleLayerItemService;
-import com.exasky.dnd.adventure.service.layer.TrapLayerItemService;
+import com.exasky.dnd.adventure.model.layer.item.*;
+import com.exasky.dnd.adventure.service.layer.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,13 +15,16 @@ public class BridgeLayerItemService {
     private final SimpleLayerItemService simpleLayerItemService;
     private final DoorLayerItemService doorLayerItemService;
     private final TrapLayerItemService trapLayerItemService;
+    private final ChestLayerItemService chestLayerItemService;
 
     public BridgeLayerItemService(SimpleLayerItemService simpleLayerItemService,
                                   DoorLayerItemService doorLayerItemService,
-                                  TrapLayerItemService trapLayerItemService) {
+                                  TrapLayerItemService trapLayerItemService,
+                                  ChestLayerItemService chestLayerItemService) {
         this.simpleLayerItemService = simpleLayerItemService;
         this.doorLayerItemService = doorLayerItemService;
         this.trapLayerItemService = trapLayerItemService;
+        this.chestLayerItemService = chestLayerItemService;
     }
 
     public <T extends LayerItem> List<T> createOrUpdate(List<T> items, Adventure attachedAdventure) {
@@ -66,6 +63,8 @@ public class BridgeLayerItemService {
             return (S) doorLayerItemService;
         } else if (layerItem instanceof TrapLayerItem) {
             return (S) trapLayerItemService;
+        } else if (layerItem instanceof ChestLayerItem) {
+            return (S) chestLayerItemService;
         } else {
             throw new RuntimeException("Unable to find service for LayerItem type: " + layerItem.getLayerElement().getType());
         }

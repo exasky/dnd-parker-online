@@ -1,17 +1,17 @@
 package com.exasky.dnd.adventure.rest;
 
-import com.exasky.dnd.adventure.rest.dto.ChestSpecificCardDto;
 import com.exasky.dnd.adventure.rest.dto.card.AskDrawCardDto;
 import com.exasky.dnd.adventure.rest.dto.card.CardMessageDto;
 import com.exasky.dnd.adventure.rest.dto.card.DrawnCardDto;
 import com.exasky.dnd.adventure.rest.dto.card.ValidateCardDto;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
-import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
 import com.exasky.dnd.gameMaster.rest.dto.CharacterItemDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 @RestController
 @RequestMapping(Constant.REST_URL + "/adventure")
@@ -34,27 +34,14 @@ public class AdventureCardController {
     @PostMapping("/draw-card")
     public void drawCard(@RequestBody AskDrawCardDto drawCardDto) {
         Long adventureId = drawCardDto.getAdventureId();
-        CharacterItemDto dto = CharacterItemDto.toDto(this.adventureService.getNextCardToDraw(adventureId));
+        CharacterItemDto dto = CharacterItemDto.toDto(
+                Objects.isNull(drawCardDto.getCharacterItemId())
+                        ? this.adventureService.getNextCardToDraw(adventureId)
+                        : this.adventureService.drawSpecificCard(drawCardDto.getCharacterItemId()));
 
         DrawnCardDto drawnCardDto = new DrawnCardDto(drawCardDto.getAdventureId(), drawCardDto.getCharacterId(), dto);
         CardMessageDto messageDto = new CardMessageDto(CardMessageDto.CardMessageType.DRAW_CARD, drawnCardDto);
         this.messagingTemplate.convertAndSend("/topic/drawn-card/" + adventureId, messageDto);
-    }
-
-    @PostMapping("/set-chest-specific-card/{adventureId}")
-    public void setChestSpecificCard(@PathVariable Long adventureId, @RequestBody ChestSpecificCardDto dto) {
-        AdventureMessageDto wsDto = new AdventureMessageDto();
-        wsDto.setType(AdventureMessageDto.AdventureMessageType.SET_CHEST_CARD);
-        wsDto.setMessage(dto);
-
-        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
-    }
-
-    @GetMapping("/draw-specific-card/{adventureId}/{characterItemId}")
-    public void drawSpecificCard(@PathVariable Long adventureId, @PathVariable Long characterItemId) {
-        CharacterItemDto dto = CharacterItemDto.toDto(this.adventureService.drawSpecificCard(characterItemId));
-
-        this.messagingTemplate.convertAndSend("/topic/drawn-card/" + adventureId, dto);
     }
 
     /**
@@ -64,7 +51,7 @@ public class AdventureCardController {
     public void drawCardValidate(@RequestBody ValidateCardDto dto) {
         Long adventureId = dto.getAdventureId();
         if (dto.getValidation()) {
-            adventureService.drawCard(adventureId, dto.getCharacterItemId());
+            adventureService.validateDrawnCard(adventureId, dto.getCharacterItemId());
         }
 
         CardMessageDto message = new CardMessageDto(CardMessageDto.CardMessageType.CLOSE_DIALOG);
