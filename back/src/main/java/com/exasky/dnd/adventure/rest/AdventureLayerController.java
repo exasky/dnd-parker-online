@@ -51,7 +51,7 @@ public class AdventureLayerController {
 
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.REMOVE_LAYER_ITEM);
-        wsDto.setMessage(dto.getId());
+        wsDto.setMessage(dto);
         messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 

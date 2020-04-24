@@ -199,9 +199,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
             this.updateItem(updatedLayerItem, this.getLayerIndex(updatedLayerItem.element));
             break;
           case AdventureMessageType.REMOVE_LAYER_ITEM:
-            const layerItemId = message.message;
-            const itemToRemove = this.dashboard.find(dashboardItem => dashboardItem.id === layerItemId);
-            this.removeItem(itemToRemove);
+            const deletedLayerItem = message.message;
+            this.removeItem(deletedLayerItem);
             break;
           case AdventureMessageType.SELECT_CHARACTER:
             this.selectedCharacterId = message.message;
@@ -492,7 +491,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
       this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gridsterItemToLayerItem(item));
     }
   }
-
   // endregion
 
   private getLayerIndex(element: LayerElement) {
@@ -539,8 +537,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   updateItem(item: LayerItem, layerIndex = 0) {
     if (!item) return;
-    const dashboardItem = this.dashboard
-      .find(dashboardItem => dashboardItem.id === item.id && dashboardItem.type === item.element.type);
+    const dashboardItem = this.findInDashboard(item);
     if (!dashboardItem) {
       this.addItem(item, layerIndex);
     } else {
@@ -555,10 +552,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventureService.selectMonster(this.adventure.id, layerItemId);
   }
 
-  removeItem(item: LayerGridsterItem) {
+  removeItem(item: LayerItem) {
     if (!item) return;
-    this.dashboard.splice(this.dashboard.indexOf(item), 1);
-    if (item.type === LayerElementType.MONSTER) {
+    const dashboardItem = this.findInDashboard(item);
+    this.dashboard.splice(this.dashboard.indexOf(dashboardItem), 1);
+    if (dashboardItem.type === LayerElementType.MONSTER) {
       this.monsters.splice(this.monsters.findIndex(monster => monster.layerItemId === item.id), 1);
     }
   }
@@ -643,5 +641,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   tooltipDisabled(itemType: LayerElementType): boolean {
     return [LayerElementType.CHARACTER, LayerElementType.MONSTER].indexOf(itemType) === -1;
+  }
+
+  private findInDashboard(item: LayerItem) {
+    return this.dashboard.find(ditem => ditem.id === item.id && ditem.type === item.element.type);
   }
 }
