@@ -616,12 +616,14 @@ export class AdventureComponent implements OnInit, OnDestroy {
     };
     switch (baseLayerItem.element.type) {
       case LayerElementType.DOOR:
-        (baseLayerItem as DoorLayerItem).open = (item as DoorLayerGridsterItem).open;
+        const doorLayerItem = item as DoorLayerGridsterItem;
+        (baseLayerItem as DoorLayerItem).open = doorLayerItem.open !== undefined ? doorLayerItem.open : false;
         (baseLayerItem as DoorLayerItem).vertical = item.name === 'simple-vertical';
         break;
       case LayerElementType.TRAP:
-        (baseLayerItem as TrapLayerItem).deactivated = (item as TrapLayerGridsterItem).deactivated;
-        (baseLayerItem as TrapLayerItem).shown = (item as TrapLayerGridsterItem).shown;
+        const trapLayerItem = item as TrapLayerGridsterItem;
+        (baseLayerItem as TrapLayerItem).deactivated = trapLayerItem.deactivated !== undefined ? trapLayerItem.deactivated : false;
+        (baseLayerItem as TrapLayerItem).shown = trapLayerItem.shown !== undefined ? trapLayerItem.shown : false;
         break;
       default:
         break;
