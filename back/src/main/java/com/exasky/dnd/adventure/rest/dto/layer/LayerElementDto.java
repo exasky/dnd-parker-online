@@ -1,6 +1,5 @@
 package com.exasky.dnd.adventure.rest.dto.layer;
 
-import com.exasky.dnd.adventure.model.ImageRotation;
 import com.exasky.dnd.adventure.model.layer.LayerElement;
 import com.exasky.dnd.adventure.model.layer.LayerElementType;
 
@@ -14,8 +13,7 @@ public class LayerElementDto {
     private LayerElementType type;
     private Integer rowSize;
     private Integer colSize;
-    private String icon;
-    private Integer rotation;
+    private String name;
 
     public static LayerElement toBo(LayerElementDto dto) {
         LayerElement bo = new LayerElement(dto.getId());
@@ -23,8 +21,7 @@ public class LayerElementDto {
         bo.setType(dto.getType());
         bo.setRowSize(dto.rowSize);
         bo.setColSize(dto.colSize);
-        bo.setIcon(dto.icon);
-        bo.setRotation(ImageRotation.getImageRotationFromCode(dto.rotation));
+        bo.setName(dto.name);
         bo.setType(dto.type);
 
         return bo;
@@ -43,8 +40,7 @@ public class LayerElementDto {
         dto.setType(bo.getType());
         dto.setRowSize(bo.getRowSize());
         dto.setColSize(bo.getColSize());
-        dto.setIcon(bo.getIcon());
-        dto.setRotation(bo.getRotation().getRotationDegree());
+        dto.setName(bo.getName());
 
         return dto;
     }
@@ -82,20 +78,12 @@ public class LayerElementDto {
         this.colSize = colSize;
     }
 
-    public String getIcon() {
-        return icon;
+    public String getName() {
+        return name;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public Integer getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(Integer rotation) {
-        this.rotation = rotation;
+    public void setName(String name) {
+        this.name = name;
     }
     // endregion
 }

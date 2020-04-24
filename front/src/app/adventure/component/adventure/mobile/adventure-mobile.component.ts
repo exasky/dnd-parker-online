@@ -135,7 +135,7 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
     this.monsters.push({
       layerItemId: item.id,
       hp: 0,
-      name: item.element.icon,
+      name: item.element.name,
       index: monsterIdx
     })
   }

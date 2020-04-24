@@ -64,11 +64,4 @@ public class AdventureLayerController {
     // (or lists of all items displayable for player)
     // (replace Layers in adventure by List<Traps>, List<Trees>, List<Pillar>, ..., List<LayerItem> in case some default objects)
 
-    @GetMapping("/show-trap/{adventureId}/{layerItemId}")
-    public void showTrap(@PathVariable Long adventureId, @PathVariable Long layerItemId) {
-        AdventureMessageDto wsDto = new AdventureMessageDto();
-        wsDto.setType(AdventureMessageDto.AdventureMessageType.SHOW_TRAP);
-        wsDto.setMessage(layerItemId);
-        this.messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
-    }
 }

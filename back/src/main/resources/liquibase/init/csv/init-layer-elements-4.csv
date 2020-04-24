@@ -1,0 +1,4 @@
+id,col_size,row_size,name,type
+25,1,1,trap,TRAP
+26,1,2,simple-vertical,DOOR
+27,2,1,simple-horizontal,DOOR

@@ -1,7 +1,5 @@
 package com.exasky.dnd.adventure.model.layer;
 
-import com.exasky.dnd.adventure.model.ImageRotation;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
@@ -26,11 +24,7 @@ public class LayerElement {
     private Integer colSize;
 
     @Column
-    private String icon;
-
-    @Enumerated(EnumType.STRING)
-    @Column
-    private ImageRotation rotation;
+    private String name;
 
     public LayerElement() {
     }
@@ -67,19 +61,11 @@ public class LayerElement {
         this.colSize = colSize;
     }
 
-    public String getIcon() {
-        return icon;
+    public String getName() {
+        return name;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public ImageRotation getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(ImageRotation rotation) {
-        this.rotation = rotation;
+    public void setName(String name) {
+        this.name = name;
     }
 }

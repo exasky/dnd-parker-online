@@ -8,11 +8,20 @@
                  (dragstart)="dragStartHandler($event, node.item)"
                  [ngSwitch]="node.item.type">
     <img *ngSwitchCase="layerElementType.CHARACTER"
-         style="width: 70px; height: 70px" [src]="'assets/character/' + node.item.icon + '-token.jpg'">
+         class="icon"
+         [src]="'assets/character/' + node.item.name + '-token.jpg'">
     <img *ngSwitchCase="layerElementType.MONSTER"
-         style="width: 70px; height: 70px" [src]="'assets/monster/' + node.item.icon + '-token.jpg'">
+         class="icon"
+         [src]="'assets/monster/' + node.item.name + '-token.jpg'">
+    <img *ngSwitchCase="layerElementType.TRAP"
+         class="icon"
+         [src]="'assets/item/' + node.item.name + '-' + (node.item.deactivated ? 'deactivated' : 'activated') + '.jpg'">
+    <img *ngSwitchCase="layerElementType.DOOR"
+         class="icon"
+         [src]="'assets/item/door-' + node.item.name + '-closed.jpg'">
     <img *ngSwitchDefault
-         style="max-width: 70px; max-height: 70px" [src]="'assets/item/' + node.item.icon">
+         class="icon"
+         [src]="'assets/item/' + node.item.name">
     {{node.name.split('_').join(' ')}}
   </mat-tree-node>
 

@@ -1,6 +1,6 @@
 import {Component, Input, ViewChild} from "@angular/core";
 import {MatMenuTrigger} from "@angular/material/menu";
-import {LayerGridsterItem} from "../../../model/layer-gridster-item";
+import {DoorLayerGridsterItem, LayerGridsterItem, TrapLayerGridsterItem} from "../../../model/layer-gridster-item";
 import {LayerElement, LayerElementType} from "../../../model/adventure";
 import {AuthService} from "../../../../login/auth.service";
 import {GridsterItem} from "angular-gridster2";
@@ -56,49 +56,31 @@ export class ContextMenuComponent {
   }
 
   isItemFlippable(type: LayerElementType) {
-    return type.startsWith('TRAP_') || type.indexOf('_DOOR_') !== -1;
+    return [LayerElementType.TRAP, LayerElementType.DOOR].indexOf(type) !== -1;
   }
 
   flipElement(item: LayerGridsterItem, event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    let nextLayerElement: LayerElement;
     switch (item.type) {
-      case LayerElementType.TRAP_DEACTIVATED:
-        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_ACTIVATED);
+      case LayerElementType.TRAP:
+        const trapGridsterItem = item as TrapLayerGridsterItem;
+        trapGridsterItem.shown = false;
+        trapGridsterItem.deactivated = !trapGridsterItem.deactivated;
         break;
-      case LayerElementType.TRAP_ACTIVATED:
-        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.TRAP_DEACTIVATED);
-        break;
-      case LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED:
-        this.gmService.playSound(this.adventureId, 'door_open_0.mp3');
-        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED);
-        break;
-      case LayerElementType.VERTICAL_DOOR_HORIZONTAL_OPENED:
-        this.gmService.playSound(this.adventureId, 'door_close_0.mp3');
-        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_HORIZONTAL_CLOSED);
-        break;
-      case LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED:
-        this.gmService.playSound(this.adventureId, 'door_open_1.mp3');
-        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED);
-        break;
-      case LayerElementType.VERTICAL_DOOR_VERTICAL_OPENED:
-        this.gmService.playSound(this.adventureId, 'door_close_0.mp3');
-        nextLayerElement = this.addableLayerElements.find(ale => ale.type === LayerElementType.VERTICAL_DOOR_VERTICAL_CLOSED);
+      case LayerElementType.DOOR:
+        const doorGridsterItem = item as DoorLayerGridsterItem;
+        doorGridsterItem.open = !doorGridsterItem.open;
+        this.gmService.playSound(this.adventureId, 'door_' + (doorGridsterItem.open ? 'open' : 'close') + '_0.mp3');
         break;
     }
 
-    if (nextLayerElement) {
-      item.type = nextLayerElement.type;
-      item.elementId = nextLayerElement.id;
-      item.icon = nextLayerElement.icon;
-
-      this.adventureService.updateLayerItem(this.adventureId, AdventureComponent.gridsterItemToLayerItem(item));
-    }
+    this.adventureService.updateLayerItem(this.adventureId, AdventureComponent.gridsterItemToLayerItem(item));
   }
 
-  showTrap(item: GridsterItem) {
-    this.adventureService.showTrap(this.adventureId, item.id);
+  showTrap(item: TrapLayerGridsterItem) {
+    item.shown = true;
+    this.adventureService.updateLayerItem(this.adventureId, AdventureComponent.gridsterItemToLayerItem(item));
   }
 
   openChest(item: LayerGridsterItem) {

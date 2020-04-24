@@ -9,7 +9,7 @@
       <mat-icon>flip</mat-icon>
       Flip
     </button>
-    <button *ngIf="authService.isGM && item.hidden === true" mat-menu-item (click)="showTrap(item)">
+    <button *ngIf="authService.isGM && item.shown === false && item.deactivated === false" mat-menu-item (click)="showTrap(item)">
       <mat-icon>visibility</mat-icon>
       Show trap
     </button>

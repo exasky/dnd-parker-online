@@ -54,7 +54,7 @@ export interface LayerElement {
   rowSize: number;
   colSize: number;
   rotation?: ImageRotation;
-  icon: string;
+  name: string;
 }
 
 export enum LayerElementType {

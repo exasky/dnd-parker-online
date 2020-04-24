@@ -1,5 +1,6 @@
 package com.exasky.dnd.adventure.rest.dto.layer;
 
+import com.exasky.dnd.adventure.model.layer.LayerElementType;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -22,10 +23,13 @@ public class LayerItemDeserializer extends StdDeserializer<LayerItemDto> {
     public LayerItemDto deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         JsonNode node = jp.getCodec().readTree(jp);
         final ObjectMapper mapper = (ObjectMapper)jp.getCodec();
-        switch (node.get("element").get("type").asText()) {
-            case "TRAP":
-//                mapper.readValue(node)
+
+        LayerElementType type = LayerElementType.valueOf(node.get("element").get("type").asText());
+        switch (type) {
+            case TRAP:
                 return mapper.treeToValue(node, TrapLayerItemDto.class);
+            case DOOR:
+                return mapper.treeToValue(node, DoorLayerItemDto.class);
             default:
                 return mapper.treeToValue(node, SimpleLayerItemDto.class);
         }

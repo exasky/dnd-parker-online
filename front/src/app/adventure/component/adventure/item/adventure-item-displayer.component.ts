@@ -21,7 +21,8 @@ interface ExampleFlatNode {
 
 @Component({
   selector: 'app-adventure-item-displayer',
-  templateUrl: './adventure-item-displayer.component.html'
+  templateUrl: './adventure-item-displayer.component.html',
+  styleUrls: ['./adventure-item-displayer.component.scss']
 })
 export class AdventureItemDisplayerComponent {
   @HostBinding('class') cssClass = 'flex-grow d-flex'
@@ -57,7 +58,7 @@ export class AdventureItemDisplayerComponent {
   private filterDataSource(filterText: string) {
     const data: ItemNode[] = [];
     this._layerElements.forEach(layerElement => {
-      if (layerElement.icon.indexOf(filterText) !== -1) {
+      if (layerElement.name.indexOf(filterText) !== -1) {
         let name;
         if (layerElement.type !== LayerElementType.MONSTER && layerElement.type !== LayerElementType.CHARACTER) {
           name = 'Item';
@@ -69,7 +70,7 @@ export class AdventureItemDisplayerComponent {
           groupNode = {name: name, children: []};
           data.push(groupNode);
         }
-        groupNode.children.push({...layerElement, name: layerElement.icon});
+        groupNode.children.push({...layerElement, name: layerElement.name});
       }
     });
     this.dataSource.data = data;

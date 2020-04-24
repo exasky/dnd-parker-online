@@ -38,7 +38,7 @@ import {MatDrawer} from "@angular/material/sidenav";
 import {AdventureWebsocketService} from "../../../common/service/ws/adventure.websocket.service";
 import {Monster} from "../../model/monster";
 import {AlertMessage, AlertMessageType} from "../../model/alert-message";
-import {LayerGridsterItem} from "../../model/layer-gridster-item";
+import {DoorLayerGridsterItem, LayerGridsterItem, TrapLayerGridsterItem} from "../../model/layer-gridster-item";
 import {AudioService} from "../../service/audio.service";
 import {Character} from "../../model/character";
 import {AdventureCardService} from "../../service/adventure-card.service";
@@ -202,11 +202,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
             break;
           case AdventureMessageType.SELECT_MONSTER:
             this.selectedMonsterId = message.message;
-            break;
-          case AdventureMessageType.SHOW_TRAP:
-            const trapLayerItemId = message.message;
-            const trapItem = this.dashboard.find(item => item.id === trapLayerItemId);
-            trapItem['hidden'] = false;
             break;
           case AdventureMessageType.ALERT:
             const alert: AlertMessage = message.message;
@@ -479,7 +474,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
         cols: elementToAdd.colSize,
         rows: elementToAdd.rowSize,
         layerIndex: this.getLayerIndex(elementToAdd),
-        icon: elementToAdd.icon,
+        name: elementToAdd.name,
         rotation: elementToAdd.rotation,
         type: elementToAdd.type
       };
@@ -516,7 +511,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       elementId: item.element.id,
       rows: item.element.rowSize,
       cols: item.element.colSize,
-      icon: item.element.icon,
+      name: item.element.name,
       rotation: item.element.rotation,
       type: item.element.type,
       dragEnabled: this.isDragEnabledForItem(item)
@@ -534,7 +529,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
         this.monsters.push({
           layerItemId: itemToPush.id,
           hp: 0,
-          name: itemToPush.icon,
+          name: itemToPush.name,
           index: monsterIdx
         })
       }
@@ -570,27 +565,22 @@ export class AdventureComponent implements OnInit, OnDestroy {
     switch (layerItem.element.type) {
       case LayerElementType.CHARACTER:
         dashboardItem['character']
-          = this.adventure.characters.find(char => layerItem.element.icon.toLowerCase().indexOf(char.name.toLowerCase()) !== -1);
+          = this.adventure.characters.find(char => layerItem.element.name.toLowerCase().indexOf(char.name.toLowerCase()) !== -1);
         break;
       case LayerElementType.DOOR:
         const doorItem: DoorLayerItem = layerItem as DoorLayerItem;
-        dashboardItem['door'] = {vertical: doorItem.vertical, open: doorItem.open};
+        const doorGridsterItem = dashboardItem as DoorLayerGridsterItem;
+        doorGridsterItem.vertical = doorItem.vertical;
+        doorGridsterItem.open = doorItem.open;
         break;
       case LayerElementType.TRAP:
         const trapItem: TrapLayerItem = layerItem as TrapLayerItem;
-        dashboardItem['trap'] = {shown: trapItem.shown, deactivated: trapItem.deactivated};
+        const trapGridsterItem = dashboardItem as TrapLayerGridsterItem;
+        trapGridsterItem.shown = trapItem.shown;
+        trapGridsterItem.deactivated = trapItem.deactivated;
         break;
       default:
         break;
-    }
-    if (layerItem.element.type === LayerElementType.CHARACTER) {
-      dashboardItem['character']
-        =
-
-    } else if (layerElement.type === LayerElementType.TRAP_ACTIVATED) {
-      dashboardItem['hidden'] = true;
-    } else if (layerElement.type === LayerElementType.TRAP_DEACTIVATED) {
-      dashboardItem['hidden'] = false;
     }
   }
 
@@ -599,7 +589,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
     return user.role === ROLE_GM || (
       item.element.type === LayerElementType.CHARACTER
-      && user.currentCharacters.find(char => char.name.toLowerCase() === item.element.icon.toLowerCase()) !== undefined
+      && user.currentCharacters.find(char => char.name.toLowerCase() === item.element.name.toLowerCase()) !== undefined
     )
   }
 
@@ -611,7 +601,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   static gridsterItemToLayerItem(item: LayerGridsterItem): LayerItem {
-    return {
+    const baseLayerItem: LayerItem = {
       id: item.id,
       positionX: item.x,
       positionY: item.y,
@@ -620,10 +610,23 @@ export class AdventureComponent implements OnInit, OnDestroy {
         colSize: item.cols,
         rowSize: item.rows,
         type: item.type,
-        icon: item.icon,
+        name: item.name,
         rotation: item.rotation
       }
+    };
+    switch (baseLayerItem.element.type) {
+      case LayerElementType.DOOR:
+        (baseLayerItem as DoorLayerItem).open = (item as DoorLayerGridsterItem).open;
+        (baseLayerItem as DoorLayerItem).vertical = item.name === 'simple-vertical';
+        break;
+      case LayerElementType.TRAP:
+        (baseLayerItem as TrapLayerItem).deactivated = (item as TrapLayerGridsterItem).deactivated;
+        (baseLayerItem as TrapLayerItem).shown = (item as TrapLayerGridsterItem).shown;
+        break;
+      default:
+        break;
     }
+    return baseLayerItem
   }
 
   tooltipDisabled(itemType: LayerElementType): boolean {

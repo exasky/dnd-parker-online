@@ -11,7 +11,6 @@ public class AdventureMessageDto {
         REMOVE_LAYER_ITEM,
         SELECT_CHARACTER,
         SELECT_MONSTER,
-        SHOW_TRAP,
         ALERT,
         SOUND,
         SET_CHEST_CARD

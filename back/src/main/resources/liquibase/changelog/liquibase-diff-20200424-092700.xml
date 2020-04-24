@@ -1,0 +1,121 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="exasky (generated)" id="1587720426093-2">
+        <createTable tableName="layer_item_door">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="layer_item_doorPK"/>
+            </column>
+            <column name="position_x" type="INT"/>
+            <column name="position_y" type="INT"/>
+            <column name="open" type="BIT"/>
+            <column name="vertical" type="BIT"/>
+            <column name="adventure_id" type="BIGINT"/>
+            <column name="layer_element_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-3">
+        <createTable tableName="layer_item_simple">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="layer_item_simplePK"/>
+            </column>
+            <column name="position_x" type="INT"/>
+            <column name="position_y" type="INT"/>
+            <column name="adventure_id" type="BIGINT"/>
+            <column name="layer_element_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-4">
+        <createTable tableName="layer_item_trap">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="layer_item_trapPK"/>
+            </column>
+            <column name="position_x" type="INT"/>
+            <column name="position_y" type="INT"/>
+            <column name="deactivated" type="BIT"/>
+            <column name="shown" type="BIT"/>
+            <column name="adventure_id" type="BIGINT"/>
+            <column name="layer_element_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-5">
+        <addForeignKeyConstraint baseColumnNames="adventure_id" baseTableName="layer_item_trap"
+                                 constraintName="FK493n7kpb8hneu65dabn43b764" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="adventure"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-6">
+        <addForeignKeyConstraint baseColumnNames="layer_element_id" baseTableName="layer_item_trap"
+                                 constraintName="FK60p4yjlg96n1pu40sj1xtq0tr" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="layer_element" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-7">
+        <addForeignKeyConstraint baseColumnNames="adventure_id" baseTableName="layer_item_door"
+                                 constraintName="FK795otgtuwowx281x25ve35g3t" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="adventure"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-8">
+        <addForeignKeyConstraint baseColumnNames="layer_element_id" baseTableName="layer_item_simple"
+                                 constraintName="FKef1qy9lkrib7phpe9mawd2l98" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="layer_element" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-9">
+        <addForeignKeyConstraint baseColumnNames="layer_element_id" baseTableName="layer_item_door"
+                                 constraintName="FKkvvbma17pwckr1i413mks9vw3" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="layer_element" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-10">
+        <addForeignKeyConstraint baseColumnNames="adventure_id" baseTableName="layer_item_simple"
+                                 constraintName="FKo5b0r0pv3e9s77l4e5rarwc98" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="adventure"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-11">
+        <dropForeignKeyConstraint baseTableName="layer_item" constraintName="FK14v09p66hqq5mse98m24qj455"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-12">
+        <dropForeignKeyConstraint baseTableName="layer_item" constraintName="FK80824637b8icxw99psp32w05f"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-13">
+        <dropForeignKeyConstraint baseTableName="adventure" constraintName="FKev1apfdpgs7fm9913h2ueqkm1"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-14">
+        <dropForeignKeyConstraint baseTableName="adventure" constraintName="FKl0bbnbnde4ojhuewek67q0ih"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-15">
+        <dropTable tableName="layer"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-16">
+        <dropTable tableName="layer_item"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-17">
+        <dropColumn columnName="character_layer_id" tableName="adventure"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-18">
+        <dropColumn columnName="mj_layer_id" tableName="adventure"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-19">
+        <dropColumn columnName="rotation" tableName="layer_element"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587720426093-20">
+        <renameColumn columnDataType="VARCHAR(255)"
+                      newColumnName="name"
+                      oldColumnName="icon"
+                      tableName="layer_element"/>
+    </changeSet>
+    <changeSet author="exasky" id="1587720426093-21">
+        <customChange class="com.exasky.dnd.liquibase.Liquibase1587720426093"/>
+    </changeSet>
+    <changeSet author="exasky" id="1587720426093-22">
+        <loadUpdateData file="liquibase/init/csv/init-layer-elements-4.csv"
+                        primaryKey="pk_id"
+                        tableName="layer_element">
+        </loadUpdateData>
+    </changeSet>
+</databaseChangeLog>

@@ -5,6 +5,16 @@ export interface LayerGridsterItem extends GridsterItem {
   id?: number;
   elementId: number;
   type: LayerElementType;
-  icon: string;
+  name: string;
   rotation: ImageRotation;
+}
+
+export interface TrapLayerGridsterItem extends LayerGridsterItem {
+  shown: boolean;
+  deactivated: boolean
+}
+
+export interface DoorLayerGridsterItem extends LayerGridsterItem {
+  vertical: boolean;
+  open: boolean
 }
