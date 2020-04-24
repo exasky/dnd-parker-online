@@ -95,6 +95,19 @@ public class Adventure {
         this.doors.addAll(doors);
     }
 
+    public List<TrapLayerItem> getTraps() {
+        return traps;
+    }
+
+    public void setTraps(List<TrapLayerItem> traps) {
+        this.traps = traps;
+    }
+
+    public void updateTraps(List<TrapLayerItem> traps) {
+        this.traps.clear();
+        this.traps.addAll(traps);
+    }
+
     public List<SimpleLayerItem> getOtherItems() {
         return otherItems;
     }

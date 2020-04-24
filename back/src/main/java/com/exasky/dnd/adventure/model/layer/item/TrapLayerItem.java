@@ -9,6 +9,13 @@ public class TrapLayerItem extends LayerItem {
     private Boolean shown;
     private Boolean deactivated;
 
+    public TrapLayerItem() {
+    }
+
+    public TrapLayerItem(Long id) {
+        super(id);
+    }
+
     // region Getters & Setters
 
     public Boolean getShown() {

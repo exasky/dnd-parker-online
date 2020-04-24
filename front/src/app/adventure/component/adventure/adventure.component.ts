@@ -8,7 +8,15 @@ import {
   GridsterItemComponentInterface,
   GridType
 } from "angular-gridster2";
-import {Adventure, Board, LayerElement, LayerElementType, LayerItem} from "../../model/adventure";
+import {
+  Adventure,
+  Board,
+  DoorLayerItem,
+  LayerElement,
+  LayerElementType,
+  LayerItem,
+  TrapLayerItem
+} from "../../model/adventure";
 import {AdventureService} from "../../service/adventure.service";
 import {GmService} from "../../service/gm.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -159,7 +167,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
               });
             } else {
               this.adventure = message.message;
-              this.adventure.characterLayer.items
+              this.adventure.otherItems
                 .filter(layerItem => layerItem.element.type === LayerElementType.CHARACTER)
                 .forEach(layerItem => this.updateItem(layerItem, 1));
             }
@@ -332,12 +340,16 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   private initDashboard() {
     this.dashboard = [];
-    this.adventure.mjLayer.items.forEach(mjItem => {
-      this.updateItem(mjItem, 0);
-    });
-    this.adventure.characterLayer.items.forEach(characterItem => {
-      this.updateItem(characterItem, this.getLayerIndex(characterItem.element));
-    })
+    this.adventure.traps.forEach(trap => this.updateItem(trap, 0));
+    this.adventure.doors.forEach(door => this.updateItem(door, 0));
+    //this.adventure.chests.forEach(door => this.updateItem(door, 0)); // TODO
+    this.adventure.otherItems.forEach(item => this.updateItem(item, this.getLayerIndex(item.element)));
+    // this.adventure.mjLayer.items.forEach(mjItem => {
+    //   this.updateItem(mjItem, 0);
+    // });
+    // this.adventure.characterLayer.items.forEach(characterItem => {
+    //   this.updateItem(characterItem, this.getLayerIndex(characterItem.element));
+    // })
   }
 
   stopItemDrag(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
@@ -509,7 +521,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       type: item.element.type,
       dragEnabled: this.isDragEnabledForItem(item)
     };
-    this.addSpecificToDashboardItem(itemToPush, item.element);
+    this.addSpecificToDashboardItem(itemToPush, item);
     this.dashboard.push(itemToPush);
 
     if (this.selectedItem && this.selectedItem.id === itemToPush.id) {
@@ -554,10 +566,27 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
-  private addSpecificToDashboardItem(dashboardItem: GridsterItem, layerElement: LayerElement) {
-    if (layerElement.type === LayerElementType.CHARACTER) {
+  private addSpecificToDashboardItem(dashboardItem: GridsterItem, layerItem: LayerItem) {
+    switch (layerItem.element.type) {
+      case LayerElementType.CHARACTER:
+        dashboardItem['character']
+          = this.adventure.characters.find(char => layerItem.element.icon.toLowerCase().indexOf(char.name.toLowerCase()) !== -1);
+        break;
+      case LayerElementType.DOOR:
+        const doorItem: DoorLayerItem = layerItem as DoorLayerItem;
+        dashboardItem['door'] = {vertical: doorItem.vertical, open: doorItem.open};
+        break;
+      case LayerElementType.TRAP:
+        const trapItem: TrapLayerItem = layerItem as TrapLayerItem;
+        dashboardItem['trap'] = {shown: trapItem.shown, deactivated: trapItem.deactivated};
+        break;
+      default:
+        break;
+    }
+    if (layerItem.element.type === LayerElementType.CHARACTER) {
       dashboardItem['character']
-        = this.adventure.characters.find(char => layerElement.icon.toLowerCase().indexOf(char.name.toLowerCase()) !== -1);
+        =
+
     } else if (layerElement.type === LayerElementType.TRAP_ACTIVATED) {
       dashboardItem['hidden'] = true;
     } else if (layerElement.type === LayerElementType.TRAP_DEACTIVATED) {

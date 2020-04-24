@@ -6,15 +6,17 @@ export class Adventure {
   level: number;
   // Each row must have same length
   boards: Board[][];
-  mjLayer: Layer;
-  characterLayer: Layer;
+  traps: TrapLayerItem[];
+  doors: DoorLayerItem[];
+  otherItems: LayerItem[];
 
   characters: Character[];
 
   constructor() {
     this.boards = [];
-    this.mjLayer = new Layer();
-    this.characterLayer = new Layer();
+    this.traps = [];
+    this.doors = [];
+    this.otherItems = []
   }
 }
 
@@ -29,16 +31,21 @@ export class Board {
   }
 }
 
-export class Layer {
-  id: number;
-  items: LayerItem[];
-}
-
 export interface LayerItem {
   id?: number;
   positionX: number
   positionY: number;
   element: LayerElement;
+}
+
+export interface TrapLayerItem extends LayerItem {
+  shown: boolean;
+  deactivated: boolean;
+}
+
+export interface DoorLayerItem extends LayerItem {
+  vertical: boolean;
+  open: boolean
 }
 
 export interface LayerElement {
@@ -52,12 +59,8 @@ export interface LayerElement {
 
 export enum LayerElementType {
   CHEST = 'CHEST',
-  VERTICAL_DOOR_VERTICAL_OPENED = 'VERTICAL_DOOR_VERTICAL_OPENED',
-  VERTICAL_DOOR_VERTICAL_CLOSED = 'VERTICAL_DOOR_VERTICAL_CLOSED',
-  VERTICAL_DOOR_HORIZONTAL_OPENED = 'VERTICAL_DOOR_HORIZONTAL_OPENED',
-  VERTICAL_DOOR_HORIZONTAL_CLOSED = 'VERTICAL_DOOR_HORIZONTAL_CLOSED',
-  TRAP_ACTIVATED = 'TRAP_ACTIVATED',
-  TRAP_DEACTIVATED = 'TRAP_DEACTIVATED',
+  DOOR = 'DOOR',
+  TRAP = 'TRAP',
   CHARACTER = 'CHARACTER',
   MONSTER = 'MONSTER',
   TREE = 'TREE',

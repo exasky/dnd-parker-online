@@ -1,50 +1,63 @@
 package com.exasky.dnd.adventure.rest.dto.layer;
 
 import com.exasky.dnd.adventure.model.layer.item.LayerItem;
-import com.exasky.dnd.adventure.model.layer.item.SimpleLayerItem;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class LayerItemDto {
+public abstract class LayerItemDto<DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> {
     private Long id;
     private Integer positionX;
     private Integer positionY;
     private LayerElementDto element;
 
-    public static List<LayerItem> toBo(List<LayerItemDto> dtos) {
+    public static <DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> List<BO> toBo(List<DTO> dtos) {
         return Objects.isNull(dtos)
                 ? new ArrayList<>()
                 : dtos.stream().map(LayerItemDto::toBo).collect(Collectors.toList());
     }
 
-    public abstract LayerItem toBo();
+    public abstract BO createBoInstance(Long id);
 
-    protected void toBo(LayerItem bo) {
-        bo.setPositionX(positionX);
-        bo.setPositionY(positionY);
-        bo.setLayerElement(LayerElementDto.toBo(element));
+    public abstract DTO createDtoInstance();
+
+    public static <DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> BO toBo(DTO dto) {
+        BO bo = dto.createBoInstance(dto.getId());
+
+        bo.setPositionX(dto.getPositionX());
+        bo.setPositionY(dto.getPositionY());
+        bo.setLayerElement(LayerElementDto.toBo(dto.getElement()));
+
+        dto.specific_toBo(bo);
+
+        return bo;
     }
 
-    public static List<LayerItemDto> toDto(List<LayerItem> bos) {
+    public void specific_toBo(BO bo) {}
+
+    public static <DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> List<DTO> toDto(List<BO> bos, DTO obj) {
         return Objects.isNull(bos)
                 ? new ArrayList<>()
-                : bos.stream().map(LayerItemDto::toDto).collect(Collectors.toList());
+                : bos.stream().map(bo -> toDto(bo, obj)).collect(Collectors.toList());
     }
 
-    public static LayerItemDto toDto(LayerItem bo) {
-//        LayerItemDto dto = new SimpleLayerItemDto();
-//
-//        dto.setId(bo.getId());
-//        dto.setPositionX(bo.getPositionX());
-//        dto.setPositionY(bo.getPositionY());
-//        dto.setElement(LayerElementDto.toDto(bo.getLayerElement()));
-//
-//        return dto;
-        return null;
+
+    public static <DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> DTO toDto(BO bo, DTO obj) {
+        DTO dto = obj.createDtoInstance();
+
+        dto.setId(bo.getId());
+        dto.setPositionX(bo.getPositionX());
+        dto.setPositionY(bo.getPositionY());
+        dto.setElement(LayerElementDto.toDto(bo.getLayerElement()));
+
+        obj.specific_toDto(bo, dto);
+
+        return dto;
     }
+
+    protected void specific_toDto(BO bo, DTO dto) {}
 
     // region Getters & setters
     public Long getId() {

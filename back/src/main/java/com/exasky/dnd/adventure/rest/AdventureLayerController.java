@@ -1,5 +1,6 @@
 package com.exasky.dnd.adventure.rest;
 
+import com.exasky.dnd.adventure.model.layer.item.LayerItem;
 import com.exasky.dnd.adventure.rest.dto.layer.LayerItemDto;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
@@ -23,8 +24,9 @@ public class AdventureLayerController {
     }
     
     @PostMapping("/add-layer-item/{adventureId}")
-    public void addLayerItem(@PathVariable Long adventureId, @RequestBody LayerItemDto dto) {
-        LayerItemDto returnDto = LayerItemDto.toDto(adventureService.addLayerItem(adventureId, dto.toBo()));
+    public <DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> void addLayerItem(@PathVariable Long adventureId, @RequestBody DTO dto) {
+        BO newLayerItem = adventureService.addLayerItem(adventureId, LayerItemDto.toBo(dto));
+        DTO returnDto = LayerItemDto.toDto(newLayerItem, dto.createDtoInstance());
 
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.ADD_LAYER_ITEM);
@@ -33,8 +35,9 @@ public class AdventureLayerController {
     }
 
     @PutMapping("/update-layer-item/{adventureId}")
-    public void updateLayerItem(@PathVariable Long adventureId, @RequestBody LayerItemDto dto) {
-        LayerItemDto returnDto = LayerItemDto.toDto(adventureService.updateLayerItem(adventureId, dto.toBo()));
+    public <DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> void updateLayerItem(@PathVariable Long adventureId, @RequestBody DTO dto) {
+        BO updatedLayerItem = adventureService.updateLayerItem(adventureId, LayerItemDto.toBo(dto));
+        DTO returnDto = LayerItemDto.toDto(updatedLayerItem, dto.createDtoInstance());
 
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_LAYER_ITEM);
@@ -42,13 +45,13 @@ public class AdventureLayerController {
         messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 
-    @DeleteMapping("/delete-layer-item/{adventureId}/{layerItemId}")
-    public void deleteLayerItem(@PathVariable Long adventureId, @PathVariable Long layerItemId) {
-        adventureService.deleteLayerItem(adventureId, layerItemId);
+    @DeleteMapping("/delete-layer-item/{adventureId}")
+    public <DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> void deleteLayerItem(@PathVariable Long adventureId, @RequestBody DTO dto) {
+        adventureService.deleteLayerItem(adventureId, LayerItemDto.toBo(dto));
 
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.REMOVE_LAYER_ITEM);
-        wsDto.setMessage(layerItemId);
+        wsDto.setMessage(dto.getId());
         messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 

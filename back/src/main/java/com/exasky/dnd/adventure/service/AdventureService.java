@@ -5,7 +5,10 @@ import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.adventure.model.Character;
 import com.exasky.dnd.adventure.model.CharacterTemplate;
 import com.exasky.dnd.adventure.model.card.CharacterItem;
+import com.exasky.dnd.adventure.model.layer.item.DoorLayerItem;
 import com.exasky.dnd.adventure.model.layer.item.LayerItem;
+import com.exasky.dnd.adventure.model.layer.item.SimpleLayerItem;
+import com.exasky.dnd.adventure.model.layer.item.TrapLayerItem;
 import com.exasky.dnd.adventure.repository.*;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.common.exception.ValidationCheckException;
@@ -29,7 +32,7 @@ public class AdventureService {
     private final CharacterRepository characterRepository;
     private final CharacterItemRepository characterItemRepository;
     private final CharacterTemplateRepository characterTemplateRepository;
-    private final LayerItemService layerItemService;
+    private final BridgeLayerItemService layerItemService;
     private final BoardService boardService;
 
     @Autowired
@@ -38,7 +41,7 @@ public class AdventureService {
                             CharacterRepository characterRepository,
                             CharacterItemRepository characterItemRepository,
                             CharacterTemplateRepository characterTemplateRepository,
-                            LayerItemService layerItemService,
+                            BridgeLayerItemService layerItemService,
                             BoardService boardService) {
         this.repository = repository;
         this.campaignRepository = campaignRepository;
@@ -85,16 +88,17 @@ public class AdventureService {
                 .map(board -> boardService.copy(newAdventure, board))
                 .collect(Collectors.toList()));
 
-        /*newAdventure.getMjLayer().setItems(
-                toCopy.getMjLayer().getItems().stream()
-                        .map(layerItem -> layerItemService.copy(layerItem, newAdventure.getMjLayer()))
-                        .collect(Collectors.toList()));
+        newAdventure.setTraps(toCopy.getTraps().stream()
+                .map(trap -> layerItemService.copy(trap, newAdventure))
+                .collect(Collectors.toList()));
 
-        newAdventure.getCharacterLayer().setItems(
-                toCopy.getCharacterLayer().getItems().stream()
-                        .map(layerItem -> layerItemService.copy(layerItem, newAdventure.getCharacterLayer()))
-                        .collect(Collectors.toList())
-        );*/
+        newAdventure.setDoors(toCopy.getDoors().stream()
+                .map(trap -> layerItemService.copy(trap, newAdventure))
+                .collect(Collectors.toList()));
+
+        newAdventure.setOtherItems(toCopy.getOtherItems().stream()
+                .map(trap -> layerItemService.copy(trap, newAdventure))
+                .collect(Collectors.toList()));
 
         return newAdventure;
     }
@@ -132,66 +136,56 @@ public class AdventureService {
     }
 
     @Transactional
-    public <T extends LayerItem> T addLayerItem(Long id, T toAdd) {
-        Adventure attachedAdventure = repository.getOne(id);
+    public <T extends LayerItem> T addLayerItem(Long adventureId, T toAdd) {
+        Adventure attachedAdventure = repository.getOne(adventureId);
 
-        T orUpdate = layerItemService.createOrUpdate(toAdd, attachedAdventure);
+        T newLayerItem = layerItemService.createOrUpdate(toAdd, attachedAdventure);
         List<T> elementListForLayerItem = getElementListForLayerItem(attachedAdventure, toAdd);
-        elementListForLayerItem.add(orUpdate);
+        elementListForLayerItem.add(newLayerItem);
 
-//        Layer layerToAdd = getLayerForLayerElement(attachedAdventure, toAdd);
-//        LayerItem attachedLayerItem = this.layerItemService.createOrUpdate(toAdd, layerToAdd);
-//        layerToAdd.getItems().add(attachedLayerItem);
-
-//        return attachedLayerItem;
-        return null;
+        return newLayerItem;
     }
 
     @Transactional
-    public LayerItem updateLayerItem(Long adventureId, LayerItem toAdd) {
+    public <T extends LayerItem> T updateLayerItem(Long adventureId, T toAdd) {
         Adventure attachedAdventure = repository.getOne(adventureId);
 
-//        Layer layerToUpdate = getLayerForLayerElement(attachedAdventure, toAdd);
-//        LayerItem attachedLayerItem = this.layerItemService.createOrUpdate(toAdd, layerToUpdate);
-//
-//        LayerItem previousLayerItem = layerToUpdate.getItems().stream()
-//                .filter(layerItem -> layerItem.getId().equals(attachedLayerItem.getId()))
-//                .findFirst()
-//                .orElse(null);
-//
-//        if (Objects.isNull(previousLayerItem)) {
-//            ValidationCheckException.throwError(Constant.Errors.ADVENTURE.LAYER_ITEM_NOT_FOUND);
-//        }
-//
-//        int idx = layerToUpdate.getItems().indexOf(previousLayerItem);
-//        layerToUpdate.getItems().set(idx, attachedLayerItem);
+        T attachedLayerItem = this.layerItemService.createOrUpdate(toAdd, attachedAdventure);
+        List<T> elementListForLayerItem = getElementListForLayerItem(attachedAdventure, toAdd);
+        T prevItem = elementListForLayerItem.stream().filter(item -> item.getId().equals(attachedLayerItem.getId()))
+                .findFirst()
+                .orElse(null);
 
-//        return attachedLayerItem;
-        return null;
+        if (Objects.isNull(prevItem)) {
+            ValidationCheckException.throwError(Constant.Errors.ADVENTURE.LAYER_ITEM_NOT_FOUND);
+        }
+
+        int idx = elementListForLayerItem.indexOf(prevItem);
+        elementListForLayerItem.set(idx, attachedLayerItem);
+
+        return attachedLayerItem;
     }
 
 
     @Transactional
-    public void deleteLayerItem(Long adventureId, Long layerItemId) {
+    public <T extends LayerItem> void deleteLayerItem(Long adventureId, T toDelete) {
         Adventure attachedAdventure = repository.getOne(adventureId);
-        LayerItem attachedLayerItem = this.layerItemService.getOne(layerItemId);
+        T attachedLayerItem = layerItemService.getOne(toDelete);
 
-//        Layer layerForLayerElement = getLayerForLayerElement(attachedAdventure, attachedLayerItem);
-//        layerForLayerElement.getItems().remove(attachedLayerItem);
+        List<T> elementListForLayerItem = getElementListForLayerItem(attachedAdventure, attachedLayerItem);
+        elementListForLayerItem.remove(attachedLayerItem);
     }
 
-//    private Layer getLayerForLayerElement(Adventure attachedAdventure, LayerItem layerItem) {
-//        return Arrays.asList(CHARACTER, MONSTER, TREE, PILLAR).contains(layerItem.getLayerElement().getType())
-//                ? attachedAdventure.getCharacterLayer()
-//                : attachedAdventure.getMjLayer();
-//    }
-
+    @SuppressWarnings("unchecked")
     private <T extends LayerItem> List<T> getElementListForLayerItem(Adventure adv, T layerItem) {
-        switch (layerItem.getLayerElement().getType()) {
-            case DOOR:
-                return (List<T>) adv.getDoors();
-            default:
-                return (List<T>) adv.getOtherItems();
+        if (layerItem instanceof SimpleLayerItem) {
+            return (List<T>) adv.getOtherItems();
+        } else if (layerItem instanceof TrapLayerItem) {
+            return (List<T>) adv.getTraps();
+        } else if (layerItem instanceof DoorLayerItem) {
+            return (List<T>) adv.getDoors();
+        } else {
+            throw new RuntimeException("Unable to find service for LayerItem type: " + layerItem.getLayerElement().getType());
         }
     }
 

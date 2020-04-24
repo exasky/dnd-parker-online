@@ -1,10 +1,16 @@
 package com.exasky.dnd.adventure.rest.dto.layer;
 
-import com.exasky.dnd.adventure.model.layer.item.LayerItem;
+import com.exasky.dnd.adventure.model.layer.item.SimpleLayerItem;
 
-public class SimpleLayerItemDto extends LayerItemDto {
+public class SimpleLayerItemDto extends LayerItemDto<SimpleLayerItemDto, SimpleLayerItem> {
+
     @Override
-    public LayerItem toBo() {
-        return null;
+    public SimpleLayerItem createBoInstance(Long id) {
+        return new SimpleLayerItem(id);
+    }
+
+    @Override
+    public SimpleLayerItemDto createDtoInstance() {
+        return new SimpleLayerItemDto();
     }
 }

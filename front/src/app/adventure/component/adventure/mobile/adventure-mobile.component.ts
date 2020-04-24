@@ -121,7 +121,7 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
   }
 
   private initMonsters() {
-    this.adventure.characterLayer.items
+    this.adventure.otherItems
       .filter(item => item.element.type === LayerElementType.MONSTER)
       .forEach(monsterItem => {
         if (!this.monsters.some(monster => monster.layerItemId === monsterItem.id)) {

@@ -2,19 +2,30 @@ package com.exasky.dnd.adventure.rest.dto.layer;
 
 import com.exasky.dnd.adventure.model.layer.item.TrapLayerItem;
 
-public class TrapLayerItemDto extends LayerItemDto {
+public class TrapLayerItemDto extends LayerItemDto<TrapLayerItemDto, TrapLayerItem> {
     private Boolean shown;
     private Boolean deactivated;
 
     @Override
-    public TrapLayerItem toBo() {
-        TrapLayerItem trapLayerItem = new TrapLayerItem();
+    public TrapLayerItem createBoInstance(Long id) {
+        return new TrapLayerItem(id);
+    }
 
-        trapLayerItem.setShown(shown);
-        trapLayerItem.setDeactivated(deactivated);
-        super.toBo(trapLayerItem);
+    @Override
+    public TrapLayerItemDto createDtoInstance() {
+        return new TrapLayerItemDto();
+    }
 
-        return trapLayerItem;
+    @Override
+    public void specific_toBo(TrapLayerItem trapLayerItem) {
+        trapLayerItem.setShown(getShown());
+        trapLayerItem.setDeactivated(getDeactivated());
+    }
+
+    @Override
+    protected void specific_toDto(TrapLayerItem bo, TrapLayerItemDto dto) {
+        dto.setShown(bo.getShown());
+        dto.setDeactivated(bo.getDeactivated());
     }
 
     // region Getters & Setters

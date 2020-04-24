@@ -13,6 +13,13 @@ public class DoorLayerItem extends LayerItem {
     @Column()
     private Boolean open;
 
+    public DoorLayerItem() {
+    }
+
+    public DoorLayerItem(Long id) {
+        super(id);
+    }
+
     // region Getters & Setters
 
     public Boolean getVertical() {
