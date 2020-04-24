@@ -4,10 +4,13 @@ package com.exasky.dnd.adventure.rest;
 import com.exasky.dnd.adventure.rest.dto.SimpleUserDto;
 import com.exasky.dnd.adventure.rest.dto.dice.DiceMessageDto;
 import com.exasky.dnd.adventure.rest.dto.dice.SelectDicesDto;
+import com.exasky.dnd.adventure.service.DiceService;
 import com.exasky.dnd.common.Constant;
+import com.exasky.dnd.gameMaster.rest.dto.DiceDto;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -17,10 +20,18 @@ import static com.exasky.dnd.common.Utils.getCurrentUser;
 @RequestMapping(Constant.REST_URL + "/dice")
 public class DiceRestController {
 
+    private final DiceService diceService;
     private final SimpMessageSendingOperations messagingTemplate;
 
-    public DiceRestController(SimpMessageSendingOperations messagingTemplate) {
+    public DiceRestController(DiceService diceService,
+                              SimpMessageSendingOperations messagingTemplate) {
+        this.diceService = diceService;
         this.messagingTemplate = messagingTemplate;
+    }
+
+    @GetMapping
+    public List<DiceDto> getAllDices() {
+        return DiceDto.toDto(this.diceService.getAllDices());
     }
 
     @GetMapping("/open/{adventureId}")

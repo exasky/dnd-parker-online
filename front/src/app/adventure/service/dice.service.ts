@@ -1,6 +1,8 @@
 import {Injectable} from "@angular/core";
 import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
+import {Dice} from "../model/dice";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: "root"
@@ -9,6 +11,10 @@ export class DiceService {
   private static API_URL = environment.apiUrl + '/dice';
 
   constructor(private http: HttpClient) {
+  }
+
+  getAllDices(): Observable<Dice[]> {
+    return this.http.get<Dice[]>(DiceService.API_URL);
   }
 
   openDiceDialog(adventureId): void {
@@ -24,7 +30,6 @@ export class DiceService {
     // Not now, but if we want to generate results from backend, it can be nice to have the ids !
     this.http.post(DiceService.API_URL + '/roll-dices/' + adventureId, {ids: diceIds}).subscribe();
   }
-
 
   closeDialog(adventureId: string) {
     this.http.get(DiceService.API_URL + '/close/' + adventureId).subscribe();

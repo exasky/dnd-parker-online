@@ -55,13 +55,4 @@ public class AdventureLayerController {
         messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 
-    // TODO add in adventure List of traps, doors, trees, etc...
-    // class trap { boolean shown; layerItem: LayerItem
-    // class door { boolean open; boolean vertical; layerItem: LayerItem
-    // class tree/pillar layerItem: LayerItem => No need tree/pillar specific class. put them in List<LayerItem> of Adventure
-    // get adventure by id if GM or Player return or not list of elements with of without some items
-    // if trap.shown === false -> player.getAdvId() will return list of layer elements
-    // (or lists of all items displayable for player)
-    // (replace Layers in adventure by List<Traps>, List<Trees>, List<Pillar>, ..., List<LayerItem> in case some default objects)
-
 }

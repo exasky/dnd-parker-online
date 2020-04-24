@@ -2,10 +2,12 @@ package com.exasky.dnd.gameMaster.service;
 
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.Campaign;
-import com.exasky.dnd.adventure.model.Dice;
 import com.exasky.dnd.adventure.model.card.CharacterItem;
 import com.exasky.dnd.adventure.model.layer.LayerElement;
-import com.exasky.dnd.adventure.repository.*;
+import com.exasky.dnd.adventure.repository.AdventureRepository;
+import com.exasky.dnd.adventure.repository.BoardRepository;
+import com.exasky.dnd.adventure.repository.CampaignRepository;
+import com.exasky.dnd.adventure.repository.CharacterItemRepository;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.adventure.service.CharacterService;
 import com.exasky.dnd.common.Constant;
@@ -28,7 +30,6 @@ public class GMService {
     private final GMLayerElementRepository layerElementRepository;
     private final CampaignRepository campaignRepository;
     private final CharacterItemRepository characterItemRepository;
-    private final DiceRepository diceRepository;
     private final BoardRepository boardRepository;
     private final AdventureRepository adventureRepository;
     private final AdventureService adventureService;
@@ -38,7 +39,6 @@ public class GMService {
     public GMService(GMLayerElementRepository repository,
                      CampaignRepository campaignRepository,
                      CharacterItemRepository characterItemRepository,
-                     DiceRepository diceRepository,
                      BoardRepository boardRepository,
                      AdventureRepository adventureRepository,
                      AdventureService adventureService,
@@ -46,7 +46,6 @@ public class GMService {
         this.layerElementRepository = repository;
         this.campaignRepository = campaignRepository;
         this.characterItemRepository = characterItemRepository;
-        this.diceRepository = diceRepository;
         this.boardRepository = boardRepository;
         this.adventureRepository = adventureRepository;
         this.adventureService = adventureService;
@@ -61,10 +60,6 @@ public class GMService {
     @PreAuthorize("hasRole('ROLE_GM')")
     public List<CharacterItem> getAllCharacterItems() {
         return this.characterItemRepository.findAll();
-    }
-
-    public List<Dice> getAllDices() {
-        return this.diceRepository.findAll();
     }
 
     public List<Campaign> getAllCampaigns() {

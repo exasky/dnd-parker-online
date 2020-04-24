@@ -5,7 +5,6 @@ import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {CharacterItem} from "../model/character";
 import {Campaign, SimpleCampaign} from "../model/campaign";
-import {Dice} from "../model/dice";
 import {AlertMessage} from "../model/alert-message";
 
 @Injectable({
@@ -23,10 +22,6 @@ export class GmService {
 
   getAllCharacterItems(): Observable<CharacterItem[]> {
     return this.http.get<CharacterItem[]>(GmService.API_URL + '/character-items');
-  }
-
-  getAllDices(): Observable<Dice[]> {
-    return this.http.get<Dice[]>(GmService.API_URL + '/dices');
   }
 
   getAllCampaigns(): Observable<SimpleCampaign[]> {

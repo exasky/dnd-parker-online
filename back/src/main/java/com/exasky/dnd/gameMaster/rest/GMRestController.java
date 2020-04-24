@@ -41,11 +41,6 @@ public class GMRestController {
         return CharacterItemDto.toDto(this.gmService.getAllCharacterItems());
     }
 
-    @GetMapping("/dices")
-    public List<DiceDto> getAllDices() {
-        return DiceDto.toDto(this.gmService.getAllDices());
-    }
-
     @GetMapping("/campaign")
     public List<SimpleCampaignDto> getAllCampaigns() {
         return SimpleCampaignDto.toDto(gmService.getAllCampaigns());
