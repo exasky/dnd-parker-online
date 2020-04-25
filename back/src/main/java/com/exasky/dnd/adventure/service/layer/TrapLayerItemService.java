@@ -2,14 +2,14 @@ package com.exasky.dnd.adventure.service.layer;
 
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.layer.item.TrapLayerItem;
+import com.exasky.dnd.adventure.repository.LayerElementRepository;
 import com.exasky.dnd.adventure.repository.layer.TrapLayerItemRepository;
-import com.exasky.dnd.adventure.service.LayerElementService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TrapLayerItemService extends ParentLayerItemService<TrapLayerItem> {
-    public TrapLayerItemService(TrapLayerItemRepository trapLayerItemRepository, LayerElementService layerElementService) {
-        super(trapLayerItemRepository, layerElementService);
+    public TrapLayerItemService(TrapLayerItemRepository trapLayerItemRepository, LayerElementRepository repo) {
+        super(trapLayerItemRepository, repo);
     }
 
     @Override

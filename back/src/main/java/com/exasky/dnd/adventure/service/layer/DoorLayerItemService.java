@@ -2,14 +2,14 @@ package com.exasky.dnd.adventure.service.layer;
 
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.layer.item.DoorLayerItem;
+import com.exasky.dnd.adventure.repository.LayerElementRepository;
 import com.exasky.dnd.adventure.repository.layer.DoorLayerItemRepository;
-import com.exasky.dnd.adventure.service.LayerElementService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DoorLayerItemService extends ParentLayerItemService<DoorLayerItem> {
-    public DoorLayerItemService(DoorLayerItemRepository doorLayerItemRepository, LayerElementService layerElementService) {
-        super(doorLayerItemRepository, layerElementService);
+    public DoorLayerItemService(DoorLayerItemRepository doorLayerItemRepository, LayerElementRepository repo) {
+        super(doorLayerItemRepository, repo);
     }
 
     @Override

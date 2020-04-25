@@ -2,9 +2,15 @@ package com.exasky.dnd.adventure.rest.dto.layer;
 
 import com.exasky.dnd.adventure.model.layer.item.TrapLayerItem;
 
+import java.util.List;
+
 public class TrapLayerItemDto extends LayerItemDto<TrapLayerItemDto, TrapLayerItem> {
     private Boolean shown;
     private Boolean deactivated;
+
+    public static List<TrapLayerItemDto> toDto(List<TrapLayerItem> bos) {
+        return TrapLayerItemDto.toDto(bos, TrapLayerItemDto.class);
+    }
 
     @Override
     public TrapLayerItem createBoInstance(Long id) {

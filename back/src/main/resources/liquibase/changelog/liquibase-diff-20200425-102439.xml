@@ -1,0 +1,40 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="exasky (generated)" id="1587810283422-2">
+        <createTable tableName="dnd_monster_template">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="dnd_monster_templatePK"/>
+            </column>
+            <column name="armor" type="SMALLINT"/>
+            <column name="max_hp" type="SMALLINT"/>
+            <column name="move_points" type="SMALLINT"/>
+            <column name="ud_resist" type="SMALLINT"/>
+            <column name="monster_element_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587810283422-3">
+        <createTable tableName="layer_item_monster">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="layer_item_monsterPK"/>
+            </column>
+            <column name="position_x" type="INT"/>
+            <column name="position_y" type="INT"/>
+            <column name="hp" type="SMALLINT"/>
+            <column name="adventure_id" type="BIGINT"/>
+            <column name="layer_element_id" type="BIGINT"/>
+            <column name="monster_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587810283422-4">
+        <addForeignKeyConstraint baseColumnNames="monster_id" baseTableName="layer_item_monster" constraintName="FK6m27pwt0fygd283jsmu9dgfnc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="dnd_monster_template" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587810283422-5">
+        <addForeignKeyConstraint baseColumnNames="monster_element_id" baseTableName="dnd_monster_template" constraintName="FK6tiaa3fq0ddtahee1oqf4takn" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="layer_element" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587810283422-6">
+        <addForeignKeyConstraint baseColumnNames="adventure_id" baseTableName="layer_item_monster" constraintName="FKbcb45xsxjv02pbb5tjamgxor5" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="adventure" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587810283422-7">
+        <addForeignKeyConstraint baseColumnNames="layer_element_id" baseTableName="layer_item_monster" constraintName="FKkye04ky433hoymole6y94icv9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="layer_element" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

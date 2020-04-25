@@ -15,7 +15,7 @@ import {
   DoorLayerItem,
   LayerElement,
   LayerElementType,
-  LayerItem,
+  LayerItem, MonsterLayerItem,
   TrapLayerItem
 } from "../../model/adventure";
 import {AdventureService} from "../../service/adventure.service";
@@ -37,18 +37,19 @@ import {DiceDialogComponent} from "./dice/dice-dialog.component";
 import {DiceWebsocketService} from "../../../common/service/ws/dice.websocket.service";
 import {MatDrawer} from "@angular/material/sidenav";
 import {AdventureWebsocketService} from "../../../common/service/ws/adventure.websocket.service";
-import {Monster} from "../../model/monster";
+import {Monster, MonsterTemplate} from "../../model/monster";
 import {AlertMessage, AlertMessageType} from "../../model/alert-message";
 import {
   ChestLayerGridsterItem,
   DoorLayerGridsterItem,
-  LayerGridsterItem,
+  LayerGridsterItem, MonsterLayerGridsterItem,
   TrapLayerGridsterItem
 } from "../../model/layer-gridster-item";
 import {AudioService} from "../../service/audio.service";
 import {Character} from "../../model/character";
 import {AdventureCardService} from "../../service/adventure-card.service";
 import {CardMessage, CardMessageType} from "../../model/card-message";
+import {AdventureUtils} from "./utils/utils";
 
 @Component({
   selector: 'app-adventure',
@@ -78,6 +79,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   adventure: Adventure;
 
   addableLayerElements: LayerElement[];
+  monsterTemplates: MonsterTemplate[];
 
   options: GridsterConfig;
   dashboard: LayerGridsterItem[];
@@ -117,6 +119,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (this.authService.isGM) {
       this.gmService.getAddableElements().subscribe(elements => this.addableLayerElements = elements);
+      this.gmService.getMonsterTemplates().subscribe(monsters => this.monsterTemplates = monsters);
     }
     const adventureId = this.route.snapshot.paramMap.get("id");
     this.adventureService.getAdventure(adventureId).subscribe(adventure => {
@@ -346,6 +349,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventure.traps.forEach(trap => this.updateItem(trap, 0));
     this.adventure.doors.forEach(door => this.updateItem(door, 0));
     this.adventure.chests.forEach(door => this.updateItem(door, 0));
+    this.adventure.monsters.forEach(monster => this.updateItem(monster, this.getLayerIndex(monster.element)));
     this.adventure.otherItems.forEach(item => this.updateItem(item, this.getLayerIndex(item.element)));
   }
 
@@ -412,7 +416,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       relativePos.bottom = childPos.bottom - parentPos.bottom;
       relativePos.left = childPos.left - parentPos.left;
 
-      let layerItem = AdventureComponent.gridsterItemToLayerItem(this.selectedItem);
+      let layerItem = AdventureUtils.existingGridsterItemToLayerItem(this.selectedItem);
       switch (e.code) {
         case "ArrowLeft":
           relativePos.left -= childPos.width; // position left prediction
@@ -480,7 +484,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
         type: elementToAdd.type
       };
 
-      this.adventureService.addLayerItem(this.adventure.id, AdventureComponent.gridsterItemToLayerItem(itemToPush));
+      this.adventureService.addLayerItem(this.adventure.id, this.newGridsterItemToLayerItem(itemToPush));
     } else {
       console.log('Cannot find element with layerId: ' + layerElementId);
     }
@@ -488,7 +492,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   itemChange(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
     if (this.dashboard.indexOf(item) !== -1) {
-      this.adventureService.updateLayerItem(this.adventure.id, AdventureComponent.gridsterItemToLayerItem(item));
+      this.adventureService.updateLayerItem(this.adventure.id, AdventureUtils.existingGridsterItemToLayerItem(item));
     }
   }
   // endregion
@@ -561,6 +565,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
+  // TODO create utils function (when CHARACTER will be part of layer element list)
   private addSpecificToDashboardItem(dashboardItem: GridsterItem, layerItem: LayerItem) {
     switch (layerItem.element.type) {
       case LayerElementType.CHARACTER:
@@ -584,6 +589,12 @@ export class AdventureComponent implements OnInit, OnDestroy {
         const chestGridsterItem = dashboardItem as ChestLayerGridsterItem;
         chestGridsterItem.specificCard = chestItem.specificCard;
         break;
+      case LayerElementType.MONSTER:
+        const monsterItem = layerItem as MonsterLayerItem;
+        const monsterGridsterItem = dashboardItem as MonsterLayerGridsterItem;
+        monsterGridsterItem.hp = monsterItem.hp;
+        monsterGridsterItem.monster = monsterItem.monster;
+        break;
       default:
         break;
     }
@@ -605,39 +616,28 @@ export class AdventureComponent implements OnInit, OnDestroy {
     return characters.length !== 0 ? characters : [{name: 'MJ', icon: ''}];
   }
 
-  static gridsterItemToLayerItem(item: LayerGridsterItem): LayerItem {
-    const baseLayerItem: LayerItem = {
-      id: item.id,
-      positionX: item.x,
-      positionY: item.y,
-      element: {
-        id: item.elementId,
-        colSize: item.cols,
-        rowSize: item.rows,
-        type: item.type,
-        name: item.name,
-      }
-    };
+  newGridsterItemToLayerItem(item: LayerGridsterItem): LayerItem {
+    const baseLayerItem = AdventureUtils.baseGridsterItemToLayerItem(item);
     switch (baseLayerItem.element.type) {
       case LayerElementType.DOOR:
-        const doorLayerItem = item as DoorLayerGridsterItem;
-        (baseLayerItem as DoorLayerItem).open = doorLayerItem.open !== undefined ? doorLayerItem.open : false;
+        (baseLayerItem as DoorLayerItem).open = false;
         (baseLayerItem as DoorLayerItem).vertical = item.name === 'simple-vertical';
         break;
       case LayerElementType.TRAP:
-        const trapLayerItem = item as TrapLayerGridsterItem;
-        (baseLayerItem as TrapLayerItem).deactivated = trapLayerItem.deactivated !== undefined ? trapLayerItem.deactivated : false;
-        (baseLayerItem as TrapLayerItem).shown = trapLayerItem.shown !== undefined ? trapLayerItem.shown : false;
+        (baseLayerItem as TrapLayerItem).deactivated = false;
+        (baseLayerItem as TrapLayerItem).shown = false;
         break;
-      case LayerElementType.CHEST:
-        const chestLayerItem = item as ChestLayerGridsterItem;
-        (baseLayerItem as ChestLayerItem).specificCard = chestLayerItem.specificCard;
+      case LayerElementType.MONSTER:
+        (baseLayerItem as MonsterLayerItem).monster = this.monsterTemplates.find(mt => mt.element.id === item.elementId);
+        (baseLayerItem as MonsterLayerItem).hp = (baseLayerItem as MonsterLayerItem).monster.maxHp;
         break;
       default:
         break;
     }
     return baseLayerItem
   }
+
+
 
   tooltipDisabled(itemType: LayerElementType): boolean {
     return [LayerElementType.CHARACTER, LayerElementType.MONSTER].indexOf(itemType) === -1;

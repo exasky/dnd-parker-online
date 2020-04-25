@@ -1,9 +1,6 @@
 package com.exasky.dnd.adventure.model;
 
-import com.exasky.dnd.adventure.model.layer.item.ChestLayerItem;
-import com.exasky.dnd.adventure.model.layer.item.DoorLayerItem;
-import com.exasky.dnd.adventure.model.layer.item.SimpleLayerItem;
-import com.exasky.dnd.adventure.model.layer.item.TrapLayerItem;
+import com.exasky.dnd.adventure.model.layer.item.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -37,6 +34,9 @@ public class Adventure {
 
     @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<ChestLayerItem> chests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<MonsterLayerItem> monsters = new ArrayList<>();
 
     @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<SimpleLayerItem> otherItems = new ArrayList<>();
@@ -94,22 +94,12 @@ public class Adventure {
         this.doors = doors;
     }
 
-    public void updateDoors(List<DoorLayerItem> doors) {
-        this.doors.clear();
-        this.doors.addAll(doors);
-    }
-
     public List<TrapLayerItem> getTraps() {
         return traps;
     }
 
     public void setTraps(List<TrapLayerItem> traps) {
         this.traps = traps;
-    }
-
-    public void updateTraps(List<TrapLayerItem> traps) {
-        this.traps.clear();
-        this.traps.addAll(traps);
     }
 
     public List<ChestLayerItem> getChests() {
@@ -120,9 +110,12 @@ public class Adventure {
         this.chests = chests;
     }
 
-    public void updateChests(List<ChestLayerItem> chests) {
-        this.chests.clear();
-        this.chests.addAll(chests);
+    public List<MonsterLayerItem> getMonsters() {
+        return monsters;
+    }
+
+    public void setMonsters(List<MonsterLayerItem> monsters) {
+        this.monsters = monsters;
     }
 
     public List<SimpleLayerItem> getOtherItems() {
@@ -131,11 +124,6 @@ public class Adventure {
 
     public void setOtherItems(List<SimpleLayerItem> otherItems) {
         this.otherItems = otherItems;
-    }
-
-    public void updateOtherItems(List<SimpleLayerItem> otherItems) {
-        this.otherItems.clear();
-        this.otherItems.addAll(otherItems);
     }
 
     public Campaign getCampaign() {

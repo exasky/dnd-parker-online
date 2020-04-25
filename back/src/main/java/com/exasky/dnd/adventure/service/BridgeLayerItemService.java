@@ -17,15 +17,19 @@ public class BridgeLayerItemService {
     private final DoorLayerItemService doorLayerItemService;
     private final TrapLayerItemService trapLayerItemService;
     private final ChestLayerItemService chestLayerItemService;
+    private final MonsterLayerItemService monsterLayerItemService;
+
 
     public BridgeLayerItemService(SimpleLayerItemService simpleLayerItemService,
                                   DoorLayerItemService doorLayerItemService,
                                   TrapLayerItemService trapLayerItemService,
-                                  ChestLayerItemService chestLayerItemService) {
+                                  ChestLayerItemService chestLayerItemService,
+                                  MonsterLayerItemService monsterLayerItemService) {
         this.simpleLayerItemService = simpleLayerItemService;
         this.doorLayerItemService = doorLayerItemService;
         this.trapLayerItemService = trapLayerItemService;
         this.chestLayerItemService = chestLayerItemService;
+        this.monsterLayerItemService = monsterLayerItemService;
     }
 
     public <T extends LayerItem> List<T> createOrUpdate(List<T> items, Adventure attachedAdventure) {
@@ -71,6 +75,8 @@ public class BridgeLayerItemService {
                 return (S) doorLayerItemService;
             case TRAP:
                 return (S) trapLayerItemService;
+            case MONSTER:
+                return (S) monsterLayerItemService;
             default:
                 return (S) simpleLayerItemService;
         }

@@ -4,9 +4,11 @@ import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.adventure.model.card.CharacterItem;
 import com.exasky.dnd.adventure.model.layer.LayerElement;
+import com.exasky.dnd.adventure.model.template.MonsterTemplate;
 import com.exasky.dnd.adventure.repository.CharacterItemRepository;
+import com.exasky.dnd.adventure.repository.LayerElementRepository;
 import com.exasky.dnd.adventure.service.AdventureService;
-import com.exasky.dnd.gameMaster.repository.GMLayerElementRepository;
+import com.exasky.dnd.gameMaster.repository.MonsterTemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -14,30 +16,37 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@PreAuthorize("hasRole('ROLE_GM')")
 @Service
 public class GMService {
 
-    private final GMLayerElementRepository layerElementRepository;
+    private final LayerElementRepository layerElementRepository;
     private final CharacterItemRepository characterItemRepository;
+    private final MonsterTemplateRepository monsterTemplateRepository;
     private final AdventureService adventureService;
 
     @Autowired
-    public GMService(GMLayerElementRepository repository,
+    public GMService(LayerElementRepository repository,
                      CharacterItemRepository characterItemRepository,
+                     MonsterTemplateRepository monsterTemplateRepository,
                      AdventureService adventureService) {
         this.layerElementRepository = repository;
         this.characterItemRepository = characterItemRepository;
+        this.monsterTemplateRepository = monsterTemplateRepository;
         this.adventureService = adventureService;
     }
 
-    @PreAuthorize("hasRole('ROLE_GM')")
+
     public List<LayerElement> getAddableElements() {
-        return this.layerElementRepository.findAll();
+        return layerElementRepository.findAll();
     }
 
-    @PreAuthorize("hasRole('ROLE_GM')")
     public List<CharacterItem> getAllCharacterItems() {
-        return this.characterItemRepository.findAll();
+        return characterItemRepository.findAll();
+    }
+
+    public List<MonsterTemplate> getMonsterTemplates() {
+        return monsterTemplateRepository.findAll();
     }
 
     @Transactional

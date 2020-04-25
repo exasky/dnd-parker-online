@@ -2,7 +2,6 @@ package com.exasky.dnd.adventure.rest.dto.layer;
 
 import com.exasky.dnd.adventure.model.layer.LayerElementType;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +9,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 
+@SuppressWarnings("rawtypes")
 public class LayerItemDeserializer extends StdDeserializer<LayerItemDto> {
     public LayerItemDeserializer() {
         this(null);
@@ -20,7 +20,7 @@ public class LayerItemDeserializer extends StdDeserializer<LayerItemDto> {
     }
 
     @Override
-    public LayerItemDto deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public LayerItemDto deserialize(JsonParser jp, DeserializationContext ctx) throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
         final ObjectMapper mapper = (ObjectMapper)jp.getCodec();
 
@@ -32,6 +32,8 @@ public class LayerItemDeserializer extends StdDeserializer<LayerItemDto> {
                 return mapper.treeToValue(node, DoorLayerItemDto.class);
             case CHEST:
                 return mapper.treeToValue(node, ChestLayerItemDto.class);
+            case MONSTER:
+                return mapper.treeToValue(node, MonsterLayerItemDto.class);
             default:
                 return mapper.treeToValue(node, SimpleLayerItemDto.class);
         }

@@ -19,10 +19,9 @@ public class LayerElementDto {
         LayerElement bo = new LayerElement(dto.getId());
 
         bo.setType(dto.getType());
-        bo.setRowSize(dto.rowSize);
-        bo.setColSize(dto.colSize);
-        bo.setName(dto.name);
-        bo.setType(dto.type);
+        bo.setRowSize(dto.getRowSize());
+        bo.setColSize(dto.getColSize());
+        bo.setName(dto.getName());
 
         return bo;
     }

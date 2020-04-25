@@ -1,6 +1,6 @@
-package com.exasky.dnd.adventure.rest.dto;
+package com.exasky.dnd.adventure.rest.dto.template;
 
-import com.exasky.dnd.adventure.model.CharacterTemplate;
+import com.exasky.dnd.adventure.model.template.CharacterTemplate;
 
 import java.util.ArrayList;
 import java.util.List;

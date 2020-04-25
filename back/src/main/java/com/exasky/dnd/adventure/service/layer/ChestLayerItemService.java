@@ -2,14 +2,14 @@ package com.exasky.dnd.adventure.service.layer;
 
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.layer.item.ChestLayerItem;
+import com.exasky.dnd.adventure.repository.LayerElementRepository;
 import com.exasky.dnd.adventure.repository.layer.ChestLayerItemRepository;
-import com.exasky.dnd.adventure.service.LayerElementService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ChestLayerItemService extends ParentLayerItemService<ChestLayerItem> {
-    public ChestLayerItemService(ChestLayerItemRepository chestLayerItemRepository, LayerElementService layerElementService) {
-        super(chestLayerItemRepository, layerElementService);
+    public ChestLayerItemService(ChestLayerItemRepository chestLayerItemRepository, LayerElementRepository repo) {
+        super(chestLayerItemRepository, repo);
     }
 
     @Override

@@ -3,10 +3,15 @@ package com.exasky.dnd.adventure.rest.dto.layer;
 import com.exasky.dnd.adventure.model.layer.item.ChestLayerItem;
 import com.exasky.dnd.gameMaster.rest.dto.CharacterItemDto;
 
+import java.util.List;
 import java.util.Objects;
 
 public class ChestLayerItemDto extends LayerItemDto<ChestLayerItemDto, ChestLayerItem> {
     private CharacterItemDto specificCard;
+
+    public static List<ChestLayerItemDto> toDto(List<ChestLayerItem> bos) {
+        return ChestLayerItemDto.toDto(bos, ChestLayerItemDto.class);
+    }
 
     @Override
     public ChestLayerItem createBoInstance(Long id) {

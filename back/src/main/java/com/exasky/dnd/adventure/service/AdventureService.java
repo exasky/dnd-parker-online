@@ -3,7 +3,7 @@ package com.exasky.dnd.adventure.service;
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.adventure.model.Character;
-import com.exasky.dnd.adventure.model.CharacterTemplate;
+import com.exasky.dnd.adventure.model.template.CharacterTemplate;
 import com.exasky.dnd.adventure.model.card.CharacterItem;
 import com.exasky.dnd.adventure.model.layer.item.*;
 import com.exasky.dnd.adventure.repository.*;
@@ -85,6 +85,7 @@ public class AdventureService {
         newAdventure.setTraps(layerItemService.copy(toCopy.getTraps(), newAdventure));
         newAdventure.setDoors(layerItemService.copy(toCopy.getDoors(), newAdventure));
         newAdventure.setChests(layerItemService.copy(toCopy.getChests(), newAdventure));
+        newAdventure.setMonsters(layerItemService.copy(toCopy.getMonsters(), newAdventure));
         newAdventure.setOtherItems(layerItemService.copy(toCopy.getOtherItems(), newAdventure));
 
         return newAdventure;
@@ -176,6 +177,8 @@ public class AdventureService {
                 return (List<T>) adv.getDoors();
             case CHEST:
                 return (List<T>) adv.getChests();
+            case MONSTER:
+                return (List<T>) adv.getMonsters();
             default:
                 return (List<T>) adv.getOtherItems();
         }

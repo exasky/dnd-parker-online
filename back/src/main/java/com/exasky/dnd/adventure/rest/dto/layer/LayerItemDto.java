@@ -1,13 +1,18 @@
 package com.exasky.dnd.adventure.rest.dto.layer;
 
 import com.exasky.dnd.adventure.model.layer.item.LayerItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public abstract class LayerItemDto<DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LayerItemDto.class);
+
     private Long id;
     private Integer positionX;
     private Integer positionY;
@@ -35,29 +40,36 @@ public abstract class LayerItemDto<DTO extends LayerItemDto<DTO, BO>, BO extends
         return bo;
     }
 
-    public void specific_toBo(BO bo) {}
+    public void specific_toBo(BO bo) {
+    }
 
-    public static <DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> List<DTO> toDto(List<BO> bos, DTO obj) {
+    protected static <DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> List<DTO> toDto(List<BO> bos, Class<DTO> obj) {
         return Objects.isNull(bos)
                 ? new ArrayList<>()
                 : bos.stream().map(bo -> toDto(bo, obj)).collect(Collectors.toList());
     }
 
 
-    public static <DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> DTO toDto(BO bo, DTO obj) {
-        DTO dto = obj.createDtoInstance();
+    public static <DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> DTO toDto(BO bo, Class<DTO> obj) {
+        DTO dto = null;
+        try {
+            dto = obj.newInstance();
 
-        dto.setId(bo.getId());
-        dto.setPositionX(bo.getPositionX());
-        dto.setPositionY(bo.getPositionY());
-        dto.setElement(LayerElementDto.toDto(bo.getLayerElement()));
+            dto.setId(bo.getId());
+            dto.setPositionX(bo.getPositionX());
+            dto.setPositionY(bo.getPositionY());
+            dto.setElement(LayerElementDto.toDto(bo.getLayerElement()));
 
-        obj.specific_toDto(bo, dto);
+            dto.specific_toDto(bo, dto);
+        } catch (InstantiationException | IllegalAccessException e) {
+            LOGGER.error("Cannot create instance of " + obj.getName(), e);
+        }
 
         return dto;
     }
 
-    protected void specific_toDto(BO bo, DTO dto) {}
+    protected void specific_toDto(BO bo, DTO dto) {
+    }
 
     // region Getters & setters
     public Long getId() {

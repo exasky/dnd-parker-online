@@ -2,6 +2,7 @@ package com.exasky.dnd.adventure.rest;
 
 import com.exasky.dnd.adventure.model.Character;
 import com.exasky.dnd.adventure.rest.dto.*;
+import com.exasky.dnd.adventure.rest.dto.template.CharacterTemplateDto;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;

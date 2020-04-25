@@ -1,4 +1,5 @@
 import {Character, CharacterItem} from "./character";
+import {MonsterTemplate} from "./monster";
 
 export class Adventure {
   id: number;
@@ -9,6 +10,7 @@ export class Adventure {
   traps: TrapLayerItem[];
   doors: DoorLayerItem[];
   chests: ChestLayerItem[];
+  monsters: MonsterLayerItem[];
   otherItems: LayerItem[];
 
   characters: Character[];
@@ -51,6 +53,11 @@ export interface DoorLayerItem extends LayerItem {
 
 export interface ChestLayerItem extends LayerItem {
   specificCard: CharacterItem;
+}
+
+export interface MonsterLayerItem extends LayerItem {
+  hp: number;
+  monster: MonsterTemplate;
 }
 
 export interface LayerElement {

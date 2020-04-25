@@ -1,4 +1,4 @@
-package com.exasky.dnd.adventure.model;
+package com.exasky.dnd.adventure.model.template;
 
 import javax.persistence.*;
 

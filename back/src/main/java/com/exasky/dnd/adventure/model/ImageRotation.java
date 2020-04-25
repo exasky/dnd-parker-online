@@ -3,7 +3,7 @@ package com.exasky.dnd.adventure.model;
 public enum ImageRotation {
     NONE(0), RIGHT(90), LEFT(-90), DOWN(180);
 
-    private int rotationDegree;
+    private final int rotationDegree;
 
     ImageRotation(int rotationDegree) {
         this.rotationDegree = rotationDegree;

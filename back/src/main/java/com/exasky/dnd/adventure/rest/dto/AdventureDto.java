@@ -1,10 +1,7 @@
 package com.exasky.dnd.adventure.rest.dto;
 
 import com.exasky.dnd.adventure.model.Adventure;
-import com.exasky.dnd.adventure.rest.dto.layer.ChestLayerItemDto;
-import com.exasky.dnd.adventure.rest.dto.layer.DoorLayerItemDto;
-import com.exasky.dnd.adventure.rest.dto.layer.SimpleLayerItemDto;
-import com.exasky.dnd.adventure.rest.dto.layer.TrapLayerItemDto;
+import com.exasky.dnd.adventure.rest.dto.layer.*;
 
 import java.util.List;
 
@@ -17,6 +14,7 @@ public class AdventureDto {
     private List<TrapLayerItemDto> traps;
     private List<DoorLayerItemDto> doors;
     private List<ChestLayerItemDto> chests;
+    private List<MonsterLayerItemDto> monsters;
     private List<SimpleLayerItemDto> otherItems;
 
     private List<CharacterDto> characters;
@@ -30,6 +28,7 @@ public class AdventureDto {
         adventure.setTraps(TrapLayerItemDto.toBo(dto.getTraps()));
         adventure.setDoors(DoorLayerItemDto.toBo(dto.getDoors()));
         adventure.setChests(ChestLayerItemDto.toBo(dto.getChests()));
+        adventure.setMonsters(MonsterLayerItemDto.toBo(dto.getMonsters()));
         adventure.setOtherItems(SimpleLayerItemDto.toBo(dto.getOtherItems()));
 
         return adventure;
@@ -42,10 +41,11 @@ public class AdventureDto {
         dto.setName(bo.getName());
         dto.setLevel(bo.getLevel());
         dto.setBoards(BoardDto.toDto(bo.getBoards()));
-        dto.setTraps(TrapLayerItemDto.toDto(bo.getTraps(), new TrapLayerItemDto()));
-        dto.setDoors(DoorLayerItemDto.toDto(bo.getDoors(), new DoorLayerItemDto()));
-        dto.setChests(ChestLayerItemDto.toDto(bo.getChests(), new ChestLayerItemDto()));
-        dto.setOtherItems(SimpleLayerItemDto.toDto(bo.getOtherItems(), new SimpleLayerItemDto()));
+        dto.setTraps(TrapLayerItemDto.toDto(bo.getTraps()));
+        dto.setDoors(DoorLayerItemDto.toDto(bo.getDoors()));
+        dto.setChests(ChestLayerItemDto.toDto(bo.getChests()));
+        dto.setMonsters(MonsterLayerItemDto.toDto(bo.getMonsters()));
+        dto.setOtherItems(SimpleLayerItemDto.toDto(bo.getOtherItems()));
         dto.setCharacters(CharacterDto.toDto(bo.getCampaign().getCharacters()));
 
         return dto;
@@ -106,6 +106,14 @@ public class AdventureDto {
 
     public void setChests(List<ChestLayerItemDto> chests) {
         this.chests = chests;
+    }
+
+    public List<MonsterLayerItemDto> getMonsters() {
+        return monsters;
+    }
+
+    public void setMonsters(List<MonsterLayerItemDto> monsters) {
+        this.monsters = monsters;
     }
 
     public List<SimpleLayerItemDto> getOtherItems() {

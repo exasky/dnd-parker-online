@@ -2,16 +2,16 @@ package com.exasky.dnd.adventure.service.layer;
 
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.layer.item.LayerItem;
-import com.exasky.dnd.adventure.service.LayerElementService;
+import com.exasky.dnd.adventure.repository.LayerElementRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public abstract class ParentLayerItemService<LAYER_ITEM extends LayerItem> {
     protected final JpaRepository<LAYER_ITEM, Long> repository;
-    protected final LayerElementService layerElementService;
+    protected final LayerElementRepository layerElementRepository;
 
-    protected ParentLayerItemService(JpaRepository<LAYER_ITEM, Long> repository, LayerElementService layerElementService) {
+    protected ParentLayerItemService(JpaRepository<LAYER_ITEM, Long> repository, LayerElementRepository layerElementRepository) {
         this.repository = repository;
-        this.layerElementService = layerElementService;
+        this.layerElementRepository = layerElementRepository;
     }
 
     protected abstract LAYER_ITEM createInstance();
@@ -26,7 +26,7 @@ public abstract class ParentLayerItemService<LAYER_ITEM extends LayerItem> {
         layerItem.setAdventure(attachedAdventure);
         layerItem.setPositionX(toCreate.getPositionX());
         layerItem.setPositionY(toCreate.getPositionY());
-        layerItem.setLayerElement(layerElementService.findById(toCreate.getLayerElement().getId()));
+        layerItem.setLayerElement(layerElementRepository.getOne(toCreate.getLayerElement().getId()));
 
         specific_create(layerItem, toCreate, attachedAdventure);
 
@@ -41,7 +41,7 @@ public abstract class ParentLayerItemService<LAYER_ITEM extends LayerItem> {
 
         layerItem.setPositionX(toUpdate.getPositionX());
         layerItem.setPositionY(toUpdate.getPositionY());
-        layerItem.setLayerElement(layerElementService.findById(toUpdate.getLayerElement().getId()));
+        layerItem.setLayerElement(layerElementRepository.getOne(toUpdate.getLayerElement().getId()));
 
         specific_update(layerItem, toUpdate);
 
@@ -57,7 +57,7 @@ public abstract class ParentLayerItemService<LAYER_ITEM extends LayerItem> {
         layerItem.setAdventure(adventure);
         layerItem.setPositionX(toCopy.getPositionX());
         layerItem.setPositionY(toCopy.getPositionY());
-        layerItem.setLayerElement(layerElementService.findById(toCopy.getLayerElement().getId()));
+        layerItem.setLayerElement(layerElementRepository.getOne(toCopy.getLayerElement().getId()));
 
         specific_copy(layerItem, toCopy, adventure);
 

@@ -16,6 +16,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {SelectCardDialogComponent} from "./select-card-dialog.component";
 import {Character, CharacterItem} from "../../../model/character";
 import {AdventureCardService} from "../../../service/adventure-card.service";
+import {AdventureUtils} from "../utils/utils";
 
 @Component({
   selector: 'app-context-menu',
@@ -79,12 +80,12 @@ export class ContextMenuComponent {
         break;
     }
 
-    this.adventureService.updateLayerItem(this.adventureId, AdventureComponent.gridsterItemToLayerItem(item));
+    this.adventureService.updateLayerItem(this.adventureId, AdventureUtils.existingGridsterItemToLayerItem(item));
   }
 
   showTrap(item: TrapLayerGridsterItem) {
     item.shown = true;
-    this.adventureService.updateLayerItem(this.adventureId, AdventureComponent.gridsterItemToLayerItem(item));
+    this.adventureService.updateLayerItem(this.adventureId, AdventureUtils.existingGridsterItemToLayerItem(item));
   }
 
   openChest(item: ChestLayerGridsterItem) {
@@ -103,14 +104,14 @@ export class ContextMenuComponent {
   }
 
   deleteItem(item: LayerGridsterItem) {
-    this.adventureService.deleteLayerItem(this.adventureId, AdventureComponent.gridsterItemToLayerItem(item));
+    this.adventureService.deleteLayerItem(this.adventureId, AdventureUtils.existingGridsterItemToLayerItem(item));
   }
 
   setChestCard(item: ChestLayerGridsterItem) {
     this.dialog.open(SelectCardDialogComponent, DialogUtils.getDefaultConfig(item['cardId']))
       .afterClosed().subscribe((value: CharacterItem) => {
         item.specificCard = value;
-        this.adventureService.updateLayerItem(this.adventureId, AdventureComponent.gridsterItemToLayerItem(item));
+        this.adventureService.updateLayerItem(this.adventureId, AdventureUtils.existingGridsterItemToLayerItem(item));
     });
   }
 }

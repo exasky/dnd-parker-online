@@ -1,0 +1,12 @@
+id,armor,max_hp,move_points,ud_resist,monster_element_id
+1,0,12,2,null,8
+2,2,7,4,null,9
+3,2,6,3,null,10
+4,1,4,5,null,11
+5,2,7,4,null,12
+6,3,12,5,3,13
+7,2,7,4,3,14
+8,2,8,3,null,15
+9,2,6,5,2,16
+10,1,4,5,1,17
+11,2,10,3,null,18

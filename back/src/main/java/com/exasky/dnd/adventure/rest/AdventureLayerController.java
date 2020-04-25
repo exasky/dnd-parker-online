@@ -23,10 +23,11 @@ public class AdventureLayerController {
         this.messagingTemplate = messagingTemplate;
     }
     
+    @SuppressWarnings("unchecked")
     @PostMapping("/add-layer-item/{adventureId}")
     public <DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> void addLayerItem(@PathVariable Long adventureId, @RequestBody DTO dto) {
         BO newLayerItem = adventureService.addLayerItem(adventureId, LayerItemDto.toBo(dto));
-        DTO returnDto = LayerItemDto.toDto(newLayerItem, dto.createDtoInstance());
+        DTO returnDto = (DTO) DTO.toDto(newLayerItem, dto.getClass());
 
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.ADD_LAYER_ITEM);
@@ -34,10 +35,11 @@ public class AdventureLayerController {
         messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 
+    @SuppressWarnings("unchecked")
     @PutMapping("/update-layer-item/{adventureId}")
     public <DTO extends LayerItemDto<DTO, BO>, BO extends LayerItem> void updateLayerItem(@PathVariable Long adventureId, @RequestBody DTO dto) {
         BO updatedLayerItem = adventureService.updateLayerItem(adventureId, LayerItemDto.toBo(dto));
-        DTO returnDto = LayerItemDto.toDto(updatedLayerItem, dto.createDtoInstance());
+        DTO returnDto = (DTO) DTO.toDto(updatedLayerItem, dto.getClass());
 
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_LAYER_ITEM);

@@ -2,9 +2,15 @@ package com.exasky.dnd.adventure.rest.dto.layer;
 
 import com.exasky.dnd.adventure.model.layer.item.DoorLayerItem;
 
+import java.util.List;
+
 public class DoorLayerItemDto extends LayerItemDto<DoorLayerItemDto, DoorLayerItem> {
     private Boolean vertical;
     private Boolean open;
+
+    public static List<DoorLayerItemDto> toDto(List<DoorLayerItem> bos) {
+        return DoorLayerItemDto.toDto(bos, DoorLayerItemDto.class);
+    }
 
     @Override
     public DoorLayerItem createBoInstance(Long id) {

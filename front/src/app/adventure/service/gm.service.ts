@@ -4,8 +4,8 @@ import {LayerElement} from "../model/adventure";
 import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {CharacterItem} from "../model/character";
-import {Campaign, SimpleCampaign} from "../model/campaign";
 import {AlertMessage} from "../model/alert-message";
+import {MonsterTemplate} from "../model/monster";
 
 @Injectable({
   providedIn: "root"
@@ -22,6 +22,10 @@ export class GmService {
 
   getAllCharacterItems(): Observable<CharacterItem[]> {
     return this.http.get<CharacterItem[]>(GmService.API_URL + '/character-items');
+  }
+
+  getMonsterTemplates(): Observable<MonsterTemplate[]> {
+    return this.http.get<MonsterTemplate[]>(GmService.API_URL + '/monster-templates')
   }
 
   previousAdventure(adventureId: number | string) {

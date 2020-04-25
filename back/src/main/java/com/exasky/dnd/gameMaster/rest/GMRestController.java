@@ -1,20 +1,17 @@
 package com.exasky.dnd.gameMaster.rest;
 
-import com.exasky.dnd.adventure.model.Adventure;
-import com.exasky.dnd.adventure.model.Campaign;
-import com.exasky.dnd.adventure.rest.dto.AdventureDto;
 import com.exasky.dnd.adventure.rest.dto.AlertMessageDto;
 import com.exasky.dnd.adventure.rest.dto.layer.LayerElementDto;
+import com.exasky.dnd.adventure.rest.dto.template.MonsterTemplateDto;
 import com.exasky.dnd.common.Constant;
-import com.exasky.dnd.gameMaster.rest.dto.*;
+import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
+import com.exasky.dnd.gameMaster.rest.dto.CharacterItemDto;
 import com.exasky.dnd.gameMaster.service.GMService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping(Constant.REST_URL + "/game-master")
@@ -39,6 +36,11 @@ public class GMRestController {
     @GetMapping("/character-items")
     public List<CharacterItemDto> getAllCharacterItems() {
         return CharacterItemDto.toDto(this.gmService.getAllCharacterItems());
+    }
+
+    @GetMapping("/monster-templates")
+    public List<MonsterTemplateDto> getMonsterTemplates() {
+        return MonsterTemplateDto.toDto(gmService.getMonsterTemplates());
     }
 
     @GetMapping("/previous-adventure/{adventureId}")
