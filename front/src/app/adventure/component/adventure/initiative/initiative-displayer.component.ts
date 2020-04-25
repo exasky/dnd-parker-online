@@ -8,6 +8,11 @@ import {Initiative} from "../../../model/adventure";
 export class InitiativeDisplayerComponent {
   @HostBinding('class') cssClasses = 'd-flex justify-content-center align-items-center flex-wrap';
 
+  sortedInitiatives: Initiative[];
+
   @Input()
-  initiatives: Initiative[]
+  set initiatives(initiatives: Initiative[]) {
+    this.sortedInitiatives = initiatives.sort((a,b) => a.number - b.number);
+  }
+
 }

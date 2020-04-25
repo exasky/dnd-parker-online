@@ -6,7 +6,7 @@ import {GmService} from "../../../service/gm.service";
 import {AdventureService} from "../../../service/adventure.service";
 import {Router} from "@angular/router";
 import {MatDrawer} from "@angular/material/sidenav";
-import {MonsterLayerItem} from "../../../model/adventure";
+import {Initiative, MonsterLayerItem} from "../../../model/adventure";
 import {MonsterItem} from "../../../model/item";
 
 @Component({
@@ -22,6 +22,9 @@ export class GmActionPanelComponent {
 
   @Input()
   adventureId: number;
+
+  @Input()
+  initiatives: Initiative[];
 
   @Input()
   characters: Character[];
@@ -129,11 +132,16 @@ export class GmActionPanelComponent {
     this.adventureService.updateCharacter(this.adventureId, character);
   }
 
+  updateInitiatives() {
+    this.gmService.updateInitiatives(this.adventureId, this.initiatives);
+  }
+
   openMobileVersion() {
     const strWindowFeatures = "menubar=no,toolbar=no,location=no,resizable=yes,scrollbars=yes,status=no";
-    window.open(this.router.url,'_blank', strWindowFeatures);
+    window.open(this.router.url, '_blank', strWindowFeatures);
     this.exportable.close();
   }
+
 }
 
 enum SoundType {

@@ -72,7 +72,7 @@
           <mat-form-field class="mx-2" style="max-width: 50px">
             <mat-label>HP</mat-label>
             <input matInput [(ngModel)]="monster.hp" type="number" min="0" inputmode="numeric" pattern="[0-9]*"
-            (change)="updateMonster(monster)">
+                   (change)="updateMonster(monster)">
           </mat-form-field>
         </div>
       </div>
@@ -108,5 +108,24 @@
         </div>
       </div>
     </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel class="d-flex flex-column">
+    <mat-expansion-panel-header class="flex-shrink-0">
+      <mat-panel-title>Initiative</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="d-flex flex-wrap justify-content-center initiatives">
+      <mat-form-field *ngFor="let characterTurn of initiatives" class="mx-2" style="max-width: 100px">
+        <mat-label>{{characterTurn.characterName}}</mat-label>
+        <mat-select [(ngModel)]="characterTurn.number">
+          <mat-option *ngFor="let idx of [1,2,3,4,5]"
+                      [value]="idx">
+            {{idx}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <button mat-raised-button style="float: right" (click)="updateInitiatives()">Validate</button>
   </mat-expansion-panel>
 </mat-accordion>

@@ -5,7 +5,7 @@ import {AdventureMessage, AdventureMessageType} from "../../../model/adventure-m
 import {Subscription} from "rxjs";
 import {AdventureWebsocketService} from "../../../../common/service/ws/adventure.websocket.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Adventure, LayerElementType, LayerItem, MonsterLayerItem} from "../../../model/adventure";
+import {Adventure, Initiative, LayerElementType, LayerItem, MonsterLayerItem} from "../../../model/adventure";
 import {AdventureService} from "../../../service/adventure.service";
 import {AuthService} from "../../../../login/auth.service";
 import {MonsterItem} from "../../../model/item";
@@ -21,6 +21,8 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
 
   adventure: Adventure;
   adventureWSObs: Subscription;
+
+  characterTurns: Initiative[];
 
   monsters: MonsterItem[] = [];
 
@@ -39,6 +41,7 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
 
     this.adventureService.getAdventure(adventureId).subscribe(adventure => {
       this.adventure = adventure;
+      this.characterTurns = this.adventure.characterTurns;
 
       const currentUser = this.authService.currentUserValue;
       currentUser.currentCharacters = this.adventure.characters.filter(character => character.userId === currentUser.id);
@@ -74,6 +77,9 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
             if (monsterToUpdate) {
               monsterToUpdate.hp = monster.hp;
             }
+            break;
+          case AdventureMessageType.ROLL_INITIATIVE:
+            this.characterTurns = message.message;
             break;
           case AdventureMessageType.SELECT_CHARACTER:
             this.selectedCharacterId = message.message;

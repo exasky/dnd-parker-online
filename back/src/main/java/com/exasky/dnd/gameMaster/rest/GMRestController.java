@@ -66,6 +66,16 @@ public class GMRestController {
         messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 
+    @PostMapping("/initiative/{adventureId}")
+    public void updateInitiatives(@PathVariable Long adventureId, @RequestBody List<InitiativeDto> dto) {
+        List<InitiativeDto> resDto = InitiativeDto.toDto(gmService.updateInitiative(adventureId, InitiativeDto.toBo(dto)));
+
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.ROLL_INITIATIVE);
+        wsDto.setMessage(resDto);
+        messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+    }
+
     @GetMapping("/previous-adventure/{adventureId}")
     public void previousAdventure(@PathVariable Long adventureId) {
         AdventureMessageDto dto = new AdventureMessageDto();

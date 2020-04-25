@@ -27,6 +27,12 @@ public final class Constant {
             public static final String BOARD_EMPTY = PREFIX + "BOARD_EMPTY";
         }
 
+        public static final class INITIATIVE {
+            private static final String PREFIX = "ADVENTURE.";
+
+            public static final String NOT_FOUND = PREFIX + "NOT_FOUND";
+        }
+
         public static final class CHARACTER {
             private static final String PREFIX = "CHARACTER.";
 

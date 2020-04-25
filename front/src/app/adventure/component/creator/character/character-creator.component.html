@@ -25,7 +25,7 @@
   <div class="d-flex justify-content-center">
     <mat-form-field style="max-width: 8rem">
       <mat-label>Name</mat-label>
-      <mat-select *ngIf="!character.displayName"  (selectionChange)="selectCharacter($event)">
+      <mat-select *ngIf="!character.displayName" (selectionChange)="selectCharacter($event)">
         <mat-option *ngFor="let characterTemplate of availableCharacters"
                     [value]="characterTemplate.displayName">
           {{characterTemplate.displayName}}

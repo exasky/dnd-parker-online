@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostBinding, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {Component, ElementRef, HostBinding, OnDestroy, OnInit, Type, ViewChild} from "@angular/core";
 import {
   CompactType,
   DisplayGrid,
@@ -199,12 +199,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
           case AdventureMessageType.ROLL_INITIATIVE:
             const charTurns: Initiative[] = message.message;
             this.charactersTurns = charTurns;
-            this.disableActions = true;
-            this.currentDialog = this.dialog.open(InitiativeDialogComponent,
-              DialogUtils.getDefaultConfig({adventureId: this.adventure.id, initiatives: charTurns}));
-            this.currentDialog.afterClosed().subscribe(() => {
-              this.disableActions = false;
-            });
+            this.openDialog(InitiativeDialogComponent, {adventureId: this.adventure.id, initiatives: charTurns});
             break;
           case AdventureMessageType.ADD_LAYER_ITEM:
             const newLayerItem = message.message;
@@ -245,10 +240,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             this.audioService.playSound('/assets/sound/' + fileToPlay);
             break;
           case AdventureMessageType.CLOSE_DIALOG:
-            if (this.currentDialog) {
-              this.currentDialog.close();
-              this.currentDialog = null;
-            }
+            this.closeDialog();
             break;
         }
       }
@@ -260,19 +252,14 @@ export class AdventureComponent implements OnInit, OnDestroy {
         switch (message.type) {
           case CardMessageType.DRAW_CARD:
             const drawerOpenedSaved = this.actionPanelDrawer.opened;
-            this.disableActions = this.actionPanelDrawer.opened = true;
-            this.currentDialog = this.dialog.open(DrawnCardDialogComponent,
-              DialogUtils.getDefaultConfig({...message.message, characters: this.adventure.characters}));
+            this.actionPanelDrawer.opened = true;
+            this.openDialog(DrawnCardDialogComponent, {...message.message, characters: this.adventure.characters});
             this.currentDialog.afterClosed().subscribe(() => {
-              this.disableActions = false;
               this.actionPanelDrawer.opened = drawerOpenedSaved;
             });
             break;
           case CardMessageType.CLOSE_DIALOG:
-            if (this.currentDialog) {
-              this.currentDialog.close();
-              this.currentDialog = null;
-            }
+            this.closeDialog();
             break
           default:
             break;
@@ -286,21 +273,14 @@ export class AdventureComponent implements OnInit, OnDestroy {
         switch (diceMessage.type) {
           case DiceMessageType.OPEN_DIALOG:
             const drawerOpenedSaved = this.actionPanelDrawer.opened;
-            this.disableActions = this.actionPanelDrawer.opened = true;
-            this.currentDialog = this.dialog.open(DiceDialogComponent, DialogUtils.getDefaultConfig({
-              adventureId,
-              user: receivedMsg.data.message
-            }));
+            this.actionPanelDrawer.opened = true;
+            this.openDialog(DiceDialogComponent, {adventureId, user: receivedMsg.data.message});
             this.currentDialog.afterClosed().subscribe(() => {
-              this.disableActions = false;
               this.actionPanelDrawer.opened = drawerOpenedSaved;
             });
             break;
           case DiceMessageType.CLOSE_DIALOG:
-            if (this.currentDialog) {
-              this.currentDialog.close();
-              this.currentDialog = null;
-            }
+            this.closeDialog();
             break;
         }
       }
@@ -647,10 +627,26 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   private findInDashboard(item: LayerItem) {
-    return this.dashboard.find(ditem => ditem.id === item.id && ditem.type === item.element.type);
+    return this.dashboard.find(dItem => dItem.id === item.id && dItem.type === item.element.type);
   }
 
   get monsters(): MonsterLayerGridsterItem[] {
     return this.dashboard.filter(layerItem => layerItem.type === LayerElementType.MONSTER) as MonsterLayerGridsterItem[];
+  }
+
+  private openDialog(dialog: Type<any>, data: any) {
+    this.closeDialog();
+    this.disableActions = true;
+    this.currentDialog = this.dialog.open(dialog, DialogUtils.getDefaultConfig(data));
+    this.currentDialog.afterClosed().subscribe(() => {
+      this.disableActions = false;
+    });
+  }
+
+  private closeDialog() {
+    if (this.currentDialog) {
+      this.currentDialog.close();
+      this.currentDialog = null;
+    }
   }
 }

@@ -83,13 +83,32 @@ public class GMService {
 
         Collections.shuffle(charTurns);
 
-        for (short initIdx = 0; initIdx < charTurns.size(); initIdx++) {
-            charTurns.get(initIdx).setNumber(initIdx);
+        for (short initIdx = 1; initIdx < charTurns.size() + 1; initIdx++) {
+            charTurns.get(initIdx - 1).setNumber(initIdx);
         }
 
         campaign.updateCharacterTurns(charTurns);
 
         return charTurns;
+    }
+
+    @Transactional
+    public List<Initiative> updateInitiative(Long adventureId, List<Initiative> updated) {
+        Campaign campaign = campaignRepository.getByAdventureId(adventureId);
+
+        if (Objects.isNull(campaign)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+        }
+
+        updated.forEach(update -> {
+            Optional<Initiative> optInit = campaign.getCharacterTurns().stream().filter(ct -> ct.getId().equals(update.getId())).findFirst();
+            if (!optInit.isPresent()) {
+                ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.INITIATIVE.NOT_FOUND);
+            }
+            optInit.get().setNumber(update.getNumber());
+        });
+
+        return campaign.getCharacterTurns();
     }
 
     @Transactional

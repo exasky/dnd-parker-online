@@ -3,6 +3,7 @@
     <mat-tab-group class="flex-grow">
       <mat-tab label="GM">
         <app-gm-action-panel [adventureId]="adventure.id"
+                             [initiatives]="characterTurns"
                              [monsters]="monsters"
                              [characters]="adventure.characters"
                              [selectedMonsterId]="selectedMonsterId"

@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
-import {LayerElement} from "../model/adventure";
+import {Initiative, LayerElement} from "../model/adventure";
 import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {CharacterItem} from "../model/character";
@@ -31,6 +31,10 @@ export class GmService {
 
   rollInitiative(adventureId: number | string) {
     return this.http.get(GmService.API_URL + '/initiative/' + adventureId).subscribe();
+  }
+
+  updateInitiatives(adventureId: number | string, initiatives: Initiative[]) {
+    return this.http.post(GmService.API_URL + '/initiative/' + adventureId, initiatives).subscribe();
   }
 
   previousAdventure(adventureId: number | string) {
