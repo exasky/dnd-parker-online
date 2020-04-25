@@ -15,7 +15,7 @@
          [src]="'assets/monster/' + node.item.name + '-token.jpg'">
     <img *ngSwitchCase="layerElementType.TRAP"
          class="icon"
-         [src]="'assets/item/' + node.item.name + '-' + (node.item.deactivated ? 'deactivated' : 'activated') + '.jpg'">
+         [src]="'assets/item/' + node.item.name + '-activated.jpg'">
     <img *ngSwitchCase="layerElementType.DOOR"
          class="icon"
          [src]="'assets/item/door-' + node.item.name + '-closed.jpg'">

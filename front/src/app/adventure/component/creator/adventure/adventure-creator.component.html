@@ -4,12 +4,13 @@
     <div class="d-flex flex-column" style="height: 85vh">
       <div>
         <div style="overflow-x: scroll; overflow-y: hidden; white-space: nowrap;">
-          <ng-template ngFor let-board [ngForOf]="availableBoards">
+          <ng-container *ngFor="let board of availableBoards">
             <img class="draggable-board"
                  draggable="true"
+                 alt="board"
                  [src]="'assets/board/' + board.boardNumber + '.JPG'"
                  (dragstart)="dragStartHandler($event, board)">
-          </ng-template>
+          </ng-container>
         </div>
       </div>
 
@@ -51,7 +52,8 @@
       <div class="flex-grow d-flex flex-column justify-content-center align-items-center">
         <mat-form-field>
           <mat-label>Name</mat-label>
-          <input matInput [(ngModel)]="adventure.name" placeholder="Nom de votre aventure" required autocomplete="false">
+          <input matInput [(ngModel)]="adventure.name" placeholder="Nom de votre aventure" required
+                 autocomplete="false">
         </mat-form-field>
         <mat-form-field>
           <mat-label>Level</mat-label>
