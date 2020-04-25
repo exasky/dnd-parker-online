@@ -12,6 +12,8 @@
   </div>
 </div>
 
+<img [src]="'assets/character/' + character.name.toLowerCase() + '-wearables.jpg'" style="object-fit: scale-down">
+
 <div class="d-flex flex-column justify-content-around align-items-center flex-1">
   <img *ngIf="character.name && displayCard"
        [width]="300"
@@ -30,10 +32,11 @@
     <div class="status-bar-text">MP : {{character.mp}} / {{character.maxMp}}</div>
   </section>
 
-  <img *ngIf="character.name"
-       [width]="characterWidth"
-       [src]="'assets/character/' + character.name.toLowerCase() + '.jpg'">
+  <img [src]="'assets/character/' + character.name.toLowerCase() + '-characteristics.jpg'"
+       style="object-fit: scale-down">
 </div>
+
+<img [src]="'assets/character/backpack.jpg'" style="object-fit: scale-down">
 
 <!-- Backpack items-->
 <div class="d-flex flex-2">
