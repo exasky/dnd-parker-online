@@ -18,6 +18,7 @@ public class AdventureDto {
     private List<MonsterLayerItemDto> monsters;
     private List<SimpleLayerItemDto> otherItems;
 
+    private InitiativeDto currentTurn;
     private List<InitiativeDto> characterTurns;
 
     private List<CharacterDto> characters;
@@ -36,6 +37,7 @@ public class AdventureDto {
         dto.setMonsters(MonsterLayerItemDto.toDto(bo.getMonsters()));
         dto.setOtherItems(SimpleLayerItemDto.toDto(bo.getOtherItems()));
 
+        dto.setCurrentTurn(InitiativeDto.toDto(bo.getCurrentInitiative()));
         dto.setCharacterTurns(InitiativeDto.toDto(bo.getCampaign().getCharacterTurns()));
 
         dto.setCharacters(CharacterDto.toDto(bo.getCampaign().getCharacters()));
@@ -114,6 +116,14 @@ public class AdventureDto {
 
     public void setOtherItems(List<SimpleLayerItemDto> otherItems) {
         this.otherItems = otherItems;
+    }
+
+    public InitiativeDto getCurrentTurn() {
+        return currentTurn;
+    }
+
+    public void setCurrentTurn(InitiativeDto currentTurn) {
+        this.currentTurn = currentTurn;
     }
 
     public List<InitiativeDto> getCharacterTurns() {

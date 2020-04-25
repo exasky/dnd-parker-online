@@ -81,6 +81,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   adventure: Adventure;
   charactersTurns: Initiative[];
+  currentTurn: Initiative;
 
   addableLayerElements: LayerElement[];
   monsterTemplates: MonsterTemplate[];
@@ -130,6 +131,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       const currentUser = this.authService.currentUserValue;
       currentUser.currentCharacters = this.adventure.characters.filter(character => character.userId === currentUser.id);
 
+      this.currentTurn = this.adventure.currentTurn;
       this.charactersTurns = this.adventure.characterTurns;
 
       this.gamePanelYSize = this.adventure.boards.length;
@@ -199,6 +201,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
           case AdventureMessageType.ROLL_INITIATIVE:
             const charTurns: Initiative[] = message.message;
             this.charactersTurns = charTurns;
+            this.currentTurn = this.charactersTurns[0];
             this.openDialog(InitiativeDialogComponent, {adventureId: this.adventure.id, initiatives: charTurns});
             break;
           case AdventureMessageType.ADD_LAYER_ITEM:

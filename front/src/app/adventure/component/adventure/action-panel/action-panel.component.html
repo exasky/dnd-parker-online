@@ -47,7 +47,8 @@
           placement="left">
     Current initiative
     <ng-template #tooltipContent>
-      <app-initiative-displayer [initiatives]="initiatives"></app-initiative-displayer>
+      <app-initiative-displayer [currentInitiative]="currentInitiative"
+                                [initiatives]="initiatives"></app-initiative-displayer>
     </ng-template>
   </button>
   <ng-container *ngIf="authService.isGM">
@@ -56,6 +57,13 @@
       Roll initiative
     </button>
   </ng-container>
+
+  <mat-divider class="m-2" [inset]="false"></mat-divider>
+
+  <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="endTurn()">
+<!--          [disabled]="disableActions || !myTurn">-->
+    End turn
+  </button>
 </div>
 
 <div class="flex-shrink-0 d-flex flex-column justify-content-end" *ngIf="authService.isGM">

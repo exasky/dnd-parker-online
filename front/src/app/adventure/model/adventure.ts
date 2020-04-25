@@ -13,6 +13,7 @@ export class Adventure {
   monsters: MonsterLayerItem[];
   otherItems: LayerItem[];
 
+  currentTurn: Initiative;
   characterTurns: Initiative[];
 
   characters: Character[];

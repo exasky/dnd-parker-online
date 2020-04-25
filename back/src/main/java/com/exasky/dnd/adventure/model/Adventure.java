@@ -23,6 +23,10 @@ public class Adventure {
     @JoinColumn(name = "campaign_id")
     private Campaign campaign;
 
+    @OneToOne
+    @JoinColumn(name = "current_initiative_id")
+    private Initiative currentInitiative;
+
     @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Board> boards = new ArrayList<>();
 
@@ -71,6 +75,22 @@ public class Adventure {
 
     public void setLevel(Short level) {
         this.level = level;
+    }
+
+    public Campaign getCampaign() {
+        return campaign;
+    }
+
+    public void setCampaign(Campaign campaign) {
+        this.campaign = campaign;
+    }
+
+    public Initiative getCurrentInitiative() {
+        return currentInitiative;
+    }
+
+    public void setCurrentInitiative(Initiative currentInitiative) {
+        this.currentInitiative = currentInitiative;
     }
 
     public List<Board> getBoards() {
@@ -125,14 +145,5 @@ public class Adventure {
     public void setOtherItems(List<SimpleLayerItem> otherItems) {
         this.otherItems = otherItems;
     }
-
-    public Campaign getCampaign() {
-        return campaign;
-    }
-
-    public void setCampaign(Campaign campaign) {
-        this.campaign = campaign;
-    }
-
     // endregion
 }

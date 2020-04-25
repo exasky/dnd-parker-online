@@ -27,6 +27,11 @@ public class Initiative {
         this.id = id;
     }
 
+    public Initiative(Campaign campaign, Character character) {
+        this.campaign = campaign;
+        this.character = character;
+    }
+
     // region Getters & Setters
     public Long getId() {
         return id;

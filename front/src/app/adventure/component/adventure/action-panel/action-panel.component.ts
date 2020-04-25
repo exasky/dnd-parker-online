@@ -20,6 +20,9 @@ export class ActionPanelComponent {
   selectedCharacterId: number;
 
   @Input()
+  currentInitiative: Initiative;
+
+  @Input()
   initiatives: Initiative[];
 
   @Input()
@@ -53,6 +56,12 @@ export class ActionPanelComponent {
   rollInitiative() {
     if (!this.disableActions) {
       this.gmService.rollInitiative(this.adventure.id);
+    }
+  }
+
+  endTurn() {
+    if (!this.disableActions) {
+      // this.adventureService.endTurn(this.adventure.id, getCurrentPlayer)
     }
   }
 

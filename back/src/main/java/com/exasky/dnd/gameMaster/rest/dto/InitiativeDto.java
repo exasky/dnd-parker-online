@@ -20,6 +20,7 @@ public class InitiativeDto {
     }
 
     public static InitiativeDto toDto(Initiative bo) {
+        if (Objects.isNull(bo)) return null;
         InitiativeDto dto = new InitiativeDto();
 
         dto.setId(bo.getId());

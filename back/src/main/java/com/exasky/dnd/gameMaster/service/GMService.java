@@ -64,22 +64,27 @@ public class GMService {
 
     @Transactional
     public List<Initiative> rollInitiative(Long adventureId) {
-        Campaign campaign = campaignRepository.getByAdventureId(adventureId);
+        Adventure adventure = adventureService.getById(adventureId);
 
-        if (Objects.isNull(campaign)) {
-            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+        if (Objects.isNull(adventure)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.ADVENTURE.NOT_FOUND);
         }
 
-        List<Initiative> charTurns = campaign.getCharacters().stream().map(character -> {
-            Initiative charTurn = new Initiative();
-            charTurn.setCampaign(campaign);
-            charTurn.setCharacter(character);
-            return charTurn;
-        }).collect(Collectors.toList());
+        Campaign campaign = adventure.getCampaign();
 
-        Initiative gmTurn = new Initiative();
-        gmTurn.setCampaign(campaign);
-        charTurns.add(gmTurn);
+        List<Initiative> charTurns;
+
+        if(campaign.getCharacterTurns().isEmpty()) {
+            charTurns = campaign.getCharacters().stream()
+                    .map(character -> new Initiative(campaign, character))
+                    .collect(Collectors.toList());
+            Initiative gmTurn = new Initiative();
+            gmTurn.setCampaign(campaign);
+            charTurns.add(gmTurn);
+            campaign.updateCharacterTurns(charTurns);
+        } else {
+            charTurns = campaign.getCharacterTurns();
+        }
 
         Collections.shuffle(charTurns);
 
@@ -87,7 +92,7 @@ public class GMService {
             charTurns.get(initIdx - 1).setNumber(initIdx);
         }
 
-        campaign.updateCharacterTurns(charTurns);
+        adventure.setCurrentInitiative(charTurns.get(0));
 
         return charTurns;
     }
