@@ -14,7 +14,7 @@
         <mat-tab-group class="flex-grow">
           <mat-tab *ngFor="let character of adventure.characters">
             <ng-template mat-tab-label>
-              <mat-icon *ngIf="selectedCharacterId === character.id"
+              <mat-icon *ngIf="currentTurn.characterName === character.name"
                         color="warn"
                         class="mr-1">
                 radio_button_checked
@@ -33,7 +33,7 @@
     <mat-tab-group *ngIf="!authService.isGM" class="flex-grow">
       <mat-tab *ngFor="let character of adventure.characters">
         <ng-template mat-tab-label>
-          <mat-icon *ngIf="selectedCharacterId === character.id"
+          <mat-icon *ngIf="currentTurn.characterName === character.name"
                     color="warn"
                     class="mr-1">radio_button_checked
           </mat-icon>

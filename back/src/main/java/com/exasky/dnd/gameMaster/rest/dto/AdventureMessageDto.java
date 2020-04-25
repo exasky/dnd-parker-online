@@ -11,11 +11,12 @@ public class AdventureMessageDto {
         ADD_LAYER_ITEM,
         UPDATE_LAYER_ITEM,
         REMOVE_LAYER_ITEM,
-        SELECT_CHARACTER,
         SELECT_MONSTER,
         ALERT,
         SOUND,
-        CLOSE_DIALOG
+        CLOSE_DIALOG,
+        ASK_NEXT_TURN,
+        VALIDATE_NEXT_TURN
     }
 
     private AdventureMessageType type;

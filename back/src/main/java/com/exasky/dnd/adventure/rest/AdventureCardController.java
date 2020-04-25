@@ -28,6 +28,11 @@ public class AdventureCardController {
         this.messagingTemplate = messagingTemplate;
     }
 
+    // TODO
+    // replace drawCard by askDrawCard to send (as next turn) a dialog
+    // GM dialog: this char asked to draw card/open this chest (selectedItemLayerId)
+    // Others dialog: this char asked to draw a card please wait
+
     /**
      * Called by any one to draw a card
      */

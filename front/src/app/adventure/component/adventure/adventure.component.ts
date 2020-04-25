@@ -53,6 +53,7 @@ import {AdventureCardService} from "../../service/adventure-card.service";
 import {CardMessage, CardMessageType} from "../../model/card-message";
 import {AdventureUtils} from "./utils/utils";
 import {InitiativeDialogComponent} from "./initiative/initiative-dialog.component";
+import {NextTurnDialogComponent} from "./action/next-turn-dialog.component";
 
 @Component({
   selector: 'app-adventure',
@@ -97,7 +98,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   disableActions: boolean = false;
 
-  selectedCharacterId: number;
   selectedMonsterId: number;
 
   selectedItem: LayerGridsterItem;
@@ -129,7 +129,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventureService.getAdventure(adventureId).subscribe(adventure => {
       this.adventure = adventure;
       const currentUser = this.authService.currentUserValue;
-      currentUser.currentCharacters = this.adventure.characters.filter(character => character.userId === currentUser.id);
+      currentUser.characters = this.adventure.characters.filter(character => character.userId === currentUser.id);
 
       this.currentTurn = this.adventure.currentTurn;
       this.charactersTurns = this.adventure.characterTurns;
@@ -216,15 +216,12 @@ export class AdventureComponent implements OnInit, OnDestroy {
             const deletedLayerItem = message.message;
             this.removeItem(deletedLayerItem);
             break;
-          case AdventureMessageType.SELECT_CHARACTER:
-            this.selectedCharacterId = message.message;
-            break;
           case AdventureMessageType.SELECT_MONSTER:
             this.selectedMonsterId = message.message;
             break;
           case AdventureMessageType.ALERT:
             const alert: AlertMessage = message.message;
-            if (!alert.characterId || this.authService.currentUserValue.currentCharacters.some(char => char.id === alert.characterId)) {
+            if (!alert.characterId || this.authService.currentUserValue.characters.some(char => char.id === alert.characterId)) {
               switch (alert.type) {
                 case AlertMessageType.SUCCESS:
                   this.toaster.success(alert.message);
@@ -243,6 +240,13 @@ export class AdventureComponent implements OnInit, OnDestroy {
             this.audioService.playSound('/assets/sound/' + fileToPlay);
             break;
           case AdventureMessageType.CLOSE_DIALOG:
+            this.closeDialog();
+            break;
+          case AdventureMessageType.ASK_NEXT_TURN:
+            this.openDialog(NextTurnDialogComponent, this.adventure.id);
+            break;
+          case AdventureMessageType.VALIDATE_NEXT_TURN:
+            this.currentTurn = message.message;
             this.closeDialog();
             break;
         }
@@ -593,7 +597,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
     return user.role === ROLE_GM || (
       item.element.type === LayerElementType.CHARACTER
-      && user.currentCharacters.find(char => char.name.toLowerCase() === item.element.name.toLowerCase()) !== undefined
+      && user.characters.find(char => char.name.toLowerCase() === item.element.name.toLowerCase()) !== undefined
     )
   }
 
@@ -601,7 +605,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   getCharacterNamesFromId(userId) {
     const characters = this.adventure.characters.filter(char => char.userId === userId);
-    return characters.length !== 0 ? characters : [{name: 'MJ', icon: ''}];
+    return characters.length !== 0 ? characters.map(char => char.name) : ['MJ'];
   }
 
   newGridsterItemToLayerItem(item: LayerGridsterItem): LayerItem {

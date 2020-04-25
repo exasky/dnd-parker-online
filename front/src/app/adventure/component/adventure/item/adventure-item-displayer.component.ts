@@ -4,7 +4,7 @@ import {FlatTreeControl} from "@angular/cdk/tree";
 import {LayerElement, LayerElementType} from "../../../model/adventure";
 
 /**
- * Food data with nested structure.
+ * Food adventureId with nested structure.
  * Each node has a name and an optional list of children.
  */
 interface ItemNode {

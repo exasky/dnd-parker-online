@@ -51,15 +51,19 @@ export class AdventureService {
     this.http.delete(AdventureService.API_URL + '/delete-layer-item/' + adventureId, options).subscribe();
   }
 
-  selectCharacter(adventureId, characterId) {
-    this.http.get(AdventureService.API_URL + '/select-character/' + adventureId + '/' + characterId).subscribe();
-  }
-
   updateCharacter(adventureId, character: Character) {
     this.http.post(AdventureService.API_URL + '/update-character/' + adventureId + '/' + character.id, character).subscribe();
   }
 
   selectMonster(adventureId, layerItemId) {
     this.http.get(AdventureService.API_URL + '/select-monster/' + adventureId + '/' + layerItemId).subscribe();
+  }
+
+  askNextTurn(adventureId) {
+    this.http.get(AdventureService.API_URL + '/ask-next-turn/' + adventureId).subscribe();
+  }
+
+  validateNextTurn(adventureId, validation: boolean) {
+    this.http.post(AdventureService.API_URL + '/validate-next-turn/' + adventureId, {validation}).subscribe();
   }
 }

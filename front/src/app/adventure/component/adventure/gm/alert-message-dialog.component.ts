@@ -3,7 +3,6 @@ import {GmService} from "../../../service/gm.service";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {Character} from "../../../model/character";
 import {AlertMessageType} from "../../../model/alert-message";
-import {MatSelectChange} from "@angular/material/select";
 
 @Component({
   selector: 'app-alert-message-dialog',
@@ -16,14 +15,10 @@ export class AlertMessageDialogComponent {
 
   selectedCharacter: Character;
   message: string;
-  type: AlertMessageType;
+  type: AlertMessageType = AlertMessageType.SUCCESS;
 
   constructor(private gmService: GmService,
               @Inject(MAT_DIALOG_DATA) public data: { adventureId: number, characters: Character[] }) {
-  }
-
-  selectCharacter(event: MatSelectChange) {
-    this.selectedCharacter = event.value;
   }
 
   sendAlert() {

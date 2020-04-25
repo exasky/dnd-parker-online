@@ -22,11 +22,11 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
   adventure: Adventure;
   adventureWSObs: Subscription;
 
+  currentTurn: Initiative;
   characterTurns: Initiative[];
 
   monsters: MonsterItem[] = [];
 
-  selectedCharacterId: number;
   selectedMonsterId: number;
 
   constructor(private route: ActivatedRoute,
@@ -41,10 +41,12 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
 
     this.adventureService.getAdventure(adventureId).subscribe(adventure => {
       this.adventure = adventure;
+
+      this.currentTurn = this.adventure.currentTurn;
       this.characterTurns = this.adventure.characterTurns;
 
       const currentUser = this.authService.currentUserValue;
-      currentUser.currentCharacters = this.adventure.characters.filter(character => character.userId === currentUser.id);
+      currentUser.characters = this.adventure.characters.filter(character => character.userId === currentUser.id);
 
       this.initMonsters();
     });
@@ -80,9 +82,6 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
             break;
           case AdventureMessageType.ROLL_INITIATIVE:
             this.characterTurns = message.message;
-            break;
-          case AdventureMessageType.SELECT_CHARACTER:
-            this.selectedCharacterId = message.message;
             break;
           case AdventureMessageType.UPDATE_CAMPAIGN:
             if (!message.message) {

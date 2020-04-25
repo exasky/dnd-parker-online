@@ -22,14 +22,13 @@
   <mat-divider class="m-2" [inset]="false"></mat-divider>
 
   <button *ngFor="let character of adventure.characters"
-          mat-raised-button [color]="character.id === selectedCharacterId ? 'warn' : 'primary'"
+          mat-raised-button [color]="character.name === currentInitiative.characterName ? 'warn' : 'primary'"
           class="flex-shrink-0 m-2"
           style="text-transform: capitalize"
           [ngbTooltip]="tooltipContent"
           tooltipClass="mw-75"
           [container]="'body'"
-          placement="left"
-          (click)="selectCharacter(character)">
+          placement="left">
     {{character.name}}
     <ng-template #tooltipContent>
       <app-character-tooltip-displayer [character]="character"
@@ -60,8 +59,8 @@
 
   <mat-divider class="m-2" [inset]="false"></mat-divider>
 
-  <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="endTurn()">
-<!--          [disabled]="disableActions || !myTurn">-->
+  <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="endTurn()"
+          [disabled]="disableActions || (!isMyTurn && !authService.isGM)">
     End turn
   </button>
 </div>

@@ -37,7 +37,7 @@ import {NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
 import {CharacterTooltipDisplayerComponent} from "./adventure/component/adventure/character/character-tooltip-displayer.component";
 import {RxStompService} from "@stomp/ng2-stompjs";
 import {AdventureWebsocketService} from "./common/service/ws/adventure.websocket.service";
-import {ActionPanelComponent} from "./adventure/component/adventure/action-panel/action-panel.component";
+import {ActionPanelComponent} from "./adventure/component/adventure/action/action-panel.component";
 import {DrawnCardDialogComponent} from "./adventure/component/adventure/item/drawn-card-dialog.component";
 import {DrawnCardWebsocketService} from "./common/service/ws/drawn-card.websocket.service";
 import {WebSocketWrapperService} from "./common/service/ws/web-socket-wrapper.service";
@@ -62,6 +62,7 @@ import {CharacterMobileDisplayerComponent} from "./adventure/component/adventure
 import {MatTabsModule} from "@angular/material/tabs";
 import {InitiativeDialogComponent} from "./adventure/component/adventure/initiative/initiative-dialog.component";
 import {InitiativeDisplayerComponent} from "./adventure/component/adventure/initiative/initiative-displayer.component";
+import {NextTurnDialogComponent} from "./adventure/component/adventure/action/next-turn-dialog.component";
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import {InitiativeDisplayerComponent} from "./adventure/component/adventure/init
     AdventureMobileComponent,
     CharacterMobileDisplayerComponent,
     InitiativeDialogComponent,
-    InitiativeDisplayerComponent
+    InitiativeDisplayerComponent,
+    NextTurnDialogComponent
   ],
   imports: [
     BrowserModule,

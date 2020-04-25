@@ -3,9 +3,10 @@ package com.exasky.dnd.adventure.service;
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.adventure.model.Character;
-import com.exasky.dnd.adventure.model.template.CharacterTemplate;
+import com.exasky.dnd.adventure.model.Initiative;
 import com.exasky.dnd.adventure.model.card.CharacterItem;
-import com.exasky.dnd.adventure.model.layer.item.*;
+import com.exasky.dnd.adventure.model.layer.item.LayerItem;
+import com.exasky.dnd.adventure.model.template.CharacterTemplate;
 import com.exasky.dnd.adventure.repository.*;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.common.exception.ValidationCheckException;
@@ -258,5 +259,24 @@ public class AdventureService {
         campaignRepository.save(campaign);
 
         return drawnCard;
+    }
+
+    @PreAuthorize("hasRole('ROLE_GM')")
+    public Initiative nextTurn(Long adventureId) {
+        Adventure adventure = getById(adventureId);
+
+        if (Objects.isNull(adventure)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.ADVENTURE.NOT_FOUND);
+        }
+
+        List<Initiative> characterTurns = adventure.getCampaign().getCharacterTurns();
+        int initiativeIdx = characterTurns.indexOf(adventure.getCurrentInitiative());
+
+        initiativeIdx = initiativeIdx == characterTurns.size() - 1 ? 0 : ++initiativeIdx;
+
+        adventure.setCurrentInitiative(characterTurns.get(initiativeIdx));
+        repository.save(adventure);
+
+        return adventure.getCurrentInitiative();
     }
 }

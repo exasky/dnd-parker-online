@@ -5,7 +5,6 @@ import {MatDialog} from "@angular/material/dialog";
 import {DiceService} from "../../../service/dice.service";
 import {AuthService} from "../../../../login/auth.service";
 import {AdventureService} from "../../../service/adventure.service";
-import {Character} from "../../../model/character";
 import {AudioService} from "../../../service/audio.service";
 import {AdventureCardService} from "../../../service/adventure-card.service";
 
@@ -15,9 +14,6 @@ import {AdventureCardService} from "../../../service/adventure-card.service";
 })
 export class ActionPanelComponent {
   @HostBinding('class') cssClasses = "flex-grow d-flex flex-column";
-
-  @Input()
-  selectedCharacterId: number;
 
   @Input()
   currentInitiative: Initiative;
@@ -40,16 +36,13 @@ export class ActionPanelComponent {
               public audioService: AudioService) {
   }
 
+  get isMyTurn(): boolean {
+    return this.authService.currentUserValue.characters.some(char => this.currentInitiative.characterName === char.name);
+  }
+
   rollDices() {
     if (!this.disableActions) {
       this.diceService.openDiceDialog(this.adventure.id);
-    }
-  }
-
-  selectCharacter(character: Character) {
-    if (!this.disableActions) {
-      this.adventureService.selectCharacter(this.adventure.id,
-        character.id === this.selectedCharacterId ? -1 : character.id);
     }
   }
 
@@ -61,7 +54,7 @@ export class ActionPanelComponent {
 
   endTurn() {
     if (!this.disableActions) {
-      // this.adventureService.endTurn(this.adventure.id, getCurrentPlayer)
+      this.adventureService.askNextTurn(this.adventure.id);
     }
   }
 

@@ -15,7 +15,11 @@
 
       </div>
       <div class="flex-1 d-flex justify-content-center align-items-center">
-        <h3 class="mb-0">{{adventure.name}}</h3>
+        <h3 class="mb-0">{{adventure.name}}
+          <ng-container *ngIf="!authService.isGM">
+            ({{getCharacterNamesFromId(authService.currentUserValue.id)}})
+          </ng-container>
+        </h3>
       </div>
       <div class="flex-1 d-flex justify-content-end align-items-center mr-2">
         <button mat-raised-button (click)="actionPanelDrawer.toggle()">Show actions</button>
@@ -54,12 +58,12 @@
            (mouseout)="onMouseOut()">
         <ng-container *ngIf="otherPlayersCursors">
           <div *ngFor="let pc of otherPlayersCursors"
-               class="player-cursor d-flex flex-column player-{{getCharacterNamesFromId(pc.userId)[0].name}}"
+               class="player-cursor d-flex flex-column player-{{getCharacterNamesFromId(pc.userId)[0]}}"
                [ngStyle]="{'top': pc.y + 'px',
                    'left': pc.x + 'px'}">
             <mat-icon style="transform: rotate(-90deg)">near_me</mat-icon>
             <span *ngFor="let char of getCharacterNamesFromId(pc.userId)">
-              {{char.name}}
+              {{char}}
             </span>
             ({{pc.username}})
           </div>
@@ -161,8 +165,7 @@
         <app-action-panel [adventure]="adventure"
                           [currentInitiative]="currentTurn"
                           [initiatives]="charactersTurns"
-                          [disableActions]="disableActions"
-                          [selectedCharacterId]="selectedCharacterId"></app-action-panel>
+                          [disableActions]="disableActions"></app-action-panel>
       </div>
     </mat-drawer>
   </mat-drawer-container>

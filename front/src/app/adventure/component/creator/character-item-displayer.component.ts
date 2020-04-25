@@ -4,7 +4,7 @@ import {MatTreeFlatDataSource, MatTreeFlattener} from "@angular/material/tree";
 import {FlatTreeControl} from "@angular/cdk/tree";
 
 /**
- * Food data with nested structure.
+ * Food adventureId with nested structure.
  * Each node has a name and an optional list of children.
  */
 interface ItemNode {
