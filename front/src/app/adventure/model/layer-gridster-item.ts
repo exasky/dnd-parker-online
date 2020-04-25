@@ -1,7 +1,6 @@
 import {GridsterItem} from "angular-gridster2";
 import {LayerElementType} from "./adventure";
-import {CharacterItem} from "./character";
-import {MonsterTemplate} from "./monster";
+import {ChestItem, DoorItem, MonsterItem, TrapItem} from "./item";
 
 export interface LayerGridsterItem extends GridsterItem {
   id?: number;
@@ -10,21 +9,14 @@ export interface LayerGridsterItem extends GridsterItem {
   name: string;
 }
 
-export interface TrapLayerGridsterItem extends LayerGridsterItem {
-  shown: boolean;
-  deactivated: boolean
+export interface TrapLayerGridsterItem extends LayerGridsterItem, TrapItem {
 }
 
-export interface DoorLayerGridsterItem extends LayerGridsterItem {
-  vertical: boolean;
-  open: boolean
+export interface DoorLayerGridsterItem extends LayerGridsterItem, DoorItem {
 }
 
-export interface ChestLayerGridsterItem extends LayerGridsterItem {
-  specificCard: CharacterItem;
+export interface ChestLayerGridsterItem extends LayerGridsterItem, ChestItem {
 }
 
-export interface MonsterLayerGridsterItem extends LayerGridsterItem {
-  hp: number;
-  monster: MonsterTemplate;
+export interface MonsterLayerGridsterItem extends LayerGridsterItem, MonsterItem {
 }

@@ -34,6 +34,12 @@ public final class Constant {
             public static final String NOT_FOUND = PREFIX + "NOT_FOUND";
         }
 
+        public static final class MONSTER {
+            private static final String PREFIX = "MONSTER.";
+
+            public static final String NOT_FOUND = PREFIX + "NOT_FOUND";
+        }
+
         public static final class CHARACTER_ITEM {
             private static final String PREFIX = "CHARACTER_ITEM.";
 

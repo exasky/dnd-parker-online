@@ -6,6 +6,7 @@ import {HttpClient} from "@angular/common/http";
 import {CharacterItem} from "../model/character";
 import {AlertMessage} from "../model/alert-message";
 import {MonsterTemplate} from "../model/monster";
+import {MonsterItem} from "../model/item";
 
 @Injectable({
   providedIn: "root"
@@ -29,18 +30,22 @@ export class GmService {
   }
 
   previousAdventure(adventureId: number | string) {
-    return this.http.get(GmService.API_URL + '/previous-adventure/' + adventureId).subscribe(() => {});
+    return this.http.get(GmService.API_URL + '/previous-adventure/' + adventureId).subscribe();
   }
 
   nextAdventure(adventureId: number | string) {
-    return this.http.get(GmService.API_URL + '/next-adventure/' + adventureId).subscribe(() => {});
+    return this.http.get(GmService.API_URL + '/next-adventure/' + adventureId).subscribe();
   }
 
   sendAlert(adventureId: number | string, alertMessage: AlertMessage) {
-    return this.http.post(GmService.API_URL + '/send-alert/' + adventureId, alertMessage).subscribe(() => {});
+    return this.http.post(GmService.API_URL + '/send-alert/' + adventureId, alertMessage).subscribe();
   }
 
   playSound(adventureId: number, audioFile: string) {
-    return this.http.get(GmService.API_URL + '/play-sound/' + adventureId + '/' + audioFile).subscribe(() => {});
+    return this.http.get(GmService.API_URL + '/play-sound/' + adventureId + '/' + audioFile).subscribe();
+  }
+
+  updateMonster(adventureId: number, monster: MonsterItem) {
+    return this.http.post(GmService.API_URL + '/update-monster/' + adventureId + '/' + monster.id, monster).subscribe();
   }
 }

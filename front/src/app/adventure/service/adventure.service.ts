@@ -5,7 +5,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {SimpleCampaign} from "../model/campaign";
 import {MouseMove} from "../model/adventure-message";
-import {CharacterTemplate} from "../model/character";
+import {Character, CharacterTemplate} from "../model/character";
 
 @Injectable({
   providedIn: "root"
@@ -55,8 +55,8 @@ export class AdventureService {
     this.http.get(AdventureService.API_URL + '/select-character/' + adventureId + '/' + characterId).subscribe();
   }
 
-  updateCharacter(adventureId, characterId, character) {
-    this.http.post(AdventureService.API_URL + '/update-character/' + adventureId + '/' + characterId, character).subscribe();
+  updateCharacter(adventureId, character: Character) {
+    this.http.post(AdventureService.API_URL + '/update-character/' + adventureId + '/' + character.id, character).subscribe();
   }
 
   selectMonster(adventureId, layerItemId) {

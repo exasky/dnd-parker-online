@@ -27,7 +27,7 @@ export class CharacterMobileDisplayerComponent {
   }
 
   updateCharacter(character: Character) {
-    this.adventureService.updateCharacter(this.adventureId, character.id, character);
+    this.adventureService.updateCharacter(this.adventureId, character);
   }
 
   openSelectCardEquippedItem() {

@@ -5,11 +5,11 @@ import {AdventureMessage, AdventureMessageType} from "../../../model/adventure-m
 import {Subscription} from "rxjs";
 import {AdventureWebsocketService} from "../../../../common/service/ws/adventure.websocket.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Adventure, LayerElementType, LayerItem} from "../../../model/adventure";
+import {Adventure, LayerElementType, LayerItem, MonsterLayerItem} from "../../../model/adventure";
 import {AdventureService} from "../../../service/adventure.service";
 import {AuthService} from "../../../../login/auth.service";
-import {Monster} from "../../../model/monster";
 import {Character} from "../../../model/character";
+import {MonsterItem} from "../../../model/item";
 
 @Component({
   selector: 'app-adventure-mobile',
@@ -22,7 +22,7 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
   adventure: Adventure;
   adventureWSObs: Subscription;
 
-  monsters: Monster[] = [];
+  monsters: MonsterItem[] = [];
 
   selectedCharacterId: number;
   selectedMonsterId: number;
@@ -51,20 +51,29 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
         const message: AdventureMessage = receivedMsg.data;
         switch (message.type) {
           case AdventureMessageType.GOTO:
-            this.router.navigateByUrl('adventure/' + message.message).then(() => {
-              window.location.reload();
-            });
+            this.router.navigateByUrl('adventure/' + message.message).then(() => window.location.reload());
             break;
           case AdventureMessageType.ADD_LAYER_ITEM:
             const newLayerItem: LayerItem = message.message;
             if (newLayerItem.element.type === LayerElementType.MONSTER) {
-              this.addMonster(newLayerItem);
+              this.monsters.push(newLayerItem as MonsterLayerItem);
             }
             break;
           case AdventureMessageType.REMOVE_LAYER_ITEM:
-            const layerItemId = message.message;
-            const monsterToRemove = this.monsters.find(monsterItem => monsterItem.layerItemId === layerItemId);
-            this.removeMonster(monsterToRemove);
+            const layerItem: LayerItem = message.message;
+            if (layerItem.element.type === LayerElementType.MONSTER) {
+              const foundMonster = this.monsters.find(monster => monster.id === layerItem.id);
+              if (foundMonster) {
+                this.removeMonster(foundMonster);
+              }
+            }
+            break;
+          case AdventureMessageType.UPDATE_MONSTER:
+            const monster: MonsterLayerItem = message.message;
+            const monsterToUpdate = this.monsters.find(m => m.id === monster.id);
+            if (monsterToUpdate) {
+              monsterToUpdate.hp = monster.hp;
+            }
             break;
           case AdventureMessageType.SELECT_CHARACTER:
             this.selectedCharacterId = message.message;
@@ -78,7 +87,6 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
               });
             } else {
               const updatedAdventure: Adventure = message.message;
-              // this.adventure.characters = updatedAdventure.characters;
               updatedAdventure.characters.forEach(updatedCharacter => {
                 const toUpdate = this.adventure.characters.find(advChar => advChar.id === updatedCharacter.id);
                 toUpdate.maxMp = updatedCharacter.maxMp;
@@ -121,27 +129,10 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
   }
 
   private initMonsters() {
-    this.adventure.otherItems
-      .filter(item => item.element.type === LayerElementType.MONSTER)
-      .forEach(monsterItem => {
-        if (!this.monsters.some(monster => monster.layerItemId === monsterItem.id)) {
-          this.addMonster(monsterItem);
-        }
-      })
+    this.adventure.monsters.forEach(advMonster => this.monsters.push(advMonster));
   }
 
-  private addMonster(item: LayerItem) {
-    const monsterIdx = this.monsters.length !== 0 ? this.monsters[this.monsters.length - 1].index + 1 : 0;
-    this.monsters.push({
-      layerItemId: item.id,
-      hp: 0,
-      name: item.element.name,
-      index: monsterIdx
-    })
-  }
-
-  private removeMonster(monster: Monster) {
-    if (!monster) return;
+  private removeMonster(monster: MonsterItem) {
     this.monsters.splice(this.monsters.indexOf(monster), 1);
   }
 }

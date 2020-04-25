@@ -7,10 +7,3 @@ export class MonsterTemplate {
   armor: number;
   element: LayerElement;
 }
-
-export class Monster {
-  layerItemId: number;
-  name: string;
-  index: number;
-  hp: number;
-}

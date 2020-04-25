@@ -4,17 +4,23 @@ import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.adventure.model.card.CharacterItem;
 import com.exasky.dnd.adventure.model.layer.LayerElement;
+import com.exasky.dnd.adventure.model.layer.item.MonsterLayerItem;
 import com.exasky.dnd.adventure.model.template.MonsterTemplate;
 import com.exasky.dnd.adventure.repository.CharacterItemRepository;
 import com.exasky.dnd.adventure.repository.LayerElementRepository;
 import com.exasky.dnd.adventure.service.AdventureService;
+import com.exasky.dnd.common.Constant;
+import com.exasky.dnd.common.exception.ValidationCheckException;
 import com.exasky.dnd.gameMaster.repository.MonsterTemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @PreAuthorize("hasRole('ROLE_GM')")
 @Service
@@ -77,5 +83,26 @@ public class GMService {
             campaign.setCurrentAdventure(newCurrentAdventure);
             return newCurrentAdventure.getId();
         }
+    }
+
+    @Transactional
+    public MonsterLayerItem updateMonster(Long adventureId, Long monsterId, MonsterLayerItem toBo) {
+        Adventure adventure = adventureService.getById(adventureId);
+
+        if (Objects.isNull(adventure)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.ADVENTURE.NOT_FOUND);
+        }
+
+        Optional<MonsterLayerItem> optMonster
+                = adventure.getMonsters().stream().filter(advMonster -> advMonster.getId().equals(monsterId)).findFirst();
+
+        if (!optMonster.isPresent()) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.MONSTER.NOT_FOUND);
+        }
+
+        MonsterLayerItem toUpdate = optMonster.get();
+        toUpdate.setHp(toBo.getHp());
+
+        return toUpdate;
     }
 }

@@ -1,5 +1,5 @@
-import {Character, CharacterItem} from "./character";
-import {MonsterTemplate} from "./monster";
+import {Character} from "./character";
+import {ChestItem, DoorItem, MonsterItem, TrapItem} from "./item";
 
 export class Adventure {
   id: number;
@@ -41,23 +41,16 @@ export interface LayerItem {
   element: LayerElement;
 }
 
-export interface TrapLayerItem extends LayerItem {
-  shown: boolean;
-  deactivated: boolean;
+export interface TrapLayerItem extends LayerItem, TrapItem {
 }
 
-export interface DoorLayerItem extends LayerItem {
-  vertical: boolean;
-  open: boolean
+export interface DoorLayerItem extends LayerItem, DoorItem {
 }
 
-export interface ChestLayerItem extends LayerItem {
-  specificCard: CharacterItem;
+export interface ChestLayerItem extends LayerItem, ChestItem {
 }
 
-export interface MonsterLayerItem extends LayerItem {
-  hp: number;
-  monster: MonsterTemplate;
+export interface MonsterLayerItem extends LayerItem, MonsterItem {
 }
 
 export interface LayerElement {

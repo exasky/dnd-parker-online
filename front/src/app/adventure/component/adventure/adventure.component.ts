@@ -37,7 +37,7 @@ import {DiceDialogComponent} from "./dice/dice-dialog.component";
 import {DiceWebsocketService} from "../../../common/service/ws/dice.websocket.service";
 import {MatDrawer} from "@angular/material/sidenav";
 import {AdventureWebsocketService} from "../../../common/service/ws/adventure.websocket.service";
-import {Monster, MonsterTemplate} from "../../model/monster";
+import {MonsterTemplate} from "../../model/monster";
 import {AlertMessage, AlertMessageType} from "../../model/alert-message";
 import {
   ChestLayerGridsterItem,
@@ -92,7 +92,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   disableActions: boolean = false;
 
-  monsters: Monster[] = [];
   selectedCharacterId: number;
   selectedMonsterId: number;
 
@@ -191,6 +190,13 @@ export class AdventureComponent implements OnInit, OnDestroy {
               toUpdate.mp = character.mp;
               toUpdate.equippedItems = character.equippedItems;
               toUpdate.backpackItems = character.backpackItems;
+            }
+            break;
+          case AdventureMessageType.UPDATE_MONSTER:
+            const monster: MonsterLayerItem = message.message;
+            const monsterToUpdate = this.findInDashboard(monster) as MonsterLayerGridsterItem;
+            if (monsterToUpdate) {
+              monsterToUpdate.hp = monster.hp;
             }
             break;
           case AdventureMessageType.ADD_LAYER_ITEM:
@@ -495,6 +501,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       this.adventureService.updateLayerItem(this.adventure.id, AdventureUtils.existingGridsterItemToLayerItem(item));
     }
   }
+
   // endregion
 
   private getLayerIndex(element: LayerElement) {
@@ -525,18 +532,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
     if (this.selectedItem && this.selectedItem.id === itemToPush.id) {
       this.selectedItem = itemToPush;
     }
-
-    if (itemToPush.type === LayerElementType.MONSTER) {
-      if (!this.monsters.some(monster => monster.layerItemId === itemToPush.id)) {
-        const monsterIdx = this.monsters.length !== 0 ? this.monsters[this.monsters.length - 1].index + 1 : 0;
-        this.monsters.push({
-          layerItemId: itemToPush.id,
-          hp: 0,
-          name: itemToPush.name,
-          index: monsterIdx
-        })
-      }
-    }
   }
 
   updateItem(item: LayerItem, layerIndex = 0) {
@@ -560,9 +555,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
     if (!item) return;
     const dashboardItem = this.findInDashboard(item);
     this.dashboard.splice(this.dashboard.indexOf(dashboardItem), 1);
-    if (dashboardItem.type === LayerElementType.MONSTER) {
-      this.monsters.splice(this.monsters.findIndex(monster => monster.layerItemId === item.id), 1);
-    }
   }
 
   // TODO create utils function (when CHARACTER will be part of layer element list)
@@ -637,13 +629,15 @@ export class AdventureComponent implements OnInit, OnDestroy {
     return baseLayerItem
   }
 
-
-
   tooltipDisabled(itemType: LayerElementType): boolean {
     return [LayerElementType.CHARACTER, LayerElementType.MONSTER].indexOf(itemType) === -1;
   }
 
   private findInDashboard(item: LayerItem) {
     return this.dashboard.find(ditem => ditem.id === item.id && ditem.type === item.element.type);
+  }
+
+  get monsters(): MonsterLayerGridsterItem[] {
+    return this.dashboard.filter(layerItem => layerItem.type === LayerElementType.MONSTER) as MonsterLayerGridsterItem[];
   }
 }

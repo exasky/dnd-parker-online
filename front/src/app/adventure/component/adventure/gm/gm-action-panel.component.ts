@@ -1,5 +1,4 @@
 import {Component, EventEmitter, HostBinding, Input, Output} from "@angular/core";
-import {Monster} from "../../../model/monster";
 import {MatDialog} from "@angular/material/dialog";
 import {Character} from "../../../model/character";
 import {AlertMessageDialogComponent} from "./alert-message-dialog.component";
@@ -7,6 +6,8 @@ import {GmService} from "../../../service/gm.service";
 import {AdventureService} from "../../../service/adventure.service";
 import {Router} from "@angular/router";
 import {MatDrawer} from "@angular/material/sidenav";
+import {MonsterLayerItem} from "../../../model/adventure";
+import {MonsterItem} from "../../../model/item";
 
 @Component({
   selector: 'app-gm-action-panel',
@@ -26,7 +27,7 @@ export class GmActionPanelComponent {
   characters: Character[];
 
   @Input()
-  monsters: Monster[];
+  monsters: MonsterItem[];
 
   @Input()
   selectedMonsterId: number;
@@ -120,8 +121,12 @@ export class GmActionPanelComponent {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  updateMonster(monster: MonsterItem) {
+    this.gmService.updateMonster(this.adventureId, monster as MonsterLayerItem);
+  }
+
   updateCharacter(character: Character) {
-    this.adventureService.updateCharacter(this.adventureId, character.id, character);
+    this.adventureService.updateCharacter(this.adventureId, character);
   }
 
   openMobileVersion() {

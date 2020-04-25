@@ -4,6 +4,7 @@ public class AdventureMessageDto {
     public enum AdventureMessageType {
         UPDATE_CAMPAIGN,
         UPDATE_CHARACTER,
+        UPDATE_MONSTER,
         GOTO,
         MOUSE_MOVE,
         ADD_LAYER_ITEM,

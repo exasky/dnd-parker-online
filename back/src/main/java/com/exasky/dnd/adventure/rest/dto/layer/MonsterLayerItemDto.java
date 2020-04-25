@@ -13,6 +13,10 @@ public class MonsterLayerItemDto extends LayerItemDto<MonsterLayerItemDto, Monst
         return MonsterLayerItemDto.toDto(bos, MonsterLayerItemDto.class);
     }
 
+    public static MonsterLayerItemDto toDto(MonsterLayerItem bo) {
+        return MonsterLayerItemDto.toDto(bo, MonsterLayerItemDto.class);
+    }
+
     @Override
     public MonsterLayerItem createBoInstance(Long id) {
         return new MonsterLayerItem(id);
