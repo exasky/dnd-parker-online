@@ -11,9 +11,10 @@ import {CampaignService} from "../adventure/service/campaign.service";
   templateUrl: './index.component.html'
 })
 export class IndexComponent implements OnInit {
-  @HostBinding('class') cssClass = "flex-grow d-flex justify-content-center";
+  @HostBinding('class') cssClass = "d-flex flex-column align-items-center justify-content-evenly " +
+    "offset-lg-3 col-lg-6 " +
+    "offset-md-1 col-md-10 ";
 
-  public adventures: { id: number; name: string }[];
   public campaigns: SimpleCampaign[];
 
   constructor(private adventureService: AdventureService,
