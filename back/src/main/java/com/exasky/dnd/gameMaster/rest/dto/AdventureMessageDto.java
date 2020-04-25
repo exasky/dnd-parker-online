@@ -5,6 +5,7 @@ public class AdventureMessageDto {
         UPDATE_CAMPAIGN,
         UPDATE_CHARACTER,
         UPDATE_MONSTER,
+        ROLL_INITIATIVE,
         GOTO,
         MOUSE_MOVE,
         ADD_LAYER_ITEM,
@@ -13,7 +14,8 @@ public class AdventureMessageDto {
         SELECT_CHARACTER,
         SELECT_MONSTER,
         ALERT,
-        SOUND
+        SOUND,
+        CLOSE_DIALOG
     }
 
     private AdventureMessageType type;

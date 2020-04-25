@@ -41,6 +41,10 @@ public class Character {
     @JoinColumn(name = "campaign_id")
     private Campaign campaign;
 
+    @OneToOne
+    @JoinColumn(name = "initiative_id")
+    private Initiative characterTurn;
+
     @ManyToMany
     @JoinTable(name = "character_equipment",
             joinColumns = @JoinColumn(name = "character_id", table = "character_item"),
@@ -128,6 +132,14 @@ public class Character {
 
     public void setMaxMp(Short maxMp) {
         this.maxMp = maxMp;
+    }
+
+    public Initiative getCharacterTurn() {
+        return characterTurn;
+    }
+
+    public void setCharacterTurn(Initiative characterTurn) {
+        this.characterTurn = characterTurn;
     }
 
     public Short getBackPackSize() {

@@ -15,9 +15,6 @@
 
   <mat-divider class="mx-2 mb-2 mt-0" [inset]="false"></mat-divider>
 
-  <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="drawCard()" [disabled]="disableActions">
-    Draw card
-  </button>
   <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="rollDices()" [disabled]="disableActions">
     Roll dices
   </button>
@@ -41,9 +38,28 @@
                                        cardHeight="300"></app-character-tooltip-displayer>
     </ng-template>
   </button>
+
+  <mat-divider class="m-2" [inset]="false"></mat-divider>
+  <button mat-raised-button color="accent" class="flex-shrink-0 m-2"
+          [ngbTooltip]="tooltipContent"
+          tooltipClass="mw-75"
+          [container]="'body'"
+          placement="left">
+    Current initiative
+    <ng-template #tooltipContent>
+      <app-initiative-displayer [initiatives]="initiatives"></app-initiative-displayer>
+    </ng-template>
+  </button>
+  <ng-container *ngIf="authService.isGM">
+    <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="rollInitiative()"
+            [disabled]="disableActions">
+      Roll initiative
+    </button>
+  </ng-container>
 </div>
 
 <div class="flex-shrink-0 d-flex flex-column justify-content-end" *ngIf="authService.isGM">
-  <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="prevAdventure()">Previous adventure</button>
+  <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="prevAdventure()">Previous adventure
+  </button>
   <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="nextAdventure()">Next adventure</button>
 </div>

@@ -1,0 +1,7 @@
+<h1 mat-dialog-title>Initiative</h1>
+
+<app-initiative-displayer mat-dialog-content [initiatives]="data.initiatives"></app-initiative-displayer>
+
+<mat-dialog-actions class="d-flex justify-content-center" *ngIf="authService.isGM">
+  <button mat-button (click)="this.close()">Close</button>
+</mat-dialog-actions>

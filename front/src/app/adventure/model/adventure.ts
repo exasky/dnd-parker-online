@@ -13,6 +13,8 @@ export class Adventure {
   monsters: MonsterLayerItem[];
   otherItems: LayerItem[];
 
+  characterTurns: Initiative[];
+
   characters: Character[];
 
   constructor() {
@@ -21,6 +23,11 @@ export class Adventure {
     this.doors = [];
     this.otherItems = []
   }
+}
+
+export class Initiative {
+  characterName: string;
+  number: number;
 }
 
 export class Board {

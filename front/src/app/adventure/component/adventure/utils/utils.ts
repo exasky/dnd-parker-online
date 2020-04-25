@@ -13,6 +13,7 @@ import {
   MonsterLayerItem,
   TrapLayerItem
 } from "../../../model/adventure";
+import {Character} from "../../../model/character";
 
 export class AdventureUtils {
   static baseGridsterItemToLayerItem(item: LayerGridsterItem): LayerItem {
@@ -55,5 +56,17 @@ export class AdventureUtils {
         break;
     }
     return baseLayerItem;
+  }
+
+  static updateCharacter(character: Character, toUpdateCharacters: Character[]): void {
+    const toUpdate = toUpdateCharacters.find(advChar => advChar.id === character.id);
+    if (toUpdate) {
+      toUpdate.maxHp = character.maxHp;
+      toUpdate.hp = character.hp;
+      toUpdate.maxMp = character.maxMp;
+      toUpdate.mp = character.mp;
+      toUpdate.equippedItems = character.equippedItems;
+      toUpdate.backpackItems = character.backpackItems;
+    }
   }
 }

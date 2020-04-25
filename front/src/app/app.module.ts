@@ -37,7 +37,7 @@ import {NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
 import {CharacterTooltipDisplayerComponent} from "./adventure/component/adventure/character/character-tooltip-displayer.component";
 import {RxStompService} from "@stomp/ng2-stompjs";
 import {AdventureWebsocketService} from "./common/service/ws/adventure.websocket.service";
-import {ActionPanelComponent} from "./adventure/component/adventure/action/action-panel.component";
+import {ActionPanelComponent} from "./adventure/component/adventure/action-panel/action-panel.component";
 import {DrawnCardDialogComponent} from "./adventure/component/adventure/item/drawn-card-dialog.component";
 import {DrawnCardWebsocketService} from "./common/service/ws/drawn-card.websocket.service";
 import {WebSocketWrapperService} from "./common/service/ws/web-socket-wrapper.service";
@@ -60,6 +60,8 @@ import {AdventureMobileComponent} from "./adventure/component/adventure/mobile/a
 import {LayoutModule} from "@angular/cdk/layout";
 import {CharacterMobileDisplayerComponent} from "./adventure/component/adventure/mobile/character-mobile-displayer.component";
 import {MatTabsModule} from "@angular/material/tabs";
+import {InitiativeDialogComponent} from "./adventure/component/adventure/initiative/initiative-dialog.component";
+import {InitiativeDisplayerComponent} from "./adventure/component/adventure/initiative/initiative-displayer.component";
 
 @NgModule({
   declarations: [
@@ -86,7 +88,9 @@ import {MatTabsModule} from "@angular/material/tabs";
     SelectCardDialogComponent,
     AdventureIndexComponent,
     AdventureMobileComponent,
-    CharacterMobileDisplayerComponent
+    CharacterMobileDisplayerComponent,
+    InitiativeDialogComponent,
+    InitiativeDisplayerComponent
   ],
   imports: [
     BrowserModule,
@@ -123,8 +127,9 @@ import {MatTabsModule} from "@angular/material/tabs";
     MatTabsModule
   ],
   entryComponents: [
-    AlertMessageDialogComponent, ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent,
-    SelectCardDialogComponent
+    // Not necessary with ivy, keep just in case
+    //AlertMessageDialogComponent, ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent,
+    //SelectCardDialogComponent, InitiativeDialogComponent
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},

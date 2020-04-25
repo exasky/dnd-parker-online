@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="exasky (generated)" id="1587836728068-2">
+        <createTable tableName="initiative">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="initiativePK"/>
+            </column>
+            <column name="number" type="SMALLINT"/>
+            <column name="campaign_id" type="BIGINT"/>
+            <column name="character_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587836728068-3">
+        <addColumn tableName="dnd_character">
+            <column name="initiative_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587836728068-4">
+        <addForeignKeyConstraint baseColumnNames="character_id" baseTableName="initiative" constraintName="FK4xmwmvs2ubp1pnmr52nixym7b" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="dnd_character" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587836728068-5">
+        <addForeignKeyConstraint baseColumnNames="initiative_id" baseTableName="dnd_character" constraintName="FK99scr3l67r3std6aaa0pequfs" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="initiative" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587836728068-6">
+        <addForeignKeyConstraint baseColumnNames="campaign_id" baseTableName="initiative" constraintName="FKbjstvimbtmamua03qyoftgy51" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="campaign" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

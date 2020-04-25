@@ -29,6 +29,10 @@ export class GmService {
     return this.http.get<MonsterTemplate[]>(GmService.API_URL + '/monster-templates')
   }
 
+  rollInitiative(adventureId: number | string) {
+    return this.http.get(GmService.API_URL + '/initiative/' + adventureId).subscribe();
+  }
+
   previousAdventure(adventureId: number | string) {
     return this.http.get(GmService.API_URL + '/previous-adventure/' + adventureId).subscribe();
   }
@@ -47,5 +51,9 @@ export class GmService {
 
   updateMonster(adventureId: number, monster: MonsterItem) {
     return this.http.post(GmService.API_URL + '/update-monster/' + adventureId + '/' + monster.id, monster).subscribe();
+  }
+
+  closeDialog(adventureId: number) {
+    return this.http.get(GmService.API_URL + '/close/' + adventureId).subscribe();
   }
 }

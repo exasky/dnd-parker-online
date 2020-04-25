@@ -32,6 +32,9 @@ public class Campaign {
     @OneToMany(mappedBy = "campaign", orphanRemoval = true, cascade = CascadeType.ALL)
     List<Character> characters = new ArrayList<>();
 
+    @OneToMany(mappedBy = "campaign", orphanRemoval = true, cascade = CascadeType.ALL)
+    List<Initiative> characterTurns = new ArrayList<>();
+
     public Campaign() {
     }
 
@@ -97,6 +100,19 @@ public class Campaign {
     public void updateCharacters(List<Character> characters) {
         this.characters.clear();
         this.characters.addAll(characters);
+    }
+
+    public List<Initiative> getCharacterTurns() {
+        return characterTurns;
+    }
+
+    public void setCharacterTurns(List<Initiative> characterTurns) {
+        this.characterTurns = characterTurns;
+    }
+
+    public void updateCharacterTurns(List<Initiative> characterTurns) {
+        this.characterTurns.clear();
+        this.characterTurns.addAll(characterTurns);
     }
     // endregion
 }

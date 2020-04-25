@@ -2,6 +2,7 @@ package com.exasky.dnd.adventure.rest.dto;
 
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.rest.dto.layer.*;
+import com.exasky.dnd.gameMaster.rest.dto.InitiativeDto;
 
 import java.util.List;
 
@@ -17,22 +18,9 @@ public class AdventureDto {
     private List<MonsterLayerItemDto> monsters;
     private List<SimpleLayerItemDto> otherItems;
 
+    private List<InitiativeDto> characterTurns;
+
     private List<CharacterDto> characters;
-
-    public static Adventure toBo(AdventureDto dto) {
-        Adventure adventure = new Adventure(dto.id);
-
-        adventure.setName(dto.getName());
-        adventure.setLevel(dto.getLevel());
-        adventure.setBoards(BoardDto.toBo(dto.getBoards()));
-        adventure.setTraps(TrapLayerItemDto.toBo(dto.getTraps()));
-        adventure.setDoors(DoorLayerItemDto.toBo(dto.getDoors()));
-        adventure.setChests(ChestLayerItemDto.toBo(dto.getChests()));
-        adventure.setMonsters(MonsterLayerItemDto.toBo(dto.getMonsters()));
-        adventure.setOtherItems(SimpleLayerItemDto.toBo(dto.getOtherItems()));
-
-        return adventure;
-    }
 
     public static AdventureDto toDto(Adventure bo) {
         AdventureDto dto = new AdventureDto();
@@ -41,11 +29,15 @@ public class AdventureDto {
         dto.setName(bo.getName());
         dto.setLevel(bo.getLevel());
         dto.setBoards(BoardDto.toDto(bo.getBoards()));
+
         dto.setTraps(TrapLayerItemDto.toDto(bo.getTraps()));
         dto.setDoors(DoorLayerItemDto.toDto(bo.getDoors()));
         dto.setChests(ChestLayerItemDto.toDto(bo.getChests()));
         dto.setMonsters(MonsterLayerItemDto.toDto(bo.getMonsters()));
         dto.setOtherItems(SimpleLayerItemDto.toDto(bo.getOtherItems()));
+
+        dto.setCharacterTurns(InitiativeDto.toDto(bo.getCampaign().getCharacterTurns()));
+
         dto.setCharacters(CharacterDto.toDto(bo.getCampaign().getCharacters()));
 
         return dto;
@@ -122,6 +114,14 @@ public class AdventureDto {
 
     public void setOtherItems(List<SimpleLayerItemDto> otherItems) {
         this.otherItems = otherItems;
+    }
+
+    public List<InitiativeDto> getCharacterTurns() {
+        return characterTurns;
+    }
+
+    public void setCharacterTurns(List<InitiativeDto> characterTurns) {
+        this.characterTurns = characterTurns;
     }
 
     public List<CharacterDto> getCharacters() {

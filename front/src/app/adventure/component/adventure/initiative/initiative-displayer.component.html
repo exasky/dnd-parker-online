@@ -1,0 +1,4 @@
+<div class="d-flex flex-column m-2" *ngFor="let init of initiatives; let i = index">
+  <p>N°{{i + 1}}</p>
+  <img [src]="'assets/character/' + init.characterName + '-character.jpg'"/>
+</div>

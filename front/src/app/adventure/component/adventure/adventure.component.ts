@@ -13,9 +13,11 @@ import {
   Board,
   ChestLayerItem,
   DoorLayerItem,
+  Initiative,
   LayerElement,
   LayerElementType,
-  LayerItem, MonsterLayerItem,
+  LayerItem,
+  MonsterLayerItem,
   TrapLayerItem
 } from "../../model/adventure";
 import {AdventureService} from "../../service/adventure.service";
@@ -42,14 +44,15 @@ import {AlertMessage, AlertMessageType} from "../../model/alert-message";
 import {
   ChestLayerGridsterItem,
   DoorLayerGridsterItem,
-  LayerGridsterItem, MonsterLayerGridsterItem,
+  LayerGridsterItem,
+  MonsterLayerGridsterItem,
   TrapLayerGridsterItem
 } from "../../model/layer-gridster-item";
 import {AudioService} from "../../service/audio.service";
-import {Character} from "../../model/character";
 import {AdventureCardService} from "../../service/adventure-card.service";
 import {CardMessage, CardMessageType} from "../../model/card-message";
 import {AdventureUtils} from "./utils/utils";
+import {InitiativeDialogComponent} from "./initiative/initiative-dialog.component";
 
 @Component({
   selector: 'app-adventure',
@@ -77,6 +80,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   LayerElementType = LayerElementType; // Used to access LayerElementType in html
 
   adventure: Adventure;
+  charactersTurns: Initiative[];
 
   addableLayerElements: LayerElement[];
   monsterTemplates: MonsterTemplate[];
@@ -125,6 +129,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
       this.adventure = adventure;
       const currentUser = this.authService.currentUserValue;
       currentUser.currentCharacters = this.adventure.characters.filter(character => character.userId === currentUser.id);
+
+      this.charactersTurns = this.adventure.characterTurns;
 
       this.gamePanelYSize = this.adventure.boards.length;
       this.gamePanelXSize = this.adventure.boards.map((row: Board[]) => row.length).sort()[0];
@@ -181,16 +187,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             }
             break;
           case AdventureMessageType.UPDATE_CHARACTER:
-            const character: Character = message.message;
-            const toUpdate = this.adventure.characters.find(advChar => advChar.id === character.id);
-            if (toUpdate) {
-              toUpdate.maxHp = character.maxHp;
-              toUpdate.hp = character.hp;
-              toUpdate.maxMp = character.maxMp;
-              toUpdate.mp = character.mp;
-              toUpdate.equippedItems = character.equippedItems;
-              toUpdate.backpackItems = character.backpackItems;
-            }
+            AdventureUtils.updateCharacter(message.message, this.adventure.characters);
             break;
           case AdventureMessageType.UPDATE_MONSTER:
             const monster: MonsterLayerItem = message.message;
@@ -198,6 +195,16 @@ export class AdventureComponent implements OnInit, OnDestroy {
             if (monsterToUpdate) {
               monsterToUpdate.hp = monster.hp;
             }
+            break;
+          case AdventureMessageType.ROLL_INITIATIVE:
+            const charTurns: Initiative[] = message.message;
+            this.charactersTurns = charTurns;
+            this.disableActions = true;
+            this.currentDialog = this.dialog.open(InitiativeDialogComponent,
+              DialogUtils.getDefaultConfig({adventureId: this.adventure.id, initiatives: charTurns}));
+            this.currentDialog.afterClosed().subscribe(() => {
+              this.disableActions = false;
+            });
             break;
           case AdventureMessageType.ADD_LAYER_ITEM:
             const newLayerItem = message.message;
@@ -236,6 +243,12 @@ export class AdventureComponent implements OnInit, OnDestroy {
           case AdventureMessageType.SOUND:
             const fileToPlay: string = message.message;
             this.audioService.playSound('/assets/sound/' + fileToPlay);
+            break;
+          case AdventureMessageType.CLOSE_DIALOG:
+            if (this.currentDialog) {
+              this.currentDialog.close();
+              this.currentDialog = null;
+            }
             break;
         }
       }

@@ -2,10 +2,12 @@ package com.exasky.dnd.gameMaster.service;
 
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.Campaign;
+import com.exasky.dnd.adventure.model.Initiative;
 import com.exasky.dnd.adventure.model.card.CharacterItem;
 import com.exasky.dnd.adventure.model.layer.LayerElement;
 import com.exasky.dnd.adventure.model.layer.item.MonsterLayerItem;
 import com.exasky.dnd.adventure.model.template.MonsterTemplate;
+import com.exasky.dnd.adventure.repository.CampaignRepository;
 import com.exasky.dnd.adventure.repository.CharacterItemRepository;
 import com.exasky.dnd.adventure.repository.LayerElementRepository;
 import com.exasky.dnd.adventure.service.AdventureService;
@@ -18,9 +20,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @PreAuthorize("hasRole('ROLE_GM')")
 @Service
@@ -29,16 +33,19 @@ public class GMService {
     private final LayerElementRepository layerElementRepository;
     private final CharacterItemRepository characterItemRepository;
     private final MonsterTemplateRepository monsterTemplateRepository;
+    private final CampaignRepository campaignRepository;
     private final AdventureService adventureService;
 
     @Autowired
     public GMService(LayerElementRepository repository,
                      CharacterItemRepository characterItemRepository,
                      MonsterTemplateRepository monsterTemplateRepository,
+                     CampaignRepository campaignRepository,
                      AdventureService adventureService) {
         this.layerElementRepository = repository;
         this.characterItemRepository = characterItemRepository;
         this.monsterTemplateRepository = monsterTemplateRepository;
+        this.campaignRepository = campaignRepository;
         this.adventureService = adventureService;
     }
 
@@ -53,6 +60,36 @@ public class GMService {
 
     public List<MonsterTemplate> getMonsterTemplates() {
         return monsterTemplateRepository.findAll();
+    }
+
+    @Transactional
+    public List<Initiative> rollInitiative(Long adventureId) {
+        Campaign campaign = campaignRepository.getByAdventureId(adventureId);
+
+        if (Objects.isNull(campaign)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+        }
+
+        List<Initiative> charTurns = campaign.getCharacters().stream().map(character -> {
+            Initiative charTurn = new Initiative();
+            charTurn.setCampaign(campaign);
+            charTurn.setCharacter(character);
+            return charTurn;
+        }).collect(Collectors.toList());
+
+        Initiative gmTurn = new Initiative();
+        gmTurn.setCampaign(campaign);
+        charTurns.add(gmTurn);
+
+        Collections.shuffle(charTurns);
+
+        for (short initIdx = 0; initIdx < charTurns.size(); initIdx++) {
+            charTurns.get(initIdx).setNumber(initIdx);
+        }
+
+        campaign.updateCharacterTurns(charTurns);
+
+        return charTurns;
     }
 
     @Transactional

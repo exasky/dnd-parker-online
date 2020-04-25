@@ -8,8 +8,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Adventure, LayerElementType, LayerItem, MonsterLayerItem} from "../../../model/adventure";
 import {AdventureService} from "../../../service/adventure.service";
 import {AuthService} from "../../../../login/auth.service";
-import {Character} from "../../../model/character";
 import {MonsterItem} from "../../../model/item";
+import {AdventureUtils} from "../utils/utils";
 
 @Component({
   selector: 'app-adventure-mobile',
@@ -88,28 +88,12 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
             } else {
               const updatedAdventure: Adventure = message.message;
               updatedAdventure.characters.forEach(updatedCharacter => {
-                const toUpdate = this.adventure.characters.find(advChar => advChar.id === updatedCharacter.id);
-                toUpdate.maxMp = updatedCharacter.maxMp;
-                toUpdate.mp = updatedCharacter.mp;
-                toUpdate.maxHp = updatedCharacter.maxHp;
-                toUpdate.hp = updatedCharacter.hp;
-
-                toUpdate.equippedItems = updatedCharacter.equippedItems;
-                toUpdate.backpackItems = updatedCharacter.backpackItems;
+                AdventureUtils.updateCharacter(updatedCharacter, this.adventure.characters);
               })
             }
             break;
           case AdventureMessageType.UPDATE_CHARACTER:
-            const character: Character = message.message;
-            const toUpdate = this.adventure.characters.find(advChar => advChar.id === character.id);
-            if (toUpdate) {
-              toUpdate.maxHp = character.maxHp;
-              toUpdate.hp = character.hp;
-              toUpdate.maxMp = character.maxMp;
-              toUpdate.mp = character.mp;
-              toUpdate.equippedItems = character.equippedItems;
-              toUpdate.backpackItems = character.backpackItems;
-            }
+            AdventureUtils.updateCharacter(message.message, this.adventure.characters);
             break;
           case AdventureMessageType.SELECT_MONSTER:
             this.selectedMonsterId = message.message;

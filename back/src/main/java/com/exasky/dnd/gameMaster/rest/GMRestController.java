@@ -1,6 +1,5 @@
 package com.exasky.dnd.gameMaster.rest;
 
-import com.exasky.dnd.adventure.model.layer.item.MonsterLayerItem;
 import com.exasky.dnd.adventure.rest.dto.AlertMessageDto;
 import com.exasky.dnd.adventure.rest.dto.layer.LayerElementDto;
 import com.exasky.dnd.adventure.rest.dto.layer.MonsterLayerItemDto;
@@ -8,6 +7,7 @@ import com.exasky.dnd.adventure.rest.dto.template.MonsterTemplateDto;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
 import com.exasky.dnd.gameMaster.rest.dto.CharacterItemDto;
+import com.exasky.dnd.gameMaster.rest.dto.InitiativeDto;
 import com.exasky.dnd.gameMaster.rest.dto.MonsterItemDto;
 import com.exasky.dnd.gameMaster.service.GMService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +48,21 @@ public class GMRestController {
 
     @PostMapping("/update-monster/{adventureId}/{monsterId}")
     public void updateMonster(@PathVariable Long adventureId, @PathVariable Long monsterId, @RequestBody MonsterItemDto dto) {
-        MonsterLayerItem monster = gmService.updateMonster(adventureId, monsterId, MonsterItemDto.toBo(dto));
+        MonsterLayerItemDto resultDto = MonsterLayerItemDto.toDto(gmService.updateMonster(adventureId, monsterId, MonsterItemDto.toBo(dto)));
 
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_MONSTER);
-        wsDto.setMessage(MonsterLayerItemDto.toDto(monster));
+        wsDto.setMessage(resultDto);
+        messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+    }
+
+    @GetMapping("/initiative/{adventureId}")
+    public void rollInitiative(@PathVariable Long adventureId) {
+        List<InitiativeDto> dto = InitiativeDto.toDto(gmService.rollInitiative(adventureId));
+
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.ROLL_INITIATIVE);
+        wsDto.setMessage(dto);
         messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 
@@ -87,6 +97,13 @@ public class GMRestController {
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.SOUND);
         wsDto.setMessage(audioFile);
+        messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+    }
+
+    @GetMapping("/close/{adventureId}")
+    public void closeDialog(@PathVariable Long adventureId) {
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.CLOSE_DIALOG);
         messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 }
