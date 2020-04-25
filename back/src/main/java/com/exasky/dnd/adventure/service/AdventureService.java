@@ -270,11 +270,19 @@ public class AdventureService {
         }
 
         List<Initiative> characterTurns = adventure.getCampaign().getCharacterTurns();
-        int initiativeIdx = characterTurns.indexOf(adventure.getCurrentInitiative());
 
-        initiativeIdx = initiativeIdx == characterTurns.size() - 1 ? 0 : ++initiativeIdx;
+        short nextNumber = (short) (adventure.getCurrentInitiative().getNumber() + 1);
+        if (nextNumber > characterTurns.size()) {
+            nextNumber = 1;
+        }
 
-        adventure.setCurrentInitiative(characterTurns.get(initiativeIdx));
+        for (Initiative init : characterTurns) {
+            if (init.getNumber() == nextNumber) {
+                adventure.setCurrentInitiative(init);
+                break;
+            }
+        }
+
         repository.save(adventure);
 
         return adventure.getCurrentInitiative();
