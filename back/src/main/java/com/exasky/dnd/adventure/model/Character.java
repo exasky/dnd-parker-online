@@ -46,7 +46,6 @@ public class Character {
             joinColumns = @JoinColumn(name = "character_id", table = "character_item"),
             inverseJoinColumns = @JoinColumn(name = "character_item_id"))
     private List<CharacterItem> equipments = new ArrayList<>();
-    ;
 
     @ManyToMany
     @JoinTable(name = "character_backpack",

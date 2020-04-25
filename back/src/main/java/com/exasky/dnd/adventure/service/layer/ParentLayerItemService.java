@@ -61,7 +61,7 @@ public abstract class ParentLayerItemService<LAYER_ITEM extends LayerItem> {
 
         specific_copy(layerItem, toCopy, adventure);
 
-        return repository.save(layerItem);
+        return layerItem;
     }
 
     public void specific_copy(LAYER_ITEM newLayerItem, LAYER_ITEM toCopy, Adventure adventure) {

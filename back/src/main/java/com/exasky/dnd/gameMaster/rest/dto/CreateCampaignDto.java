@@ -2,7 +2,6 @@ package com.exasky.dnd.gameMaster.rest.dto;
 
 import com.exasky.dnd.adventure.model.Campaign;
 import com.exasky.dnd.common.Constant;
-import org.apache.tomcat.util.bcel.Const;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;

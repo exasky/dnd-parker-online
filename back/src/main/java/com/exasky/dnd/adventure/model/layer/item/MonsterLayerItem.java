@@ -1,6 +1,5 @@
 package com.exasky.dnd.adventure.model.layer.item;
 
-import com.exasky.dnd.adventure.model.card.CharacterItem;
 import com.exasky.dnd.adventure.model.template.MonsterTemplate;
 
 import javax.persistence.*;

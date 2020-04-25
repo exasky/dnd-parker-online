@@ -1,7 +1,6 @@
 package com.exasky.dnd.adventure.rest.dto;
 
 import com.exasky.dnd.adventure.model.Adventure;
-import com.exasky.dnd.adventure.rest.dto.layer.LayerElementDto;
 
 import java.util.ArrayList;
 import java.util.List;
