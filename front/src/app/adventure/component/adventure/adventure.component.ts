@@ -185,7 +185,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
               this.adventure = message.message;
               this.adventure.otherItems
                 .filter(layerItem => layerItem.element.type === LayerElementType.CHARACTER)
-                .forEach(layerItem => this.updateItem(layerItem, 1));
+                .forEach(layerItem => this.updateItem(layerItem));
             }
             break;
           case AdventureMessageType.UPDATE_CHARACTER:
@@ -206,11 +206,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
             break;
           case AdventureMessageType.ADD_LAYER_ITEM:
             const newLayerItem = message.message;
-            this.addItem(newLayerItem, this.getLayerIndex(newLayerItem.element));
+            this.addItem(newLayerItem);
             break;
           case AdventureMessageType.UPDATE_LAYER_ITEM:
             const updatedLayerItem = message.message;
-            this.updateItem(updatedLayerItem, this.getLayerIndex(updatedLayerItem.element));
+            this.updateItem(updatedLayerItem);
             break;
           case AdventureMessageType.REMOVE_LAYER_ITEM:
             const deletedLayerItem = message.message;
@@ -246,7 +246,31 @@ export class AdventureComponent implements OnInit, OnDestroy {
             this.openDialog(NextTurnDialogComponent, this.adventure.id);
             break;
           case AdventureMessageType.VALIDATE_NEXT_TURN:
+            const dashboardCharacters = this.dashboard.filter(item => item.type === LayerElementType.CHARACTER);
+
+            let prevCharacterTurn
+            if (this.currentTurn) {
+              prevCharacterTurn = dashboardCharacters.find(char => char.name === this.currentTurn.characterName);
+            }
+
             this.currentTurn = message.message;
+
+            if (prevCharacterTurn) {
+              if (this.selectedItem === prevCharacterTurn) {
+                this.selectedItem = null;
+              }
+              prevCharacterTurn.dragEnabled = this.isDragEnabledForItem(prevCharacterTurn);
+              this.dashboard.splice(this.dashboard.indexOf(prevCharacterTurn), 1);
+              this.dashboard.push({...prevCharacterTurn});
+            }
+
+            const nextCharacterTurn = dashboardCharacters.find(char => char.name === this.currentTurn.characterName);
+            if (nextCharacterTurn) {
+              nextCharacterTurn.dragEnabled = this.isDragEnabledForItem(nextCharacterTurn);
+              this.dashboard.splice(this.dashboard.indexOf(nextCharacterTurn), 1);
+              this.dashboard.push({...nextCharacterTurn});
+            }
+
             this.closeDialog();
             break;
         }
@@ -352,11 +376,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   private initDashboard() {
     this.dashboard = [];
-    this.adventure.traps.forEach(trap => this.updateItem(trap, 0));
-    this.adventure.doors.forEach(door => this.updateItem(door, 0));
-    this.adventure.chests.forEach(door => this.updateItem(door, 0));
-    this.adventure.monsters.forEach(monster => this.updateItem(monster, this.getLayerIndex(monster.element)));
-    this.adventure.otherItems.forEach(item => this.updateItem(item, this.getLayerIndex(item.element)));
+    this.adventure.traps.forEach(trap => this.updateItem(trap));
+    this.adventure.doors.forEach(door => this.updateItem(door));
+    this.adventure.chests.forEach(door => this.updateItem(door));
+    this.adventure.monsters.forEach(monster => this.updateItem(monster));
+    this.adventure.otherItems.forEach(item => this.updateItem(item));
   }
 
   stopItemDrag(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
@@ -512,19 +536,19 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   // region Update items in gridster
-  addItem(item: LayerItem, layerIndex = 0) {
+  addItem(item: LayerItem) {
     if (!item) return;
     const itemToPush = {
       id: item.id,
       x: item.positionX,
       y: item.positionY,
-      layerIndex,
+      layerIndex: this.getLayerIndex(item.element),
       elementId: item.element.id,
       rows: item.element.rowSize,
       cols: item.element.colSize,
       name: item.element.name,
       type: item.element.type,
-      dragEnabled: this.isDragEnabledForItem(item)
+      dragEnabled: this.isDragEnabledForItem(item.element)
     };
     this.addSpecificToDashboardItem(itemToPush, item);
     this.dashboard.push(itemToPush);
@@ -534,14 +558,14 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateItem(item: LayerItem, layerIndex = 0) {
+  updateItem(item: LayerItem) {
     if (!item) return;
     const dashboardItem = this.findInDashboard(item);
     if (!dashboardItem) {
-      this.addItem(item, layerIndex);
+      this.addItem(item);
     } else {
       this.dashboard.splice(this.dashboard.indexOf(dashboardItem), 1);
-      this.addItem(item, layerIndex);
+      this.addItem(item);
     }
   }
 
@@ -592,12 +616,13 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isDragEnabledForItem(item: LayerItem): boolean {
+  private isDragEnabledForItem(item: { type: LayerElementType, name: string }): boolean {
     const user = this.authService.currentUserValue;
 
     return user.role === ROLE_GM || (
-      item.element.type === LayerElementType.CHARACTER
-      && user.characters.find(char => char.name.toLowerCase() === item.element.name.toLowerCase()) !== undefined
+      item.type === LayerElementType.CHARACTER
+      && user.characters.some(char =>
+        char.name.toLowerCase() === item.name.toLowerCase() && char.name === this.currentTurn.characterName)
     )
   }
 
