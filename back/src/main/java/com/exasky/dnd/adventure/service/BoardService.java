@@ -6,6 +6,7 @@ import com.exasky.dnd.adventure.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -30,7 +31,13 @@ public class BoardService {
                 .collect(Collectors.toList());
     }
 
-    public Board copy(Adventure adventure, Board toCopy) {
+    public List<Board> copy(List<Board> toCopy, Adventure adventure) {
+        return Objects.isNull(toCopy)
+                ? new ArrayList<>()
+                : toCopy.stream().map(board -> copy(board, adventure)).collect(Collectors.toList());
+    }
+
+    public Board copy(Board toCopy, Adventure adventure) {
         Board toSave = new Board();
 
         toSave.setAdventure(adventure);

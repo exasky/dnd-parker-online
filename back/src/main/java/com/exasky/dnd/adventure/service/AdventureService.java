@@ -81,25 +81,11 @@ public class AdventureService {
         newAdventure.setName(toCopy.getName());
         newAdventure.setLevel(toCopy.getLevel());
 
-        newAdventure.setBoards(toCopy.getBoards().stream()
-                .map(board -> boardService.copy(newAdventure, board))
-                .collect(Collectors.toList()));
-
-        newAdventure.setTraps(toCopy.getTraps().stream()
-                .map(trap -> layerItemService.copy(trap, newAdventure))
-                .collect(Collectors.toList()));
-
-        newAdventure.setDoors(toCopy.getDoors().stream()
-                .map(trap -> layerItemService.copy(trap, newAdventure))
-                .collect(Collectors.toList()));
-
-        newAdventure.setChests(toCopy.getChests().stream()
-                .map(trap -> layerItemService.copy(trap, newAdventure))
-                .collect(Collectors.toList()));
-
-        newAdventure.setOtherItems(toCopy.getOtherItems().stream()
-                .map(trap -> layerItemService.copy(trap, newAdventure))
-                .collect(Collectors.toList()));
+        newAdventure.setBoards(boardService.copy(toCopy.getBoards(), newAdventure));
+        newAdventure.setTraps(layerItemService.copy(toCopy.getTraps(), newAdventure));
+        newAdventure.setDoors(layerItemService.copy(toCopy.getDoors(), newAdventure));
+        newAdventure.setChests(layerItemService.copy(toCopy.getChests(), newAdventure));
+        newAdventure.setOtherItems(layerItemService.copy(toCopy.getOtherItems(), newAdventure));
 
         return newAdventure;
     }
@@ -183,16 +169,15 @@ public class AdventureService {
 
     @SuppressWarnings("unchecked")
     private <T extends LayerItem> List<T> getElementListForLayerItem(Adventure adv, T layerItem) {
-        if (layerItem instanceof SimpleLayerItem) {
-            return (List<T>) adv.getOtherItems();
-        } else if (layerItem instanceof TrapLayerItem) {
-            return (List<T>) adv.getTraps();
-        } else if (layerItem instanceof DoorLayerItem) {
-            return (List<T>) adv.getDoors();
-        } else if (layerItem instanceof ChestLayerItem){
-            return (List<T>) adv.getChests();
-        } else {
-            throw new RuntimeException("Unable to find service for LayerItem type: " + layerItem.getLayerElement().getType());
+        switch (layerItem.getLayerElement().getType()) {
+            case TRAP:
+                return (List<T>) adv.getTraps();
+            case DOOR:
+                return (List<T>) adv.getDoors();
+            case CHEST:
+                return (List<T>) adv.getChests();
+            default:
+                return (List<T>) adv.getOtherItems();
         }
     }
 

@@ -5,6 +5,7 @@ import com.exasky.dnd.adventure.model.layer.item.*;
 import com.exasky.dnd.adventure.service.layer.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -39,6 +40,12 @@ public class BridgeLayerItemService {
                 : update(layerItem);
     }
 
+    public <T extends LayerItem> List<T> copy(List<T> toCopy, Adventure adventure) {
+        return Objects.isNull(toCopy)
+                ? new ArrayList<>()
+                : toCopy.stream().map(copy -> getService(copy).copy(copy, adventure)).collect(Collectors.toList());
+    }
+
     public <T extends LayerItem> T copy(T toCopy, Adventure adventure) {
         return getService(toCopy).copy(toCopy, adventure);
     }
@@ -57,16 +64,15 @@ public class BridgeLayerItemService {
 
     @SuppressWarnings("unchecked")
     private <T extends LayerItem, S extends ParentLayerItemService<T>> S getService(T layerItem) {
-        if (layerItem instanceof SimpleLayerItem) {
-            return (S) simpleLayerItemService;
-        } else if (layerItem instanceof DoorLayerItem) {
-            return (S) doorLayerItemService;
-        } else if (layerItem instanceof TrapLayerItem) {
-            return (S) trapLayerItemService;
-        } else if (layerItem instanceof ChestLayerItem) {
-            return (S) chestLayerItemService;
-        } else {
-            throw new RuntimeException("Unable to find service for LayerItem type: " + layerItem.getLayerElement().getType());
+        switch (layerItem.getLayerElement().getType()) {
+            case CHEST:
+                return (S) chestLayerItemService;
+            case DOOR:
+                return (S) doorLayerItemService;
+            case TRAP:
+                return (S) trapLayerItemService;
+            default:
+                return (S) simpleLayerItemService;
         }
     }
 
