@@ -48,6 +48,7 @@ import {CardMessage, CardMessageType} from "../../model/card-message";
 import {AdventureUtils} from "./utils/utils";
 import {InitiativeDialogComponent} from "./initiative/initiative-dialog.component";
 import {NextTurnDialogComponent} from "./action/next-turn-dialog.component";
+import {DiceAttackDialogComponent} from "./dice/dice-attack-dialog.component";
 
 @Component({
   selector: 'app-adventure',
@@ -302,6 +303,30 @@ export class AdventureComponent implements OnInit, OnDestroy {
             this.openDialog(DiceDialogComponent, {adventureId, user: receivedMsg.data.message});
             this.currentDialog.afterClosed().subscribe(() => {
               this.actionPanelDrawer.opened = drawerOpenedSaved;
+            });
+            break;
+          case DiceMessageType.OPEN_ATTACK_DIALOG:
+            const saveDrawerOpen = this.actionPanelDrawer.opened;
+            this.actionPanelDrawer.opened = true;
+
+            const attackParameters = diceMessage.message;
+            let fromAttack, toAttack;
+
+            if (attackParameters.isMonsterAttack) {
+              fromAttack = this.monsters.find(monster => monster.id === attackParameters.fromAttackId);
+            } else {
+              fromAttack = this.characters.find(character => character.character.id === attackParameters.fromAttackId);
+            }
+
+            if (attackParameters.isMonsterAttacked) {
+              toAttack = this.monsters.find(monster => monster.id === attackParameters.toAttackId);
+            } else {
+              toAttack = this.characters.find(character => character.id === attackParameters.toAttackId);
+            }
+
+            this.openDialog(DiceAttackDialogComponent, {adventureId, user: attackParameters.user, fromAttack, toAttack});
+            this.currentDialog.afterClosed().subscribe(() => {
+              this.actionPanelDrawer.opened = saveDrawerOpen;
             });
             break;
           case DiceMessageType.CLOSE_DIALOG:
@@ -582,6 +607,12 @@ export class AdventureComponent implements OnInit, OnDestroy {
     if (!item) return;
     const dashboardItem = this.findInDashboard(item);
     this.dashboard.splice(this.dashboard.indexOf(dashboardItem), 1);
+    if (this.selectedItem && this.selectedItem.type === dashboardItem.type && this.selectedItem.id === dashboardItem.id) {
+      this.selectedItem = null;
+    }
+    if (dashboardItem.type === LayerElementType.MONSTER && this.selectedMonsterId === dashboardItem.id) {
+      this.selectedMonsterId = null;
+    }
   }
 
   private isDragEnabledForItem(item: { type: LayerElementType, name: string }): boolean {

@@ -13,14 +13,19 @@ import {SocketResponseType} from "../../../../common/model/websocket.response";
 import {SimpleUser} from "../../../model/simple-user";
 import {ToasterService} from "../../../../common/service/toaster.service";
 import {AudioService} from "../../../service/audio.service";
+import {CharacterItem, MonsterItem} from "../../../model/item";
+import {LayerElementType, LayerItem} from "../../../model/adventure";
+import {LayerGridsterItem} from "../../../model/layer-gridster-item";
 
 @Component({
-  selector: 'app-dice-dialog',
-  templateUrl: './dice-dialog.component.html',
+  selector: 'app-dice-attack-dialog',
+  templateUrl: './dice-attack-dialog.component.html',
 })
-export class DiceDialogComponent implements OnInit, OnDestroy {
+export class DiceAttackDialogComponent implements OnInit, OnDestroy {
 
   @ViewChildren('diceCmp') diceComponents: QueryList<DiceComponent>;
+
+  LayerElementType = LayerElementType;
 
   rollDisabled = true;
 
@@ -35,7 +40,12 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
               private diceService: DiceService,
               private toaster: ToasterService,
               private audioService: AudioService,
-              @Inject(MAT_DIALOG_DATA) public data: { adventureId: string, user: SimpleUser }) {
+              @Inject(MAT_DIALOG_DATA) public data: {
+                adventureId: string,
+                user: SimpleUser,
+                fromAttack: LayerGridsterItem,
+                toAttack: LayerGridsterItem
+              }) {
   }
 
   ngOnInit(): void {

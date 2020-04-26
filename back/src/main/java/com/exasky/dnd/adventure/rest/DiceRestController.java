@@ -3,6 +3,7 @@ package com.exasky.dnd.adventure.rest;
 
 import com.exasky.dnd.adventure.rest.dto.SimpleUserDto;
 import com.exasky.dnd.adventure.rest.dto.dice.DiceMessageDto;
+import com.exasky.dnd.adventure.rest.dto.dice.OpenAttackDiceDto;
 import com.exasky.dnd.adventure.rest.dto.dice.SelectDicesDto;
 import com.exasky.dnd.adventure.service.DiceService;
 import com.exasky.dnd.common.Constant;
@@ -41,6 +42,17 @@ public class DiceRestController {
         dto.setMessage(SimpleUserDto.toDto(getCurrentUser()));
 
         this.messagingTemplate.convertAndSend("/topic/dice/" + adventureId, dto);
+    }
+
+    @PostMapping("/attack/{adventureId}")
+    public void openAttackDiceRoller(@PathVariable Long adventureId, @RequestBody OpenAttackDiceDto dto) {
+        dto.setUser(SimpleUserDto.toDto(getCurrentUser()));
+
+        DiceMessageDto wsDto = new DiceMessageDto();
+        wsDto.setType(DiceMessageDto.DiceMessageType.OPEN_ATTACK_DIALOG);
+        wsDto.setMessage(dto);
+
+        this.messagingTemplate.convertAndSend("/topic/dice/" + adventureId, wsDto);
     }
 
     @PostMapping("/select-dices/{adventureId}")

@@ -63,6 +63,7 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {InitiativeDialogComponent} from "./adventure/component/adventure/initiative/initiative-dialog.component";
 import {InitiativeDisplayerComponent} from "./adventure/component/adventure/initiative/initiative-displayer.component";
 import {NextTurnDialogComponent} from "./adventure/component/adventure/action/next-turn-dialog.component";
+import {DiceAttackDialogComponent} from "./adventure/component/adventure/dice/dice-attack-dialog.component";
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import {NextTurnDialogComponent} from "./adventure/component/adventure/action/ne
     CharacterMobileDisplayerComponent,
     InitiativeDialogComponent,
     InitiativeDisplayerComponent,
-    NextTurnDialogComponent
+    NextTurnDialogComponent,
+    DiceAttackDialogComponent
   ],
   imports: [
     BrowserModule,

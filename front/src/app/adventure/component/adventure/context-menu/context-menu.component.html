@@ -5,6 +5,18 @@
 </div>
 <mat-menu #contextMenu="matMenu">
   <ng-template matMenuContent let-item="item">
+    <ng-container *ngIf="item.type === LayerElementType.MONSTER">
+      <button mat-menu-item (click)="attackMonster(item)" [disabled]="">
+        <mat-icon>track_changes</mat-icon>
+        Attack
+      </button>
+    </ng-container>
+    <ng-container *ngIf="item.type === LayerElementType.CHARACTER">
+      <button mat-menu-item (click)="attackCharacter(item)" [disabled]="authService.isGM && !selectedMonsterId">
+        <mat-icon>track_changes</mat-icon>
+        Attack
+      </button>
+    </ng-container>
     <button *ngIf="authService.isGM && isItemFlippable(item.type)" mat-menu-item (click)="flipElement(item, $event)">
       <mat-icon>flip</mat-icon>
       Flip

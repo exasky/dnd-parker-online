@@ -18,7 +18,12 @@ export class DiceService {
   }
 
   openDiceDialog(adventureId): void {
-    this.http.get<void>(DiceService.API_URL + '/open/' + adventureId).subscribe();
+    this.http.get(DiceService.API_URL + '/open/' + adventureId).subscribe();
+  }
+
+  openDiceAttackDialog(adventureId, fromAttackId, toAttackId, isMonsterAttack: boolean, isMonsterAttacked: boolean) {
+    this.http.post(DiceService.API_URL + '/attack/' + adventureId,
+      {fromAttackId, toAttackId, isMonsterAttack, isMonsterAttacked}).subscribe();
   }
 
   selectDices(adventureId, diceIds: number[]) {

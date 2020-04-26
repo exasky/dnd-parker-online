@@ -9,7 +9,7 @@ import {
 import {
   CharacterLayerItem,
   ChestLayerItem,
-  DoorLayerItem,
+  DoorLayerItem, Initiative,
   LayerElementType,
   LayerItem,
   MonsterLayerItem,
@@ -17,6 +17,7 @@ import {
 } from "../../../model/adventure";
 import {Character} from "../../../model/character";
 import {GridsterItem} from "angular-gridster2";
+import {User} from "../../../../user/user";
 
 export class AdventureUtils {
   static baseGridsterItemToLayerItem(item: LayerGridsterItem): LayerItem {
@@ -110,5 +111,9 @@ export class AdventureUtils {
       default:
         break;
     }
+  }
+
+  static isMyTurn(currentUser: User, currentInitiative: Initiative): boolean {
+    return currentUser.characters.some(char => currentInitiative.characterName === char.name);
   }
 }

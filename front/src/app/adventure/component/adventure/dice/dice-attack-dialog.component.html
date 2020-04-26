@@ -1,0 +1,57 @@
+<div class="d-flex">
+  <div class="d-flex flex-column align-items-center justify-content-evenly">
+    Attacker
+    <ng-container *ngIf="data.fromAttack.type === LayerElementType.CHARACTER">
+      <img width="200" [src]="'assets/character/' + data.fromAttack['character'].name + '-character.jpg'">
+    </ng-container>
+    <ng-container *ngIf="data.fromAttack.type === LayerElementType.MONSTER">
+      <img width="200" [src]="'assets/monster/' + data.fromAttack['monster'].element.name + '-description.jpg'">
+    </ng-container>
+  </div>
+  <div class="d-flex flex-column">
+    <div class="d-flex justify-content-evenly flex-wrap mat-elevation-z3 p-2" style="border-radius: 4px">
+      <div *ngFor="let dice of allDices" class="m-1">
+        <img height="70px" width="70px"
+             style="border-radius: 5px"
+             [src]="'assets/dice/' + dice.name + '/1.jpeg'"
+             (click)="addToDiceList(dice)">
+      </div>
+    </div>
+    <mat-dialog-content>
+      <div class="d-flex flex-wrap justify-content-evenly">
+        <app-dice *ngFor="let dice of selectedDices"
+                  #diceCmp
+                  [diceType]="dice.name"
+                  (click)="removeDiceFromList(dice)"></app-dice>
+      </div>
+    </mat-dialog-content>
+  </div>
+  <div class="d-flex flex-column align-items-center justify-content-evenly">
+    Attacked
+    <ng-container *ngIf="data.toAttack.type === LayerElementType.CHARACTER">
+      <img width="200" [src]="'assets/character/' + data.toAttack['character'].name + '-character.jpg'">
+    </ng-container>
+    <ng-container *ngIf="data.toAttack.type === LayerElementType.MONSTER">
+      <img width="200" [src]="'assets/monster/' + data.toAttack['monster'].element.name + '-description.jpg'">
+    </ng-container>
+  </div>
+</div>
+<mat-dialog-actions class="d-flex justify-content-center position-relative">
+  <div class="position-absolute"
+       style="left: 0">
+    À {{data.user.username}}
+  </div>
+  <button *ngIf="!rollDisabled" mat-raised-button
+          (click)="rollDices()"
+          [disabled]="selectedDices.length === 0">
+    Roll dices !
+  </button>
+  <button mat-raised-button color="accent"
+          *ngIf="authService.isGM"
+          class="position-absolute"
+          style="right: 0"
+          (click)="this.close()">
+    Close
+  </button>
+  <div *ngIf="rollDisabled">C'est pas ton tour !</div>
+</mat-dialog-actions>

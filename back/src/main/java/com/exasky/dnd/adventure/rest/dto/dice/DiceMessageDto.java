@@ -3,6 +3,7 @@ package com.exasky.dnd.adventure.rest.dto.dice;
 public class DiceMessageDto {
     public enum DiceMessageType {
         OPEN_DIALOG,
+        OPEN_ATTACK_DIALOG,
         SELECT_DICES,
         ROLL_RESULT,
         CLOSE_DIALOG

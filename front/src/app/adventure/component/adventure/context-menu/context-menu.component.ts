@@ -1,12 +1,14 @@
 import {Component, Input, ViewChild} from "@angular/core";
 import {MatMenuTrigger} from "@angular/material/menu";
 import {
+  CharacterLayerGridsterItem,
   ChestLayerGridsterItem,
   DoorLayerGridsterItem,
   LayerGridsterItem,
+  MonsterLayerGridsterItem,
   TrapLayerGridsterItem
 } from "../../../model/layer-gridster-item";
-import {LayerElement, LayerElementType} from "../../../model/adventure";
+import {Initiative, LayerElement, LayerElementType} from "../../../model/adventure";
 import {AuthService} from "../../../../login/auth.service";
 import {AdventureService} from "../../../service/adventure.service";
 import {GmService} from "../../../service/gm.service";
@@ -17,6 +19,7 @@ import {AdventureCardService} from "../../../service/adventure-card.service";
 import {AdventureUtils} from "../utils/utils";
 import {CharacterItem} from "../../../model/item";
 import {CharacterEquipment} from "../../../model/character";
+import {DiceService} from "../../../service/dice.service";
 
 @Component({
   selector: 'app-context-menu',
@@ -34,6 +37,12 @@ export class ContextMenuComponent {
   @Input()
   characterItems: CharacterItem[];
 
+  @Input()
+  currentInitiative: Initiative;
+
+  @Input()
+  selectedMonsterId: number;
+
   LayerElementType = LayerElementType;
 
   contextMenuPosition = {x: '0px', y: '0px'};
@@ -42,6 +51,7 @@ export class ContextMenuComponent {
               private adventureService: AdventureService,
               private adventureCardService: AdventureCardService,
               private gmService: GmService,
+              private diceService: DiceService,
               private dialog: MatDialog) {
   }
 
@@ -57,7 +67,9 @@ export class ContextMenuComponent {
   }
 
   private isContextMenuEnabled(item: LayerGridsterItem) {
-    return this.authService.isGM || item.type === LayerElementType.CHEST;
+    return this.authService.isGM
+      || item.type === LayerElementType.CHEST
+      || ([LayerElementType.MONSTER, LayerElementType.CHARACTER].indexOf(item.type) !== -1 && AdventureUtils.isMyTurn(this.authService.currentUserValue, this.currentInitiative));
   }
 
   isItemFlippable(type: LayerElementType) {
@@ -110,8 +122,20 @@ export class ContextMenuComponent {
   setChestCard(item: ChestLayerGridsterItem) {
     this.dialog.open(SelectCardDialogComponent, DialogUtils.getDefaultConfig(item['cardId']))
       .afterClosed().subscribe((value: CharacterEquipment) => {
-        item.specificCard = value;
-        this.adventureService.updateLayerItem(this.adventureId, AdventureUtils.existingGridsterItemToLayerItem(item));
+      item.specificCard = value;
+      this.adventureService.updateLayerItem(this.adventureId, AdventureUtils.existingGridsterItemToLayerItem(item));
     });
+  }
+
+  attackMonster(item: MonsterLayerGridsterItem) {
+    const fromAttack = this.authService.currentUserValue.characters.find(char => char.name === this.currentInitiative.characterName);
+    const fromAttackId = fromAttack ? fromAttack.id : this.selectedMonsterId;
+    this.diceService.openDiceAttackDialog(this.adventureId, fromAttackId, item.id, !fromAttack, true);
+  }
+
+  attackCharacter(item: CharacterLayerGridsterItem) {
+    const fromAttack = this.authService.currentUserValue.characters.find(char => char.name === this.currentInitiative.characterName);
+    const fromAttackId = fromAttack ? fromAttack.id : this.selectedMonsterId;
+    this.diceService.openDiceAttackDialog(this.adventureId, fromAttackId, item.id, !fromAttack, false);
   }
 }
