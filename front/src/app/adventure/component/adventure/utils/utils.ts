@@ -1,4 +1,5 @@
 import {
+  CharacterLayerGridsterItem,
   ChestLayerGridsterItem,
   DoorLayerGridsterItem,
   LayerGridsterItem,
@@ -6,6 +7,7 @@ import {
   TrapLayerGridsterItem
 } from "../../../model/layer-gridster-item";
 import {
+  CharacterLayerItem,
   ChestLayerItem,
   DoorLayerItem,
   LayerElementType,
@@ -14,6 +16,7 @@ import {
   TrapLayerItem
 } from "../../../model/adventure";
 import {Character} from "../../../model/character";
+import {GridsterItem} from "angular-gridster2";
 
 export class AdventureUtils {
   static baseGridsterItemToLayerItem(item: LayerGridsterItem): LayerItem {
@@ -52,6 +55,10 @@ export class AdventureUtils {
         (baseLayerItem as MonsterLayerItem).hp = monsterLayerItem.hp;
         (baseLayerItem as MonsterLayerItem).monster = monsterLayerItem.monster;
         break;
+      case LayerElementType.CHARACTER:
+        const characterLayerItem = item as CharacterLayerGridsterItem;
+        (baseLayerItem as CharacterLayerItem).character = characterLayerItem.character;
+        break;
       default:
         break;
     }
@@ -67,6 +74,41 @@ export class AdventureUtils {
       toUpdate.mp = character.mp;
       toUpdate.equippedItems = character.equippedItems;
       toUpdate.backpackItems = character.backpackItems;
+    }
+  }
+
+  static addSpecificToDashboardItem(dashboardItem: GridsterItem, layerItem: LayerItem) {
+    switch (layerItem.element.type) {
+      case LayerElementType.CHARACTER:
+        const characterItem: CharacterLayerItem = layerItem as CharacterLayerItem;
+        const characterGridsterItem: CharacterLayerGridsterItem = dashboardItem as CharacterLayerGridsterItem;
+        characterGridsterItem.character = characterItem.character;
+        break;
+      case LayerElementType.DOOR:
+        const doorItem: DoorLayerItem = layerItem as DoorLayerItem;
+        const doorGridsterItem = dashboardItem as DoorLayerGridsterItem;
+        doorGridsterItem.vertical = doorItem.vertical;
+        doorGridsterItem.open = doorItem.open;
+        break;
+      case LayerElementType.TRAP:
+        const trapItem: TrapLayerItem = layerItem as TrapLayerItem;
+        const trapGridsterItem = dashboardItem as TrapLayerGridsterItem;
+        trapGridsterItem.shown = trapItem.shown;
+        trapGridsterItem.deactivated = trapItem.deactivated;
+        break;
+      case LayerElementType.CHEST:
+        const chestItem = layerItem as ChestLayerItem;
+        const chestGridsterItem = dashboardItem as ChestLayerGridsterItem;
+        chestGridsterItem.specificCard = chestItem.specificCard;
+        break;
+      case LayerElementType.MONSTER:
+        const monsterItem = layerItem as MonsterLayerItem;
+        const monsterGridsterItem = dashboardItem as MonsterLayerGridsterItem;
+        monsterGridsterItem.hp = monsterItem.hp;
+        monsterGridsterItem.monster = monsterItem.monster;
+        break;
+      default:
+        break;
     }
   }
 }

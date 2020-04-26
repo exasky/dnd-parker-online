@@ -3,14 +3,15 @@
   align-content: center;
   align-items: center;
   height: 60px;
+  position: relative;
 }
 
 .status-bar-text {
   position: absolute;
   padding: 10px;
-  left: 40%;
+  left: 0;
+  right: 0;
   color: white;
-  right: 40%;
   display: flex;
   justify-content: center;
 }

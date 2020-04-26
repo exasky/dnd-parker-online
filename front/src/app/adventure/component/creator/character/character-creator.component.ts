@@ -1,5 +1,5 @@
 import {Component, EventEmitter, HostBinding, Input, Output} from "@angular/core";
-import {Character, CharacterItem, CharacterTemplate} from "../../../model/character";
+import {Character, CharacterEquipment, CharacterTemplate} from "../../../model/character";
 import {MatSelectChange} from "@angular/material/select";
 
 @Component({
@@ -23,7 +23,7 @@ export class CharacterCreatorComponent {
   availableCharacters: CharacterTemplate[];
 
   @Input()
-  allCharacterItems: CharacterItem[];
+  allCharacterItems: CharacterEquipment[];
 
   @Output()
   deleteEvent: EventEmitter<Character> = new EventEmitter<Character>();
@@ -35,7 +35,7 @@ export class CharacterCreatorComponent {
     this.transferItem(ev, this.character.equippedItems);
   }
 
-  removeEquipmentItem(item: CharacterItem) {
+  removeEquipmentItem(item: CharacterEquipment) {
     this.character.equippedItems.splice(this.character.equippedItems.indexOf(item), 1);
   }
 
@@ -43,11 +43,11 @@ export class CharacterCreatorComponent {
     this.transferItem(ev, this.character.backpackItems);
   }
 
-  removeBackpackItem(item: CharacterItem) {
+  removeBackpackItem(item: CharacterEquipment) {
     this.character.backpackItems.splice(this.character.backpackItems.indexOf(item), 1);
   }
 
-  private transferItem(ev, toItemList: CharacterItem[]) {
+  private transferItem(ev, toItemList: CharacterEquipment[]) {
     ev.preventDefault();
     try {
       // Move case
@@ -69,12 +69,12 @@ export class CharacterCreatorComponent {
     }
   }
 
-  equipmentDragStartHandler(ev: DragEvent, item: CharacterItem) {
+  equipmentDragStartHandler(ev: DragEvent, item: CharacterEquipment) {
     ev.dataTransfer.setData('text/plain', JSON.stringify({from: this.positionInList, item: item.id, isFromEquipment: true}));
     ev.dataTransfer.dropEffect = 'move';
   }
 
-  backpackDragStartHandler(ev: DragEvent, item: CharacterItem) {
+  backpackDragStartHandler(ev: DragEvent, item: CharacterEquipment) {
     ev.dataTransfer.setData('text/plain', JSON.stringify({from: this.positionInList, item: item.id, isFromEquipment: false}));
     ev.dataTransfer.dropEffect = 'move';
   }

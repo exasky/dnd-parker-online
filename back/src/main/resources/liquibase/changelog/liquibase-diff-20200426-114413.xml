@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="exasky (generated)" id="1587901457882-2">
+        <createTable tableName="layer_item_character">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="layer_item_characterPK"/>
+            </column>
+            <column name="position_x" type="INT"/>
+            <column name="position_y" type="INT"/>
+            <column name="adventure_id" type="BIGINT"/>
+            <column name="layer_element_id" type="BIGINT"/>
+            <column name="character_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587901457882-3">
+        <addForeignKeyConstraint baseColumnNames="layer_element_id" baseTableName="layer_item_character" constraintName="FK8jkvmjycqcarptwvabirjco71" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="layer_element" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587901457882-4">
+        <addForeignKeyConstraint baseColumnNames="character_id" baseTableName="layer_item_character" constraintName="FKe92hi3e6o7ubb3kdpgbory8p8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="dnd_character" validate="true"/>
+    </changeSet>
+    <changeSet author="exasky (generated)" id="1587901457882-5">
+        <addForeignKeyConstraint baseColumnNames="adventure_id" baseTableName="layer_item_character" constraintName="FKjj7dcywoh1fvo98vr2weuwiwh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="adventure" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

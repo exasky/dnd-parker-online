@@ -37,9 +37,9 @@
     <mat-drawer #gmDrawer mode="side" position="start">
       <div class="d-flex flex-column h-100" style="min-width: 150px">
         <app-gm-action-panel [adventureId]="adventure.id"
-                             [initiatives]="charactersTurns"
+                             [initiatives]="characterTurns"
                              [monsters]="monsters"
-                             [characters]="adventure.characters"
+                             [characters]="characters"
                              [selectedMonsterId]="selectedMonsterId"
                              [cursorEnabled]="showCursor"
                              [exportable]="gmDrawer"
@@ -94,6 +94,7 @@
                          [ngbTooltip]="tipContent"
                          [disableTooltip]="tooltipDisabled(item.type)"
                          [container]="'body'"
+                         [placement]="['left', 'right', 'bottom', 'top']"
                          #t="ngbTooltip"
                          [class.selected]="selectedItem && selectedItem.id === item.id && selectedItem.type === item.type"
                          (mousedown)="t.close()"
@@ -163,8 +164,9 @@
     <mat-drawer #actionPanelDrawer mode="side" position="end">
       <div class="d-flex flex-column h-100" style="min-width: 150px">
         <app-action-panel [adventure]="adventure"
+                          [characterItems]="characters"
                           [currentInitiative]="currentTurn"
-                          [initiatives]="charactersTurns"
+                          [initiatives]="characterTurns"
                           [disableActions]="disableActions"></app-action-panel>
       </div>
     </mat-drawer>
@@ -172,6 +174,6 @@
 
   <app-context-menu #contextMenu
                     [adventureId]="adventure.id"
-                    [characters]="adventure.characters"
+                    [characterItems]="characters"
                     [addableLayerElements]="addableLayerElements"></app-context-menu>
 </ng-container>

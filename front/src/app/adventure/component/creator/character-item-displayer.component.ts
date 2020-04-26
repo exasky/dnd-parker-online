@@ -1,5 +1,5 @@
 import {Component, HostBinding, Input} from "@angular/core";
-import {CharacterItem} from "../../model/character";
+import {CharacterEquipment} from "../../model/character";
 import {MatTreeFlatDataSource, MatTreeFlattener} from "@angular/material/tree";
 import {FlatTreeControl} from "@angular/cdk/tree";
 
@@ -26,9 +26,9 @@ interface ExampleFlatNode {
 export class CharacterItemDisplayerComponent {
   @HostBinding('class') cssClass = 'd-flex flex-column'
 
-  _characterItems: CharacterItem[];
+  _characterItems: CharacterEquipment[];
   @Input()
-  set characterItems(characterItems: CharacterItem[]) {
+  set characterItems(characterItems: CharacterEquipment[]) {
     this._characterItems = characterItems;
     this.filterDataSource('');
   }
@@ -76,7 +76,7 @@ export class CharacterItemDisplayerComponent {
     }
   }
 
-  dragStartHandler(ev: DragEvent, item: CharacterItem) {
+  dragStartHandler(ev: DragEvent, item: CharacterEquipment) {
     ev.dataTransfer.setData('text/plain', item.id + '');
     ev.dataTransfer.dropEffect = 'copy';
   }

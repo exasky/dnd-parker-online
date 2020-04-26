@@ -1,6 +1,6 @@
 import {Component, HostBinding, Inject, OnInit} from "@angular/core";
 import {GmService} from "../../../service/gm.service";
-import {CharacterItem} from "../../../model/character";
+import {CharacterEquipment} from "../../../model/character";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
@@ -12,9 +12,9 @@ export class SelectCardDialogComponent implements OnInit {
   @HostBinding('style.width') width = '50vw';
   @HostBinding('class') cssClass = 'd-flex flex-column'
 
-  allCharacterItems: CharacterItem[];
+  allCharacterItems: CharacterEquipment[];
 
-  selectedCard: CharacterItem;
+  selectedCard: CharacterEquipment;
 
   constructor(private gmService: GmService,
               public dialogRef: MatDialogRef<SelectCardDialogComponent>,

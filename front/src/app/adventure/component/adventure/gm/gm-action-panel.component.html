@@ -85,25 +85,25 @@
     </mat-expansion-panel-header>
 
     <div class="d-flex flex-column">
-      <div *ngFor="let character of characters"
+      <div *ngFor="let charItem of characters"
            class="flex-grow d-flex align-items-center justify-content-around">
-        {{character.name.charAt(0).toUpperCase() + character.name.slice(1)}}
+        {{charItem.character.name.charAt(0).toUpperCase() + charItem.character.name.slice(1)}}
         <div class="d-flex flex-column">
           <mat-label style="padding-left: 8px">HP</mat-label>
           <mat-slider color="primary"
-                      [min]="0" [max]="character.maxHp" [step]="1"
+                      [min]="0" [max]="charItem.character.maxHp" [step]="1"
                       [thumbLabel]="true" [tickInterval]="1"
-                      [(ngModel)]="character.hp"
-                      (change)="updateCharacter(character)">
+                      [(ngModel)]="charItem.character.hp"
+                      (change)="updateCharacter(charItem)">
           </mat-slider>
         </div>
         <div class="d-flex flex-column">
           <mat-label style="padding-left: 8px">MP</mat-label>
           <mat-slider color="primary"
-                      [min]="0" [max]="character.maxMp" [step]="1"
+                      [min]="0" [max]="charItem.character.maxMp" [step]="1"
                       [thumbLabel]="true" [tickInterval]="1"
-                      [(ngModel)]="character.mp"
-                      (change)="updateCharacter(character)">
+                      [(ngModel)]="charItem.character.mp"
+                      (change)="updateCharacter(charItem)">
           </mat-slider>
         </div>
       </div>

@@ -21,17 +21,17 @@
 
   <mat-divider class="m-2" [inset]="false"></mat-divider>
 
-  <button *ngFor="let character of adventure.characters"
-          mat-raised-button [color]="character.name === currentInitiative.characterName ? 'warn' : 'primary'"
+  <button *ngFor="let charItem of characterItems"
+          mat-raised-button [color]="charItem.character.name === currentInitiative.characterName ? 'warn' : 'primary'"
           class="flex-shrink-0 m-2"
           style="text-transform: capitalize"
           [ngbTooltip]="tooltipContent"
-          tooltipClass="mw-75"
+          tooltipClass="mw-75 mh-75"
           [container]="'body'"
           placement="left">
-    {{character.name}}
+    {{charItem.character.name}}
     <ng-template #tooltipContent>
-      <app-character-tooltip-displayer [character]="character"
+      <app-character-tooltip-displayer [character]="charItem.character"
                                        [displayCard]="true"
                                        cardWidth="200"
                                        cardHeight="300"></app-character-tooltip-displayer>
@@ -41,7 +41,7 @@
   <mat-divider class="m-2" [inset]="false"></mat-divider>
   <button mat-raised-button color="accent" class="flex-shrink-0 m-2"
           [ngbTooltip]="tooltipContent"
-          tooltipClass="mw-75"
+          tooltipClass="mw-75 mh-75"
           [container]="'body'"
           placement="left">
     Current initiative

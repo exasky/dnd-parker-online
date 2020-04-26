@@ -1,6 +1,7 @@
 package com.exasky.dnd.adventure.rest.dto;
 
 import com.exasky.dnd.adventure.model.Character;
+import com.exasky.dnd.user.model.DnDUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +28,14 @@ public class CharacterDto {
     public static Character toBo(CharacterDto dto) {
         Character character = new Character(dto.id);
 
+        character.setUser(new DnDUser(dto.userId));
+        character.setName(dto.name);
+        character.setDisplayName(dto.displayName);
         character.setMaxHp(dto.maxHp);
         character.setHp(dto.hp);
         character.setMaxMp(dto.maxMp);
         character.setMp(dto.mp);
+        character.setBackPackSize(dto.backpackSize);
         character.setBackPack(CharacterItemDto.toBo(dto.getBackpackItems()));
         character.setEquipments(CharacterItemDto.toBo(dto.getEquippedItems()));
 

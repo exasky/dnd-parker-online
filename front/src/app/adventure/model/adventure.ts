@@ -1,5 +1,5 @@
 import {Character} from "./character";
-import {ChestItem, DoorItem, MonsterItem, TrapItem} from "./item";
+import {CharacterItem, ChestItem, DoorItem, MonsterItem, TrapItem} from "./item";
 
 export class Adventure {
   id: number;
@@ -11,12 +11,13 @@ export class Adventure {
   doors: DoorLayerItem[];
   chests: ChestLayerItem[];
   monsters: MonsterLayerItem[];
+  characters: CharacterLayerItem[];
   otherItems: LayerItem[];
 
   currentTurn: Initiative;
   characterTurns: Initiative[];
 
-  characters: Character[];
+  campaignCharacters: Character[];
 
   constructor() {
     this.boards = [];
@@ -59,6 +60,9 @@ export interface ChestLayerItem extends LayerItem, ChestItem {
 }
 
 export interface MonsterLayerItem extends LayerItem, MonsterItem {
+}
+
+export interface CharacterLayerItem extends LayerItem, CharacterItem {
 }
 
 export interface LayerElement {

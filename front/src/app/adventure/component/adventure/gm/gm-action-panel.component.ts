@@ -7,7 +7,7 @@ import {AdventureService} from "../../../service/adventure.service";
 import {Router} from "@angular/router";
 import {MatDrawer} from "@angular/material/sidenav";
 import {Initiative, MonsterLayerItem} from "../../../model/adventure";
-import {MonsterItem} from "../../../model/item";
+import {CharacterItem, MonsterItem} from "../../../model/item";
 
 @Component({
   selector: 'app-gm-action-panel',
@@ -27,7 +27,7 @@ export class GmActionPanelComponent {
   initiatives: Initiative[];
 
   @Input()
-  characters: Character[];
+  characters: CharacterItem[];
 
   @Input()
   monsters: MonsterItem[];
@@ -128,8 +128,8 @@ export class GmActionPanelComponent {
     this.gmService.updateMonster(this.adventureId, monster as MonsterLayerItem);
   }
 
-  updateCharacter(character: Character) {
-    this.adventureService.updateCharacter(this.adventureId, character);
+  updateCharacter(charItem: CharacterItem) {
+    this.adventureService.updateCharacter(this.adventureId, charItem.character);
   }
 
   updateInitiatives() {

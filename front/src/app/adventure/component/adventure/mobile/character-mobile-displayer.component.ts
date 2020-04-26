@@ -1,5 +1,5 @@
 import {Component, HostBinding, Input} from "@angular/core";
-import {Character, CharacterItem} from "../../../model/character";
+import {Character, CharacterEquipment} from "../../../model/character";
 import {AdventureService} from "../../../service/adventure.service";
 import {SelectCardDialogComponent} from "../context-menu/select-card-dialog.component";
 import {DialogUtils} from "../../../../common/dialog/dialog.utils";
@@ -32,7 +32,7 @@ export class CharacterMobileDisplayerComponent {
 
   openSelectCardEquippedItem() {
     this.dialog.open(SelectCardDialogComponent, DialogUtils.getDefaultConfig())
-      .afterClosed().subscribe((value: CharacterItem) => {
+      .afterClosed().subscribe((value: CharacterEquipment) => {
       if (value) {
         this.character.equippedItems.push(value);
         this.updateCharacter(this.character);
@@ -42,7 +42,7 @@ export class CharacterMobileDisplayerComponent {
 
   openSelectCardBackPackItem() {
     this.dialog.open(SelectCardDialogComponent, DialogUtils.getDefaultConfig())
-      .afterClosed().subscribe((value: CharacterItem) => {
+      .afterClosed().subscribe((value: CharacterEquipment) => {
       if (value) {
         this.character.backpackItems.push(value);
         this.updateCharacter(this.character);
@@ -56,7 +56,7 @@ export class CharacterMobileDisplayerComponent {
     }
   }
 
-  removeEquipmentItem(item: CharacterItem) {
+  removeEquipmentItem(item: CharacterEquipment) {
     if (this.editable) {
       this.character.equippedItems.splice(this.character.equippedItems.indexOf(item), 1);
       this.updateCharacter(this.character);
@@ -69,14 +69,14 @@ export class CharacterMobileDisplayerComponent {
     }
   }
 
-  removeBackpackItem(item: CharacterItem) {
+  removeBackpackItem(item: CharacterEquipment) {
     if (this.editable) {
       this.character.backpackItems.splice(this.character.backpackItems.indexOf(item), 1);
       this.updateCharacter(this.character);
     }
   }
 
-  private transferItem(ev, toItemList: CharacterItem[]) {
+  private transferItem(ev, toItemList: CharacterEquipment[]) {
     ev.preventDefault();
     const moveItem: { item: number, isFromEquipment: boolean } = JSON.parse(ev.dataTransfer.getData("text"))
 
@@ -89,12 +89,12 @@ export class CharacterMobileDisplayerComponent {
     this.updateCharacter(this.character);
   }
 
-  equipmentDragStartHandler(ev: DragEvent, item: CharacterItem) {
+  equipmentDragStartHandler(ev: DragEvent, item: CharacterEquipment) {
     ev.dataTransfer.setData('text/plain', JSON.stringify({item: item.id, isFromEquipment: true}));
     ev.dataTransfer.dropEffect = 'move';
   }
 
-  backpackDragStartHandler(ev: DragEvent, item: CharacterItem) {
+  backpackDragStartHandler(ev: DragEvent, item: CharacterEquipment) {
     ev.dataTransfer.setData('text/plain', JSON.stringify({item: item.id, isFromEquipment: false}));
     ev.dataTransfer.dropEffect = 'move';
   }

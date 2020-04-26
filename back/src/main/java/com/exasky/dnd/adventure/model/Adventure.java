@@ -43,6 +43,9 @@ public class Adventure {
     private List<MonsterLayerItem> monsters = new ArrayList<>();
 
     @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<CharacterLayerItem> characters = new ArrayList<>();
+
+    @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<SimpleLayerItem> otherItems = new ArrayList<>();
 
     public Adventure() {
@@ -136,6 +139,14 @@ public class Adventure {
 
     public void setMonsters(List<MonsterLayerItem> monsters) {
         this.monsters = monsters;
+    }
+
+    public List<CharacterLayerItem> getCharacters() {
+        return characters;
+    }
+
+    public void setCharacters(List<CharacterLayerItem> characters) {
+        this.characters = characters;
     }
 
     public List<SimpleLayerItem> getOtherItems() {

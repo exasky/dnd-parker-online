@@ -1,7 +1,7 @@
 import {Component, HostBinding, OnInit} from "@angular/core";
 import {Adventure} from "../../../model/adventure";
 import {Campaign, SimpleCampaign} from "../../../model/campaign";
-import {Character, CharacterItem, CharacterTemplate} from "../../../model/character";
+import {Character, CharacterEquipment, CharacterTemplate} from "../../../model/character";
 import {GmService} from "../../../service/gm.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ConfirmDialogComponent} from "../../../../common/dialog/confirm-dialog.component";
@@ -20,7 +20,7 @@ export class CampaignCreatorComponent implements OnInit {
 
   characterTemplates: CharacterTemplate[];
   selectedCharacterTemplates: CharacterTemplate[] = [];
-  allCharacterItems: CharacterItem[];
+  allCharacterItems: CharacterEquipment[];
 
   isCharacterCreatorSelected: boolean = true;
 

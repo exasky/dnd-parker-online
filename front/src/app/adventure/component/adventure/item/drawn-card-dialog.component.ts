@@ -1,6 +1,6 @@
 import {Component, Inject} from "@angular/core";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {Character, CharacterItem} from "../../../model/character";
+import {Character, CharacterEquipment} from "../../../model/character";
 import {AudioService} from "../../../service/audio.service";
 import {AuthService} from "../../../../login/auth.service";
 import {AdventureCardService} from "../../../service/adventure-card.service";
@@ -21,7 +21,7 @@ export class DrawnCardDialogComponent {
                 adventureId: number,
                 characterId: number,
                 characters: Character[],
-                characterItem: CharacterItem
+                characterItem: CharacterEquipment
               }) {
     this.audioService.playSound('/assets/sound/chest_open_0.mp3');
     this.characterName = data.characters.find(char => char.id === data.characterId).displayName;

@@ -10,6 +10,7 @@ import {AdventureService} from "../../../service/adventure.service";
 import {AuthService} from "../../../../login/auth.service";
 import {MonsterItem} from "../../../model/item";
 import {AdventureUtils} from "../utils/utils";
+import {Character} from "../../../model/character";
 
 @Component({
   selector: 'app-adventure-mobile',
@@ -26,6 +27,7 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
   characterTurns: Initiative[];
 
   monsters: MonsterItem[] = [];
+  characters: Character[] = [];
 
   selectedMonsterId: number;
 
@@ -45,8 +47,9 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
       this.currentTurn = this.adventure.currentTurn;
       this.characterTurns = this.adventure.characterTurns;
 
-      const currentUser = this.authService.currentUserValue;
-      currentUser.characters = this.adventure.characters.filter(character => character.userId === currentUser.id);
+      this.characters = this.adventure.campaignCharacters;
+
+      this.authService.currentUserValue.characters = this.characters;
 
       this.initMonsters();
     });
@@ -92,13 +95,13 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
               });
             } else {
               const updatedAdventure: Adventure = message.message;
-              updatedAdventure.characters.forEach(updatedCharacter => {
-                AdventureUtils.updateCharacter(updatedCharacter, this.adventure.characters);
+              updatedAdventure.campaignCharacters.forEach(updatedCharacter => {
+                AdventureUtils.updateCharacter(updatedCharacter, this.characters);
               })
             }
             break;
           case AdventureMessageType.UPDATE_CHARACTER:
-            AdventureUtils.updateCharacter(message.message, this.adventure.characters);
+            AdventureUtils.updateCharacter(message.message, this.characters);
             break;
           case AdventureMessageType.SELECT_MONSTER:
             this.selectedMonsterId = message.message;

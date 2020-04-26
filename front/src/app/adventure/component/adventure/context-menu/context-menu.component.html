@@ -9,10 +9,13 @@
       <mat-icon>flip</mat-icon>
       Flip
     </button>
-    <button *ngIf="authService.isGM && item.shown === false && item.deactivated === false" mat-menu-item (click)="showTrap(item)">
-      <mat-icon>visibility</mat-icon>
-      Show trap
-    </button>
+    <ng-container *ngIf="item.type === LayerElementType.TRAP">
+      <button *ngIf="authService.isGM && item.shown === false && item.deactivated === false" mat-menu-item
+              (click)="showTrap(item)">
+        <mat-icon>visibility</mat-icon>
+        Show trap
+      </button>
+    </ng-container>
     <ng-container *ngIf="item.type === LayerElementType.CHEST">
       <mat-divider></mat-divider>
       <button *ngIf="authService.isGM" mat-menu-item (click)="setChestCard(item)">

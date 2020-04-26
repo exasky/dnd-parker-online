@@ -29,4 +29,5 @@
     <include file="liquibase/init/liquibase-init-monster-templates.xml"/>
     <include file="liquibase/changelog/liquibase-diff-20200425-174521.xml"/>
     <include file="liquibase/changelog/liquibase-diff-20200425-211710.xml"/>
+    <include file="liquibase/changelog/liquibase-diff-20200426-114413.xml"/>
 </databaseChangeLog>

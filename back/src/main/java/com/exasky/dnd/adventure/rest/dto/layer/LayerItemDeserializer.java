@@ -34,6 +34,8 @@ public class LayerItemDeserializer extends StdDeserializer<LayerItemDto> {
                 return mapper.treeToValue(node, ChestLayerItemDto.class);
             case MONSTER:
                 return mapper.treeToValue(node, MonsterLayerItemDto.class);
+            case CHARACTER:
+                return mapper.treeToValue(node, CharacterLayerItemDto.class);
             default:
                 return mapper.treeToValue(node, SimpleLayerItemDto.class);
         }

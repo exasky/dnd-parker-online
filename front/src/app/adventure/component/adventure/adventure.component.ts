@@ -11,7 +11,7 @@ import {
 import {
   Adventure,
   Board,
-  ChestLayerItem,
+  CharacterLayerItem,
   DoorLayerItem,
   Initiative,
   LayerElement,
@@ -41,13 +41,7 @@ import {MatDrawer} from "@angular/material/sidenav";
 import {AdventureWebsocketService} from "../../../common/service/ws/adventure.websocket.service";
 import {MonsterTemplate} from "../../model/monster";
 import {AlertMessage, AlertMessageType} from "../../model/alert-message";
-import {
-  ChestLayerGridsterItem,
-  DoorLayerGridsterItem,
-  LayerGridsterItem,
-  MonsterLayerGridsterItem,
-  TrapLayerGridsterItem
-} from "../../model/layer-gridster-item";
+import {CharacterLayerGridsterItem, LayerGridsterItem, MonsterLayerGridsterItem} from "../../model/layer-gridster-item";
 import {AudioService} from "../../service/audio.service";
 import {AdventureCardService} from "../../service/adventure-card.service";
 import {CardMessage, CardMessageType} from "../../model/card-message";
@@ -81,7 +75,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   LayerElementType = LayerElementType; // Used to access LayerElementType in html
 
   adventure: Adventure;
-  charactersTurns: Initiative[];
+  characterTurns: Initiative[];
   currentTurn: Initiative;
 
   addableLayerElements: LayerElement[];
@@ -129,10 +123,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventureService.getAdventure(adventureId).subscribe(adventure => {
       this.adventure = adventure;
       const currentUser = this.authService.currentUserValue;
-      currentUser.characters = this.adventure.characters.filter(character => character.userId === currentUser.id);
+      currentUser.characters = this.adventure.campaignCharacters.filter(character => character.userId === currentUser.id);
 
       this.currentTurn = this.adventure.currentTurn;
-      this.charactersTurns = this.adventure.characterTurns;
+      this.characterTurns = this.adventure.characterTurns;
 
       this.gamePanelYSize = this.adventure.boards.length;
       this.gamePanelXSize = this.adventure.boards.map((row: Board[]) => row.length).sort()[0];
@@ -189,7 +183,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             }
             break;
           case AdventureMessageType.UPDATE_CHARACTER:
-            AdventureUtils.updateCharacter(message.message, this.adventure.characters);
+            AdventureUtils.updateCharacter(message.message, this.characters.map(char => char.character));
             break;
           case AdventureMessageType.UPDATE_MONSTER:
             const monster: MonsterLayerItem = message.message;
@@ -200,8 +194,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
             break;
           case AdventureMessageType.ROLL_INITIATIVE:
             const charTurns: Initiative[] = message.message;
-            this.charactersTurns = charTurns;
-            this.currentTurn = this.charactersTurns[0];
+            this.characterTurns = charTurns;
+            this.currentTurn = this.characterTurns[0];
             this.openDialog(InitiativeDialogComponent, {adventureId: this.adventure.id, initiatives: charTurns});
             break;
           case AdventureMessageType.ADD_LAYER_ITEM:
@@ -284,7 +278,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
           case CardMessageType.DRAW_CARD:
             const drawerOpenedSaved = this.actionPanelDrawer.opened;
             this.actionPanelDrawer.opened = true;
-            this.openDialog(DrawnCardDialogComponent, {...message.message, characters: this.adventure.characters});
+            this.openDialog(DrawnCardDialogComponent, {...message.message, characters: this.characters.map(char => char.character)});
             this.currentDialog.afterClosed().subscribe(() => {
               this.actionPanelDrawer.opened = drawerOpenedSaved;
             });
@@ -322,6 +316,14 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventureWSObs.unsubscribe();
     this.drawnCardWSObs.unsubscribe();
     this.diceWSObs.unsubscribe();
+  }
+
+  get monsters(): MonsterLayerGridsterItem[] {
+    return this.dashboard.filter(layerItem => layerItem.type === LayerElementType.MONSTER) as MonsterLayerGridsterItem[];
+  }
+
+  get characters(): CharacterLayerGridsterItem[] {
+    return this.dashboard.filter(layerItem => layerItem.type === LayerElementType.CHARACTER) as CharacterLayerGridsterItem[];
   }
 
   private initGridsterConf() {
@@ -380,6 +382,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventure.doors.forEach(door => this.updateItem(door));
     this.adventure.chests.forEach(door => this.updateItem(door));
     this.adventure.monsters.forEach(monster => this.updateItem(monster));
+    this.adventure.characters.forEach(character => this.updateItem(character));
     this.adventure.otherItems.forEach(item => this.updateItem(item));
   }
 
@@ -550,7 +553,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       type: item.element.type,
       dragEnabled: this.isDragEnabledForItem(item.element)
     };
-    this.addSpecificToDashboardItem(itemToPush, item);
+    AdventureUtils.addSpecificToDashboardItem(itemToPush, item);
     this.dashboard.push(itemToPush);
 
     if (this.selectedItem && this.selectedItem.id === itemToPush.id) {
@@ -581,41 +584,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.dashboard.splice(this.dashboard.indexOf(dashboardItem), 1);
   }
 
-  // TODO create utils function (when CHARACTER will be part of layer element list)
-  private addSpecificToDashboardItem(dashboardItem: GridsterItem, layerItem: LayerItem) {
-    switch (layerItem.element.type) {
-      case LayerElementType.CHARACTER:
-        dashboardItem['character']
-          = this.adventure.characters.find(char => layerItem.element.name.toLowerCase().indexOf(char.name.toLowerCase()) !== -1);
-        break;
-      case LayerElementType.DOOR:
-        const doorItem: DoorLayerItem = layerItem as DoorLayerItem;
-        const doorGridsterItem = dashboardItem as DoorLayerGridsterItem;
-        doorGridsterItem.vertical = doorItem.vertical;
-        doorGridsterItem.open = doorItem.open;
-        break;
-      case LayerElementType.TRAP:
-        const trapItem: TrapLayerItem = layerItem as TrapLayerItem;
-        const trapGridsterItem = dashboardItem as TrapLayerGridsterItem;
-        trapGridsterItem.shown = trapItem.shown;
-        trapGridsterItem.deactivated = trapItem.deactivated;
-        break;
-      case LayerElementType.CHEST:
-        const chestItem = layerItem as ChestLayerItem;
-        const chestGridsterItem = dashboardItem as ChestLayerGridsterItem;
-        chestGridsterItem.specificCard = chestItem.specificCard;
-        break;
-      case LayerElementType.MONSTER:
-        const monsterItem = layerItem as MonsterLayerItem;
-        const monsterGridsterItem = dashboardItem as MonsterLayerGridsterItem;
-        monsterGridsterItem.hp = monsterItem.hp;
-        monsterGridsterItem.monster = monsterItem.monster;
-        break;
-      default:
-        break;
-    }
-  }
-
   private isDragEnabledForItem(item: { type: LayerElementType, name: string }): boolean {
     const user = this.authService.currentUserValue;
 
@@ -629,7 +597,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   // endregion
 
   getCharacterNamesFromId(userId) {
-    const characters = this.adventure.characters.filter(char => char.userId === userId);
+    const characters = this.characters.filter(char => char.character.userId === userId);
     return characters.length !== 0 ? characters.map(char => char.name) : ['MJ'];
   }
 
@@ -648,6 +616,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
         (baseLayerItem as MonsterLayerItem).monster = this.monsterTemplates.find(mt => mt.element.id === item.elementId);
         (baseLayerItem as MonsterLayerItem).hp = (baseLayerItem as MonsterLayerItem).monster.maxHp;
         break;
+      case LayerElementType.CHARACTER:
+        (baseLayerItem as CharacterLayerItem).character = this.adventure.campaignCharacters.find(char => char.name === item.name);
+        break;
       default:
         break;
     }
@@ -660,10 +631,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   private findInDashboard(item: LayerItem) {
     return this.dashboard.find(dItem => dItem.id === item.id && dItem.type === item.element.type);
-  }
-
-  get monsters(): MonsterLayerGridsterItem[] {
-    return this.dashboard.filter(layerItem => layerItem.type === LayerElementType.MONSTER) as MonsterLayerGridsterItem[];
   }
 
   private openDialog(dialog: Type<any>, data: any) {

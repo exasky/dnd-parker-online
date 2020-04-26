@@ -1,4 +1,4 @@
-import {CharacterItem} from "./character";
+import {Character, CharacterEquipment} from "./character";
 import {MonsterTemplate} from "./monster";
 
 export interface TrapItem {
@@ -15,11 +15,15 @@ export interface DoorItem {
 
 export interface ChestItem {
   id?: number;
-  specificCard: CharacterItem;
+  specificCard: CharacterEquipment;
 }
 
 export interface MonsterItem {
   id?: number;
   hp: number;
   monster: MonsterTemplate;
+}
+
+export interface CharacterItem {
+  character: Character;
 }

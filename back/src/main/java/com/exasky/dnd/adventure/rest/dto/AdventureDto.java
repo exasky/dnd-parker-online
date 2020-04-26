@@ -16,12 +16,13 @@ public class AdventureDto {
     private List<DoorLayerItemDto> doors;
     private List<ChestLayerItemDto> chests;
     private List<MonsterLayerItemDto> monsters;
+    private List<CharacterLayerItemDto> characters;
     private List<SimpleLayerItemDto> otherItems;
 
     private InitiativeDto currentTurn;
     private List<InitiativeDto> characterTurns;
 
-    private List<CharacterDto> characters;
+    private List<CharacterDto> campaignCharacters;
 
     public static AdventureDto toDto(Adventure bo) {
         AdventureDto dto = new AdventureDto();
@@ -35,12 +36,13 @@ public class AdventureDto {
         dto.setDoors(DoorLayerItemDto.toDto(bo.getDoors()));
         dto.setChests(ChestLayerItemDto.toDto(bo.getChests()));
         dto.setMonsters(MonsterLayerItemDto.toDto(bo.getMonsters()));
+        dto.setCharacters(CharacterLayerItemDto.toDto(bo.getCharacters()));
         dto.setOtherItems(SimpleLayerItemDto.toDto(bo.getOtherItems()));
 
         dto.setCurrentTurn(InitiativeDto.toDto(bo.getCurrentInitiative()));
         dto.setCharacterTurns(InitiativeDto.toDto(bo.getCampaign().getCharacterTurns()));
 
-        dto.setCharacters(CharacterDto.toDto(bo.getCampaign().getCharacters()));
+        dto.setCampaignCharacters(CharacterDto.toDto(bo.getCampaign().getCharacters()));
 
         return dto;
     }
@@ -134,11 +136,19 @@ public class AdventureDto {
         this.characterTurns = characterTurns;
     }
 
-    public List<CharacterDto> getCharacters() {
+    public List<CharacterDto> getCampaignCharacters() {
+        return campaignCharacters;
+    }
+
+    public void setCampaignCharacters(List<CharacterDto> campaignCharacters) {
+        this.campaignCharacters = campaignCharacters;
+    }
+
+    public List<CharacterLayerItemDto> getCharacters() {
         return characters;
     }
 
-    public void setCharacters(List<CharacterDto> characters) {
+    public void setCharacters(List<CharacterLayerItemDto> characters) {
         this.characters = characters;
     }
 

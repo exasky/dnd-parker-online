@@ -1,6 +1,6 @@
 import {GridsterItem} from "angular-gridster2";
 import {LayerElementType} from "./adventure";
-import {ChestItem, DoorItem, MonsterItem, TrapItem} from "./item";
+import {CharacterItem, ChestItem, DoorItem, MonsterItem, TrapItem} from "./item";
 
 export interface LayerGridsterItem extends GridsterItem {
   id?: number;
@@ -19,4 +19,7 @@ export interface ChestLayerGridsterItem extends LayerGridsterItem, ChestItem {
 }
 
 export interface MonsterLayerGridsterItem extends LayerGridsterItem, MonsterItem {
+}
+
+export interface CharacterLayerGridsterItem extends LayerGridsterItem, CharacterItem {
 }

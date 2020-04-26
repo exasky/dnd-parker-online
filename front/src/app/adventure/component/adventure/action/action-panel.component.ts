@@ -7,6 +7,7 @@ import {AuthService} from "../../../../login/auth.service";
 import {AdventureService} from "../../../service/adventure.service";
 import {AudioService} from "../../../service/audio.service";
 import {AdventureCardService} from "../../../service/adventure-card.service";
+import {CharacterItem} from "../../../model/item";
 
 @Component({
   selector: 'app-action-panel',
@@ -20,6 +21,9 @@ export class ActionPanelComponent {
 
   @Input()
   initiatives: Initiative[];
+
+  @Input()
+  characterItems: CharacterItem[];
 
   @Input()
   disableActions: boolean = false;

@@ -180,6 +180,8 @@ public class AdventureService {
                 return (List<T>) adv.getChests();
             case MONSTER:
                 return (List<T>) adv.getMonsters();
+            case CHARACTER:
+                return (List<T>) adv.getCharacters();
             default:
                 return (List<T>) adv.getOtherItems();
         }

@@ -12,8 +12,8 @@ export class AdventureCardService {
   constructor(private http: HttpClient) {
   }
 
-  drawCard(adventureId, characterId, characterItemId?) {
-    return this.http.post(AdventureCardService.API_URL + '/draw-card', {adventureId, characterId, characterItemId}).subscribe();
+  drawCard(adventureId, characterId, characterEquipmentId?) {
+    return this.http.post(AdventureCardService.API_URL + '/draw-card', {adventureId, characterId, characterItemId: characterEquipmentId}).subscribe();
   }
 
   validateDrawnCard(adventureId, characterItemId, validation) {

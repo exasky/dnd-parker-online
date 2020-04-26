@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 import {Initiative, LayerElement} from "../model/adventure";
 import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
-import {CharacterItem} from "../model/character";
+import {CharacterEquipment} from "../model/character";
 import {AlertMessage} from "../model/alert-message";
 import {MonsterTemplate} from "../model/monster";
 import {MonsterItem} from "../model/item";
@@ -21,8 +21,8 @@ export class GmService {
     return this.http.get<LayerElement[]>(GmService.API_URL + '/addable-elements');
   }
 
-  getAllCharacterItems(): Observable<CharacterItem[]> {
-    return this.http.get<CharacterItem[]>(GmService.API_URL + '/character-items');
+  getAllCharacterItems(): Observable<CharacterEquipment[]> {
+    return this.http.get<CharacterEquipment[]>(GmService.API_URL + '/character-items');
   }
 
   getMonsterTemplates(): Observable<MonsterTemplate[]> {

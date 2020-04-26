@@ -1,11 +1,11 @@
 import {Adventure} from "./adventure";
-import {Character, CharacterItem} from "./character";
+import {Character, CharacterEquipment} from "./character";
 
 export interface Campaign {
   id?: number;
   name: string;
   adventures: Adventure[];
-  drawnItems: CharacterItem[];
+  drawnItems: CharacterEquipment[];
   characters: Character[];
 }
 

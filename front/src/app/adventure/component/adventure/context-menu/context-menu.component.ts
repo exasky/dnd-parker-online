@@ -10,13 +10,13 @@ import {LayerElement, LayerElementType} from "../../../model/adventure";
 import {AuthService} from "../../../../login/auth.service";
 import {AdventureService} from "../../../service/adventure.service";
 import {GmService} from "../../../service/gm.service";
-import {AdventureComponent} from "../adventure.component";
 import {DialogUtils} from "../../../../common/dialog/dialog.utils";
 import {MatDialog} from "@angular/material/dialog";
 import {SelectCardDialogComponent} from "./select-card-dialog.component";
-import {Character, CharacterItem} from "../../../model/character";
 import {AdventureCardService} from "../../../service/adventure-card.service";
 import {AdventureUtils} from "../utils/utils";
+import {CharacterItem} from "../../../model/item";
+import {CharacterEquipment} from "../../../model/character";
 
 @Component({
   selector: 'app-context-menu',
@@ -32,7 +32,7 @@ export class ContextMenuComponent {
   addableLayerElements: LayerElement[] = [];
 
   @Input()
-  characters: Character[];
+  characterItems: CharacterItem[];
 
   LayerElementType = LayerElementType;
 
@@ -89,14 +89,14 @@ export class ContextMenuComponent {
   }
 
   openChest(item: ChestLayerGridsterItem) {
-    const currentCharacter = this.characters.find(char => char.userId === this.authService.currentUserValue.id);
+    const currCharItem = this.characterItems.find(char => char.character.userId === this.authService.currentUserValue.id);
     if (item.specificCard) {
-      this.adventureCardService.drawCard(this.adventureId, currentCharacter.id, item.specificCard.id);
+      this.adventureCardService.drawCard(this.adventureId, currCharItem.character.id, item.specificCard.id);
       // this.adventureService.deleteLayerItem(this.adventureId, item.id);
       // TODO remove chest only if mj accepted
     } else {
-      if (currentCharacter) {
-        this.adventureCardService.drawCard(this.adventureId, currentCharacter.id);
+      if (currCharItem) {
+        this.adventureCardService.drawCard(this.adventureId, currCharItem.character.id);
         // this.adventureService.deleteLayerItem(this.adventureId, item.id);
         // TODO remove chest only if mj accepted
       }
@@ -109,7 +109,7 @@ export class ContextMenuComponent {
 
   setChestCard(item: ChestLayerGridsterItem) {
     this.dialog.open(SelectCardDialogComponent, DialogUtils.getDefaultConfig(item['cardId']))
-      .afterClosed().subscribe((value: CharacterItem) => {
+      .afterClosed().subscribe((value: CharacterEquipment) => {
         item.specificCard = value;
         this.adventureService.updateLayerItem(this.adventureId, AdventureUtils.existingGridsterItemToLayerItem(item));
     });

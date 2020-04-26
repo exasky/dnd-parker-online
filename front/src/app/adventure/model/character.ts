@@ -16,8 +16,8 @@ export class Character {
   mp: number;
   maxMp: number;
 
-  equippedItems: CharacterItem[];
-  backpackItems: CharacterItem[];
+  equippedItems: CharacterEquipment[];
+  backpackItems: CharacterEquipment[];
   backpackSize: number;
 
   userId?: number;
@@ -28,7 +28,7 @@ export class Character {
   }
 }
 
-export class CharacterItem {
+export class CharacterEquipment {
   id: number;
   name: string;
   level: number;
