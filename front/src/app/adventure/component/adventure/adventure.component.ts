@@ -343,6 +343,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventureWSObs.unsubscribe();
     this.drawnCardWSObs.unsubscribe();
     this.diceWSObs.unsubscribe();
+    this.closeDialog();
   }
 
   get monsters(): MonsterLayerGridsterItem[] {
