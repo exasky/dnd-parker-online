@@ -21,12 +21,13 @@
 
   <mat-divider class="m-2" [inset]="false"></mat-divider>
 
-  <button *ngFor="let charItem of characterItems"
+  <button *ngFor="let charItem of sortedCharacterItems"
           mat-raised-button
           [color]="currentInitiative && charItem.character.name === currentInitiative.characterName ? 'warn' : 'primary'"
           class="flex-shrink-0 m-2"
           style="text-transform: capitalize"
           [ngbTooltip]="tooltipContent"
+          [disableTooltip]="!charItem.character.id"
           tooltipClass="mw-75"
           [container]="'body'">
     {{charItem.character.name}}
@@ -42,12 +43,14 @@
   <mat-divider class="m-2" [inset]="false"></mat-divider>
   <button mat-raised-button color="accent" class="flex-shrink-0 m-2"
           [ngbTooltip]="tooltipContent"
+          [disableTooltip]="initiatives.length === 0"
           tooltipClass="mw-75"
           [container]="'body'"
           placement="left">
     Current initiative
     <ng-template #tooltipContent>
-      <app-initiative-displayer [currentInitiative]="currentInitiative"
+      <app-initiative-displayer style="height: 350px"
+                                [currentInitiative]="currentInitiative"
                                 [initiatives]="initiatives"></app-initiative-displayer>
     </ng-template>
   </button>

@@ -21,10 +21,14 @@ export class ActionPanelComponent {
   currentInitiative: Initiative;
 
   @Input()
-  initiatives: Initiative[];
+  initiatives: Initiative[] = [];
+
+  sortedCharacterItems: CharacterItem[] = [];
 
   @Input()
-  characterItems: CharacterItem[];
+  set characterItems(characterItems: CharacterItem[]) {
+    this.sortCharactersByInitiative(characterItems);
+  }
 
   @Input()
   disableActions: boolean = false;
@@ -39,6 +43,13 @@ export class ActionPanelComponent {
               private diceService: DiceService,
               public authService: AuthService,
               public audioService: AudioService) {
+  }
+
+  private sortCharactersByInitiative(characterItems: CharacterItem[]) {
+    this.initiatives.forEach((init, idx) => {
+      const characterItem = characterItems.find(charItem => charItem.character.name === init.characterName);
+      this.sortedCharacterItems[idx] = characterItem ? characterItem : ({character: {name: 'game-master'}}) as unknown as CharacterItem;
+    });
   }
 
   get isMyTurn(): boolean {
