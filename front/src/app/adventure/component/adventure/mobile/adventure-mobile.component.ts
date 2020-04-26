@@ -90,6 +90,9 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
           case AdventureMessageType.ROLL_INITIATIVE:
             this.characterTurns = message.message;
             break;
+          case AdventureMessageType.VALIDATE_NEXT_TURN:
+            this.currentTurn = message.message;
+            break;
           case AdventureMessageType.UPDATE_CAMPAIGN:
             if (!message.message) {
               this.router.navigateByUrl('');
