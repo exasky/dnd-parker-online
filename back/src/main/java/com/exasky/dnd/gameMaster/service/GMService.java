@@ -13,6 +13,7 @@ import com.exasky.dnd.adventure.repository.LayerElementRepository;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.common.exception.ValidationCheckException;
+import com.exasky.dnd.gameMaster.repository.InitiativeRepository;
 import com.exasky.dnd.gameMaster.repository.MonsterTemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ public class GMService {
     private final CharacterItemRepository characterItemRepository;
     private final MonsterTemplateRepository monsterTemplateRepository;
     private final CampaignRepository campaignRepository;
+    private final InitiativeRepository initiativeRepository;
     private final AdventureService adventureService;
 
     @Autowired
@@ -41,11 +43,13 @@ public class GMService {
                      CharacterItemRepository characterItemRepository,
                      MonsterTemplateRepository monsterTemplateRepository,
                      CampaignRepository campaignRepository,
+                     InitiativeRepository initiativeRepository,
                      AdventureService adventureService) {
         this.layerElementRepository = repository;
         this.characterItemRepository = characterItemRepository;
         this.monsterTemplateRepository = monsterTemplateRepository;
         this.campaignRepository = campaignRepository;
+        this.initiativeRepository = initiativeRepository;
         this.adventureService = adventureService;
     }
 
@@ -96,7 +100,10 @@ public class GMService {
             charTurns.get(initIdx - 1).setNumber(initIdx);
         }
 
-        adventure.setCurrentInitiative(charTurns.get(0));
+        List<Initiative> initiatives = initiativeRepository.saveAll(charTurns);
+
+        adventure.setCurrentInitiative(initiatives.get(0));
+
 
         return charTurns;
     }
