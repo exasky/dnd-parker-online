@@ -114,6 +114,7 @@ export class AdventureUtils {
   }
 
   static isMyTurn(currentUser: User, currentInitiative: Initiative): boolean {
+    if (!currentInitiative) return false;
     return currentUser.characters.some(char => currentInitiative.characterName === char.name);
   }
 }

@@ -8,7 +8,6 @@ public final class Constant {
      ** **********************************/
     public static final class Errors {
         public static final String AUTHENTICATION_ERROR = "AUTHENTICATION_ERROR";
-        public static final String JWT_EXPIRED = "JWT_EXPIRED";
 
         public static final class CAMPAIGN {
             private static final String PREFIX = "CAMPAIGN.";
@@ -25,6 +24,7 @@ public final class Constant {
             public static final String NAME_EMPTY = PREFIX + "NAME_EMPTY";
             public static final String LEVEL_DIFFICULTY = PREFIX + "LEVEL_DIFFICULTY";
             public static final String BOARD_EMPTY = PREFIX + "BOARD_EMPTY";
+            public static final String CHARACTERS_SIZE_MISMATCH = PREFIX + "CHARACTERS_SIZE_MISMATCH";
         }
 
         public static final class INITIATIVE {

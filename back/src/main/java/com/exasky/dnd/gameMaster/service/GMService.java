@@ -70,6 +70,10 @@ public class GMService {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.ADVENTURE.NOT_FOUND);
         }
 
+        if (adventure.getCharacters().size() != 4) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.ADVENTURE.CHARACTERS_SIZE_MISMATCH);
+        }
+
         Campaign campaign = adventure.getCampaign();
 
         List<Initiative> charTurns;

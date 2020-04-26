@@ -95,10 +95,12 @@ export class CampaignCreatorComponent implements OnInit {
   }
 
   copyFrom($event: MatSelectChange) {
-    const toCopyCampaignId = $event.value;
-    this.campaignService.copyFrom(toCopyCampaignId).subscribe(newCampaign => {
-      this.campaign = newCampaign;
-    })
+    if ($event.value) {
+      const toCopyCampaignId = $event.value;
+      this.campaignService.copyFrom(toCopyCampaignId).subscribe(newCampaign => {
+        this.campaign = newCampaign;
+      });
+    }
   }
 
   saveCampaign() {

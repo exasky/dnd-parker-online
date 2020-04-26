@@ -20,7 +20,7 @@
   <mat-form-field *ngIf="campaign.id === undefined">
     <mat-label>Copy from</mat-label>
     <mat-select #select (selectionChange)="copyFrom($event); select.writeValue(null)">
-      <mat-option [value]="null">All</mat-option>
+      <mat-option [value]="null">Cancel</mat-option>
       <mat-option *ngFor="let campaign of this.allCampaigns"
                   [value]="campaign.id">
         {{campaign.name}}

@@ -96,6 +96,7 @@
                          [container]="'body'"
                          [placement]="['left', 'right', 'bottom', 'top']"
                          #t="ngbTooltip"
+                         [closeDelay]="10"
                          [class.selected]="selectedItem && selectedItem.id === item.id && selectedItem.type === item.type"
                          (mousedown)="t.close()"
                          (contextmenu)="contextMenu.openMenu($event, item)">
@@ -107,7 +108,10 @@
 
             <ng-template #tipContent [ngSwitch]="item.type">
               <ng-template [ngSwitchCase]="LayerElementType.CHARACTER">
-                <app-character-tooltip-displayer [character]="item.character"></app-character-tooltip-displayer>
+                <app-character-tooltip-displayer [character]="item.character"
+                                                 [ngStyle]="{'height': getCharacterTooltipHeight(item.character) + 'px'}"
+                                                 >
+                </app-character-tooltip-displayer>
               </ng-template>
               <ng-template [ngSwitchCase]="LayerElementType.MONSTER">
                 <img width="300" [src]="'assets/monster/' + item.name + '-description.jpg'">

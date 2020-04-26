@@ -49,6 +49,7 @@ import {AdventureUtils} from "./utils/utils";
 import {InitiativeDialogComponent} from "./initiative/initiative-dialog.component";
 import {NextTurnDialogComponent} from "./action/next-turn-dialog.component";
 import {DiceAttackDialogComponent} from "./dice/dice-attack-dialog.component";
+import {Character} from "../../model/character";
 
 @Component({
   selector: 'app-adventure',
@@ -621,7 +622,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     return user.role === ROLE_GM || (
       item.type === LayerElementType.CHARACTER
       && user.characters.some(char =>
-        char.name.toLowerCase() === item.name.toLowerCase() && char.name === this.currentTurn.characterName)
+        this.currentTurn && char.name.toLowerCase() === item.name.toLowerCase() && char.name === this.currentTurn.characterName)
     )
   }
 
@@ -678,5 +679,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
       this.currentDialog.close();
       this.currentDialog = null;
     }
+  }
+
+  getCharacterTooltipHeight(character: Character) {
+    return Math.min(2, Math.max(character.equippedItems.length, character.backpackItems.length)) * 230;
   }
 }

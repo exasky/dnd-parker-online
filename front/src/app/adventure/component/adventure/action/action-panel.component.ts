@@ -8,6 +8,7 @@ import {AdventureService} from "../../../service/adventure.service";
 import {AudioService} from "../../../service/audio.service";
 import {AdventureCardService} from "../../../service/adventure-card.service";
 import {CharacterItem} from "../../../model/item";
+import {Character} from "../../../model/character";
 
 @Component({
   selector: 'app-action-panel',
@@ -41,6 +42,7 @@ export class ActionPanelComponent {
   }
 
   get isMyTurn(): boolean {
+    if (!this.currentInitiative) return false;
     return this.authService.currentUserValue.characters.some(char => this.currentInitiative.characterName === char.name);
   }
 
@@ -68,5 +70,10 @@ export class ActionPanelComponent {
 
   nextAdventure() {
     this.gmService.nextAdventure(this.adventure.id);
+  }
+
+  getCharacterTooltipHeight(character: Character) {
+    return Math.max(600,
+      Math.min(2, Math.max(character.equippedItems.length, character.backpackItems.length)) * 300);
   }
 }
