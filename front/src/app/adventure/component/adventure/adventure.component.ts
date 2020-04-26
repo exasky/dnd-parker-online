@@ -321,6 +321,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
             if (attackParameters.isMonsterAttacked) {
               toAttack = this.monsters.find(monster => monster.id === attackParameters.toAttackId);
+              this.selectedMonsterId = toAttack.id;
             } else {
               toAttack = this.characters.find(character => character.id === attackParameters.toAttackId);
             }

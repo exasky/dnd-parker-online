@@ -11,6 +11,8 @@ import {AuthService} from "../../../../login/auth.service";
 import {MonsterItem} from "../../../model/item";
 import {AdventureUtils} from "../utils/utils";
 import {Character} from "../../../model/character";
+import {DiceWebsocketService} from "../../../../common/service/ws/dice.websocket.service";
+import {DiceMessage, DiceMessageType} from "../../../model/dice-message";
 
 @Component({
   selector: 'app-adventure-mobile',
@@ -22,6 +24,7 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
 
   adventure: Adventure;
   adventureWSObs: Subscription;
+  diceWSObs: Subscription;
 
   currentTurn: Initiative;
   characterTurns: Initiative[];
@@ -35,7 +38,8 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
               private router: Router,
               public authService: AuthService,
               private adventureService: AdventureService,
-              private adventureWS: AdventureWebsocketService) {
+              private adventureWS: AdventureWebsocketService,
+              private diceWS: DiceWebsocketService) {
   }
 
   ngOnInit(): void {
@@ -109,10 +113,25 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    this.diceWSObs = this.diceWS.getObservable(adventureId).subscribe((receivedMsg: SocketResponse) => {
+      if (receivedMsg.type === SocketResponseType.SUCCESS) {
+        const diceMessage: DiceMessage = receivedMsg.data;
+        switch (diceMessage.type) {
+          case DiceMessageType.OPEN_ATTACK_DIALOG:
+            const attackParameters = diceMessage.message;
+            if (attackParameters.isMonsterAttacked) {
+              this.selectedMonsterId = this.monsters.find(monster => monster.id === attackParameters.toAttackId).id;
+            }
+            break;
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
     this.adventureWSObs.unsubscribe();
+    this.diceWSObs.unsubscribe();
   }
 
   selectMonster(layerItemId: number) {
