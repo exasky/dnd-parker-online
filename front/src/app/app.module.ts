@@ -64,6 +64,7 @@ import {InitiativeDialogComponent} from "./adventure/component/adventure/initiat
 import {InitiativeDisplayerComponent} from "./adventure/component/adventure/initiative/initiative-displayer.component";
 import {NextTurnDialogComponent} from "./adventure/component/adventure/action/next-turn-dialog.component";
 import {DiceAttackDialogComponent} from "./adventure/component/adventure/dice/dice-attack-dialog.component";
+import {CapitalizePipe} from "./common/pipe/capitalize.pipe";
 
 @NgModule({
   declarations: [
@@ -94,7 +95,8 @@ import {DiceAttackDialogComponent} from "./adventure/component/adventure/dice/di
     InitiativeDialogComponent,
     InitiativeDisplayerComponent,
     NextTurnDialogComponent,
-    DiceAttackDialogComponent
+    DiceAttackDialogComponent,
+    CapitalizePipe
   ],
   imports: [
     BrowserModule,
@@ -143,7 +145,8 @@ import {DiceAttackDialogComponent} from "./adventure/component/adventure/dice/di
     WebSocketWrapperService,
     AdventureWebsocketService,
     DrawnCardWebsocketService,
-    DiceWebsocketService
+    DiceWebsocketService,
+    CapitalizePipe
   ],
   bootstrap: [AppComponent]
 })

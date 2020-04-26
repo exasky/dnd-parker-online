@@ -19,7 +19,7 @@
                         class="mr-1">
                 radio_button_checked
               </mat-icon>
-              {{character.name.charAt(0).toUpperCase() + character.name.slice(1)}}
+              {{character.name | capitalize}}
             </ng-template>
             <app-character-mobile-displayer [editable]="true"
                                             [adventureId]="adventure.id"
@@ -37,7 +37,7 @@
                     color="warn"
                     class="mr-1">radio_button_checked
           </mat-icon>
-          {{character.name.charAt(0).toUpperCase() + character.name.slice(1)}}
+          {{character.name | capitalize}}
         </ng-template>
         <app-character-mobile-displayer [character]="character"></app-character-mobile-displayer>
       </mat-tab>

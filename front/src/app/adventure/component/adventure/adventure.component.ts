@@ -239,7 +239,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             this.closeDialog();
             break;
           case AdventureMessageType.ASK_NEXT_TURN:
-            this.openDialog(NextTurnDialogComponent, this.adventure.id);
+            this.openDialog(NextTurnDialogComponent, {adventureId: this.adventure.id, currentTurn: this.currentTurn});
             break;
           case AdventureMessageType.VALIDATE_NEXT_TURN:
             const dashboardCharacters = this.dashboard.filter(item => item.type === LayerElementType.CHARACTER);
@@ -280,7 +280,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
           case CardMessageType.DRAW_CARD:
             const drawerOpenedSaved = this.actionPanelDrawer.opened;
             this.actionPanelDrawer.opened = true;
-            this.openDialog(DrawnCardDialogComponent, {...message.message, characters: this.characters.map(char => char.character)});
+            this.openDialog(DrawnCardDialogComponent, {
+              ...message.message,
+              characters: this.characters.map(char => char.character)
+            });
             this.currentDialog.afterClosed().subscribe(() => {
               this.actionPanelDrawer.opened = drawerOpenedSaved;
             });
@@ -326,7 +329,12 @@ export class AdventureComponent implements OnInit, OnDestroy {
               toAttack = this.characters.find(character => character.id === attackParameters.toAttackId);
             }
 
-            this.openDialog(DiceAttackDialogComponent, {adventureId, user: attackParameters.user, fromAttack, toAttack});
+            this.openDialog(DiceAttackDialogComponent, {
+              adventureId,
+              user: attackParameters.user,
+              fromAttack,
+              toAttack
+            });
             this.currentDialog.afterClosed().subscribe(() => {
               this.actionPanelDrawer.opened = saveDrawerOpen;
             });

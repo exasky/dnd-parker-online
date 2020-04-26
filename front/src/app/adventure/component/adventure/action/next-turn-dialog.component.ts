@@ -2,6 +2,7 @@ import {AuthService} from "../../../../login/auth.service";
 import {Component, Inject} from "@angular/core";
 import {AdventureService} from "../../../service/adventure.service";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {Initiative} from "../../../model/adventure";
 
 @Component({
   selector: 'app-next-turn-dialog',
@@ -11,10 +12,10 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 export class NextTurnDialogComponent {
   constructor(public authService: AuthService,
               private adventureService: AdventureService,
-              @Inject(MAT_DIALOG_DATA) public adventureId: number) {
+              @Inject(MAT_DIALOG_DATA) public data: {adventureId: number, currentTurn: Initiative}) {
   }
 
   close(validation: boolean) {
-    this.adventureService.validateNextTurn(this.adventureId, validation);
+    this.adventureService.validateNextTurn(this.data.adventureId, validation);
   }
 }

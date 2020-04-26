@@ -1,15 +1,17 @@
 <h1 mat-dialog-title>Next turn ?</h1>
-<div mat-dialog-content style="width: 300px">
-  <ng-container *ngIf="authService.isGM">Valid end turn ?</ng-container>
+<div mat-dialog-content style="width: 300px" class="align-items-center d-flex flex-column justify-content-center m-5">
+  <ng-container *ngIf="authService.isGM">
+    <p>Valid <strong>{{data.currentTurn.characterName | capitalize}}</strong>'s end turn ?</p>
+  </ng-container>
   <ng-container *ngIf="!authService.isGM">
-    <p>Turn ending., please wait ...</p>
+    <p><strong>{{data.currentTurn.characterName | capitalize}}</strong>'s turn ending, please wait ...</p>
     <div class="d-flex justify-content-center align-items-center" style="min-height: 80px">
       <div class="loader"></div>
     </div>
   </ng-container>
 </div>
 
-<mat-dialog-actions *ngIf="authService.isGM">
+<mat-dialog-actions *ngIf="authService.isGM" class="d-flex justify-content-evenly">
   <button mat-button (click)="this.close(false)" cdkfocusinitial="">Cancel</button>
   <button mat-button (click)="this.close(true)">Validate</button>
 </mat-dialog-actions>

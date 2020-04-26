@@ -87,7 +87,7 @@
     <div class="d-flex flex-column">
       <div *ngFor="let charItem of characters"
            class="flex-grow d-flex align-items-center justify-content-around">
-        {{charItem.character.name.charAt(0).toUpperCase() + charItem.character.name.slice(1)}}
+        {{charItem.character.name | capitalize}}
         <div class="d-flex flex-column">
           <mat-label style="padding-left: 8px">HP</mat-label>
           <mat-slider color="primary"
