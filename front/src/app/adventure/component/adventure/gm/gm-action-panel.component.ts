@@ -137,7 +137,7 @@ export class GmActionPanelComponent {
   }
 
   openMobileVersion() {
-    const strWindowFeatures = "menubar=no,toolbar=no,location=no,resizable=yes,scrollbars=yes,status=no";
+    const strWindowFeatures = "menubar=no,toolbar=no,location=no,status=no,width=599,height=" + window.outerHeight;
     window.open(this.router.url, '_blank', strWindowFeatures);
     this.exportable.close();
   }
