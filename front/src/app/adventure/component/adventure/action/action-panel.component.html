@@ -43,12 +43,13 @@
   <button mat-raised-button color="accent" class="flex-shrink-0 m-2"
           [ngbTooltip]="tooltipContent"
           [disableTooltip]="initiatives.length === 0"
-          tooltipClass="tooltip-action-panel"
+          tooltipClass="mw-75"
           [container]="'body'"
           placement="left">
     Current initiative
     <ng-template #tooltipContent>
-      <app-initiative-displayer [currentInitiative]="currentInitiative"
+      <app-initiative-displayer style="height: 350px"
+                                [currentInitiative]="currentInitiative"
                                 [initiatives]="initiatives"></app-initiative-displayer>
     </ng-template>
   </button>

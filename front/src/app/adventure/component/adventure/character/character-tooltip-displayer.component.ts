@@ -25,4 +25,10 @@ export class CharacterTooltipDisplayerComponent implements OnInit {
     if (!this.cardWidth) this.cardWidth = '150';
     if (!this.cardHeight) this.cardHeight = '230';
   }
+
+  getEquipmentWidth() {
+    return +this.cardWidth * Math.ceil(
+      Math.max(this.character.equippedItems.length, this.character.backpackItems.length)
+      / 2);
+  }
 }

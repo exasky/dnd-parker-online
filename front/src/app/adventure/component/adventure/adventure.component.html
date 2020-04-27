@@ -94,7 +94,6 @@
                          [ngbTooltip]="tipContent"
                          [disableTooltip]="tooltipDisabled(item.type)"
                          [container]="'body'"
-                         [placement]="['left', 'right', 'bottom', 'top']"
                          #t="ngbTooltip"
                          [closeDelay]="10"
                          [class.selected]="selectedItem && selectedItem.id === item.id && selectedItem.type === item.type"
@@ -109,8 +108,7 @@
             <ng-template #tipContent [ngSwitch]="item.type">
               <ng-template [ngSwitchCase]="LayerElementType.CHARACTER">
                 <app-character-tooltip-displayer [character]="item.character"
-                                                 [ngStyle]="{'height': getCharacterTooltipHeight(item.character) + 'px'}"
-                                                 >
+                                                 [ngStyle]="{'height': getCharacterTooltipHeight(item.character) + 'px'}">
                 </app-character-tooltip-displayer>
               </ng-template>
               <ng-template [ngSwitchCase]="LayerElementType.MONSTER">
@@ -126,8 +124,9 @@
                  [class.selected]="currentTurn?.characterName === item.character.name"
                  [ngStyle]="{'background-image': 'url(\'assets/character/' + item.name + '-token.jpg\')'}">
               <ng-container *ngIf="item.character.hp === 0">
-                <div class="d-flex justify-content-center align-items-center w-100 h-100" style="color: red;background-color: rgba(0,0,0,0.5);">
-                <span class="mdi mdi-skull" style="font-size: 200%;"></span>
+                <div class="d-flex justify-content-center align-items-center w-100 h-100"
+                     style="color: red;background-color: rgba(0,0,0,0.5);">
+                  <span class="mdi mdi-skull" style="font-size: 200%;"></span>
                 </div>
               </ng-container>
             </div>

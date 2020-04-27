@@ -1,5 +1,5 @@
 <!-- Equipped items-->
-<div class="d-flex flex-2">
+<div class="d-flex" [ngStyle]="{'width': getEquipmentWidth() + 'px'}">
   <div *ngIf="character.equippedItems.length !== 0"
        class="flex-grow d-flex justify-content-around align-items-center flex-wrap">
     <img *ngFor="let item of character.equippedItems"
@@ -14,7 +14,7 @@
 
 <img [src]="'assets/character/' + character.name.toLowerCase() + '-wearables.jpg'" style="object-fit: scale-down">
 
-<div class="d-flex flex-column justify-content-around align-items-center flex-1">
+<div class="d-flex flex-column justify-content-around align-items-center">
   <img *ngIf="character.name && displayCard"
        [width]="300"
        [height]="450"
@@ -39,7 +39,7 @@
 <img [src]="'assets/character/backpack.jpg'" style="object-fit: scale-down">
 
 <!-- Backpack items-->
-<div class="d-flex flex-2">
+<div class="d-flex" [ngStyle]="{'width': getEquipmentWidth() + 'px'}">
   <div *ngIf="character.backpackItems.length !== 0"
        class="flex-grow d-flex justify-content-around align-items-center flex-wrap">
     <img *ngFor="let item of character.backpackItems"
