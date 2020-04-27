@@ -179,9 +179,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
               });
             } else {
               this.adventure = message.message;
-              this.adventure.otherItems
-                .filter(layerItem => layerItem.element.type === LayerElementType.CHARACTER)
-                .forEach(layerItem => this.updateItem(layerItem));
+              this.adventure.characters.forEach(layerItem => this.updateItem(layerItem));
             }
             break;
           case AdventureMessageType.UPDATE_CHARACTER:
