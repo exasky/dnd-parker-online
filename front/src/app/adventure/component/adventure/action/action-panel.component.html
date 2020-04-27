@@ -28,13 +28,12 @@
           style="text-transform: capitalize"
           [ngbTooltip]="tooltipContent"
           [disableTooltip]="!charItem.character.id"
-          tooltipClass="mw-75"
+          tooltipClass="tooltip-action-panel"
           [container]="'body'">
     {{charItem.character.name}}
     <ng-template #tooltipContent>
       <app-character-tooltip-displayer [character]="charItem.character"
                                        [displayCard]="true"
-                                       [ngStyle]="{'height': getCharacterTooltipHeight(charItem.character) + 'px'}"
                                        cardWidth="200"
                                        cardHeight="300"></app-character-tooltip-displayer>
     </ng-template>
@@ -44,13 +43,12 @@
   <button mat-raised-button color="accent" class="flex-shrink-0 m-2"
           [ngbTooltip]="tooltipContent"
           [disableTooltip]="initiatives.length === 0"
-          tooltipClass="mw-75"
+          tooltipClass="tooltip-action-panel"
           [container]="'body'"
           placement="left">
     Current initiative
     <ng-template #tooltipContent>
-      <app-initiative-displayer style="height: 350px"
-                                [currentInitiative]="currentInitiative"
+      <app-initiative-displayer [currentInitiative]="currentInitiative"
                                 [initiatives]="initiatives"></app-initiative-displayer>
     </ng-template>
   </button>
