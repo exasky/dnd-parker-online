@@ -65,6 +65,7 @@ import {InitiativeDisplayerComponent} from "./adventure/component/adventure/init
 import {NextTurnDialogComponent} from "./adventure/component/adventure/action/next-turn-dialog.component";
 import {DiceAttackDialogComponent} from "./adventure/component/adventure/dice/dice-attack-dialog.component";
 import {CapitalizePipe} from "./common/pipe/capitalize.pipe";
+import {SortPipe} from "./common/pipe/sort.pipe";
 
 @NgModule({
   declarations: [
@@ -96,7 +97,8 @@ import {CapitalizePipe} from "./common/pipe/capitalize.pipe";
     InitiativeDisplayerComponent,
     NextTurnDialogComponent,
     DiceAttackDialogComponent,
-    CapitalizePipe
+    CapitalizePipe,
+    SortPipe
   ],
   imports: [
     BrowserModule,
@@ -132,11 +134,7 @@ import {CapitalizePipe} from "./common/pipe/capitalize.pipe";
     LayoutModule,
     MatTabsModule
   ],
-  entryComponents: [
-    // Not necessary with ivy, keep just in case
-    //AlertMessageDialogComponent, ConfirmDialogComponent, DrawnCardDialogComponent, DiceDialogComponent,
-    //SelectCardDialogComponent, InitiativeDialogComponent
-  ],
+  entryComponents: [],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ForbiddenInterceptor, multi: true},
@@ -146,7 +144,8 @@ import {CapitalizePipe} from "./common/pipe/capitalize.pipe";
     AdventureWebsocketService,
     DrawnCardWebsocketService,
     DiceWebsocketService,
-    CapitalizePipe
+    CapitalizePipe,
+    SortPipe
   ],
   bootstrap: [AppComponent]
 })

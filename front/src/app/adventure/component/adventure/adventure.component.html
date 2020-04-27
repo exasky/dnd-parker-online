@@ -125,6 +125,11 @@
                  class="adventure-board-item"
                  [class.selected]="currentTurn?.characterName === item.character.name"
                  [ngStyle]="{'background-image': 'url(\'assets/character/' + item.name + '-token.jpg\')'}">
+              <ng-container *ngIf="item.character.hp === 0">
+                <div class="d-flex justify-content-center align-items-center w-100 h-100" style="color: red;background-color: rgba(0,0,0,0.5);">
+                <span class="mdi mdi-skull" style="font-size: 200%;"></span>
+                </div>
+              </ng-container>
             </div>
 
             <div *ngSwitchCase="LayerElementType.MONSTER"

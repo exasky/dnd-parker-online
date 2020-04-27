@@ -1,6 +1,5 @@
 import {Component, EventEmitter, HostBinding, Input, Output} from "@angular/core";
 import {MatDialog} from "@angular/material/dialog";
-import {Character} from "../../../model/character";
 import {AlertMessageDialogComponent} from "./alert-message-dialog.component";
 import {GmService} from "../../../service/gm.service";
 import {AdventureService} from "../../../service/adventure.service";

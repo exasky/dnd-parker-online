@@ -185,7 +185,15 @@ export class AdventureComponent implements OnInit, OnDestroy {
             }
             break;
           case AdventureMessageType.UPDATE_CHARACTER:
-            AdventureUtils.updateCharacter(message.message, this.characters.map(char => char.character));
+            const updatedCharacter = AdventureUtils.updateCharacter(message.message, this.characters.map(char => char.character));
+            if (updatedCharacter) {
+              const characterItem = this.characters.find(charItem => charItem.character.id === updatedCharacter.id);
+              characterItem.dragEnabled = this.isDragEnabledForGridsterItem(characterItem);
+              this.updateGridsterItem(characterItem);
+              if (this.isSameItemAsSelected(characterItem)) {
+                this.selectedItem = null;
+              }
+            }
             break;
           case AdventureMessageType.UPDATE_MONSTER:
             const monster: MonsterLayerItem = message.message;
@@ -198,6 +206,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
             const charTurns: Initiative[] = message.message;
             this.characterTurns = charTurns;
             this.currentTurn = this.characterTurns[0];
+            const characterGItem = this.characters.find(char => char.name === this.currentTurn.characterName);
+            if (characterGItem) {
+              characterGItem.dragEnabled = this.isDragEnabledForGridsterItem(characterGItem);
+              this.updateGridsterItem(characterGItem);
+            }
             this.openDialog(InitiativeDialogComponent, {adventureId: this.adventure.id, initiatives: charTurns});
             break;
           case AdventureMessageType.ADD_LAYER_ITEM:
@@ -244,7 +257,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
           case AdventureMessageType.VALIDATE_NEXT_TURN:
             const dashboardCharacters = this.dashboard.filter(item => item.type === LayerElementType.CHARACTER);
 
-            let prevCharacterTurn
+            let prevCharacterTurn: LayerGridsterItem;
             if (this.currentTurn) {
               prevCharacterTurn = dashboardCharacters.find(char => char.name === this.currentTurn.characterName);
             }
@@ -252,19 +265,17 @@ export class AdventureComponent implements OnInit, OnDestroy {
             this.currentTurn = message.message;
 
             if (prevCharacterTurn) {
-              if (this.selectedItem === prevCharacterTurn) {
+              if (this.isSameItemAsSelected(prevCharacterTurn)) {
                 this.selectedItem = null;
               }
-              prevCharacterTurn.dragEnabled = this.isDragEnabledForItem(prevCharacterTurn);
-              this.dashboard.splice(this.dashboard.indexOf(prevCharacterTurn), 1);
-              this.dashboard.push({...prevCharacterTurn});
+              prevCharacterTurn.dragEnabled = this.isDragEnabledForGridsterItem(prevCharacterTurn);
+              this.updateGridsterItem(prevCharacterTurn);
             }
 
             const nextCharacterTurn = dashboardCharacters.find(char => char.name === this.currentTurn.characterName);
             if (nextCharacterTurn) {
-              nextCharacterTurn.dragEnabled = this.isDragEnabledForItem(nextCharacterTurn);
-              this.dashboard.splice(this.dashboard.indexOf(nextCharacterTurn), 1);
-              this.dashboard.push({...nextCharacterTurn});
+              nextCharacterTurn.dragEnabled = this.isDragEnabledForGridsterItem(nextCharacterTurn);
+              this.updateGridsterItem(nextCharacterTurn);
             }
 
             this.closeDialog();
@@ -424,7 +435,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   stopItemDrag(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
     if (item.x === itemComponent.$item.x && item.y === itemComponent.$item.y) { // Case click
-      if (this.selectedItem && this.selectedItem.id === item.id) { // Click on case selected case
+      if (this.isSameItemAsSelected(item)) { // Click on case selected case
         this.selectedItem = null;
       } else {
         if (item.type === LayerElementType.MONSTER) {
@@ -587,12 +598,12 @@ export class AdventureComponent implements OnInit, OnDestroy {
       cols: item.element.colSize,
       name: item.element.name,
       type: item.element.type,
-      dragEnabled: this.isDragEnabledForItem(item.element)
+      dragEnabled: this.isDragEnabledForItem(item)
     };
     AdventureUtils.addSpecificToDashboardItem(itemToPush, item);
     this.dashboard.push(itemToPush);
 
-    if (this.selectedItem && this.selectedItem.id === itemToPush.id) {
+    if (this.isSameItemAsSelected(itemToPush)) {
       this.selectedItem = itemToPush;
     }
   }
@@ -618,7 +629,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     if (!item) return;
     const dashboardItem = this.findInDashboard(item);
     this.dashboard.splice(this.dashboard.indexOf(dashboardItem), 1);
-    if (this.selectedItem && this.selectedItem.type === dashboardItem.type && this.selectedItem.id === dashboardItem.id) {
+    if (this.isSameItemAsSelected(dashboardItem)) {
       this.selectedItem = null;
     }
     if (dashboardItem.type === LayerElementType.MONSTER && this.selectedMonsterId === dashboardItem.id) {
@@ -626,13 +637,27 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isDragEnabledForItem(item: { type: LayerElementType, name: string }): boolean {
+  private isDragEnabledForItem(item: LayerItem): boolean {
+    const user = this.authService.currentUserValue;
+
+    return user.role === ROLE_GM || (
+      item.element.type === LayerElementType.CHARACTER
+      && AdventureUtils.isMyTurn(user, this.currentTurn)
+      && this.currentTurn.characterName === (item as CharacterLayerItem).character.name
+      && user.characters.some(char => char.name.toLowerCase() === (item as CharacterLayerItem).character.name.toLowerCase())
+      && (item as CharacterLayerItem).character.hp !== 0
+    )
+  }
+
+  private isDragEnabledForGridsterItem(item: LayerGridsterItem): boolean {
     const user = this.authService.currentUserValue;
 
     return user.role === ROLE_GM || (
       item.type === LayerElementType.CHARACTER
-      && user.characters.some(char =>
-        this.currentTurn && char.name.toLowerCase() === item.name.toLowerCase() && char.name === this.currentTurn.characterName)
+      && AdventureUtils.isMyTurn(user, this.currentTurn)
+      && this.currentTurn.characterName === (item as CharacterLayerGridsterItem).character.name
+      && user.characters.some(char => char.name.toLowerCase() === item.name.toLowerCase())
+      && (item as CharacterLayerGridsterItem).character.hp !== 0
     )
   }
 
@@ -693,5 +718,14 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   getCharacterTooltipHeight(character: Character) {
     return Math.min(2, Math.max(character.equippedItems.length, character.backpackItems.length)) * 230;
+  }
+
+  private updateGridsterItem(item: LayerGridsterItem) {
+    this.dashboard.splice(this.dashboard.indexOf(item), 1);
+    this.dashboard.push({...item});
+  }
+
+  private isSameItemAsSelected(item: LayerGridsterItem): boolean {
+    return this.selectedItem && this.selectedItem.type === item.type && this.selectedItem.id === item.id;
   }
 }

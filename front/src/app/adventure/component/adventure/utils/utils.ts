@@ -66,7 +66,7 @@ export class AdventureUtils {
     return baseLayerItem;
   }
 
-  static updateCharacter(character: Character, toUpdateCharacters: Character[]): void {
+  static updateCharacter(character: Character, toUpdateCharacters: Character[]): Character {
     const toUpdate = toUpdateCharacters.find(advChar => advChar.id === character.id);
     if (toUpdate) {
       toUpdate.maxHp = character.maxHp;
@@ -76,6 +76,8 @@ export class AdventureUtils {
       toUpdate.equippedItems = character.equippedItems;
       toUpdate.backpackItems = character.backpackItems;
     }
+
+    return toUpdate;
   }
 
   static addSpecificToDashboardItem(dashboardItem: GridsterItem, layerItem: LayerItem) {

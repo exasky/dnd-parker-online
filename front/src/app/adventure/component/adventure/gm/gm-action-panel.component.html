@@ -85,7 +85,7 @@
     </mat-expansion-panel-header>
 
     <div class="d-flex flex-column">
-      <div *ngFor="let charItem of characters"
+      <div *ngFor="let charItem of characters | sort:'character.name'"
            class="flex-grow d-flex align-items-center justify-content-around">
         {{charItem.character.name | capitalize}}
         <div class="d-flex flex-column">

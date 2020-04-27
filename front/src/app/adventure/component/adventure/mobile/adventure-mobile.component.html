@@ -37,6 +37,7 @@
                     color="warn"
                     class="mr-1">radio_button_checked
           </mat-icon>
+          <span *ngIf="character.hp === 0" class="mdi mdi-skull" style="color: red; font-size: 150%;"></span>
           {{character.name | capitalize}}
         </ng-template>
         <app-character-mobile-displayer [character]="character"></app-character-mobile-displayer>
