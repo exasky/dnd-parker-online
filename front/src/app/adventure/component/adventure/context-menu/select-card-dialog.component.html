@@ -1,9 +1,9 @@
 <h1 mat-dialog-title>Select card</h1>
 <div class="flex-grow d-flex flex-column flex-md-row">
   <div class="flex-shrink-0 flex-md-grow-1 flex-md-shrink-1 d-flex justify-content-center align-items-center flex-md-basis-0"
-       (dragover)="$event.preventDefault()"
-       (drop)="setChestCard($event)">
-    <span *ngIf="!selectedCard" class="p-5 mb-2 mat-elevation-z2">ICI QU'ON DROP</span>
+       style="min-height: 100px"
+       dragOver (drop)="setChestCard($event)">
+    <span *ngIf="!selectedCard">ICI QU'ON DROP</span>
     <img *ngIf="selectedCard"
          [src]="'assets/card/' + selectedCard.type.toLowerCase() + '/' + selectedCard.level + '/' + selectedCard.name + '.jpg'"
          style="max-width: 80%; max-height: 80%;">

@@ -66,17 +66,14 @@
         <mat-icon>add</mat-icon>
       </button>
     </div>
-    <div class="w-100 d-flex"
-         style="overflow-y: hidden"
-         (dragover)="$event.preventDefault()"
-         (drop)="addEquippedItem($event)">
+    <div class="w-100 d-flex align-items-center justify-content-center"
+         style="overflow-y: hidden; min-height: 100px"
+         dragOver (drop)="addEquippedItem($event)">
       <div *ngIf="character.equippedItems.length === 0">
         Drag & Drop items here
       </div>
       <ng-container *ngIf="character.equippedItems.length !== 0">
-        <div *ngFor="let item of character.equippedItems"
-             class="m-auto"
-             style="position:relative;">
+        <div *ngFor="let item of character.equippedItems" class="m-auto position-relative">
           <img [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
                draggable="true"
                (dragstart)="equipmentDragStartHandler($event, item)"
@@ -96,10 +93,9 @@
         <mat-icon>add</mat-icon>
       </button>
     </div>
-    <div class="w-100 d-flex"
-         style="overflow-y: hidden"
-         (dragover)="$event.preventDefault()"
-         (drop)="addBackPackItem($event)">
+    <div class="w-100 d-flex align-items-center justify-content-center"
+         style="overflow-y: hidden; min-height: 100px"
+         dragOver (drop)="addBackPackItem($event)">
       <div *ngIf="character.backpackItems.length === 0">
         Drag & Drop items here
       </div>

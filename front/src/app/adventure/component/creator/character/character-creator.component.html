@@ -1,7 +1,5 @@
 <!-- Equipped items-->
-<div class="d-flex flex-2"
-     (dragover)="$event.preventDefault()"
-     (drop)="addEquippedItem($event)">
+<div class="d-flex flex-2" dragOver (drop)="addEquippedItem($event)">
   <div *ngIf="character.equippedItems.length === 0">
     Drag & Drop items here
   </div>
@@ -66,9 +64,7 @@
 </div>
 
 <!-- Backpack items-->
-<div class="d-flex flex-2 position-relative"
-     (dragover)="$event.preventDefault()"
-     (drop)="addBackPackItem($event)">
+<div class="d-flex flex-2 position-relative" dragOver (drop)="addBackPackItem($event)">
   <div *ngIf="character.backpackItems.length === 0">
     Drag & Drop items here
   </div>

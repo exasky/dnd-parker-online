@@ -66,6 +66,7 @@ import {NextTurnDialogComponent} from "./adventure/component/adventure/action/ne
 import {DiceAttackDialogComponent} from "./adventure/component/adventure/dice/dice-attack-dialog.component";
 import {CapitalizePipe} from "./common/pipe/capitalize.pipe";
 import {SortPipe} from "./common/pipe/sort.pipe";
+import {DragOverDirective} from "./common/directive/drag-over.directive";
 
 @NgModule({
   declarations: [
@@ -98,7 +99,8 @@ import {SortPipe} from "./common/pipe/sort.pipe";
     NextTurnDialogComponent,
     DiceAttackDialogComponent,
     CapitalizePipe,
-    SortPipe
+    SortPipe,
+    DragOverDirective
   ],
   imports: [
     BrowserModule,
