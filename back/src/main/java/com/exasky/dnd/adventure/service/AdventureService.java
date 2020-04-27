@@ -8,6 +8,7 @@ import com.exasky.dnd.adventure.model.card.CharacterItem;
 import com.exasky.dnd.adventure.model.layer.item.LayerItem;
 import com.exasky.dnd.adventure.model.template.CharacterTemplate;
 import com.exasky.dnd.adventure.repository.*;
+import com.exasky.dnd.adventure.rest.dto.trade.ValidateTradeDto;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.common.exception.ValidationCheckException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -288,5 +289,37 @@ public class AdventureService {
         repository.save(adventure);
 
         return adventure.getCurrentInitiative();
+    }
+
+    @PreAuthorize("hasRole('ROLE_GM')")
+    @Transactional
+    public List<Character> trade(ValidateTradeDto trade) {
+        Character from = this.characterRepository.getOne(trade.getFromCharacterId());
+        Character to = this.characterRepository.getOne(trade.getToCharacterId());
+
+        simpleTrade(from, to,
+                trade.getFromCharacterEquipment(), trade.getFromCharacterIsEquipment(),
+                trade.getToCharacterIsEquipment());
+
+        simpleTrade(to, from,
+                trade.getToCharacterEquipment(), trade.getToCharacterIsEquipment(),
+                trade.getFromCharacterIsEquipment());
+
+        return Arrays.asList(from, to);
+    }
+
+    private void simpleTrade(Character from, Character to,
+                             Long fromCharacterEquipmentId, Boolean fromCharacterIsEquipment,
+                             Boolean toCharacterIsEquipment) {
+        if (Objects.nonNull(fromCharacterEquipmentId)) {
+            List<CharacterItem> items = fromCharacterIsEquipment ? from.getEquipments() : from.getBackPack();
+            Optional<CharacterItem> optFromItem = items.stream().filter(item -> item.getId().equals(fromCharacterEquipmentId)).findFirst();
+            if (optFromItem.isPresent()) {
+                CharacterItem fromItem = optFromItem.get();
+                items.remove(fromItem);
+
+                (toCharacterIsEquipment != null && toCharacterIsEquipment ? to.getEquipments() : to.getBackPack()).add(fromItem);
+            }
+        }
     }
 }

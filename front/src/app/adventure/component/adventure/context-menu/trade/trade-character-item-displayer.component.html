@@ -1,0 +1,24 @@
+<div class="flex-grow d-flex flex-column m-2">
+  <h3>{{character.displayName}}</h3>
+  <h5>Equipped items</h5>
+  <div class="flex-1 flex-grow d-flex overflow">
+    <img *ngFor="let equipped of character.equippedItems"
+         width="150px" height="230px"
+         alt="{{equipped.name}}"
+         class="m-1"
+         [class.selected]="itemSelected && equipped.id === itemSelected.id"
+         [src]="'assets/card/' + equipped.type.toLowerCase() + '/' + equipped.level + '/' + equipped.name + '.jpg'"
+         (click)="selectEquipment(equipped, true)">
+  </div>
+  <mat-divider></mat-divider>
+  <div class="flex-1 flex-grow d-flex overflow">
+    <img *ngFor="let backpack of character.backpackItems"
+         width="150px" height="230px"
+         [class.selected]="itemSelected && backpack.id === itemSelected.id"
+         [src]="'assets/card/' + backpack.type.toLowerCase() + '/' + backpack.level + '/' + backpack.name + '.jpg'"
+         (click)="selectEquipment(backpack, false)">
+  </div>
+</div>
+<div *ngIf="!tradeEnabled"
+     class="position-absolute"
+     style="width: 100%; height: 100%; background-color: rgba(0,0,0,0.2)" ></div>

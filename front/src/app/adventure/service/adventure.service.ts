@@ -5,7 +5,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {SimpleCampaign} from "../model/campaign";
 import {MouseMove} from "../model/adventure-message";
-import {Character, CharacterTemplate} from "../model/character";
+import {Character, CharacterEquipment, CharacterTemplate} from "../model/character";
 
 @Injectable({
   providedIn: "root"
@@ -65,5 +65,17 @@ export class AdventureService {
 
   validateNextTurn(adventureId, validation: boolean) {
     this.http.post(AdventureService.API_URL + '/validate-next-turn/' + adventureId, {validation}).subscribe();
+  }
+
+  askTrade(adventureId, trade: { from: number; to: number }) {
+    this.http.post(AdventureService.API_URL + '/ask-trade/' + adventureId, trade).subscribe();
+  }
+
+  selectTradeEquipment(adventureId: number, equipment: { characterEquipment: CharacterEquipment; isEquipment }, isFrom: boolean) {
+    this.http.post(AdventureService.API_URL + '/select-trade/' + adventureId, {isFrom, ...equipment}).subscribe();
+  }
+
+  validateTrade(adventureId: number, trade) {
+    return this.http.post(AdventureService.API_URL + '/validate-trade/' + adventureId, trade).subscribe();
   }
 }

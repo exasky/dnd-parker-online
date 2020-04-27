@@ -67,6 +67,8 @@ import {DiceAttackDialogComponent} from "./adventure/component/adventure/dice/di
 import {CapitalizePipe} from "./common/pipe/capitalize.pipe";
 import {SortPipe} from "./common/pipe/sort.pipe";
 import {DragOverDirective} from "./common/directive/drag-over.directive";
+import {TradeDialogComponent} from "./adventure/component/adventure/context-menu/trade/trade-dialog.component";
+import {TradeCharacterItemDisplayerComponent} from "./adventure/component/adventure/context-menu/trade/trade-character-item-displayer.component";
 
 @NgModule({
   declarations: [
@@ -100,7 +102,9 @@ import {DragOverDirective} from "./common/directive/drag-over.directive";
     DiceAttackDialogComponent,
     CapitalizePipe,
     SortPipe,
-    DragOverDirective
+    DragOverDirective,
+    TradeDialogComponent,
+    TradeCharacterItemDisplayerComponent
   ],
   imports: [
     BrowserModule,

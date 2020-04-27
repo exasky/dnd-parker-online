@@ -17,9 +17,9 @@ import {MatDialog} from "@angular/material/dialog";
 import {SelectCardDialogComponent} from "./select-card-dialog.component";
 import {AdventureCardService} from "../../../service/adventure-card.service";
 import {AdventureUtils} from "../utils/utils";
-import {CharacterItem} from "../../../model/item";
 import {CharacterEquipment} from "../../../model/character";
 import {DiceService} from "../../../service/dice.service";
+import {TradeDialogComponent} from "./trade/trade-dialog.component";
 
 @Component({
   selector: 'app-context-menu',
@@ -35,7 +35,7 @@ export class ContextMenuComponent {
   addableLayerElements: LayerElement[] = [];
 
   @Input()
-  characterItems: CharacterItem[];
+  characterItems: CharacterLayerGridsterItem[];
 
   @Input()
   currentInitiative: Initiative;
@@ -137,5 +137,22 @@ export class ContextMenuComponent {
     const fromAttack = this.authService.currentUserValue.characters.find(char => char.name === this.currentInitiative.characterName);
     const fromAttackId = fromAttack ? fromAttack.id : this.selectedMonsterId;
     this.diceService.openDiceAttackDialog(this.adventureId, fromAttackId, item.id, !fromAttack, false);
+  }
+
+  canTradeWith(item: CharacterLayerGridsterItem): boolean {
+    const currChar = this.characterItems.find(char => char.character.name === this.currentInitiative.characterName);
+    // return item.x - currChar.x > 1;
+    return item.character.name !== this.currentInitiative.characterName
+      && (item.y === currChar.y && ([-1, 1].indexOf(item.x - currChar.x) !== -1)
+        || (item.x === currChar.x && ([-1, 1].indexOf(item.y - currChar.y) !== -1)));
+  }
+
+  askTrade(item: CharacterLayerGridsterItem) {
+    const currChar = this.characterItems.find(char => char.character.name === this.currentInitiative.characterName);
+    this.adventureService.askTrade(this.adventureId, {from: currChar.character.id, to: item.character.id});
+  }
+
+  canSwitchEquipment(item: CharacterLayerGridsterItem): boolean {
+    return item.character.name === this.currentInitiative.characterName;
   }
 }

@@ -7,20 +7,24 @@
   <ng-template matMenuContent let-item="item">
     <ng-container *ngIf="item.type === LayerElementType.MONSTER">
       <button mat-menu-item (click)="attackMonster(item)" [disabled]="">
-        <mat-icon>track_changes</mat-icon>
+        <span class="mdi mdi-sword-cross" style="font-size: 140%; margin-right: 20px;"></span>
         Attack
       </button>
     </ng-container>
     <ng-container *ngIf="item.type === LayerElementType.CHARACTER">
       <button mat-menu-item (click)="attackCharacter(item)" [disabled]="authService.isGM && !selectedMonsterId">
-        <mat-icon>track_changes</mat-icon>
+        <span class="mdi mdi-sword-cross" style="font-size: 140%; margin-right: 20px;"></span>
         Attack
       </button>
+      <button mat-menu-item *ngIf="canTradeWith(item)" (click)="askTrade(item)">
+        <span class="mdi mdi-hand-heart" style="font-size: 140%; margin-right: 20px;"></span>
+        Trade
+      </button>
+      <button mat-menu-item *ngIf="canSwitchEquipment(item)">
+        <span class="mdi mdi-sack" style="font-size: 140%; margin-right: 20px;"></span>
+        Switch equipment
+      </button>
     </ng-container>
-    <button *ngIf="authService.isGM && isItemFlippable(item.type)" mat-menu-item (click)="flipElement(item, $event)">
-      <mat-icon>flip</mat-icon>
-      Flip
-    </button>
     <ng-container *ngIf="item.type === LayerElementType.TRAP">
       <button *ngIf="authService.isGM && item.shown === false && item.deactivated === false" mat-menu-item
               (click)="showTrap(item)">
@@ -29,20 +33,26 @@
       </button>
     </ng-container>
     <ng-container *ngIf="item.type === LayerElementType.CHEST">
-      <mat-divider></mat-divider>
       <button *ngIf="authService.isGM" mat-menu-item (click)="setChestCard(item)">
         <mat-icon style="transform: rotate(180deg)">open_in_browser</mat-icon>
         Set card
       </button>
       <button mat-menu-item (click)="openChest(item)">
         <mat-icon>open_in_browser</mat-icon>
+        <span class="mdi mdi-treasure-chest" style="font-size: 140%; margin-right: 20px;"></span>
         Open chest
       </button>
-      <mat-divider></mat-divider>
     </ng-container>
-    <button *ngIf="authService.isGM" mat-menu-item (click)="deleteItem(item)">
-      <mat-icon>delete</mat-icon>
-      Delete
-    </button>
+    <ng-container *ngIf="authService.isGM">
+      <button *ngIf="authService.isGM && isItemFlippable(item.type)" mat-menu-item (click)="flipElement(item, $event)">
+        <mat-icon>flip</mat-icon>
+        Flip
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="deleteItem(item)">
+        <mat-icon>delete</mat-icon>
+        Delete
+      </button>
+    </ng-container>
   </ng-template>
 </mat-menu>

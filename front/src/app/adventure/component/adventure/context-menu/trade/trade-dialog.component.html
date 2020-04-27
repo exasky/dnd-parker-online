@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>Trade equipment</h1>
+
+<div class="flex-grow d-flex">
+  <app-trade-character-item-displayer class="flex-3"
+                                      [character]="data.trade.from"
+                                      [tradeEnabled]="isClickAuthorized(true)"
+                                      [itemSelected]="selectedFrom.characterEquipment"
+                                      (equipmentSelected)="selectEquipment($event, true)"></app-trade-character-item-displayer>
+
+  <mat-icon style="font-size: 500%; width: unset; height: unset; margin: auto">swap_horiz</mat-icon>
+
+  <app-trade-character-item-displayer class="flex-3"
+                                      [tradeEnabled]="isClickAuthorized(false)"
+                                      [character]="data.trade.to"
+                                      [itemSelected]="selectedTo.characterEquipment"
+                                      (equipmentSelected)="selectEquipment($event, false)"></app-trade-character-item-displayer>
+</div>
+
+<mat-dialog-actions *ngIf="authService.isGM">
+  <button mat-raised-button (click)="cancelTrade()">Cancel</button>
+  <button mat-raised-button (click)="validateTrade()">Validate trade</button>
+</mat-dialog-actions>

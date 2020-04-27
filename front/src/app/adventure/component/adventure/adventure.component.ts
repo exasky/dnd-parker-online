@@ -50,6 +50,7 @@ import {InitiativeDialogComponent} from "./initiative/initiative-dialog.componen
 import {NextTurnDialogComponent} from "./action/next-turn-dialog.component";
 import {DiceAttackDialogComponent} from "./dice/dice-attack-dialog.component";
 import {Character} from "../../model/character";
+import {TradeDialogComponent} from "./context-menu/trade/trade-dialog.component";
 
 @Component({
   selector: 'app-adventure',
@@ -277,6 +278,12 @@ export class AdventureComponent implements OnInit, OnDestroy {
             }
 
             this.closeDialog();
+            break;
+          case AdventureMessageType.ASK_TRADE:
+            const trade = message.message;
+            const from = this.characters.find(char => char.character.id === trade.from).character;
+            const to = this.characters.find(char => char.character.id === trade.to).character;
+            this.currentDialog = this.dialog.open(TradeDialogComponent, DialogUtils.getDefaultConfig({adventureId: this.adventure.id, trade: {from, to}}));
             break;
         }
       }

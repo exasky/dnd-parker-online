@@ -16,7 +16,9 @@ public class AdventureMessageDto {
         SOUND,
         CLOSE_DIALOG,
         ASK_NEXT_TURN,
-        VALIDATE_NEXT_TURN
+        VALIDATE_NEXT_TURN,
+        ASK_TRADE,
+        SELECT_TRADE_CARD
     }
 
     private AdventureMessageType type;
