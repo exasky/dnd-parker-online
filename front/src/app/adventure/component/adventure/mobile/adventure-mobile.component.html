@@ -11,21 +11,24 @@
       </mat-tab>
       <mat-tab label="Characters">
         <ng-template mat-tab-label>Characters</ng-template>
-        <mat-tab-group class="flex-grow">
-          <mat-tab *ngFor="let character of characters">
-            <ng-template mat-tab-label>
-              <mat-icon *ngIf="currentTurn && currentTurn.characterName === character.name"
-                        color="warn"
-                        class="mr-1">
-                radio_button_checked
-              </mat-icon>
-              {{character.name | capitalize}}
-            </ng-template>
-            <app-character-mobile-displayer [editable]="true"
-                                            [adventureId]="adventure.id"
-                                            [character]="character"></app-character-mobile-displayer>
-          </mat-tab>
-        </mat-tab-group>
+        <ng-template matTabContent>
+          <mat-tab-group class="flex-grow">
+            <mat-tab *ngFor="let character of characters">
+              <ng-template mat-tab-label>
+                <mat-icon *ngIf="currentTurn && currentTurn.characterName === character.name"
+                          color="warn"
+                          class="mr-1">
+                  radio_button_checked
+                </mat-icon>
+                <span *ngIf="character.hp === 0" class="mdi mdi-skull" style="color: red; font-size: 150%;"></span>
+                {{character.name | capitalize}}
+              </ng-template>
+              <app-character-mobile-displayer [editable]="true"
+                                              [adventureId]="adventure.id"
+                                              [character]="character"></app-character-mobile-displayer>
+            </mat-tab>
+          </mat-tab-group>
+        </ng-template>
       </mat-tab>
     </mat-tab-group>
   </ng-container>
