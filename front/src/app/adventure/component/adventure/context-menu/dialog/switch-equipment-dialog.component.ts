@@ -9,6 +9,7 @@ import {SocketResponse} from "../../../../../common/model";
 import {SocketResponseType} from "../../../../../common/model/websocket.response";
 import {AdventureMessage, AdventureMessageType} from "../../../../model/adventure-message";
 import {GmService} from "../../../../service/gm.service";
+import {AudioService} from "../../../../service/audio.service";
 
 @Component({
   selector: 'app-switch-equipment-dialog',
@@ -29,10 +30,12 @@ export class SwitchEquipmentDialogComponent implements OnInit, OnDestroy {
               private gmService: GmService,
               private adventureService: AdventureService,
               private adventureWS: AdventureWebsocketService,
+              private audioService: AudioService,
               @Inject(MAT_DIALOG_DATA) public data: { adventureId: number, character: Character }) {
   }
 
   ngOnInit(): void {
+    this.audioService.playSound('/assets/sound/bag_1.mp3');
     this.advSub = this.adventureWS.getObservable(this.data.adventureId).subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {
         const message: AdventureMessage = receivedMsg.data;

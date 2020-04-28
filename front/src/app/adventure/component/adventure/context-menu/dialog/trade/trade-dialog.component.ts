@@ -9,6 +9,7 @@ import {SocketResponseType} from "../../../../../../common/model/websocket.respo
 import {AdventureMessage, AdventureMessageType} from "../../../../../model/adventure-message";
 import {AdventureService} from "../../../../../service/adventure.service";
 import {GmService} from "../../../../../service/gm.service";
+import {AudioService} from "../../../../../service/audio.service";
 
 @Component({
   selector: 'app-trade-dialog',
@@ -31,10 +32,12 @@ export class TradeDialogComponent implements OnInit, OnDestroy {
               private gmService: GmService,
               private adventureService: AdventureService,
               private adventureWS: AdventureWebsocketService,
+              private audioService: AudioService,
               @Inject(MAT_DIALOG_DATA) public data: { adventureId: number, trade: { from: Character, to: Character } }) {
   }
 
   ngOnInit(): void {
+    this.audioService.playSound('/assets/sound/bag_0.mp3');
     this.advSub = this.adventureWS.getObservable(this.data.adventureId).subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {
         const message: AdventureMessage = receivedMsg.data;
