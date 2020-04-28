@@ -8,6 +8,7 @@ import com.exasky.dnd.adventure.model.card.CharacterItem;
 import com.exasky.dnd.adventure.model.layer.item.LayerItem;
 import com.exasky.dnd.adventure.model.template.CharacterTemplate;
 import com.exasky.dnd.adventure.repository.*;
+import com.exasky.dnd.adventure.rest.dto.switch_equipment.ValidateSwitchDto;
 import com.exasky.dnd.adventure.rest.dto.trade.ValidateTradeDto;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.common.exception.ValidationCheckException;
@@ -321,5 +322,33 @@ public class AdventureService {
                 (toCharacterIsEquipment != null && toCharacterIsEquipment ? to.getEquipments() : to.getBackPack()).add(fromItem);
             }
         }
+    }
+
+    @PreAuthorize("hasRole('ROLE_GM')")
+    @Transactional
+    public Character switchEquipment(ValidateSwitchDto switchDto) {
+        Character toUpdate = characterRepository.getOne(switchDto.getCharacterId());
+
+        if (Objects.nonNull(switchDto.getCharacterEquippedItemId())) {
+            Optional<CharacterItem> optEq = toUpdate.getEquipments().stream().
+                    filter(eq -> eq.getId().equals(switchDto.getCharacterEquippedItemId())).findFirst();
+            if (optEq.isPresent()) {
+                CharacterItem eq = optEq.get();
+                toUpdate.getEquipments().remove(eq);
+                toUpdate.getBackPack().add(eq);
+            }
+        }
+
+        if (Objects.nonNull(switchDto.getCharacterBackpackItemId())) {
+            Optional<CharacterItem> optBp = toUpdate.getBackPack().stream()
+                    .filter(eq -> eq.getId().equals(switchDto.getCharacterBackpackItemId())).findFirst();
+            if (optBp.isPresent()) {
+                CharacterItem bp = optBp.get();
+                toUpdate.getBackPack().remove(bp);
+                toUpdate.getEquipments().add(bp);
+            }
+        }
+
+        return toUpdate;
     }
 }

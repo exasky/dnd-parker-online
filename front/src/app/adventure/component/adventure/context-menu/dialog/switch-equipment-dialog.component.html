@@ -1,0 +1,36 @@
+<h1 mat-dialog-title>Switch equipment</h1>
+
+<div class="flex-grow d-flex position-relative">
+  <div class="flex-grow d-flex flex-column m-2">
+    <h3>{{data.character.displayName}}</h3>
+
+    <h5>Equipped items</h5>
+    <div class="flex-1 flex-grow d-flex overflow justify-content-around align-items-center">
+      <img *ngFor="let equipped of data.character.equippedItems"
+           width="150px" height="230px"
+           alt="{{equipped.name}}"
+           class="m-1"
+           [class.selected]="equippedSelected && equipped.id === equippedSelected.id"
+           [src]="'assets/card/' + equipped.type.toLowerCase() + '/' + equipped.level + '/' + equipped.name + '.jpg'"
+           (click)="selectEquipment(equipped, true)">
+    </div>
+    <mat-divider></mat-divider>
+    <h5>Backpack items</h5>
+    <div class="flex-1 flex-grow d-flex overflow justify-content-around align-items-center">
+      <img *ngFor="let backpack of data.character.backpackItems"
+           width="150px" height="230px"
+           [class.selected]="backpackSelected && backpack.id === backpackSelected.id"
+           [src]="'assets/card/' + backpack.type.toLowerCase() + '/' + backpack.level + '/' + backpack.name + '.jpg'"
+           (click)="selectEquipment(backpack, false)">
+    </div>
+  </div>
+
+  <div *ngIf="!isSwitchAuthorized()"
+       class="position-absolute"
+       style="width: 100%; height: 100%; background-color: rgba(0,0,0,0.2)"></div>
+</div>
+
+<mat-dialog-actions *ngIf="authService.isGM">
+  <button mat-raised-button (click)="cancelSwitch()">Cancel</button>
+  <button mat-raised-button (click)="validateSwitch()">Validate switch</button>
+</mat-dialog-actions>

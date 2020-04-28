@@ -76,6 +76,18 @@ export class AdventureService {
   }
 
   validateTrade(adventureId: number, trade) {
-    return this.http.post(AdventureService.API_URL + '/validate-trade/' + adventureId, trade).subscribe();
+    this.http.post(AdventureService.API_URL + '/validate-trade/' + adventureId, trade).subscribe();
+  }
+
+  askSwitch(adventureId: number, characterId: number) {
+    this.http.get(AdventureService.API_URL + '/ask-switch/' + adventureId + '/' + characterId).subscribe();
+  }
+
+  selectSwitch(adventureId: number, equipment: {equipmentId: number, isEquipment: boolean}) {
+    this.http.post(AdventureService.API_URL + '/select-switch/' + adventureId, equipment).subscribe();
+  }
+
+  validateSwitch(adventureId: number, switchEq: {characterId: number, characterEquippedItemId: number, characterBackpackItemId: number}) {
+    this.http.post(AdventureService.API_URL + '/validate-switch/' + adventureId, switchEq).subscribe();
   }
 }

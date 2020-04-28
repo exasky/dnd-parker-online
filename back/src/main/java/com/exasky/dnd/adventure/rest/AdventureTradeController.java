@@ -1,6 +1,9 @@
 package com.exasky.dnd.adventure.rest;
 
+import com.exasky.dnd.adventure.model.Character;
 import com.exasky.dnd.adventure.rest.dto.CharacterDto;
+import com.exasky.dnd.adventure.rest.dto.switch_equipment.SelectSwitchEquipmentDto;
+import com.exasky.dnd.adventure.rest.dto.switch_equipment.ValidateSwitchDto;
 import com.exasky.dnd.adventure.rest.dto.trade.AskTradeDto;
 import com.exasky.dnd.adventure.rest.dto.trade.SelectTradeEquipmentDto;
 import com.exasky.dnd.adventure.rest.dto.trade.ValidateTradeDto;
@@ -50,6 +53,35 @@ public class AdventureTradeController {
             wsDto.setMessage(CharacterDto.toDto(updatedChar));
             messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
         });
+
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.CLOSE_DIALOG);
+        messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+    }
+
+    @GetMapping("/ask-switch/{adventureId}/{characterId}")
+    public void askSwitch(@PathVariable Long adventureId, @PathVariable Long characterId) {
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.ASK_SWITCH);
+        wsDto.setMessage(characterId);
+        messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+    }
+
+    @PostMapping("/select-switch/{adventureId}")
+    public void selectSwitchEquipment(@PathVariable Long adventureId, @RequestBody SelectSwitchEquipmentDto tradeDto) {
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.SELECT_SWITCH_CARD);
+        wsDto.setMessage(tradeDto);
+        messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+    }
+
+    @PostMapping("/validate-switch/{adventureId}")
+    public void validateSwitch(@PathVariable Long adventureId, @RequestBody ValidateSwitchDto switchDto) {
+        Character character = this.adventureService.switchEquipment(switchDto);
+
+        final AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_CHARACTER);
+        wsDto.setMessage(CharacterDto.toDto(character));
+        messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
 
         wsDto.setType(AdventureMessageDto.AdventureMessageType.CLOSE_DIALOG);
         messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);

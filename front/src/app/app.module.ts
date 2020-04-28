@@ -54,7 +54,7 @@ import {AlertMessageDialogComponent} from "./adventure/component/adventure/gm/al
 import {MatSliderModule} from "@angular/material/slider";
 import {MatListModule} from "@angular/material/list";
 import {ContextMenuComponent} from "./adventure/component/adventure/context-menu/context-menu.component";
-import {SelectCardDialogComponent} from "./adventure/component/adventure/context-menu/select-card-dialog.component";
+import {SelectCardDialogComponent} from "./adventure/component/adventure/context-menu/dialog/select-card-dialog.component";
 import {AdventureIndexComponent} from "./adventure/component/adventure/adventure-index.component";
 import {AdventureMobileComponent} from "./adventure/component/adventure/mobile/adventure-mobile.component";
 import {LayoutModule} from "@angular/cdk/layout";
@@ -67,8 +67,9 @@ import {DiceAttackDialogComponent} from "./adventure/component/adventure/dice/di
 import {CapitalizePipe} from "./common/pipe/capitalize.pipe";
 import {SortPipe} from "./common/pipe/sort.pipe";
 import {DragOverDirective} from "./common/directive/drag-over.directive";
-import {TradeDialogComponent} from "./adventure/component/adventure/context-menu/trade/trade-dialog.component";
-import {TradeCharacterItemDisplayerComponent} from "./adventure/component/adventure/context-menu/trade/trade-character-item-displayer.component";
+import {TradeDialogComponent} from "./adventure/component/adventure/context-menu/dialog/trade/trade-dialog.component";
+import {TradeCharacterItemDisplayerComponent} from "./adventure/component/adventure/context-menu/dialog/trade/trade-character-item-displayer.component";
+import {SwitchEquipmentDialogComponent} from "./adventure/component/adventure/context-menu/dialog/switch-equipment-dialog.component";
 
 @NgModule({
   declarations: [
@@ -104,7 +105,8 @@ import {TradeCharacterItemDisplayerComponent} from "./adventure/component/advent
     SortPipe,
     DragOverDirective,
     TradeDialogComponent,
-    TradeCharacterItemDisplayerComponent
+    TradeCharacterItemDisplayerComponent,
+    SwitchEquipmentDialogComponent
   ],
   imports: [
     BrowserModule,

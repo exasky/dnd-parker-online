@@ -1,7 +1,7 @@
 import {Component, HostBinding, Input} from "@angular/core";
 import {Character, CharacterEquipment} from "../../../model/character";
 import {AdventureService} from "../../../service/adventure.service";
-import {SelectCardDialogComponent} from "../context-menu/select-card-dialog.component";
+import {SelectCardDialogComponent} from "../context-menu/dialog/select-card-dialog.component";
 import {DialogUtils} from "../../../../common/dialog/dialog.utils";
 import {MatDialog} from "@angular/material/dialog";
 

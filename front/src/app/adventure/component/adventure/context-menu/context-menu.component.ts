@@ -14,12 +14,11 @@ import {AdventureService} from "../../../service/adventure.service";
 import {GmService} from "../../../service/gm.service";
 import {DialogUtils} from "../../../../common/dialog/dialog.utils";
 import {MatDialog} from "@angular/material/dialog";
-import {SelectCardDialogComponent} from "./select-card-dialog.component";
+import {SelectCardDialogComponent} from "./dialog/select-card-dialog.component";
 import {AdventureCardService} from "../../../service/adventure-card.service";
 import {AdventureUtils} from "../utils/utils";
 import {CharacterEquipment} from "../../../model/character";
 import {DiceService} from "../../../service/dice.service";
-import {TradeDialogComponent} from "./trade/trade-dialog.component";
 
 @Component({
   selector: 'app-context-menu',
@@ -154,5 +153,9 @@ export class ContextMenuComponent {
 
   canSwitchEquipment(item: CharacterLayerGridsterItem): boolean {
     return item.character.name === this.currentInitiative.characterName;
+  }
+
+  askSwitch(item: CharacterLayerGridsterItem) {
+    this.adventureService.askSwitch(this.adventureId, item.character.id);
   }
 }

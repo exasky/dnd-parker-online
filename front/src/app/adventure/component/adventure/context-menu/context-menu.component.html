@@ -20,7 +20,7 @@
         <span class="mdi mdi-hand-heart" style="font-size: 140%; margin-right: 20px;"></span>
         Trade
       </button>
-      <button mat-menu-item *ngIf="canSwitchEquipment(item)">
+      <button mat-menu-item *ngIf="canSwitchEquipment(item)" (click)="askSwitch(item)">
         <span class="mdi mdi-sack" style="font-size: 140%; margin-right: 20px;"></span>
         Switch equipment
       </button>

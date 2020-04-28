@@ -18,7 +18,9 @@ public class AdventureMessageDto {
         ASK_NEXT_TURN,
         VALIDATE_NEXT_TURN,
         ASK_TRADE,
-        SELECT_TRADE_CARD
+        SELECT_TRADE_CARD,
+        ASK_SWITCH,
+        SELECT_SWITCH_CARD,
     }
 
     private AdventureMessageType type;

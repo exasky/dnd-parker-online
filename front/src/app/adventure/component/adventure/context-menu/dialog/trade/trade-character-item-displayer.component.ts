@@ -1,5 +1,5 @@
 import {Component, EventEmitter, HostBinding, Input, Output} from "@angular/core";
-import {Character, CharacterEquipment} from "../../../../model/character";
+import {Character, CharacterEquipment} from "../../../../../model/character";
 
 @Component({
   selector: 'app-trade-character-item-displayer',

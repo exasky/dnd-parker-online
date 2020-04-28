@@ -1,20 +1,20 @@
-import {Component, HostBinding, Inject, OnInit} from "@angular/core";
-import {Character, CharacterEquipment} from "../../../../model/character";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {AuthService} from "../../../../../login/auth.service";
-import {AdventureWebsocketService} from "../../../../../common/service/ws/adventure.websocket.service";
+import {Component, HostBinding, Inject, OnDestroy, OnInit} from "@angular/core";
+import {Character, CharacterEquipment} from "../../../../../model/character";
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {AuthService} from "../../../../../../login/auth.service";
+import {AdventureWebsocketService} from "../../../../../../common/service/ws/adventure.websocket.service";
 import {Subscription} from "rxjs";
-import {SocketResponse} from "../../../../../common/model";
-import {SocketResponseType} from "../../../../../common/model/websocket.response";
-import {AdventureMessage, AdventureMessageType} from "../../../../model/adventure-message";
-import {AdventureService} from "../../../../service/adventure.service";
-import {GmService} from "../../../../service/gm.service";
+import {SocketResponse} from "../../../../../../common/model";
+import {SocketResponseType} from "../../../../../../common/model/websocket.response";
+import {AdventureMessage, AdventureMessageType} from "../../../../../model/adventure-message";
+import {AdventureService} from "../../../../../service/adventure.service";
+import {GmService} from "../../../../../service/gm.service";
 
 @Component({
   selector: 'app-trade-dialog',
   templateUrl: './trade-dialog.component.html',
 })
-export class TradeDialogComponent implements OnInit {
+export class TradeDialogComponent implements OnInit, OnDestroy {
   @HostBinding('style.height') height = '75vh';
   @HostBinding('style.width') width = '75vw';
   @HostBinding('class') cssClass = 'd-flex flex-column'
@@ -30,10 +30,8 @@ export class TradeDialogComponent implements OnInit {
   constructor(public authService: AuthService,
               private gmService: GmService,
               private adventureService: AdventureService,
-              public dialogRef: MatDialogRef<TradeDialogComponent>,
               private adventureWS: AdventureWebsocketService,
               @Inject(MAT_DIALOG_DATA) public data: { adventureId: number, trade: { from: Character, to: Character } }) {
-    console.log(data);
   }
 
   ngOnInit(): void {
@@ -55,7 +53,11 @@ export class TradeDialogComponent implements OnInit {
             break;
         }
       }
-    })
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.advSub.unsubscribe();
   }
 
   cancelTrade() {
