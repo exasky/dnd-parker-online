@@ -106,6 +106,12 @@ export class GmActionPanelComponent {
     }
   }
 
+  sendAmbient(e, type: string) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.gmService.playAmbientSound(this.adventureId, type);
+  }
+
   private timeoutMacro(sounds: (SoundType | string)[], repetition = 1, minDelay = 100, maxDelay = 200) {
     const delayToAddBetweenSounds = 200;
     let addedDelay = 0;

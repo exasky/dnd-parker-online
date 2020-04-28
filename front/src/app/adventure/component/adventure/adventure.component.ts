@@ -42,7 +42,7 @@ import {AdventureWebsocketService} from "../../../common/service/ws/adventure.we
 import {MonsterTemplate} from "../../model/monster";
 import {AlertMessage, AlertMessageType} from "../../model/alert-message";
 import {CharacterLayerGridsterItem, LayerGridsterItem, MonsterLayerGridsterItem} from "../../model/layer-gridster-item";
-import {AudioService} from "../../service/audio.service";
+import {AmbientAudioService, AudioService} from "../../service/audio.service";
 import {AdventureCardService} from "../../service/adventure-card.service";
 import {CardMessage, CardMessageType} from "../../model/card-message";
 import {AdventureUtils} from "./utils/utils";
@@ -114,6 +114,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
               private drawnCardWS: DrawnCardWebsocketService,
               private diceWS: DiceWebsocketService,
               private audioService: AudioService,
+              private ambientService: AmbientAudioService,
               private router: Router,
               private dialog: MatDialog) {
   }
@@ -214,16 +215,13 @@ export class AdventureComponent implements OnInit, OnDestroy {
             this.openDialog(InitiativeDialogComponent, {adventureId: this.adventure.id, initiatives: charTurns});
             break;
           case AdventureMessageType.ADD_LAYER_ITEM:
-            const newLayerItem = message.message;
-            this.addItem(newLayerItem);
+            this.addItem(message.message);
             break;
           case AdventureMessageType.UPDATE_LAYER_ITEM:
-            const updatedLayerItem = message.message;
-            this.updateItem(updatedLayerItem);
+            this.updateItem(message.message);
             break;
           case AdventureMessageType.REMOVE_LAYER_ITEM:
-            const deletedLayerItem = message.message;
-            this.removeItem(deletedLayerItem);
+            this.removeItem(message.message);
             break;
           case AdventureMessageType.SELECT_MONSTER:
             this.selectedMonsterId = message.message;
@@ -245,8 +243,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
             }
             break;
           case AdventureMessageType.SOUND:
-            const fileToPlay: string = message.message;
-            this.audioService.playSound('/assets/sound/' + fileToPlay);
+            this.audioService.playSound('/assets/sound/' + message.message);
+            break;
+          case AdventureMessageType.AMBIENT_SOUND:
+            this.ambientService.playSound('/assets/sound/ambient/' + message.message);
             break;
           case AdventureMessageType.CLOSE_DIALOG:
             this.closeDialog();
@@ -284,11 +284,17 @@ export class AdventureComponent implements OnInit, OnDestroy {
             const trade = message.message;
             const from = this.characters.find(char => char.character.id === trade.from).character;
             const to = this.characters.find(char => char.character.id === trade.to).character;
-            this.currentDialog = this.dialog.open(TradeDialogComponent, DialogUtils.getDefaultConfig({adventureId: this.adventure.id, trade: {from, to}}));
+            this.currentDialog = this.dialog.open(TradeDialogComponent, DialogUtils.getDefaultConfig({
+              adventureId: this.adventure.id,
+              trade: {from, to}
+            }));
             break;
           case AdventureMessageType.ASK_SWITCH:
             const character = this.characters.find(char => char.character.id === message.message).character;
-            this.currentDialog = this.dialog.open(SwitchEquipmentDialogComponent, DialogUtils.getDefaultConfig({adventureId: this.adventure.id, character}));
+            this.currentDialog = this.dialog.open(SwitchEquipmentDialogComponent, DialogUtils.getDefaultConfig({
+              adventureId: this.adventure.id,
+              character
+            }));
             break;
         }
       }
@@ -312,8 +318,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
           case CardMessageType.CLOSE_DIALOG:
             this.closeDialog();
             break
-          default:
-            break;
         }
       }
     })
@@ -337,11 +341,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
             const attackParameters = diceMessage.message;
             let fromAttack, toAttack;
 
-            if (attackParameters.isMonsterAttack) {
-              fromAttack = this.monsters.find(monster => monster.id === attackParameters.fromAttackId);
-            } else {
-              fromAttack = this.characters.find(character => character.character.id === attackParameters.fromAttackId);
-            }
+            fromAttack = attackParameters.isMonsterAttack
+              ? this.monsters.find(monster => monster.id === attackParameters.fromAttackId)
+              : this.characters.find(character => character.character.id === attackParameters.fromAttackId);
 
             if (attackParameters.isMonsterAttacked) {
               toAttack = this.monsters.find(monster => monster.id === attackParameters.toAttackId);
@@ -486,10 +488,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventureService.playerMouseMove(this.adventure.id, mouseMove);
   }
 
-  /**
-   * Move selected item with arrow keys
-   * @param e keyboard event
-   */
   onKeyboard(e: KeyboardEvent) {
     if (e.code === 'Escape') {
       this.selectedItem = null;

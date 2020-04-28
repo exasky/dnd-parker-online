@@ -53,6 +53,10 @@ export class GmService {
     return this.http.get(GmService.API_URL + '/play-sound/' + adventureId + '/' + audioFile).subscribe();
   }
 
+  playAmbientSound(adventureId: number, audioFile: string) {
+    return this.http.get(GmService.API_URL + '/play-ambient-sound/' + adventureId + '/' + audioFile).subscribe();
+  }
+
   updateMonster(adventureId: number, monster: MonsterItem) {
     return this.http.post(GmService.API_URL + '/update-monster/' + adventureId + '/' + monster.id, monster).subscribe();
   }

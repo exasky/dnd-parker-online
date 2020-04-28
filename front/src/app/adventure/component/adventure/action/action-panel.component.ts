@@ -5,7 +5,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DiceService} from "../../../service/dice.service";
 import {AuthService} from "../../../../login/auth.service";
 import {AdventureService} from "../../../service/adventure.service";
-import {AudioService} from "../../../service/audio.service";
+import {AudioService, AmbientAudioService} from "../../../service/audio.service";
 import {AdventureCardService} from "../../../service/adventure-card.service";
 import {CharacterItem} from "../../../model/item";
 import {Character} from "../../../model/character";
@@ -42,7 +42,8 @@ export class ActionPanelComponent {
               private dialog: MatDialog,
               private diceService: DiceService,
               public authService: AuthService,
-              public audioService: AudioService) {
+              public audioService: AudioService,
+              public ambientAudioService: AmbientAudioService) {
   }
 
   private sortCharactersByInitiative(characterItems: CharacterItem[]) {
@@ -81,10 +82,5 @@ export class ActionPanelComponent {
 
   nextAdventure() {
     this.gmService.nextAdventure(this.adventure.id);
-  }
-
-  getCharacterTooltipHeight(character: Character) {
-    return Math.max(600,
-      Math.min(2, Math.max(character.equippedItems.length, character.backpackItems.length)) * 300);
   }
 }

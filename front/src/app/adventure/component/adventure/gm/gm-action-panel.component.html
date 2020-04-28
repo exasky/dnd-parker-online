@@ -30,6 +30,7 @@
         <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundMonster">Monster</button>
         <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundMisc">Misc</button>
         <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundMacro">Macro</button>
+        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundAmbient">Ambient</button>
       </mat-menu>
       <mat-menu #soundSpell="matMenu">
         <button mat-menu-item (click)="sendSound($event, SoundType.SPELL_FIRE)">Fire</button>
@@ -52,6 +53,13 @@
       <mat-menu #soundMacro="matMenu">
         <button mat-menu-item (click)="sendMacro($event, SoundMacroType.SWORDS_AND_ARROWS)">Swords & bows</button>
       </mat-menu>
+      <mat-menu #soundAmbient="matMenu">
+        <button mat-menu-item (click)="sendAmbient($event, 'barren_wastes.mp3')">Barren wastes</button>
+        <button mat-menu-item (click)="sendAmbient($event, 'battle.mp3')">Battle</button>
+        <button mat-menu-item (click)="sendAmbient($event, 'bridge.mp3')">Bridge</button>
+        <button mat-menu-item (click)="sendAmbient($event, 'dungeon.mp3')">Dungeon</button>
+      </mat-menu>
+
     </div>
 
   </mat-expansion-panel>

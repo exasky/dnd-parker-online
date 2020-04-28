@@ -14,6 +14,7 @@ public class AdventureMessageDto {
         SELECT_MONSTER,
         ALERT,
         SOUND,
+        AMBIENT_SOUND,
         CLOSE_DIALOG,
         ASK_NEXT_TURN,
         VALIDATE_NEXT_TURN,

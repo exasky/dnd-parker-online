@@ -110,6 +110,14 @@ public class GMRestController {
         messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 
+    @GetMapping("/play-ambient-sound/{adventureId}/{audioFile}")
+    public void playAmbientSound(@PathVariable Long adventureId, @PathVariable String audioFile) {
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.AMBIENT_SOUND);
+        wsDto.setMessage(audioFile);
+        messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+    }
+
     @GetMapping("/close/{adventureId}")
     public void closeDialog(@PathVariable Long adventureId) {
         AdventureMessageDto wsDto = new AdventureMessageDto();

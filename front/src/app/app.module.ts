@@ -106,7 +106,7 @@ import {SwitchEquipmentDialogComponent} from "./adventure/component/adventure/co
     DragOverDirective,
     TradeDialogComponent,
     TradeCharacterItemDisplayerComponent,
-    SwitchEquipmentDialogComponent
+    SwitchEquipmentDialogComponent,
   ],
   imports: [
     BrowserModule,
