@@ -2,7 +2,8 @@
   <button type="button" mat-button (click)="drawer.toggle()">
     <mat-icon>menu</mat-icon>
   </button>
-  <span>DnD Online</span>
+  <img [src]="'/assets/logo_' + (isDarkTheme ? 'dark' : 'light')+ '.png'"
+       style="height: 100%; padding: 5px; object-fit: contain" alt="DnD Online">
   <div>
     <button mat-button [matMenuTriggerFor]="menu">{{authService.currentUserValue.username}}</button>
     <mat-menu #menu="matMenu">
