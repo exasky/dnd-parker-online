@@ -1,13 +1,10 @@
 .tooltip-action-panel {
-  left: 50% !important;
-  top: 50% !important;
   max-width: calc(100vw - 178px);
   height: 100vh;
   transform: none !important;
 
   .tooltip-inner {
     position: relative;
-    left: -50%;
-    top: -50%;
+    left: 50%;
   }
 }
