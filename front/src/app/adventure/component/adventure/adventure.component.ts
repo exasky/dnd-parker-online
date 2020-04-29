@@ -104,6 +104,19 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   currentDialog: MatDialogRef<any>;
 
+  currentScale = 1;
+
+  public scaleTest(event: WheelEvent) {
+    // if (Math.abs(event.deltaX) > 0) return;
+
+    // this.currentScale += event.deltaY > 0 ? 0.05 : -0.05;
+    // if (this.currentScale < 0.1) {
+    //   this.currentScale = 0.1;
+    // }
+console.log(this.currentScale)
+    this.boardPanel.nativeElement.style.transform = 'skew(-20deg, 0deg) rotateX(31deg) translateX(300px) scale(' + this.currentScale + ')';
+  }
+
   constructor(private adventureService: AdventureService,
               private adventureCardService: AdventureCardService,
               private gmService: GmService,

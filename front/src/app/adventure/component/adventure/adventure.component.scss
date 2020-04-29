@@ -15,6 +15,11 @@
   height: 100%;
   width: 100%;
 
+  // 3D effect
+  transform: skewX(16deg) translateY(-65px) translateX(7px);
+  height: 120px;
+  overflow: visible;
+
   &.selected {
     border: red 3px solid;
   }

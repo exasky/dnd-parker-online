@@ -30,6 +30,13 @@
       <button mat-raised-button class="flex-shrink-0 h-100 mx-2" (click)="gmDrawer.toggle()">GM Panel</button>
       <app-adventure-item-displayer [layerElements]="addableLayerElements"></app-adventure-item-displayer>
     </div>
+
+    <mat-slider color="primary"
+                [min]="0.05" [max]="2" [step]="0.05"
+                [thumbLabel]="true" [tickInterval]="0.05"
+                [(ngModel)]="currentScale"
+                (change)="scaleTest(null)">
+    </mat-slider>
   </div>
 
   <mat-drawer-container class="flex-grow d-flex flex-column mt-3" #mainDrawerContainer tabindex="1"
@@ -49,11 +56,13 @@
     </mat-drawer>
 
     <mat-drawer-content>
+      <!-- "3D" effect: transform: skew(-20deg, 0deg) rotateX(31deg);-->
       <div #boardPanel
            [ngStyle]="{'width': gamePanelXSize * 700 + 'px',
                        'height': gamePanelYSize * 700 + 'px',
                        'margin': '0 auto',
                        'position': 'relative'}"
+           style="transform: skew(-20deg, 0deg) rotateX(31deg) translateX(300px); overflow: initial;"
            (mousemove)="onMouseMove($event)"
            (mouseout)="onMouseOut()">
         <ng-container *ngIf="otherPlayersCursors">
@@ -86,11 +95,12 @@
           </ng-template>
         </ng-template>
 
-        <gridster #gridster [options]="options" style="flex-grow: 1; z-index: 10">
+        <gridster #gridster [options]="options" style="flex-grow: 1; z-index: 10; overflow: initial !important;">
+          <!-- 3D effect gridster item overflow: initial -->
           <gridster-item *ngFor="let item of dashboard"
                          [item]="item"
                          [ngSwitch]="item.type"
-                         style="background: none !important;"
+                         style="background: none !important; overflow: initial"
                          [ngbTooltip]="tipContent"
                          [disableTooltip]="tooltipDisabled(item.type)"
                          [container]="'body'"
@@ -118,6 +128,11 @@
               </div>
 
             </ng-template>
+
+<!--            // 3D effect-->
+<!--            //transform: skewX(16deg) translateY(-65px) translateX(7px);-->
+<!--            //height: 120px;-->
+<!--            //overflow: visible;-->
 
             <div *ngSwitchCase="LayerElementType.CHARACTER"
                  class="adventure-board-item"
