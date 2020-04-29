@@ -14,7 +14,7 @@ import {CharacterItem} from "../../../model/item";
   templateUrl: './action-panel.component.html'
 })
 export class ActionPanelComponent {
-  @HostBinding('class') cssClasses = "flex-grow d-flex flex-column";
+  @HostBinding('class') cssClasses = "d-flex flex-column";
 
   @Input()
   currentInitiative: Initiative;

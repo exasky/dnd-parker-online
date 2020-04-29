@@ -1,0 +1,9 @@
+::ng-deep .mat-list .mat-list-item .mat-line {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+::ng-deep .mat-list .mat-list-item {
+  min-height: 48px;
+  height: initial !important;
+}

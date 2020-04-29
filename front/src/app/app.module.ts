@@ -72,6 +72,8 @@ import {DragOverDirective} from "./common/directive/drag-over.directive";
 import {TradeDialogComponent} from "./adventure/component/adventure/context-menu/dialog/trade/trade-dialog.component";
 import {TradeCharacterItemDisplayerComponent} from "./adventure/component/adventure/context-menu/dialog/trade/trade-character-item-displayer.component";
 import {SwitchEquipmentDialogComponent} from "./adventure/component/adventure/context-menu/dialog/switch-equipment-dialog.component";
+import {LogPanelComponent} from "./adventure/component/adventure/log/log-panel.component";
+import {EquipmentFormatterPipe} from "./common/pipe/equipment-formatter.pipe";
 
 @NgModule({
   declarations: [
@@ -109,6 +111,8 @@ import {SwitchEquipmentDialogComponent} from "./adventure/component/adventure/co
     TradeDialogComponent,
     TradeCharacterItemDisplayerComponent,
     SwitchEquipmentDialogComponent,
+    LogPanelComponent,
+    EquipmentFormatterPipe
   ],
   imports: [
     BrowserModule,

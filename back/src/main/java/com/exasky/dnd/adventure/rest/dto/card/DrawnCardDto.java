@@ -3,9 +3,6 @@ package com.exasky.dnd.adventure.rest.dto.card;
 import com.exasky.dnd.gameMaster.rest.dto.CharacterItemDto;
 
 public class DrawnCardDto {
-    // TODO object to draw card with user (id/name) (character when current initiavite)
-    // characterItem to draw in case of draw specific card (may be new object ?)
-
     private Long adventureId; // will be used to log actions
     private Long characterId;
     private CharacterItemDto characterItem;

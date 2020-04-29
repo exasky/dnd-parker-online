@@ -1,8 +1,10 @@
 package com.exasky.dnd.adventure.rest;
 
 import com.exasky.dnd.adventure.model.Character;
+import com.exasky.dnd.adventure.model.log.AdventureLog;
 import com.exasky.dnd.adventure.rest.dto.*;
 import com.exasky.dnd.adventure.rest.dto.template.CharacterTemplateDto;
+import com.exasky.dnd.adventure.service.AdventureLogService;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
@@ -19,13 +21,15 @@ import java.util.List;
 public class AdventureRestController {
 
     private final AdventureService adventureService;
-
+    private final AdventureLogService adventureLogService;
     private final SimpMessageSendingOperations messagingTemplate;
 
     @Autowired
     public AdventureRestController(AdventureService adventureService,
+                                   AdventureLogService adventureLogService,
                                    SimpMessageSendingOperations messagingTemplate) {
         this.adventureService = adventureService;
+        this.adventureLogService = adventureLogService;
         this.messagingTemplate = messagingTemplate;
     }
 
@@ -85,6 +89,13 @@ public class AdventureRestController {
         wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_CHARACTER);
         wsDto.setMessage(CharacterDto.toDto(character));
         messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+
+        if (character.getHp() == 0) {
+            AdventureLog adventureLog = adventureLogService.logDeath(adventureId, character.getDisplayName());
+            wsDto.setType(AdventureMessageDto.AdventureMessageType.ADD_LOG);
+            wsDto.setMessage(AdventureLogDto.toDto(adventureLog));
+            messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+        }
     }
 
     @GetMapping("/select-monster/{adventureId}/{layerItemId}")

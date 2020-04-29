@@ -1,0 +1,34 @@
+<h3 class="m-2">History !</h3>
+<ul role="list">
+  <li role="listitem" *ngFor="let log of logs" [ngSwitch]="log.type">
+    <ng-container *ngSwitchCase="AdventureLogType.ATTACK">
+      {{log.from}} attacked {{log.to | equipmentFormat}}
+    </ng-container>
+    <ng-container *ngSwitchCase="AdventureLogType.DIE">
+      {{log.from | equipmentFormat}} died
+    </ng-container>
+    <ng-container *ngSwitchCase="AdventureLogType.OPEN_CHEST"></ng-container>
+    <ng-container *ngSwitchCase="AdventureLogType.SWITCH">
+      Character {{log.from}} switched {{log.fromId | equipmentFormat}}
+      <ng-container *ngIf="log.toId"> with {{log.toId | equipmentFormat}}</ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="AdventureLogType.TRADE">
+      <ng-container *ngIf="log.fromId">
+        <ng-container *ngIf="log.toId">
+          {{log.from}} traded {{log.fromId | equipmentFormat}} with {{log.to}}'s {{log.toId | equipmentFormat}}
+        </ng-container>
+        <ng-container *ngIf="!log.toId">
+          {{log.from}} gave {{log.fromId | equipmentFormat}} to {{log.to}}
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="!log.fromId">
+        <ng-container *ngIf="log.toId">
+          {{log.to}} gave {{log.toId | equipmentFormat}} to {{log.from}}
+        </ng-container>
+        <ng-container *ngIf="!log.toId">
+          {{log.from}} traded nothing with {{log.to}}
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </li>
+</ul>

@@ -14,6 +14,8 @@ export class Adventure {
   characters: CharacterLayerItem[];
   otherItems: LayerItem[];
 
+  logs: AdventureLog[];
+
   currentTurn: Initiative;
   characterTurns: Initiative[];
 
@@ -91,4 +93,21 @@ export enum LayerElementType {
 
 export enum ImageRotation {
   NONE = 0, RIGHT = 90, LEFT = -90, DOWN = 180
+}
+
+export class AdventureLog {
+  id: number;
+  type: AdventureLogType;
+  from: string;
+  fromId: string;
+  to: string;
+  toId: string;
+}
+
+export enum AdventureLogType {
+  TRADE = 'TRADE',
+  SWITCH = 'SWITCH',
+  ATTACK = 'ATTACK',
+  DIE = 'DIE',
+  OPEN_CHEST = 'OPEN_CHEST'
 }

@@ -9,7 +9,7 @@ import {
   GridType
 } from "angular-gridster2";
 import {
-  Adventure,
+  Adventure, AdventureLog,
   Board,
   CharacterLayerItem,
   DoorLayerItem,
@@ -62,6 +62,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   @ViewChild('boardPanel', {read: ElementRef}) boardPanel: ElementRef;
 
+  @ViewChild('leftPanelDrawer', {read: MatDrawer}) leftPanelDrawer: MatDrawer;
   @ViewChild('actionPanelDrawer', {read: MatDrawer}) actionPanelDrawer: MatDrawer;
 
   @ViewChild('mainDrawerContainer', {read: ElementRef}) mainDrawerContainer: ElementRef;
@@ -103,6 +104,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   currentDialog: MatDialogRef<any>;
 
+  logs: AdventureLog[] = [];
+  isLogPanel = true;
+
   constructor(private adventureService: AdventureService,
               private adventureCardService: AdventureCardService,
               private gmService: GmService,
@@ -129,6 +133,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       const currentUser = this.authService.currentUserValue;
       currentUser.characters = this.adventure.campaignCharacters.filter(character => character.userId === currentUser.id);
 
+      this.logs = adventure.logs;
       this.currentTurn = this.adventure.currentTurn;
       this.characterTurns = this.adventure.characterTurns;
 
@@ -295,6 +300,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
               character
             }));
             break;
+          case AdventureMessageType.ADD_LOG:
+            this.logs.push(message.message);
+            break;
         }
       }
     });
@@ -309,8 +317,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             this.openDialog(DrawnCardDialogComponent, {
               ...message.message,
               characters: this.characters.map(char => char.character)
-            });
-            this.currentDialog.afterClosed().subscribe(() => {
+            }).afterClosed().subscribe(() => {
               this.actionPanelDrawer.opened = drawerOpenedSaved;
             });
             break;
@@ -328,8 +335,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
           case DiceMessageType.OPEN_DIALOG:
             const drawerOpenedSaved = this.actionPanelDrawer.opened;
             this.actionPanelDrawer.opened = true;
-            this.openDialog(DiceDialogComponent, {adventureId, user: receivedMsg.data.message});
-            this.currentDialog.afterClosed().subscribe(() => {
+            this.openDialog(DiceDialogComponent, {adventureId, user: receivedMsg.data.message})
+              .afterClosed().subscribe(() => {
               this.actionPanelDrawer.opened = drawerOpenedSaved;
             });
             break;
@@ -356,8 +363,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
               user: attackParameters.user,
               fromAttack,
               toAttack
-            });
-            this.currentDialog.afterClosed().subscribe(() => {
+            }).afterClosed().subscribe(() => {
               this.actionPanelDrawer.opened = saveDrawerOpen;
             });
             break;
@@ -442,6 +448,26 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventure.monsters.forEach(monster => this.updateItem(monster));
     this.adventure.characters.forEach(character => this.updateItem(character));
     this.adventure.otherItems.forEach(item => this.updateItem(item));
+  }
+
+  toggleLogPanel() {
+    if (this.isLogPanel && this.leftPanelDrawer.opened) {
+      this.leftPanelDrawer.close();
+    } else if (!this.leftPanelDrawer.opened) {
+      this.leftPanelDrawer.open();
+    }
+    this.isLogPanel = true;
+  }
+
+  toggleGmPanel() {
+    if (this.authService.isGM) {
+      if (!this.isLogPanel && this.leftPanelDrawer.opened) {
+        this.leftPanelDrawer.close();
+      } else if (!this.leftPanelDrawer.opened) {
+        this.leftPanelDrawer.open();
+      }
+      this.isLogPanel = false;
+    }
   }
 
   stopItemDrag(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
@@ -547,12 +573,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
       if (relativePos.bottom > 0) {
         drawerContent.scrollBy(0, relativePos.bottom);
       }
-    }
-  }
-
-  changedOptions() {
-    if (this.options.api && this.options.api.optionsChanged) {
-      this.options.api.optionsChanged();
     }
   }
 
@@ -714,6 +734,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.currentDialog.afterClosed().subscribe(() => {
       this.disableActions = false;
     });
+    return this.currentDialog;
   }
 
   private closeDialog() {

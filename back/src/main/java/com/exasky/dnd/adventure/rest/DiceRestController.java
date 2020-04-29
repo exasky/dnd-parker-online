@@ -1,12 +1,16 @@
 package com.exasky.dnd.adventure.rest;
 
 
+import com.exasky.dnd.adventure.model.log.AdventureLog;
+import com.exasky.dnd.adventure.rest.dto.AdventureLogDto;
 import com.exasky.dnd.adventure.rest.dto.SimpleUserDto;
 import com.exasky.dnd.adventure.rest.dto.dice.DiceMessageDto;
 import com.exasky.dnd.adventure.rest.dto.dice.OpenAttackDiceDto;
 import com.exasky.dnd.adventure.rest.dto.dice.SelectDicesDto;
+import com.exasky.dnd.adventure.service.AdventureLogService;
 import com.exasky.dnd.adventure.service.DiceService;
 import com.exasky.dnd.common.Constant;
+import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
 import com.exasky.dnd.gameMaster.rest.dto.DiceDto;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +26,14 @@ import static com.exasky.dnd.common.Utils.getCurrentUser;
 public class DiceRestController {
 
     private final DiceService diceService;
+    private final AdventureLogService adventureLogService;
     private final SimpMessageSendingOperations messagingTemplate;
 
     public DiceRestController(DiceService diceService,
+                              AdventureLogService adventureLogService,
                               SimpMessageSendingOperations messagingTemplate) {
         this.diceService = diceService;
+        this.adventureLogService = adventureLogService;
         this.messagingTemplate = messagingTemplate;
     }
 
@@ -51,8 +58,13 @@ public class DiceRestController {
         DiceMessageDto wsDto = new DiceMessageDto();
         wsDto.setType(DiceMessageDto.DiceMessageType.OPEN_ATTACK_DIALOG);
         wsDto.setMessage(dto);
+        messagingTemplate.convertAndSend("/topic/dice/" + adventureId, wsDto);
 
-        this.messagingTemplate.convertAndSend("/topic/dice/" + adventureId, wsDto);
+        AdventureLog adventureLog = adventureLogService.logAttack(adventureId, dto);
+        AdventureMessageDto advWsDto = new AdventureMessageDto();
+        advWsDto.setType(AdventureMessageDto.AdventureMessageType.ADD_LOG);
+        advWsDto.setMessage(AdventureLogDto.toDto(adventureLog));
+        messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, advWsDto);
     }
 
     @PostMapping("/select-dices/{adventureId}")

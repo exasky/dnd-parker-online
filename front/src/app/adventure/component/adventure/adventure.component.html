@@ -2,17 +2,8 @@
   <div class="d-flex flex-column flex-shrink-0">
 
     <div class="d-flex">
-      <div class="flex-1 d-flex justify-content-start align-items-center ml-2">
-        <mat-form-field>
-          <mat-select aria-label="Display grid lines" [(ngModel)]="options.displayGrid"
-                      placeholder="Display grid lines"
-                      (ngModelChange)="changedOptions()">
-            <mat-option value="always">Always</mat-option>
-            <mat-option value="onDrag&Resize">On Drag & Resize</mat-option>
-            <mat-option value="none">None</mat-option>
-          </mat-select>
-        </mat-form-field>
-
+      <div class="flex-1 d-flex justify-content-start align-items-center mr-2">
+        <button mat-raised-button (click)="toggleLogPanel()">Show logs</button>
       </div>
       <div class="flex-1 d-flex justify-content-center align-items-center">
         <h3 class="mb-0">{{adventure.name}}
@@ -27,25 +18,30 @@
     </div>
 
     <div class="d-flex align-items-center" *ngIf="authService.isGM">
-      <button mat-raised-button class="flex-shrink-0 h-100 mx-2" (click)="gmDrawer.toggle()">GM Panel</button>
+      <button mat-raised-button class="flex-shrink-0 h-100 mx-2" (click)="toggleGmPanel()">GM Panel</button>
       <app-adventure-item-displayer [layerElements]="addableLayerElements"></app-adventure-item-displayer>
     </div>
   </div>
 
   <mat-drawer-container class="flex-grow d-flex flex-column mt-3" #mainDrawerContainer tabindex="1"
                         (keyup)="onKeyboard($event)">
-    <mat-drawer #gmDrawer mode="side" position="start">
-      <div class="d-flex flex-column h-100" style="min-width: 150px">
-        <app-gm-action-panel [adventureId]="adventure.id"
-                             [initiatives]="characterTurns"
-                             [monsters]="monsters"
-                             [characters]="characters"
-                             [selectedMonsterId]="selectedMonsterId"
-                             [cursorEnabled]="showCursor"
-                             [exportable]="gmDrawer"
-                             (selectMonster)="selectMonster($event)"
-                             (toggleCursor)="showCursor = !showCursor"></app-gm-action-panel>
-      </div>
+    <mat-drawer #leftPanelDrawer mode="side" position="start">
+      <app-log-panel *ngIf="isLogPanel"
+                     class="h-100"
+                     style="width: 25vw"
+                     [logs]="logs"></app-log-panel>
+      <app-gm-action-panel *ngIf="!isLogPanel"
+                           class="h-100"
+                           style="min-width: 150px"
+                           [adventureId]="adventure.id"
+                           [initiatives]="characterTurns"
+                           [monsters]="monsters"
+                           [characters]="characters"
+                           [selectedMonsterId]="selectedMonsterId"
+                           [cursorEnabled]="showCursor"
+                           [exportable]="leftPanelDrawer"
+                           (selectMonster)="selectMonster($event)"
+                           (toggleCursor)="showCursor = !showCursor"></app-gm-action-panel>
     </mat-drawer>
 
     <mat-drawer-content>
@@ -170,13 +166,13 @@
       </div>
     </mat-drawer-content>
     <mat-drawer #actionPanelDrawer mode="side" position="end">
-      <div class="d-flex flex-column h-100" style="min-width: 150px">
-        <app-action-panel [adventure]="adventure"
-                          [characterItems]="characters"
-                          [currentInitiative]="currentTurn"
-                          [initiatives]="characterTurns"
-                          [disableActions]="disableActions"></app-action-panel>
-      </div>
+      <app-action-panel class="h-100"
+                        style="min-width: 150px"
+                        [adventure]="adventure"
+                        [characterItems]="characters"
+                        [currentInitiative]="currentTurn"
+                        [initiatives]="characterTurns"
+                        [disableActions]="disableActions"></app-action-panel>
     </mat-drawer>
   </mat-drawer-container>
 

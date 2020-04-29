@@ -22,6 +22,7 @@ public class AdventureMessageDto {
         SELECT_TRADE_CARD,
         ASK_SWITCH,
         SELECT_SWITCH_CARD,
+        ADD_LOG
     }
 
     private AdventureMessageType type;
