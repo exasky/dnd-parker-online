@@ -37,7 +37,7 @@
         <mat-icon style="transform: rotate(180deg)">open_in_browser</mat-icon>
         Set card
       </button>
-      <button mat-menu-item (click)="openChest(item)">
+      <button mat-menu-item *ngIf="canOpenChest(item)" (click)="openChest(item)">
         <span class="mdi mdi-treasure-chest" style="font-size: 140%; margin-right: 20px;"></span>
         Open chest
       </button>

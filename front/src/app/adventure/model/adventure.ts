@@ -30,7 +30,13 @@ export class Adventure {
 export class Initiative {
   characterName: string;
   number: number;
+
+  static isGm(init: Initiative) {
+    return init.characterName === GM_CHAR_NAME;
+  }
 }
+
+export const GM_CHAR_NAME = 'game-master';
 
 export class Board {
   id?: number;

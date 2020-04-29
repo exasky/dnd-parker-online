@@ -55,7 +55,7 @@ export class ContextMenuComponent {
   }
 
   openMenu(event: MouseEvent, item: LayerGridsterItem) {
-    if (this.isContextMenuEnabled(item)) {
+    if (this.isContextMenuEnabled()) {
       event.preventDefault();
       this.contextMenuPosition.x = event.clientX + 'px';
       this.contextMenuPosition.y = event.clientY + 'px';
@@ -65,10 +65,8 @@ export class ContextMenuComponent {
     }
   }
 
-  private isContextMenuEnabled(item: LayerGridsterItem) {
-    return this.authService.isGM
-      || item.type === LayerElementType.CHEST
-      || ([LayerElementType.MONSTER, LayerElementType.CHARACTER].indexOf(item.type) !== -1 && AdventureUtils.isMyTurn(this.authService.currentUserValue, this.currentInitiative));
+  private isContextMenuEnabled() {
+    return this.authService.isGM || AdventureUtils.isMyTurn(this.authService.currentUserValue, this.currentInitiative);
   }
 
   isItemFlippable(type: LayerElementType) {
@@ -99,6 +97,10 @@ export class ContextMenuComponent {
     this.adventureService.updateLayerItem(this.adventureId, AdventureUtils.existingGridsterItemToLayerItem(item));
   }
 
+  canOpenChest(item: ChestLayerGridsterItem) {
+    return this.authService.isGM || AdventureUtils.areItemsNextToEachOther(item, this.getCurrentCharacterTurn());
+  }
+
   openChest(item: ChestLayerGridsterItem) {
     const currCharItem = this.characterItems.find(char => char.character.userId === this.authService.currentUserValue.id);
     if (item.specificCard) {
@@ -127,28 +129,29 @@ export class ContextMenuComponent {
   }
 
   attackMonster(item: MonsterLayerGridsterItem) {
-    const fromAttack = this.authService.currentUserValue.characters.find(char => char.name === this.currentInitiative.characterName);
-    const fromAttackId = fromAttack ? fromAttack.id : this.selectedMonsterId;
-    this.diceService.openDiceAttackDialog(this.adventureId, fromAttackId, item.id, !fromAttack, true);
+    if (Initiative.isGm(this.currentInitiative)) {
+      console.log('GM cannot attack monster yet...')
+      this.diceService.openDiceAttackDialog(this.adventureId, this.selectedMonsterId, item.id, true, true);
+    } else {
+      this.diceService.openDiceAttackDialog(this.adventureId, this.getCurrentCharacterTurn().character.id, item.id, false, true);
+    }
   }
 
   attackCharacter(item: CharacterLayerGridsterItem) {
-    const fromAttack = this.authService.currentUserValue.characters.find(char => char.name === this.currentInitiative.characterName);
-    const fromAttackId = fromAttack ? fromAttack.id : this.selectedMonsterId;
-    this.diceService.openDiceAttackDialog(this.adventureId, fromAttackId, item.id, !fromAttack, false);
+    if (Initiative.isGm(this.currentInitiative)) {
+      this.diceService.openDiceAttackDialog(this.adventureId, this.selectedMonsterId, item.id, true, false);
+    } else {
+      this.diceService.openDiceAttackDialog(this.adventureId, this.getCurrentCharacterTurn().character.id, item.id, false, false);
+    }
   }
 
   canTradeWith(item: CharacterLayerGridsterItem): boolean {
-    const currChar = this.characterItems.find(char => char.character.name === this.currentInitiative.characterName);
-    // return item.x - currChar.x > 1;
     return item.character.name !== this.currentInitiative.characterName
-      && (item.y === currChar.y && ([-1, 1].indexOf(item.x - currChar.x) !== -1)
-        || (item.x === currChar.x && ([-1, 1].indexOf(item.y - currChar.y) !== -1)));
+      && AdventureUtils.areItemsNextToEachOther(item, this.getCurrentCharacterTurn());
   }
 
   askTrade(item: CharacterLayerGridsterItem) {
-    const currChar = this.characterItems.find(char => char.character.name === this.currentInitiative.characterName);
-    this.adventureService.askTrade(this.adventureId, {from: currChar.character.id, to: item.character.id});
+    this.adventureService.askTrade(this.adventureId, {from: this.getCurrentCharacterTurn().character.id, to: item.character.id});
   }
 
   canSwitchEquipment(item: CharacterLayerGridsterItem): boolean {
@@ -157,5 +160,9 @@ export class ContextMenuComponent {
 
   askSwitch(item: CharacterLayerGridsterItem) {
     this.adventureService.askSwitch(this.adventureId, item.character.id);
+  }
+
+  private getCurrentCharacterTurn(): CharacterLayerGridsterItem {
+    return this.characterItems.find(char => char.character.name === this.currentInitiative.characterName);
   }
 }
