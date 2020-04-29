@@ -1,41 +1,39 @@
 import {Component, Inject, OnDestroy, OnInit, QueryList, ViewChildren} from "@angular/core";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {GmService} from "../../../service/gm.service";
-import {Dice} from "../../../model/dice";
-import {Subscription} from "rxjs";
-import {DiceComponent} from "./dice.component";
 import {AuthService} from "../../../../login/auth.service";
 import {DiceWebsocketService} from "../../../../common/service/ws/dice.websocket.service";
 import {DiceService} from "../../../service/dice.service";
-import {SocketResponse} from "../../../../common/model";
-import {DiceMessage, DiceMessageType} from "../../../model/dice-message";
-import {SocketResponseType} from "../../../../common/model/websocket.response";
 import {SimpleUser} from "../../../model/simple-user";
 import {ToasterService} from "../../../../common/service/toaster.service";
 import {AudioService} from "../../../service/audio.service";
+import {DiceComponent} from "./dice.component";
+import {Dice} from "../../../model/dice";
+import {Subscription} from "rxjs";
+import {SocketResponse} from "../../../../common/model";
+import {SocketResponseType} from "../../../../common/model/websocket.response";
+import {DiceMessage, DiceMessageType} from "../../../model/dice-message";
+import {LayerGridsterItem} from "../../../model/layer-gridster-item";
+import {LayerElementType} from "../../../model/adventure";
 
-@Component({
-  selector: 'app-dice-dialog',
-  templateUrl: './dice-dialog.component.html',
-})
-export class DiceDialogComponent implements OnInit, OnDestroy {
-
+abstract class AbstractDiceDialogComponent implements OnInit, OnDestroy {
   @ViewChildren('diceCmp') diceComponents: QueryList<DiceComponent>;
+
+  LayerElementType = LayerElementType;
 
   rollDisabled = true;
 
   allDices: Dice[];
   selectedDices: Dice[] = [];
-
   diceWSObs: Subscription;
 
-  constructor(private gmService: GmService,
-              public authService: AuthService,
-              private diceWS: DiceWebsocketService,
-              private diceService: DiceService,
-              private toaster: ToasterService,
-              private audioService: AudioService,
-              @Inject(MAT_DIALOG_DATA) public data: { adventureId: string, user: SimpleUser }) {
+  protected constructor(protected gmService: GmService,
+                        public authService: AuthService,
+                        protected diceWS: DiceWebsocketService,
+                        protected diceService: DiceService,
+                        protected toaster: ToasterService,
+                        protected audioService: AudioService,
+                        public data: { adventureId: string, user: SimpleUser }) {
   }
 
   ngOnInit(): void {
@@ -89,5 +87,42 @@ export class DiceDialogComponent implements OnInit, OnDestroy {
 
   close() {
     this.diceService.closeDialog(this.data.adventureId);
+  }
+}
+
+@Component({
+  selector: 'app-dice-dialog',
+  templateUrl: './dice-dialog.component.html',
+})
+export class DiceDialogComponent extends AbstractDiceDialogComponent {
+  constructor(protected gmService: GmService,
+              public authService: AuthService,
+              protected diceWS: DiceWebsocketService,
+              protected diceService: DiceService,
+              protected toaster: ToasterService,
+              protected audioService: AudioService,
+              @Inject(MAT_DIALOG_DATA) public data: { adventureId: string, user: SimpleUser }) {
+    super(gmService, authService, diceWS, diceService, toaster, audioService, data);
+  }
+}
+
+@Component({
+  selector: 'app-dice-attack-dialog',
+  templateUrl: './dice-attack-dialog.component.html',
+})
+export class DiceAttackDialogComponent extends AbstractDiceDialogComponent {
+  constructor(protected gmService: GmService,
+              public authService: AuthService,
+              protected diceWS: DiceWebsocketService,
+              protected diceService: DiceService,
+              protected toaster: ToasterService,
+              protected audioService: AudioService,
+              @Inject(MAT_DIALOG_DATA) public data: {
+                adventureId: string,
+                user: SimpleUser,
+                fromAttack: LayerGridsterItem,
+                toAttack: LayerGridsterItem
+              }) {
+    super(gmService, authService, diceWS, diceService, toaster, audioService, data);
   }
 }

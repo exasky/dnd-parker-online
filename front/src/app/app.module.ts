@@ -42,7 +42,10 @@ import {DrawnCardDialogComponent} from "./adventure/component/adventure/item/dra
 import {DrawnCardWebsocketService} from "./common/service/ws/drawn-card.websocket.service";
 import {WebSocketWrapperService} from "./common/service/ws/web-socket-wrapper.service";
 import {DiceComponent} from "./adventure/component/adventure/dice/dice.component";
-import {DiceDialogComponent} from "./adventure/component/adventure/dice/dice-dialog.component";
+import {
+  DiceAttackDialogComponent,
+  DiceDialogComponent
+} from "./adventure/component/adventure/dice/dice-dialog.component";
 import {DiceWebsocketService} from "./common/service/ws/dice.websocket.service";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
@@ -63,7 +66,6 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {InitiativeDialogComponent} from "./adventure/component/adventure/initiative/initiative-dialog.component";
 import {InitiativeDisplayerComponent} from "./adventure/component/adventure/initiative/initiative-displayer.component";
 import {NextTurnDialogComponent} from "./adventure/component/adventure/action/next-turn-dialog.component";
-import {DiceAttackDialogComponent} from "./adventure/component/adventure/dice/dice-attack-dialog.component";
 import {CapitalizePipe} from "./common/pipe/capitalize.pipe";
 import {SortPipe} from "./common/pipe/sort.pipe";
 import {DragOverDirective} from "./common/directive/drag-over.directive";
