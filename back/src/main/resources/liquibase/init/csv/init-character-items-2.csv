@@ -20,9 +20,9 @@ id,type,level,name
 64,WEAPON,2,epee_a_deux_mains
 65,WEAPON,2,arc_long_composite
 66,SPELL,3,tempete_de_glace
-67,SPELL,3,bouclier_d_energie
+67,SPELL,9,bouclier_d_energie
 68,SPELL,3,brume_de_dissimulation
-69,SPELL,3,colonne_de_feu
+69,SPELL,9,colonne_de_feu
 70,SPELL,3,tempete_de_feu
 71,SPELL,3,cercle_de_guerison
 72,SPELL,3,poing_de_bigby
