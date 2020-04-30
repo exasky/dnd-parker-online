@@ -24,6 +24,7 @@ export enum AdventureMessageType {
   SELECT_TRADE_CARD = 'SELECT_TRADE_CARD',
   ASK_SWITCH = 'ASK_SWITCH',
   SELECT_SWITCH_CARD = 'SELECT_SWITCH_CARD',
+  ADD_LOG = 'ADD_LOG',
 }
 
 export class MouseMove {

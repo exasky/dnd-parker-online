@@ -9,7 +9,7 @@ import {
   GridType
 } from "angular-gridster2";
 import {
-  Adventure,
+  Adventure, AdventureLog,
   Board,
   CharacterLayerItem,
   DoorLayerItem,
@@ -35,7 +35,7 @@ import {SocketResponseType} from "../../../common/model/websocket.response";
 import {ToasterService} from "../../../common/service/toaster.service";
 import {DialogUtils} from "../../../common/dialog/dialog.utils";
 import {DiceMessage, DiceMessageType} from "../../model/dice-message";
-import {DiceDialogComponent} from "./dice/dice-dialog.component";
+import {DiceDialogComponent, DiceAttackDialogComponent} from "./dice/dice-dialog.component";
 import {DiceWebsocketService} from "../../../common/service/ws/dice.websocket.service";
 import {MatDrawer} from "@angular/material/sidenav";
 import {AdventureWebsocketService} from "../../../common/service/ws/adventure.websocket.service";
@@ -48,7 +48,6 @@ import {CardMessage, CardMessageType} from "../../model/card-message";
 import {AdventureUtils} from "./utils/utils";
 import {InitiativeDialogComponent} from "./initiative/initiative-dialog.component";
 import {NextTurnDialogComponent} from "./action/next-turn-dialog.component";
-import {DiceAttackDialogComponent} from "./dice/dice-attack-dialog.component";
 import {Character} from "../../model/character";
 import {TradeDialogComponent} from "./context-menu/dialog/trade/trade-dialog.component";
 import {SwitchEquipmentDialogComponent} from "./context-menu/dialog/switch-equipment-dialog.component";
@@ -63,6 +62,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   @ViewChild('boardPanel', {read: ElementRef}) boardPanel: ElementRef;
 
+  @ViewChild('leftPanelDrawer', {read: MatDrawer}) leftPanelDrawer: MatDrawer;
   @ViewChild('actionPanelDrawer', {read: MatDrawer}) actionPanelDrawer: MatDrawer;
 
   @ViewChild('mainDrawerContainer', {read: ElementRef}) mainDrawerContainer: ElementRef;
@@ -104,6 +104,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   currentDialog: MatDialogRef<any>;
 
+  logs: AdventureLog[] = [];
+  isLogPanel = true;
+
   currentScale = 1;
 
   public scaleTest(event: WheelEvent) {
@@ -113,7 +116,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     // if (this.currentScale < 0.1) {
     //   this.currentScale = 0.1;
     // }
-console.log(this.currentScale)
+    console.log(this.currentScale)
     this.boardPanel.nativeElement.style.transform = 'skew(-20deg, 0deg) rotateX(31deg) translateX(300px) scale(' + this.currentScale + ')';
   }
 
@@ -143,6 +146,7 @@ console.log(this.currentScale)
       const currentUser = this.authService.currentUserValue;
       currentUser.characters = this.adventure.campaignCharacters.filter(character => character.userId === currentUser.id);
 
+      this.logs = adventure.logs;
       this.currentTurn = this.adventure.currentTurn;
       this.characterTurns = this.adventure.characterTurns;
 
@@ -309,6 +313,9 @@ console.log(this.currentScale)
               character
             }));
             break;
+          case AdventureMessageType.ADD_LOG:
+            this.logs.push(message.message);
+            break;
         }
       }
     });
@@ -323,8 +330,7 @@ console.log(this.currentScale)
             this.openDialog(DrawnCardDialogComponent, {
               ...message.message,
               characters: this.characters.map(char => char.character)
-            });
-            this.currentDialog.afterClosed().subscribe(() => {
+            }).afterClosed().subscribe(() => {
               this.actionPanelDrawer.opened = drawerOpenedSaved;
             });
             break;
@@ -342,8 +348,8 @@ console.log(this.currentScale)
           case DiceMessageType.OPEN_DIALOG:
             const drawerOpenedSaved = this.actionPanelDrawer.opened;
             this.actionPanelDrawer.opened = true;
-            this.openDialog(DiceDialogComponent, {adventureId, user: receivedMsg.data.message});
-            this.currentDialog.afterClosed().subscribe(() => {
+            this.openDialog(DiceDialogComponent, {adventureId, user: receivedMsg.data.message})
+              .afterClosed().subscribe(() => {
               this.actionPanelDrawer.opened = drawerOpenedSaved;
             });
             break;
@@ -370,8 +376,7 @@ console.log(this.currentScale)
               user: attackParameters.user,
               fromAttack,
               toAttack
-            });
-            this.currentDialog.afterClosed().subscribe(() => {
+            }).afterClosed().subscribe(() => {
               this.actionPanelDrawer.opened = saveDrawerOpen;
             });
             break;
@@ -456,6 +461,26 @@ console.log(this.currentScale)
     this.adventure.monsters.forEach(monster => this.updateItem(monster));
     this.adventure.characters.forEach(character => this.updateItem(character));
     this.adventure.otherItems.forEach(item => this.updateItem(item));
+  }
+
+  toggleLogPanel() {
+    if (this.isLogPanel && this.leftPanelDrawer.opened) {
+      this.leftPanelDrawer.close();
+    } else if (!this.leftPanelDrawer.opened) {
+      this.leftPanelDrawer.open();
+    }
+    this.isLogPanel = true;
+  }
+
+  toggleGmPanel() {
+    if (this.authService.isGM) {
+      if (!this.isLogPanel && this.leftPanelDrawer.opened) {
+        this.leftPanelDrawer.close();
+      } else if (!this.leftPanelDrawer.opened) {
+        this.leftPanelDrawer.open();
+      }
+      this.isLogPanel = false;
+    }
   }
 
   stopItemDrag(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
@@ -561,12 +586,6 @@ console.log(this.currentScale)
       if (relativePos.bottom > 0) {
         drawerContent.scrollBy(0, relativePos.bottom);
       }
-    }
-  }
-
-  changedOptions() {
-    if (this.options.api && this.options.api.optionsChanged) {
-      this.options.api.optionsChanged();
     }
   }
 
@@ -728,6 +747,7 @@ console.log(this.currentScale)
     this.currentDialog.afterClosed().subscribe(() => {
       this.disableActions = false;
     });
+    return this.currentDialog;
   }
 
   private closeDialog() {

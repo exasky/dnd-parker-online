@@ -119,4 +119,9 @@ export class AdventureUtils {
     if (!currentInitiative) return false;
     return currentUser.characters.some(char => currentInitiative.characterName === char.name);
   }
+
+  static areItemsNextToEachOther(item: LayerGridsterItem, item2: LayerGridsterItem) {
+    return (item.y === item2.y && ([-1, 1].indexOf(item.x - item2.x) !== -1)
+      || (item.x === item2.x && ([-1, 1].indexOf(item.y - item2.y) !== -1)));
+  }
 }

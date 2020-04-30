@@ -1,0 +1,47 @@
+<h3 class="m-2">History !</h3>
+<ul role="list">
+  <li role="listitem" *ngFor="let log of logs" [ngSwitch]="log.type">
+    <ng-container *ngSwitchCase="AdventureLogType.ATTACK">
+      {{'adventure.log.attack' | translate:{from: log.from | equipmentFormat, to: log.to | equipmentFormat} }}
+    </ng-container>
+    <ng-container *ngSwitchCase="AdventureLogType.DIE">
+      {{'adventure.log.die' | translate:{from: log.from | equipmentFormat} }}
+    </ng-container>
+    <ng-container *ngSwitchCase="AdventureLogType.OPEN_CHEST"></ng-container>
+    <ng-container *ngSwitchCase="AdventureLogType.SWITCH">
+      {{'adventure.log.switch' | translate:{from: log.from | equipmentFormat, fromId: log.fromId | equipmentFormat} }}
+      <ng-container *ngIf="log.toId">
+        {{'adventure.log.switch-with' | translate:{toId: log.toId | equipmentFormat} }}
+      </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="AdventureLogType.TRADE">
+      <ng-container *ngIf="log.fromId">
+        <ng-container *ngIf="log.toId">
+          {{'adventure.log.trade-full' | translate:{
+          from: log.from, fromId: log.fromId | equipmentFormat,
+          to: log.to, toId: log.toId | equipmentFormat
+        } }}
+        </ng-container>
+        <ng-container *ngIf="!log.toId">
+          {{'adventure.log.trade-one-way' | translate:{
+          from: log.from,
+          fromId: log.fromId | equipmentFormat,
+          to: log.to
+        } }}
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="!log.fromId">
+        <ng-container *ngIf="log.toId">
+          {{'adventure.log.trade-one-way' | translate:{
+          from: log.to,
+          fromId: log.toId | equipmentFormat,
+          to: log.from
+        } }}
+        </ng-container>
+        <ng-container *ngIf="!log.toId">
+          {{'adventure.log.trade-nothing' | translate:{from: log.from, to: log.to} }}
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </li>
+</ul>

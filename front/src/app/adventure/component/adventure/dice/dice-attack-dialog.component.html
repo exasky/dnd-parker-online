@@ -1,6 +1,6 @@
 <div class="d-flex">
   <div class="d-flex flex-column align-items-center justify-content-evenly">
-    Attacker
+    {{'adventure.dialog.dice.attacker' | translate }}
     <ng-container *ngIf="data.fromAttack.type === LayerElementType.CHARACTER">
       <img width="200" [src]="'assets/character/' + data.fromAttack['character'].name + '-character.jpg'">
     </ng-container>
@@ -27,7 +27,7 @@
     </mat-dialog-content>
   </div>
   <div class="d-flex flex-column align-items-center justify-content-evenly">
-    Attacked
+    {{'adventure.dialog.dice.attacked' | translate }}
     <ng-container *ngIf="data.toAttack.type === LayerElementType.CHARACTER">
       <img width="200" [src]="'assets/character/' + data.toAttack['character'].name + '-character.jpg'">
     </ng-container>
@@ -39,19 +39,19 @@
 <mat-dialog-actions class="d-flex justify-content-center position-relative">
   <div class="position-absolute"
        style="left: 0">
-    À {{data.user.username}}
+    {{'adventure.dialog.dice.turn' | translate:{char: data.user.username} }}
   </div>
   <button *ngIf="!rollDisabled" mat-raised-button
           (click)="rollDices()"
           [disabled]="selectedDices.length === 0">
-    Roll dices !
+    {{'adventure.dialog.dice.roll' | translate }}
   </button>
   <button mat-raised-button color="accent"
           *ngIf="authService.isGM"
           class="position-absolute"
           style="right: 0"
           (click)="this.close()">
-    Close
+    {{'common.close' | translate}}
   </button>
-  <div *ngIf="rollDisabled">C'est pas ton tour !</div>
+  <div *ngIf="rollDisabled">{{'adventure.dialog.dice.no-turn' | translate }}</div>
 </mat-dialog-actions>

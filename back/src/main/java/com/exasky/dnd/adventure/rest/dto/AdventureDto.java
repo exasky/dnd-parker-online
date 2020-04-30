@@ -19,6 +19,8 @@ public class AdventureDto {
     private List<CharacterLayerItemDto> characters;
     private List<SimpleLayerItemDto> otherItems;
 
+    private List<AdventureLogDto> logs;
+
     private InitiativeDto currentTurn;
     private List<InitiativeDto> characterTurns;
 
@@ -38,6 +40,8 @@ public class AdventureDto {
         dto.setMonsters(MonsterLayerItemDto.toDto(bo.getMonsters()));
         dto.setCharacters(CharacterLayerItemDto.toDto(bo.getCharacters()));
         dto.setOtherItems(SimpleLayerItemDto.toDto(bo.getOtherItems()));
+
+        dto.setLogs(AdventureLogDto.toDto(bo.getLogs()));
 
         dto.setCurrentTurn(InitiativeDto.toDto(bo.getCurrentInitiative()));
         dto.setCharacterTurns(InitiativeDto.toDto(bo.getCampaign().getCharacterTurns()));
@@ -118,6 +122,14 @@ public class AdventureDto {
 
     public void setOtherItems(List<SimpleLayerItemDto> otherItems) {
         this.otherItems = otherItems;
+    }
+
+    public List<AdventureLogDto> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(List<AdventureLogDto> logs) {
+        this.logs = logs;
     }
 
     public InitiativeDto getCurrentTurn() {

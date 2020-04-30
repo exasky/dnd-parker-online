@@ -12,7 +12,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/http";
 import {IndexComponent} from "./index/index.component";
 import {MatCardModule} from "@angular/material/card";
 import {LoginComponent} from "./login/login.component";
@@ -42,7 +42,10 @@ import {DrawnCardDialogComponent} from "./adventure/component/adventure/item/dra
 import {DrawnCardWebsocketService} from "./common/service/ws/drawn-card.websocket.service";
 import {WebSocketWrapperService} from "./common/service/ws/web-socket-wrapper.service";
 import {DiceComponent} from "./adventure/component/adventure/dice/dice.component";
-import {DiceDialogComponent} from "./adventure/component/adventure/dice/dice-dialog.component";
+import {
+  DiceAttackDialogComponent,
+  DiceDialogComponent
+} from "./adventure/component/adventure/dice/dice-dialog.component";
 import {DiceWebsocketService} from "./common/service/ws/dice.websocket.service";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
@@ -63,13 +66,23 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {InitiativeDialogComponent} from "./adventure/component/adventure/initiative/initiative-dialog.component";
 import {InitiativeDisplayerComponent} from "./adventure/component/adventure/initiative/initiative-displayer.component";
 import {NextTurnDialogComponent} from "./adventure/component/adventure/action/next-turn-dialog.component";
-import {DiceAttackDialogComponent} from "./adventure/component/adventure/dice/dice-attack-dialog.component";
 import {CapitalizePipe} from "./common/pipe/capitalize.pipe";
 import {SortPipe} from "./common/pipe/sort.pipe";
 import {DragOverDirective} from "./common/directive/drag-over.directive";
 import {TradeDialogComponent} from "./adventure/component/adventure/context-menu/dialog/trade/trade-dialog.component";
 import {TradeCharacterItemDisplayerComponent} from "./adventure/component/adventure/context-menu/dialog/trade/trade-character-item-displayer.component";
 import {SwitchEquipmentDialogComponent} from "./adventure/component/adventure/context-menu/dialog/switch-equipment-dialog.component";
+import {LogPanelComponent} from "./adventure/component/adventure/log/log-panel.component";
+import {EquipmentFormatterPipe} from "./common/pipe/equipment-formatter.pipe";
+import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
+import {environment} from "../environments/environment";
+import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+
+export function translateLoader(http: HttpClient): TranslateLoader {
+  // const dontCacheDuringDev = environment.production ? '' : '?' + new Date();
+  // return new TranslateHttpLoader(http, './assets/i18n/', '.json' + dontCacheDuringDev);
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -107,6 +120,8 @@ import {SwitchEquipmentDialogComponent} from "./adventure/component/adventure/co
     TradeDialogComponent,
     TradeCharacterItemDisplayerComponent,
     SwitchEquipmentDialogComponent,
+    LogPanelComponent,
+    EquipmentFormatterPipe
   ],
   imports: [
     BrowserModule,
@@ -140,7 +155,14 @@ import {SwitchEquipmentDialogComponent} from "./adventure/component/adventure/co
     MatSliderModule,
     MatListModule,
     LayoutModule,
-    MatTabsModule
+    MatTabsModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: translateLoader,
+        deps: [HttpClient]
+      }
+    })
   ],
   entryComponents: [],
   providers: [

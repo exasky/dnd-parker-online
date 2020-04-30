@@ -1,10 +1,8 @@
 package com.exasky.dnd.adventure.rest.dto.card;
 
 public class AskDrawCardDto {
-    // TODO object to draw card with user (id/name) (character when current initiavite)
-
     private Long adventureId;
-    private Long characterId; // will be used to log actions
+    private Long characterId;
     private Long characterItemId;
 
     // region Getters & Setters

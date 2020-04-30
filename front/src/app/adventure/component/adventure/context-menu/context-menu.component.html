@@ -14,43 +14,43 @@
     <ng-container *ngIf="item.type === LayerElementType.CHARACTER">
       <button mat-menu-item (click)="attackCharacter(item)" [disabled]="authService.isGM && !selectedMonsterId">
         <span class="mdi mdi-sword-cross" style="font-size: 140%; margin-right: 20px;"></span>
-        Attack
+        {{'adventure.context-menu.attack' | translate}}
       </button>
       <button mat-menu-item *ngIf="canTradeWith(item)" (click)="askTrade(item)">
         <span class="mdi mdi-hand-heart" style="font-size: 140%; margin-right: 20px;"></span>
-        Trade
+        {{'adventure.context-menu.trade' | translate}}
       </button>
       <button mat-menu-item *ngIf="canSwitchEquipment(item)" (click)="askSwitch(item)">
         <span class="mdi mdi-sack" style="font-size: 140%; margin-right: 20px;"></span>
-        Switch equipment
+        {{'adventure.context-menu.switch-equipment' | translate}}
       </button>
     </ng-container>
     <ng-container *ngIf="item.type === LayerElementType.TRAP">
       <button *ngIf="authService.isGM && item.shown === false && item.deactivated === false" mat-menu-item
               (click)="showTrap(item)">
         <mat-icon>visibility</mat-icon>
-        Show trap
+        {{'adventure.context-menu.show-trap' | translate}}
       </button>
     </ng-container>
     <ng-container *ngIf="item.type === LayerElementType.CHEST">
       <button *ngIf="authService.isGM" mat-menu-item (click)="setChestCard(item)">
         <mat-icon style="transform: rotate(180deg)">open_in_browser</mat-icon>
-        Set card
+        {{'adventure.context-menu.set-card' | translate}}
       </button>
-      <button mat-menu-item (click)="openChest(item)">
+      <button mat-menu-item *ngIf="canOpenChest(item)" (click)="openChest(item)">
         <span class="mdi mdi-treasure-chest" style="font-size: 140%; margin-right: 20px;"></span>
-        Open chest
+        {{'adventure.context-menu.open-chest' | translate}}
       </button>
     </ng-container>
     <ng-container *ngIf="authService.isGM">
       <button *ngIf="authService.isGM && isItemFlippable(item.type)" mat-menu-item (click)="flipElement(item, $event)">
         <mat-icon>flip</mat-icon>
-        Flip
+        {{'adventure.context-menu.flip' | translate}}
       </button>
       <mat-divider></mat-divider>
       <button mat-menu-item (click)="deleteItem(item)">
         <mat-icon>delete</mat-icon>
-        Delete
+        {{'common.delete' | translate}}
       </button>
     </ng-container>
   </ng-template>

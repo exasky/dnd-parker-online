@@ -1,49 +1,49 @@
 <ng-container *ngIf="currentUser">
   <mat-card class="d-flex flex-column">
     <mat-form-field>
-      <mat-label>Name</mat-label>
-      <input matInput [(ngModel)]="currentUser.username" placeholder="Username" required autocomplete="false">
+      <mat-label>{{'user.username' | translate}}</mat-label>
+      <input matInput [(ngModel)]="currentUser.username" placeholder="{{'user.username' | translate}}" required autocomplete="false">
     </mat-form-field>
     <mat-form-field>
       <mat-label>Role</mat-label>
       <mat-select [value]="currentUser.role" disabled>
-        <mat-option value="ROLE_GM">GM</mat-option>
-        <mat-option value="ROLE_PLAYER">Player</mat-option>
+        <mat-option value="ROLE_GM">{{'user.role.gm' | translate}}</mat-option>
+        <mat-option value="ROLE_PLAYER">{{'user.role.player' | translate}}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <div *ngFor="let character of currentUser.characters">
       <mat-form-field>
-        <mat-label>Campaign</mat-label>
+        <mat-label>{{'user.campaign' | translate}}</mat-label>
         <input matInput [value]="character.campaignName" disabled>
       </mat-form-field>
       <mat-form-field>
-        <mat-label>Character</mat-label>
+        <mat-label>{{'user.character' | translate}}</mat-label>
         <input matInput [value]="character.name" disabled>
       </mat-form-field>
     </div>
 
     <mat-card-actions class="d-flex justify-content-center">
-      <button mat-raised-button (click)="saveUser()">Save User</button>
+      <button mat-raised-button (click)="saveUser()">{{'common.save' | translate}}</button>
     </mat-card-actions>
   </mat-card>
 
   <mat-card class="d-flex flex-column mt-2">
     <form [formGroup]="passFormGroup" class="d-flex flex-column">
       <mat-form-field>
-        <input matInput type="password" placeholder="Password" formControlName="password" (input)="onPasswordInput()">
-        <mat-error *ngIf="password.hasError('required')">Password is required</mat-error>
-        <mat-error *ngIf="password.hasError('minlength')">Password must have at least 3 characters</mat-error>
+        <input matInput type="password" placeholder="{{'user.password' | translate}}" formControlName="password" (input)="onPasswordInput()">
+        <mat-error *ngIf="password.hasError('required')">{{'user.password-required' | translate}}</mat-error>
+        <mat-error *ngIf="password.hasError('minlength')">{{'user.password-length' | translate}}</mat-error>
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="password" placeholder="Confirm password" formControlName="password2"
+        <input matInput type="password" placeholder="{{'user.password-confirm' | translate}}" formControlName="password2"
                (input)="onPasswordInput()">
-        <mat-error *ngIf="password2.hasError('required')">Please confirm your password</mat-error>
-        <mat-error *ngIf="password2.invalid && !password2.hasError('required')">Passwords don't match</mat-error>
+        <mat-error *ngIf="password2.hasError('required')">{{'user.password-required' | translate}}</mat-error>
+        <mat-error *ngIf="password2.invalid && !password2.hasError('required')">{{'user.password-match' | translate}}</mat-error>
       </mat-form-field>
     </form>
     <mat-card-actions class="d-flex justify-content-center">
-      <button mat-raised-button (click)="updatePassword()" [disabled]="passFormGroup.invalid">Update password</button>
+      <button mat-raised-button (click)="updatePassword()" [disabled]="passFormGroup.invalid">{{'user.password-update' | translate}}</button>
     </mat-card-actions>
   </mat-card>
 </ng-container>

@@ -16,7 +16,7 @@ export class AudioService implements IAudioService {
   public volume: number = 0.6;
 
   getDisplayName() {
-    return 'Sounds';
+    return 'sound';
   }
 
   playSound(src: string) {
@@ -52,7 +52,7 @@ export class AmbientAudioService implements IAudioService {
   private fadeInOutIntervalDelay = 100;
 
   getDisplayName() {
-    return 'Ambient';
+    return 'ambient';
   }
 
   playSound(src: string) {

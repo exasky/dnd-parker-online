@@ -1,12 +1,15 @@
 package com.exasky.dnd.adventure.rest;
 
+import com.exasky.dnd.adventure.model.log.AdventureLog;
 import com.exasky.dnd.adventure.model.Character;
+import com.exasky.dnd.adventure.rest.dto.AdventureLogDto;
 import com.exasky.dnd.adventure.rest.dto.CharacterDto;
 import com.exasky.dnd.adventure.rest.dto.switch_equipment.SelectSwitchEquipmentDto;
 import com.exasky.dnd.adventure.rest.dto.switch_equipment.ValidateSwitchDto;
 import com.exasky.dnd.adventure.rest.dto.trade.AskTradeDto;
 import com.exasky.dnd.adventure.rest.dto.trade.SelectTradeEquipmentDto;
 import com.exasky.dnd.adventure.rest.dto.trade.ValidateTradeDto;
+import com.exasky.dnd.adventure.service.AdventureLogService;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
@@ -19,13 +22,16 @@ import org.springframework.web.bind.annotation.*;
 public class AdventureTradeController {
 
     private final AdventureService adventureService;
+    private final AdventureLogService adventureLogService;
 
     private final SimpMessageSendingOperations messagingTemplate;
 
     @Autowired
     public AdventureTradeController(AdventureService adventureService,
+                                    AdventureLogService adventureLogService,
                                     SimpMessageSendingOperations messagingTemplate) {
         this.adventureService = adventureService;
+        this.adventureLogService = adventureLogService;
         this.messagingTemplate = messagingTemplate;
     }
 
@@ -56,6 +62,11 @@ public class AdventureTradeController {
 
         wsDto.setType(AdventureMessageDto.AdventureMessageType.CLOSE_DIALOG);
         messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+
+        AdventureLog adventureLog = adventureLogService.logTrade(adventureId, tradeDto);
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.ADD_LOG);
+        wsDto.setMessage(AdventureLogDto.toDto(adventureLog));
+        messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 
     @GetMapping("/ask-switch/{adventureId}/{characterId}")
@@ -77,6 +88,7 @@ public class AdventureTradeController {
     @PostMapping("/validate-switch/{adventureId}")
     public void validateSwitch(@PathVariable Long adventureId, @RequestBody ValidateSwitchDto switchDto) {
         Character character = this.adventureService.switchEquipment(switchDto);
+        AdventureLog adventureLog = adventureLogService.logSwitch(adventureId, character.getName(), switchDto.getCharacterEquippedItemId(), switchDto.getCharacterBackpackItemId());
 
         final AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_CHARACTER);
@@ -84,6 +96,10 @@ public class AdventureTradeController {
         messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
 
         wsDto.setType(AdventureMessageDto.AdventureMessageType.CLOSE_DIALOG);
+        messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.ADD_LOG);
+        wsDto.setMessage(AdventureLogDto.toDto(adventureLog));
         messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 

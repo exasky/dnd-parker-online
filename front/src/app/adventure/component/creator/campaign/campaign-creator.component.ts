@@ -81,15 +81,19 @@ export class CampaignCreatorComponent implements OnInit {
   }
 
   addNewCharacter() {
-    this.campaign.characters.push(new Character());
+    if (this.campaign.characters.length < 4) {
+      this.campaign.characters.push(new Character());
+    }
   }
 
   removeCharacter(event: Character) {
     const characterIdx = this.campaign.characters.indexOf(event);
     if (characterIdx !== -1) {
       const characterTemplate = this.selectedCharacterTemplates.find(sct => sct.name === event.name);
-      this.characterTemplates.push(characterTemplate);
-      this.selectedCharacterTemplates.splice(this.selectedCharacterTemplates.indexOf(characterTemplate), 1);
+      if (characterTemplate) {
+        this.characterTemplates.push(characterTemplate);
+        this.selectedCharacterTemplates.splice(this.selectedCharacterTemplates.indexOf(characterTemplate), 1);
+      }
       this.campaign.characters.splice(characterIdx, 1);
     }
   }

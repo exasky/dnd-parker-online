@@ -2,16 +2,20 @@
   <button type="button" mat-button (click)="drawer.toggle()">
     <mat-icon>menu</mat-icon>
   </button>
-  <span>DnD Online</span>
+  <img [src]="'/assets/logo_' + (isDarkTheme ? 'dark' : 'light')+ '.png'"
+       style="height: 100%; padding: 5px; object-fit: contain" alt="DnD Online">
   <div>
     <button mat-button [matMenuTriggerFor]="menu">{{authService.currentUserValue.username}}</button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="switchDarkTheme()">
-        <ng-container *ngIf="isDarkTheme">LightTheme</ng-container>
-        <ng-container *ngIf="!isDarkTheme">DarkTheme</ng-container>
+        <ng-container *ngIf="!isDarkTheme">{{'home.dark-theme' | translate}}</ng-container>
+        <ng-container *ngIf="isDarkTheme">{{'home.light-theme' | translate}}</ng-container>
       </button>
-      <button mat-menu-item routerLink="/user-detail">Profile</button>
-      <button mat-menu-item (click)="authService.logout()">Logout</button>
+      <button mat-menu-item routerLink="/user-detail">{{'home.profile' | translate}}</button>
+      <button mat-menu-item (click)="switchLang()">
+        {{'home.lang' | translate}}: <img height="70%" class="ml-3" [src]="'assets/flag/' + this.lang + '.png'"/>
+      </button>
+      <button mat-menu-item (click)="authService.logout()">{{'home.logout' | translate}}</button>
     </mat-menu>
   </div>
 
@@ -22,16 +26,16 @@
   <mat-drawer #drawer mode="over" style="z-index: 100;">
     <div *ngIf="authService.currentUserValue"
          class="d-flex flex-column m-3">
-      <button mat-raised-button routerLink="/" (click)="drawer.toggle()">Home</button>
+      <button mat-raised-button routerLink="/" (click)="drawer.toggle()">{{'home.home' | translate}}</button>
 
       <button mat-raised-button *ngIf="authService.isGM"
               class="my-3"
               routerLink="/campaign-creator" (click)="drawer.toggle()">
-        Campaign creator
+        {{'home.campaign-creator' | translate}}
       </button>
       <button mat-raised-button *ngIf="authService.isGM"
               routerLink="/users" (click)="drawer.toggle()">
-        Users
+        {{'home.users' | translate}}
       </button>
     </div>
   </mat-drawer>

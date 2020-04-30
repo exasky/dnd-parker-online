@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Drawn card for {{characterName}}</h1>
+<h1 mat-dialog-title>{{'adventure.dialog.draw-card.header' | translate:{char: characterName} }}</h1>
 
 <div mat-dialog-content class="position-relative" style="width: 700px; height: 500px">
   <div id="treasurechest">
@@ -12,6 +12,6 @@
 </div>
 
 <mat-dialog-actions class="d-flex justify-content-center" *ngIf="authService.isGM">
-  <button mat-button (click)="this.close(false)">Cancel</button>
-  <button mat-button (click)="this.close(true)">Validate</button>
+  <button mat-button (click)="this.close(false)">{{'common.cancel' | translate}}</button>
+  <button mat-button (click)="this.close(true)">{{'common.validate' | translate}}</button>
 </mat-dialog-actions>

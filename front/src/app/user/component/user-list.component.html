@@ -4,7 +4,7 @@
           (click)="createUser()">
     <div class="d-flex align-items-center">
       <mat-icon class="mr-2">add</mat-icon>
-      Create
+      {{'common.create' | translate}}
     </div>
   </button>
   <div class="flex-grow overflow d-flex flex-column">
@@ -23,47 +23,47 @@
     <mat-card-header class="d-flex align-items-start flex-wrap">
       <mat-card-title>
         <div *ngIf="selectedUser.username">{{selectedUser.username}}</div>
-        <div *ngIf="!selectedUser.username">New user</div>
+        <div *ngIf="!selectedUser.username">{{'user.new' | translate}}</div>
       </mat-card-title>
       <div class="flex-grow d-flex justify-content-end" *ngIf="!isEdit">
         <button mat-raised-button (click)="editUser()">
           <mat-icon>edit</mat-icon>
-          Edit
+          {{'common.edit' | translate}}
         </button>
         <button mat-raised-button color="warn" class="mx-2" *ngIf="selectedUser.id" (click)="deleteUser()">
           <mat-icon>delete</mat-icon>
-          Delete
+          {{'common.delete' | translate}}
         </button>
       </div>
       <div class="flex-grow d-flex justify-content-end" *ngIf="isEdit">
         <button mat-raised-button (click)="cancel()">
           <mat-icon>undo</mat-icon>
-          Cancel
+          {{'common.cancel' | translate}}
         </button>
         <button mat-raised-button color="accent" class="mx-2" (click)="saveUser()">
           <mat-icon>save</mat-icon>
-          Save
+          {{'common.save' | translate}}
         </button>
         <button mat-raised-button color="warn" class="mx-2" *ngIf="selectedUser.id"
                 (click)="resetPassword()">
           <mat-icon>vpn_key</mat-icon>
-          Reset password
+          {{'user.reset-password' | translate}}
         </button>
       </div>
     </mat-card-header>
     <mat-card-content class="d-flex flex-column">
       <mat-form-field>
-        <mat-label>Name</mat-label>
+        <mat-label>{{'user.username' | translate}}</mat-label>
         <input matInput [(ngModel)]="userEdit.username"
-               placeholder="Username"
+               placeholder="{{'user.username' | translate}}"
                required
                autocomplete="nope"
                [disabled]="!isEdit">
       </mat-form-field>
       <mat-form-field>
-        <mat-label>Password</mat-label>
+        <mat-label>{{'user.password' | translate}}</mat-label>
         <input matInput [(ngModel)]="userEdit.password"
-               placeholder="Password"
+               placeholder="{{'user.password' | translate}}"
                type="password"
                required
                autocomplete="new-password"
@@ -72,8 +72,8 @@
       <mat-form-field>
         <mat-label>Role</mat-label>
         <mat-select [(ngModel)]="userEdit.role" [disabled]="!isEdit">
-          <mat-option value="ROLE_GM">GM</mat-option>
-          <mat-option value="ROLE_PLAYER">Player</mat-option>
+          <mat-option value="ROLE_GM">{{'user.role.gm' | translate}}</mat-option>
+          <mat-option value="ROLE_PLAYER">{{'user.role.player' | translate}}</mat-option>
         </mat-select>
       </mat-form-field>
 

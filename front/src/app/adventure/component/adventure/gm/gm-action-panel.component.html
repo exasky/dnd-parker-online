@@ -6,16 +6,16 @@
   </div>
   <mat-expansion-panel class="flex-shrink-0 d-flex flex-column mb-0">
     <mat-expansion-panel-header>
-      <mat-panel-title>Tools</mat-panel-title>
+      <mat-panel-title>{{'adventure.gm-panel.tools' | translate}}</mat-panel-title>
     </mat-expansion-panel-header>
 
     <div class="d-flex flex-column">
-      <button mat-raised-button class="mb-1" (click)="sendAlert()">Send alert</button>
+      <button mat-raised-button class="mb-1" (click)="sendAlert()">{{'adventure.gm-panel.send-alert' | translate}}</button>
       <button mat-raised-button class="mb-1" (click)="toggleCursor.emit()">
-        {{cursorEnabled ? 'Hide cursor' : 'Show cursor'}}
+        {{'adventure.gm-panel.' + (cursorEnabled ? 'hide-cursor' : 'show-cursor') | translate}}
       </button>
       <button mat-raised-button class="mb-1 position-relative" [matMenuTriggerFor]="soundMenu">
-        Sounds
+        {{'adventure.gm-panel.sounds' | translate}}
         <mat-icon class="position-absolute" style="right: 10px; top: 6px"
                   [matMenuTriggerFor]="soundMenu"
                   #soundMenuTrigger="matMenuTrigger"
@@ -23,41 +23,65 @@
         </mat-icon>
       </button>
       <mat-menu #soundMenu="matMenu" xPosition="before">
-        <button mat-menu-item class="mb-1" (click)="sendSound($event, SoundType.MELEE_SWORD)">Melee attack</button>
-        <button mat-menu-item class="mb-1" (click)="sendSound($event, SoundType.BOW)">Bow attack</button>
-        <button mat-menu-item class="mb-1" (click)="sendSound($event, SoundType.POTION)">Drink potion</button>
-        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundSpell">Spell</button>
-        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundMonster">Monster</button>
-        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundMisc">Misc</button>
-        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundMacro">Macro</button>
-        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundAmbient">Ambient</button>
+        <button mat-menu-item class="mb-1"
+                (click)="sendSound($event, SoundType.MELEE_SWORD)">{{'adventure.gm-panel.sound.melee' | translate}}</button>
+        <button mat-menu-item class="mb-1"
+                (click)="sendSound($event, SoundType.BOW)">{{'adventure.gm-panel.sound.bow' | translate}}</button>
+        <button mat-menu-item class="mb-1"
+                (click)="sendSound($event, SoundType.POTION)">{{'adventure.gm-panel.sound.drink-potion' | translate}}</button>
+        <button mat-menu-item class="mb-1"
+                [matMenuTriggerFor]="soundSpell">{{'adventure.gm-panel.sound.spell' | translate}}</button>
+        <button mat-menu-item class="mb-1"
+                [matMenuTriggerFor]="soundMonster">{{'adventure.gm-panel.sound.monster' | translate}}</button>
+        <button mat-menu-item class="mb-1"
+                [matMenuTriggerFor]="soundMisc">{{'adventure.gm-panel.sound.misc' | translate}}</button>
+        <button mat-menu-item class="mb-1"
+                [matMenuTriggerFor]="soundMacro">{{'adventure.gm-panel.sound.macro' | translate}}</button>
+        <button mat-menu-item class="mb-1"
+                [matMenuTriggerFor]="soundAmbient">{{'adventure.gm-panel.sound.ambient' | translate}}</button>
       </mat-menu>
       <mat-menu #soundSpell="matMenu">
-        <button mat-menu-item (click)="sendSound($event, SoundType.SPELL_FIRE)">Fire</button>
-        <button mat-menu-item (click)="sendSound($event, SoundType.SPELL_HEAL)">Heal</button>
-        <button mat-menu-item (click)="sendSound($event, SoundType.SPELL_GENERIC)">Generic</button>
-        <button mat-menu-item (click)="sendSound($event, 'magic_undo.mp3')">Undo spell</button>
+        <button mat-menu-item
+                (click)="sendSound($event, SoundType.SPELL_FIRE)">{{'adventure.gm-panel.sound.fire' | translate}}</button>
+        <button mat-menu-item
+                (click)="sendSound($event, SoundType.SPELL_HEAL)">{{'adventure.gm-panel.sound.heal' | translate}}</button>
+        <button mat-menu-item
+                (click)="sendSound($event, SoundType.SPELL_GENERIC)">{{'adventure.gm-panel.sound.generic' | translate}}</button>
+        <button mat-menu-item
+                (click)="sendSound($event, 'magic_undo.mp3')">{{'adventure.gm-panel.sound.undo' | translate}}</button>
       </mat-menu>
       <mat-menu #soundMonster="matMenu">
-        <button mat-menu-item (click)="sendSound($event, SoundType.MONSTER_HIT)">Monster hit/die</button>
-        <button mat-menu-item (click)="sendSound($event, 'weak_goblin_pain.mp3')">Weak goblin</button>
+        <button mat-menu-item
+                (click)="sendSound($event, SoundType.MONSTER_HIT)">{{'adventure.gm-panel.sound.monster-hit' | translate}}</button>
+        <button mat-menu-item
+                (click)="sendSound($event, 'weak_goblin_pain.mp3')">{{'adventure.gm-panel.sound.goblin' | translate}}</button>
       </mat-menu>
       <mat-menu #soundMisc="matMenu">
-        <button mat-menu-item (click)="sendSound($event, 'ghost.mp3')">Ghost</button>
-        <button mat-menu-item (click)="sendSound($event, 'monster_breath.mp3')">Evil breath</button>
-        <button mat-menu-item (click)="sendSound($event, 'eat_flesh.mp3')">Eat flesh</button>
-        <button mat-menu-item (click)="sendSound($event, 'melee_sword_slime.mp3')">Sword slime</button>
-        <button mat-menu-item (click)="sendSound($event, 'liche_appear.mp3')">Liche appear</button>
-        <button mat-menu-item (click)="sendSound($event, 'meanwhile.mp3')">Meanwhile</button>
+        <button mat-menu-item
+                (click)="sendSound($event, 'ghost.mp3')">{{'adventure.gm-panel.sound.ghost' | translate}}</button>
+        <button mat-menu-item
+                (click)="sendSound($event, 'monster_breath.mp3')">{{'adventure.gm-panel.sound.evil-breath' | translate}}</button>
+        <button mat-menu-item
+                (click)="sendSound($event, 'eat_flesh.mp3')">{{'adventure.gm-panel.sound.eat-flesh' | translate}}</button>
+        <button mat-menu-item
+                (click)="sendSound($event, 'melee_sword_slime.mp3')">{{'adventure.gm-panel.sound.sword-slime' | translate}}</button>
+        <button mat-menu-item
+                (click)="sendSound($event, 'liche_appear.mp3')">{{'adventure.gm-panel.sound.liche-appear' | translate}}</button>
+        <button mat-menu-item
+                (click)="sendSound($event, 'meanwhile.mp3')">{{'adventure.gm-panel.sound.meanwhile' | translate}}</button>
       </mat-menu>
       <mat-menu #soundMacro="matMenu">
-        <button mat-menu-item (click)="sendMacro($event, SoundMacroType.SWORDS_AND_ARROWS)">Swords & bows</button>
+        <button mat-menu-item
+                (click)="sendMacro($event, SoundMacroType.SWORDS_AND_ARROWS)">{{'adventure.gm-panel.sound.swords-bows' | translate}}</button>
       </mat-menu>
       <mat-menu #soundAmbient="matMenu">
         <button mat-menu-item (click)="sendAmbient($event, 'barren_wastes.mp3')">Barren wastes</button>
-        <button mat-menu-item (click)="sendAmbient($event, 'battle.mp3')">Battle</button>
-        <button mat-menu-item (click)="sendAmbient($event, 'bridge.mp3')">Bridge</button>
-        <button mat-menu-item (click)="sendAmbient($event, 'dungeon.mp3')">Dungeon</button>
+        <button mat-menu-item
+                (click)="sendAmbient($event, 'battle.mp3')">{{'adventure.gm-panel.sound.battle' | translate}}</button>
+        <button mat-menu-item
+                (click)="sendAmbient($event, 'bridge.mp3')">{{'adventure.gm-panel.sound.bridge' | translate}}</button>
+        <button mat-menu-item
+                (click)="sendAmbient($event, 'dungeon.mp3')">{{'adventure.gm-panel.sound.dungeon' | translate}}</button>
       </mat-menu>
 
     </div>
@@ -66,7 +90,7 @@
 
   <mat-expansion-panel class="d-flex flex-column">
     <mat-expansion-panel-header class="flex-shrink-0">
-      <mat-panel-title>Monsters</mat-panel-title>
+      <mat-panel-title>{{'adventure.gm-panel.monsters' | translate}}</mat-panel-title>
     </mat-expansion-panel-header>
 
     <div class="d-flex flex-column">
@@ -78,7 +102,7 @@
           <img [src]="'assets/monster/' + monster.monster.element.name + '.jpg'" width="150px"
                (click)="selectMonster.emit(monster.id)">
           <mat-form-field class="mx-2" style="max-width: 50px">
-            <mat-label>HP</mat-label>
+            <mat-label>{{'common.hp' | translate}}</mat-label>
             <input matInput [(ngModel)]="monster.hp" type="number" min="0" inputmode="numeric" pattern="[0-9]*"
                    (change)="updateMonster(monster)">
           </mat-form-field>
@@ -89,7 +113,7 @@
 
   <mat-expansion-panel class="d-none d-md-flex flex-column">
     <mat-expansion-panel-header class="flex-shrink-0">
-      <mat-panel-title>Characters</mat-panel-title>
+      <mat-panel-title>{{'adventure.gm-panel.characters' | translate}}</mat-panel-title>
     </mat-expansion-panel-header>
 
     <div class="d-flex flex-column">
@@ -97,7 +121,7 @@
            class="flex-grow d-flex align-items-center justify-content-around">
         {{charItem.character.name | capitalize}}
         <div class="d-flex flex-column">
-          <mat-label style="padding-left: 8px">HP</mat-label>
+          <mat-label style="padding-left: 8px">{{'common.hp' | translate}}</mat-label>
           <mat-slider color="primary"
                       [min]="0" [max]="charItem.character.maxHp" [step]="1"
                       [thumbLabel]="true" [tickInterval]="1"
@@ -106,7 +130,7 @@
           </mat-slider>
         </div>
         <div class="d-flex flex-column">
-          <mat-label style="padding-left: 8px">MP</mat-label>
+          <mat-label style="padding-left: 8px">{{'common.mp' | translate}}</mat-label>
           <mat-slider color="primary"
                       [min]="0" [max]="charItem.character.maxMp" [step]="1"
                       [thumbLabel]="true" [tickInterval]="1"
@@ -120,7 +144,7 @@
 
   <mat-expansion-panel class="d-flex flex-column">
     <mat-expansion-panel-header class="flex-shrink-0">
-      <mat-panel-title>Initiative</mat-panel-title>
+      <mat-panel-title>{{'adventure.gm-panel.initiative' | translate}}</mat-panel-title>
     </mat-expansion-panel-header>
 
     <div class="d-flex flex-wrap justify-content-center initiatives">
@@ -134,6 +158,8 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <button mat-raised-button style="float: right" (click)="updateInitiatives()">Validate</button>
+    <button mat-raised-button style="float: right" (click)="updateInitiatives()">
+      {{'common.validae' | translate}}
+    </button>
   </mat-expansion-panel>
 </mat-accordion>

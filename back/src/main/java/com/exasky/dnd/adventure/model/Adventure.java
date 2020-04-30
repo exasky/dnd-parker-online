@@ -1,6 +1,7 @@
 package com.exasky.dnd.adventure.model;
 
 import com.exasky.dnd.adventure.model.layer.item.*;
+import com.exasky.dnd.adventure.model.log.AdventureLog;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -47,6 +48,9 @@ public class Adventure {
 
     @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<SimpleLayerItem> otherItems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "adventure", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<AdventureLog> logs = new ArrayList<>();
 
     public Adventure() {
     }
@@ -156,5 +160,14 @@ public class Adventure {
     public void setOtherItems(List<SimpleLayerItem> otherItems) {
         this.otherItems = otherItems;
     }
+
+    public List<AdventureLog> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(List<AdventureLog> logs) {
+        this.logs = logs;
+    }
+
     // endregion
 }

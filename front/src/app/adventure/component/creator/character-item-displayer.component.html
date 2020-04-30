@@ -1,5 +1,5 @@
 <mat-form-field style="width: 100%">
-  <input matInput placeholder="Search" (input)="filterChanged($event.target.value)">
+  <input matInput placeholder="{{'common.search' | translate}}" (input)="filterChanged($event.target.value)">
 </mat-form-field>
 
 <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="overflow">
@@ -14,6 +14,6 @@
     <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
       <mat-icon>{{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}</mat-icon>
     </button>
-    {{node.name}}
+    {{'item-displayer.' + node.name | translate}}
   </mat-tree-node>
 </mat-tree>

@@ -1,11 +1,15 @@
 package com.exasky.dnd.adventure.rest;
 
+import com.exasky.dnd.adventure.model.log.AdventureLog;
+import com.exasky.dnd.adventure.rest.dto.AdventureLogDto;
 import com.exasky.dnd.adventure.rest.dto.card.AskDrawCardDto;
 import com.exasky.dnd.adventure.rest.dto.card.CardMessageDto;
 import com.exasky.dnd.adventure.rest.dto.card.DrawnCardDto;
 import com.exasky.dnd.adventure.rest.dto.card.ValidateCardDto;
+import com.exasky.dnd.adventure.service.AdventureLogService;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
+import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
 import com.exasky.dnd.gameMaster.rest.dto.CharacterItemDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -18,20 +22,17 @@ import java.util.Objects;
 public class AdventureCardController {
 
     private final AdventureService adventureService;
-
+    private final AdventureLogService adventureLogService;
     private final SimpMessageSendingOperations messagingTemplate;
 
     @Autowired
     public AdventureCardController(AdventureService adventureService,
+                                   AdventureLogService adventureLogService,
                                    SimpMessageSendingOperations messagingTemplate) {
         this.adventureService = adventureService;
+        this.adventureLogService = adventureLogService;
         this.messagingTemplate = messagingTemplate;
     }
-
-    // TODO
-    // replace drawCard by askDrawCard to send (as next turn) a dialog
-    // GM dialog: this char asked to draw card/open this chest (selectedItemLayerId)
-    // Others dialog: this char asked to draw a card please wait
 
     /**
      * Called by any one to draw a card
@@ -41,12 +42,18 @@ public class AdventureCardController {
         Long adventureId = drawCardDto.getAdventureId();
         CharacterItemDto dto = CharacterItemDto.toDto(
                 Objects.isNull(drawCardDto.getCharacterItemId())
-                        ? this.adventureService.getNextCardToDraw(adventureId)
-                        : this.adventureService.drawSpecificCard(drawCardDto.getCharacterItemId()));
+                        ? adventureService.getNextCardToDraw(adventureId)
+                        : adventureService.drawSpecificCard(drawCardDto.getCharacterItemId()));
 
         DrawnCardDto drawnCardDto = new DrawnCardDto(drawCardDto.getAdventureId(), drawCardDto.getCharacterId(), dto);
         CardMessageDto messageDto = new CardMessageDto(CardMessageDto.CardMessageType.DRAW_CARD, drawnCardDto);
-        this.messagingTemplate.convertAndSend("/topic/drawn-card/" + adventureId, messageDto);
+        messagingTemplate.convertAndSend("/topic/drawn-card/" + adventureId, messageDto);
+
+        AdventureLog adventureLog = adventureLogService.logOpenChest(adventureId, drawCardDto.getCharacterId(), dto.getName());
+        AdventureMessageDto wsDto = new AdventureMessageDto();
+        wsDto.setType(AdventureMessageDto.AdventureMessageType.ADD_LOG);
+        wsDto.setMessage(AdventureLogDto.toDto(adventureLog));
+        messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 
     /**
@@ -60,6 +67,6 @@ public class AdventureCardController {
         }
 
         CardMessageDto message = new CardMessageDto(CardMessageDto.CardMessageType.CLOSE_DIALOG);
-        this.messagingTemplate.convertAndSend("/topic/drawn-card/" + adventureId, message);
+        messagingTemplate.convertAndSend("/topic/drawn-card/" + adventureId, message);
     }
 }

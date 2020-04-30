@@ -1,5 +1,5 @@
 <mat-horizontal-stepper [linear]="true" class="flex-grow d-flex flex-column">
-  <mat-step label="Choisir le/les boards">
+  <mat-step label="{{'campaign-creator.adventure-creator.choose-board' | translate}}">
 
     <div class="d-flex flex-column" style="height: 85vh">
       <div>
@@ -42,29 +42,33 @@
       </gridster>
 
       <div class="d-flex justify-content-center">
-        <button mat-button (click)="adventureDeleted.emit()">Delete</button>
+        <button mat-button (click)="adventureDeleted.emit()">{{'common.delete' | translate}}</button>
       </div>
     </div>
   </mat-step>
 
-  <mat-step label="Entrez les informations">
+  <mat-step label="{{'campaign-creator.adventure-creator.adventure-info' | translate}}">
     <div class="d-flex flex-column" style="height: 85vh">
       <div class="flex-grow d-flex flex-column justify-content-center align-items-center">
         <mat-form-field>
-          <mat-label>Name</mat-label>
-          <input matInput [(ngModel)]="adventure.name" placeholder="Nom de votre aventure" required
+          <mat-label>{{'campaign-creator.adventure-creator.name' | translate}}</mat-label>
+          <input matInput [(ngModel)]="adventure.name"
+                 placeholder="{{'campaign-creator.adventure-creator.name-placeholder' | translate}}"
+                 required
                  autocomplete="false">
         </mat-form-field>
         <mat-form-field>
-          <mat-label>Level</mat-label>
+          <mat-label>{{'campaign-creator.adventure-creator.level' | translate}}</mat-label>
           <input matInput type="number" min="1" max="3"
                  inputmode="numeric" pattern="[0-9]*"
-                 [(ngModel)]="adventure.level" placeholder="Niveau" required autocomplete="false">
+                 [(ngModel)]="adventure.level"
+                 placeholder="{{'campaign-creator.adventure-creator.level' | translate}}"
+                 required autocomplete="false">
         </mat-form-field>
       </div>
 
       <div class="d-flex justify-content-center">
-        <button mat-button (click)="adventureDeleted.emit()">Delete</button>
+        <button mat-button (click)="adventureDeleted.emit()">{{'common.delete' | translate}}</button>
       </div>
     </div>
   </mat-step>

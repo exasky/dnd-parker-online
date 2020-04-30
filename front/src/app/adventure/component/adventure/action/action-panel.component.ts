@@ -8,14 +8,13 @@ import {AdventureService} from "../../../service/adventure.service";
 import {AudioService, AmbientAudioService} from "../../../service/audio.service";
 import {AdventureCardService} from "../../../service/adventure-card.service";
 import {CharacterItem} from "../../../model/item";
-import {Character} from "../../../model/character";
 
 @Component({
   selector: 'app-action-panel',
   templateUrl: './action-panel.component.html'
 })
 export class ActionPanelComponent {
-  @HostBinding('class') cssClasses = "flex-grow d-flex flex-column";
+  @HostBinding('class') cssClasses = "d-flex flex-column";
 
   @Input()
   currentInitiative: Initiative;
@@ -47,10 +46,11 @@ export class ActionPanelComponent {
   }
 
   private sortCharactersByInitiative(characterItems: CharacterItem[]) {
-    this.initiatives.forEach((init, idx) => {
-      const characterItem = characterItems.find(charItem => charItem.character.name === init.characterName);
-      this.sortedCharacterItems[idx] = characterItem ? characterItem : ({character: {name: 'game-master'}}) as unknown as CharacterItem;
-    });
+    this.initiatives.sort((a, b) => a.number - b.number)
+      .forEach((init, idx) => {
+        const characterItem = characterItems.find(charItem => charItem.character.name === init.characterName);
+        this.sortedCharacterItems[idx] = characterItem ? characterItem : ({character: {name: 'game-master'}}) as unknown as CharacterItem;
+      });
   }
 
   get isMyTurn(): boolean {

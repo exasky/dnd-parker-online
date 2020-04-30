@@ -9,7 +9,6 @@
 <mat-dialog-content>
   <div class="d-flex flex-wrap justify-content-evenly">
     <app-dice *ngFor="let dice of selectedDices"
-              #diceCmp
               [diceType]="dice.name"
               (click)="removeDiceFromList(dice)"></app-dice>
   </div>
@@ -17,19 +16,19 @@
 <mat-dialog-actions class="d-flex justify-content-center position-relative">
   <div class="position-absolute"
        style="left: 0">
-    À {{data.user.username}}
+    {{'adventure.dialog.dice.turn' | translate:{char: data.user.username} }}
   </div>
   <button *ngIf="!rollDisabled" mat-raised-button
           (click)="rollDices()"
           [disabled]="selectedDices.length === 0">
-    Roll dices !
+    {{'adventure.dialog.dice.roll' | translate }}
   </button>
   <button mat-raised-button color="accent"
           *ngIf="authService.isGM"
           class="position-absolute"
           style="right: 0"
           (click)="this.close()">
-    Close
+    {{'common.close' | translate}}
   </button>
-  <div *ngIf="rollDisabled">C'est pas ton tour !</div>
+  <div *ngIf="rollDisabled">{{'adventure.dialog.dice.no-turn' | translate }}</div>
 </mat-dialog-actions>
