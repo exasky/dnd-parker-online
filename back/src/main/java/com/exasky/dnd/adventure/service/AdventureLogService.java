@@ -40,21 +40,21 @@ public class AdventureLogService {
 
         if (dto.getIsMonsterAttack()) {
             adventure.getMonsters().stream()
-                    .filter(monster -> monster.getId().equals(dto.getFromAttackId())).findFirst()
+                    .filter(monsterLayer -> monsterLayer.getId().equals(dto.getFromAttackId())).findFirst()
                     .ifPresent(monsterLayerItem -> adventureLog.setFrom(monsterLayerItem.getMonster().getMonsterElement().getName()));
         } else {
             adventure.getCharacters().stream()
-                    .filter(character -> character.getCharacter().getId().equals(dto.getFromAttackId())).findFirst()
+                    .filter(characterLayer -> characterLayer.getCharacter().getId().equals(dto.getFromAttackId())).findFirst()
                     .ifPresent(characterLayerItem -> adventureLog.setFrom(characterLayerItem.getCharacter().getDisplayName()));
         }
 
         if (dto.getIsMonsterAttacked()) {
             adventure.getMonsters().stream()
-                    .filter(monster -> monster.getId().equals(dto.getToAttackId())).findFirst()
+                    .filter(monsterLayer -> monsterLayer.getId().equals(dto.getToAttackId())).findFirst()
                     .ifPresent(monsterLayerItem -> adventureLog.setTo(monsterLayerItem.getMonster().getMonsterElement().getName()));
         } else {
             adventure.getCharacters().stream()
-                    .filter(character -> character.getCharacter().getId().equals(dto.getToAttackId())).findFirst()
+                    .filter(characterLayer -> characterLayer.getId().equals(dto.getToAttackId())).findFirst()
                     .ifPresent(characterLayerItem -> adventureLog.setTo(characterLayerItem.getCharacter().getDisplayName()));
         }
 
