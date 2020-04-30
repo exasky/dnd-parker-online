@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Trade equipment</h1>
+<h1 mat-dialog-title>{{'adventure.dialog.trade.header' | translate}}</h1>
 
 <div class="flex-grow d-flex">
   <app-trade-character-item-displayer class="flex-3"
@@ -17,6 +17,6 @@
 </div>
 
 <mat-dialog-actions *ngIf="authService.isGM">
-  <button mat-raised-button (click)="cancelTrade()">Cancel</button>
-  <button mat-raised-button (click)="validateTrade()">Validate trade</button>
+  <button mat-raised-button (click)="cancelTrade()">{{'common.cancel' | translate}}</button>
+  <button mat-raised-button (click)="validateTrade()">{{'adventure.dialog.trade.validate' | translate}}</button>
 </mat-dialog-actions>

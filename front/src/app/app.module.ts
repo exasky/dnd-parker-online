@@ -12,7 +12,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/http";
 import {IndexComponent} from "./index/index.component";
 import {MatCardModule} from "@angular/material/card";
 import {LoginComponent} from "./login/login.component";
@@ -74,6 +74,15 @@ import {TradeCharacterItemDisplayerComponent} from "./adventure/component/advent
 import {SwitchEquipmentDialogComponent} from "./adventure/component/adventure/context-menu/dialog/switch-equipment-dialog.component";
 import {LogPanelComponent} from "./adventure/component/adventure/log/log-panel.component";
 import {EquipmentFormatterPipe} from "./common/pipe/equipment-formatter.pipe";
+import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
+import {environment} from "../environments/environment";
+import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+
+export function translateLoader(http: HttpClient): TranslateLoader {
+  // const dontCacheDuringDev = environment.production ? '' : '?' + new Date();
+  // return new TranslateHttpLoader(http, './assets/i18n/', '.json' + dontCacheDuringDev);
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -146,7 +155,14 @@ import {EquipmentFormatterPipe} from "./common/pipe/equipment-formatter.pipe";
     MatSliderModule,
     MatListModule,
     LayoutModule,
-    MatTabsModule
+    MatTabsModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: translateLoader,
+        deps: [HttpClient]
+      }
+    })
   ],
   entryComponents: [],
   providers: [

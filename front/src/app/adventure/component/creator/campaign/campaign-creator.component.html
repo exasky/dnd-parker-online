@@ -2,34 +2,39 @@
 <div class="d-flex flex-column m-3" *ngIf="campaign">
   <div class="flex-grow d-flex flex-column overflow">
     <mat-form-field>
-      <mat-label>Name</mat-label>
+      <mat-label>{{'campaign-creator.name' | translate}}</mat-label>
       <input matInput [(ngModel)]="campaign.name" autocomplete="false">
     </mat-form-field>
     <button mat-raised-button
             class="mb-2 flex-shrink-0"
-            (click)="isCharacterCreatorSelected = true">Characters
+            (click)="isCharacterCreatorSelected = true">
+      {{'campaign-creator.characters' | translate}}
     </button>
     <button mat-raised-button class="mb-2 flex-shrink-0" style="min-height: 10px"
             *ngFor="let adventure of campaign.adventures"
             (click)="selectAdventure(adventure)">{{adventure.name}}</button>
     <button mat-raised-button class="flex-shrink-0"
-            (click)="addNewAdventure()">Add adventure
+            (click)="addNewAdventure()">
+      <mat-icon>add</mat-icon>
+      {{'campaign-creator.add-adventure' | translate}}
     </button>
   </div>
 
   <mat-form-field *ngIf="campaign.id === undefined">
-    <mat-label>Copy from</mat-label>
+    <mat-label>{{'campaign-creator.copy-from' | translate}}</mat-label>
     <mat-select #select (selectionChange)="copyFrom($event); select.writeValue(null)">
-      <mat-option [value]="null">Cancel</mat-option>
+      <mat-option [value]="null">{{'common.cancel' | translate}}</mat-option>
       <mat-option *ngFor="let campaign of this.allCampaigns"
                   [value]="campaign.id">
         {{campaign.name}}
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <button mat-raised-button class="flex-shrink-0" (click)="saveCampaign()">Save !</button>
+  <button mat-raised-button class="flex-shrink-0" (click)="saveCampaign()">
+    {{'common.save' | translate}}
+  </button>
   <button *ngIf="campaign.id" mat-raised-button color="warn" class="flex-shrink-0 mt-2" (click)="deleteCampaign()">
-    Delete !
+    {{'common.delete' | translate}}
   </button>
 
 </div>
@@ -56,9 +61,11 @@
                                     [characterItems]="allCharacterItems"></app-character-item-displayer>
     </div>
 
-    <button mat-raised-button
+    <button *ngIf="campaign.characters.length < 4"
+            mat-raised-button
             class="flex-shrink-0"
-            (click)="addNewCharacter()">Add new character
+            (click)="addNewCharacter()">
+      {{'campaign-creator.add-character' | translate}}
     </button>
   </div>
 

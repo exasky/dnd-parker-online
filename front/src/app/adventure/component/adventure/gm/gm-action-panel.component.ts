@@ -56,7 +56,7 @@ export class GmActionPanelComponent {
     this.dialog.open(AlertMessageDialogComponent, {
       data: {
         adventureId: this.adventureId,
-        characters: this.characters
+        characters: this.characters.map(charItem => charItem.character)
       }
     });
   }

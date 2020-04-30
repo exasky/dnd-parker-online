@@ -10,7 +10,7 @@
                              (selectMonster)="selectMonster($event)"></app-gm-action-panel>
       </mat-tab>
       <mat-tab label="Characters">
-        <ng-template mat-tab-label>Characters</ng-template>
+        <ng-template mat-tab-label>{{'adventure.gm-panel.characters' | translate}}</ng-template>
         <ng-template matTabContent>
           <mat-tab-group class="flex-grow">
             <mat-tab *ngFor="let character of characters">

@@ -1,10 +1,10 @@
-<h1 mat-dialog-title>Switch equipment</h1>
+<h1 mat-dialog-title>{{'adventure.dialog.switch-equipment.header' | translate}}</h1>
 
 <div class="flex-grow d-flex position-relative">
   <div class="flex-grow d-flex flex-column m-2">
     <h3>{{data.character.displayName}}</h3>
 
-    <h5>Equipped items</h5>
+    <h5>{{'common.equipped' | translate}}</h5>
     <div class="flex-1 flex-grow d-flex overflow justify-content-around align-items-center">
       <img *ngFor="let equipped of data.character.equippedItems"
            width="150px" height="230px"
@@ -15,7 +15,7 @@
            (click)="selectEquipment(equipped, true)">
     </div>
     <mat-divider></mat-divider>
-    <h5>Backpack items</h5>
+    <h5>{{'common.backpack' | translate}}</h5>
     <div class="flex-1 flex-grow d-flex overflow justify-content-around align-items-center">
       <img *ngFor="let backpack of data.character.backpackItems"
            width="150px" height="230px"
@@ -31,6 +31,6 @@
 </div>
 
 <mat-dialog-actions *ngIf="authService.isGM">
-  <button mat-raised-button (click)="cancelSwitch()">Cancel</button>
-  <button mat-raised-button (click)="validateSwitch()">Validate switch</button>
+  <button mat-raised-button (click)="cancelSwitch()">{{'common.cancel' | translate}}</button>
+  <button mat-raised-button (click)="validateSwitch()">{{'adventure.dialog.switch-equipment.validate' | translate}}</button>
 </mat-dialog-actions>

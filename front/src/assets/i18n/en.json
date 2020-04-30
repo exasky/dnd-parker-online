@@ -1,0 +1,202 @@
+{
+  "common": {
+    "create": "Create",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "drag&drop": "Drag & Drop items here",
+    "search": "Search",
+    "validate": "Validate",
+    "close": "Close",
+    "equipped": "Equipped items",
+    "backpack": "Backpack items",
+    "max-hp": "Max HP",
+    "hp": "HP",
+    "max-mp": "Max MP",
+    "mp": "MP"
+  },
+  "login": {
+    "username": "Username",
+    "username-required": "Username is required",
+    "password": "Password",
+    "password-required": "Password is required",
+    "login": "Login"
+  },
+  "home": {
+    "dark-theme": "DarkTheme",
+    "light-theme": "LightTheme",
+    "profile": "Profile",
+    "logout": "Logout",
+    "home": "Home",
+    "campaign-creator": "Campaign creator",
+    "users": "Users",
+    "lang": "Lang"
+  },
+  "index": {
+    "welcome": "Welcome",
+    "available-campaigns": "Available campaigns",
+    "no-available-campaigns": "No available campaigns",
+    "update-campaign": "Update campaign",
+    "create-campaign": "Create campaign"
+  },
+  "campaign-creator": {
+    "name": "Name",
+    "characters": "Characters",
+    "add-adventure": "Add adventure",
+    "copy-from": "Copy from",
+    "add-character": "Add character",
+    "adventure-creator": {
+      "choose-board": "Choose board",
+      "adventure-info": "Adventure information",
+      "name": "Name",
+      "name-placeholder": "Adventure name",
+      "level": "Level"
+    }
+  },
+  "item-displayer": {
+    "ARTIFACT": "Artifact",
+    "WEAPON": "Weapon",
+    "SPELL": "Spell",
+    "TRAP": "Trap",
+    "POTION": "Potion",
+    "1": "Level 1",
+    "2": "Level 2",
+    "3": "Level 3",
+    "9": "Star level"
+  },
+  "adventure": {
+    "show-logs": "Show logs",
+    "show-actions": "Show actions",
+    "gm-panel-label": "GM panel",
+    "item-displayer": {
+      "ITEM": "Item",
+      "MONSTER": "Monster",
+      "CHARACTER": "Character"
+    },
+    "log": {
+      "attack": "{{from}} attacked {{to}}",
+      "die": "{{from}} died",
+      "switch": "{{from}} switched {{fromId}}",
+      "switch-with": " with {{toId}}",
+      "trade-full": "{{from}} traded {{fromId}} with {{to}}'s {{toId}}",
+      "trade-one-way": "{{from}} gave {{fromId}} to {{to}}",
+      "trade-nothing": "{{from}} traded nothing with {{to}}"
+    },
+    "gm-panel": {
+      "tools": "Tools",
+      "send-alert": "Send alert",
+      "show-cursor": "Show cursor",
+      "hide-cursor": "Hide cursor",
+      "sounds": "Sounds",
+      "sound": {
+        "melee": "Melee attack",
+        "bow": "Bow attack",
+        "drink-potion": "Drink potion",
+        "spell": "Spell",
+        "monster": "Monster",
+        "misc": "Misc",
+        "macro": "Macro",
+        "ambient": "Ambient",
+        "fire": "Fire",
+        "heal": "Heal",
+        "generic": "Generic",
+        "undo": "Undo spell",
+        "monster-hit": "Monster hit/die",
+        "goblin": "Weak goblin",
+        "ghost": "Ghost",
+        "evil-breath": "Evil breath",
+        "eat-flesh": "Eat flesh",
+        "sword-slime": "Sword slime",
+        "liche-appear": "Liche appear",
+        "meanwhile": "Meanwhile",
+        "swords-bows": "Swords and bows",
+        "battle": "Battle",
+        "bridge": "Bridge",
+        "dungeon": "Dungeon"
+      },
+      "characters": "Characters",
+      "monsters": "Monsters",
+      "initiative": "Initiative"
+    },
+    "character-tooltip": {
+      "no-equipped-item": "No equipped item !",
+      "no-backpack-item": "No backpack item !"
+    },
+    "action-panel": {
+      "volume": "Volume",
+      "sound": "Sound",
+      "ambient": "Ambient",
+      "roll-dices": "Roll dices",
+      "current-initiative": "Current initiative",
+      "roll-initiative": "Roll initiative",
+      "end-turn": "End turn",
+      "previous-adventure": "Previous adventure",
+      "next-adventure": "Next adventure"
+    },
+    "context-menu": {
+      "attack": "Attack",
+      "trade": "Trade",
+      "switch-equipment": "Switch equipment",
+      "show-trap": "Show trap",
+      "set-card": "Set card",
+      "open-chest": "Open chest",
+      "flip": "Flip"
+    },
+    "dialog": {
+      "next-turn": {
+        "header": "Next turn ?",
+        "valid-end-turn": "Valid <strong>{{char}}</strong>'s end turn ?",
+        "wait-end-turn": "<strong>{{char}}</strong>'s turn ending, please wait ..."
+      },
+      "switch-equipment": {
+        "header": "Switch equipment",
+        "validate": "Validate switch"
+      },
+      "select-card": {
+        "header": "Card selection",
+        "validate": "Validate card"
+      },
+      "trade": {
+        "header": "Trade equipment",
+        "validate": "Validate trade"
+      },
+      "dice": {
+        "turn": "{{char}}'s turn",
+        "roll": "Roll dices",
+        "no-turn": "Not your turn !",
+        "attacker": "Attacker",
+        "attacked": "Attacked"
+      },
+      "gm-alert": {
+        "enter-alert": "Enter alert",
+        "select-char": "Select character ?",
+        "select-type": "Select type",
+        "SUCCESS": "Success",
+        "WARN": "Warning",
+        "ERROR": "Danger",
+        "send": "Send"
+      },
+      "draw-card": {
+        "header": "Drawn card for {{char}}"
+      }
+    }
+  },
+  "user": {
+    "new": "New user",
+    "reset-password": "Reset password",
+    "username": "Username",
+    "password": "Password",
+    "password-required": "Password is required",
+    "password-length": "Password must have at least 3 characters",
+    "password-confirm": "Confirm password",
+    "password-confirm-match": "Passwords don't match",
+    "password-update": "Password update",
+    "role": {
+      "gm": "GM",
+      "player": "Player"
+    },
+    "campaign": "Campaign",
+    "character": "Character"
+  }
+}

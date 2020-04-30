@@ -1,9 +1,9 @@
-<h1 mat-dialog-title>Select card</h1>
+<h1 mat-dialog-title>{{'adventure.dialog.select-card.header' | translate}}</h1>
 <div class="flex-grow d-flex flex-column flex-md-row">
   <div class="flex-shrink-0 flex-md-grow-1 flex-md-shrink-1 d-flex justify-content-center align-items-center flex-md-basis-0"
        style="min-height: 100px"
        dragOver (drop)="setChestCard($event)">
-    <span *ngIf="!selectedCard">ICI QU'ON DROP</span>
+    <span *ngIf="!selectedCard">{{'common.drag&drop' | translate}}</span>
     <img *ngIf="selectedCard"
          [src]="'assets/card/' + selectedCard.type.toLowerCase() + '/' + selectedCard.level + '/' + selectedCard.name + '.jpg'"
          style="max-width: 80%; max-height: 80%;">
@@ -15,6 +15,6 @@
 </div>
 
 <mat-dialog-actions>
-  <button mat-raised-button (click)="dialogRef.close()">Cancel</button>
-  <button mat-raised-button (click)="validateCard()">Validate card</button>
+  <button mat-raised-button (click)="dialogRef.close()">{{'common.cancel' | translate}}</button>
+  <button mat-raised-button (click)="validateCard()">{{'adventure.dialog.select-card.validate' | translate}}</button>
 </mat-dialog-actions>

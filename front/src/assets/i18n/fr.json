@@ -1,0 +1,203 @@
+{
+  "common": {
+    "create": "Créer",
+    "edit": "Editer",
+    "cancel": "Annuler",
+    "save": "Sauver",
+    "delete": "Supprimer",
+    "drag&drop": "Glisser-déposer les éléments ici",
+    "search": "Chercher",
+    "validate": "Valider",
+    "close": "Fermer",
+
+    "equipped": "Objets équipés",
+    "backpack": "Objets du sac à dos",
+    "max-hp": "PV max",
+    "hp": "PV",
+    "max-mp": "PM max",
+    "mp": "PM"
+  },
+  "login": {
+    "username": "Nom d'utilisateur",
+    "username-required": "Nom d'utilisateur requis",
+    "password": "Mot de passe",
+    "password-required": "Mot de passe requis",
+    "login": "Se connecter"
+  },
+  "home": {
+    "dark-theme": "Thème sombre",
+    "light-theme": "Thème clair",
+    "profile": "Profil",
+    "logout": "Se déconnecter",
+    "home": "Menu principal",
+    "campaign-creator": "Créateur de campagne",
+    "users": "Utilisateurs",
+    "lang": "Langue"
+  },
+  "index": {
+    "welcome": "Bienvenue",
+    "available-campaigns": "Campagnes disponibles",
+    "no-available-campaigns": "Pas de campagne disponible",
+    "update-campaign": "Mettre a jour une campagne",
+    "create-campaign": "Créer une campagne"
+  },
+  "campaign-creator": {
+    "name": "Nom",
+    "characters": "Personnages",
+    "add-adventure": "Ajouter une aventure",
+    "copy-from": "Copier depuis",
+    "add-character": "Ajouter un personnage",
+    "adventure-creator": {
+      "choose-board": "Choisir un plateau",
+      "adventure-info": "Informations de l'aventure",
+      "name": "Nom",
+      "name-placeholder": "Nom de l'aventure",
+      "level": "Niveau"
+    }
+  },
+  "item-displayer": {
+    "ARTIFACT": "Artéfact",
+    "WEAPON": "Arme",
+    "SPELL": "Sort",
+    "TRAP": "Piège",
+    "POTION": "Potion",
+    "1": "Niveau 1",
+    "2": "Niveau 2",
+    "3": "Niveau 3",
+    "9": "Niveau étoile"
+  },
+  "adventure": {
+    "show-logs": "Vois les logs",
+    "show-actions": "Voir les actions",
+    "gm-panel-label": "Panel MJ",
+    "item-displayer": {
+      "ITEM": "Objet",
+      "MONSTER": "Monstre",
+      "CHARACTER": "Personnage"
+    },
+    "log": {
+      "attack": "{{from}} a attaqué {{to}}",
+      "die": "{{from}} est mort",
+      "switch": "{{from}} a transféré {{fromId}}",
+      "switch-with": " avec {{toId}}",
+      "trade-full": "{{from}} a échangé {{fromId}} avec {{toId}} de {{to}}",
+      "trade-one-way": "{{from}} a donné {{fromId}} à {{to}}",
+      "trade-nothing": "{{from}} n'a rien échangé avec {{to}}"
+    },
+    "gm-panel": {
+      "tools": "Outils",
+      "send-alert": "Envoyer une alerte",
+      "show-cursor": "Montrer le curseur",
+      "hide-cursor": "Cacher le curseur",
+      "sounds": "Sons",
+      "sound": {
+        "melee": "Attaque de mélée",
+        "bow": "Attaque à l'arc",
+        "drink-potion": "Boire une potion",
+        "spell": "Sort",
+        "monster": "Monstre",
+        "misc": "Divers",
+        "macro": "Macro",
+        "ambient": "Ambiance",
+        "fire": "Feu",
+        "heal": "Soin",
+        "generic": "Générique",
+        "undo": "Sort d'annulation",
+        "monster-hit": "Touche sur monstre",
+        "goblin": "Gobelin faible",
+        "ghost": "Fantôme",
+        "evil-breath": "Souffle démoniaque",
+        "eat-flesh": "Repas de chair",
+        "sword-slime": "Epée sur slime",
+        "liche-appear": "Apparition de la Liche",
+        "meanwhile": "Pendant ce temps",
+        "swords-bows": "Epées et flèches",
+        "battle": "Bataille",
+        "bridge": "Pont",
+        "dungeon": "Donjon"
+      },
+      "characters": "Personnages",
+      "monsters": "Monstres",
+      "initiative": "Initiative"
+    },
+    "character-tooltip": {
+      "no-equipped-item": "Pas d'objet équippé !",
+      "no-backpack-item": "Pas d'objet dans le sac à dos !"
+    },
+    "action-panel": {
+      "volume": "Volume",
+      "sound": "Son",
+      "ambient": "Ambiance",
+      "roll-dices": "Lancer les dès",
+      "current-initiative": "Initiative en cours",
+      "roll-initiative": "Tirer l'initiative",
+      "end-turn": "Fin de tour",
+      "previous-adventure": "Aventure précédente",
+      "next-adventure": "Aventure suivante"
+    },
+    "context-menu": {
+      "attack": "Attaquer",
+      "trade": "Echanger",
+      "switch-equipment": "Changer d'équipement",
+      "show-trap": "Montrer le piège",
+      "set-card": "Définir une carte",
+      "open-chest": "Ouvrir le coffre",
+      "flip": "Retourner"
+    },
+    "dialog": {
+      "next-turn": {
+        "header": "Prochain tour ?",
+        "valid-end-turn": "Valider la fin de tour de <strong>{{char}}</strong> ?",
+        "wait-end-turn": "Fin du tour pour <strong>{{char}}</strong>, veuillez patienter..."
+      },
+      "switch-equipment": {
+        "header": "Changer d'équippement",
+        "validate": "Valider le changement"
+      },
+      "select-card": {
+        "header": "Sélection de carte",
+        "validate": "Valider la carte"
+      },
+      "trade": {
+        "header": "Echange d'équipement",
+        "validate": "Valider l'échange"
+      },
+      "dice": {
+        "turn": "A {{char}} de jouer",
+        "roll": "Lancer les dès",
+        "no-turn": "C'est pas ton tour !",
+        "attacker": "Attaquant",
+        "attacked": "Attaqué"
+      },
+      "gm-alert": {
+        "enter-alert": "Entrer une alerte",
+        "select-char": "Sélectionner un personnage ?",
+        "select-type": "Sélectionner un type",
+        "SUCCESS": "Succès",
+        "WARN": "Avertissement",
+        "ERROR": "Danger",
+        "send": "Envoyer"
+      },
+      "draw-card": {
+        "header": "Pioche pour {{char}}"
+      }
+    }
+  },
+  "user": {
+    "new": "Nouvel utilisateur",
+    "reset-password": "Réinitialiser le mot de passe",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "password-required": "Le mot de passe est requis",
+    "password-length": "Le mot de passe doit avoir au moins 3 caractères",
+    "password-confirm": "Confirmer le mot de passe",
+    "password-confirm-match": "Les mots de passe ne correspondent pas",
+    "password-update": "Mise à jour du mot de passe",
+    "role": {
+      "gm": "MJ",
+      "player": "Joueur"
+    },
+    "campaign": "Campagne",
+    "character": "Personnage"
+  }
+}

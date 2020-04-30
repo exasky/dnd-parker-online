@@ -1,6 +1,7 @@
 import {Component, HostBinding, Inject, OnInit} from '@angular/core';
 import {AuthService} from "./login/auth.service";
 import {DOCUMENT} from "@angular/common";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-root',
@@ -10,10 +11,10 @@ export class AppComponent implements OnInit {
   @HostBinding('class') cssClasses = "d-flex flex-column";
 
   isDarkTheme = false;
-
-  // TODO i18n
+  lang = 'en';
 
   constructor(public authService: AuthService,
+              private translate: TranslateService,
               @Inject(DOCUMENT) private document: Document) {
   }
 
@@ -26,6 +27,17 @@ export class AppComponent implements OnInit {
       this.document.body.classList.add('unicorn-light-theme');
       this.document.body.classList.remove('unicorn-dark-theme');
     }
+
+    this.lang = localStorage.getItem('lang');
+    if (!this.lang) this.lang = 'en';
+
+    this.translate.use(this.lang);
+  }
+
+  switchLang() {
+    this.lang = this.lang === 'en' ? 'fr' : 'en';
+    localStorage.setItem('lang', this.lang);
+    this.translate.use(this.lang);
   }
 
   switchDarkTheme() {

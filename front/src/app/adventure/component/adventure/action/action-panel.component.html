@@ -2,7 +2,7 @@
   <button mat-raised-button class="flex-shrink-0 m-2"
           [matMenuTriggerFor]="soundMenu">
     <mat-icon>keyboard_arrow_down</mat-icon>
-    Volume
+    {{'adventure.action-panel.volume' | translate}}
   </button>
   <mat-menu #soundMenu="matMenu" [overlapTrigger]="true">
     <div *ngFor="let aS of [audioService, ambientAudioService]"
@@ -19,7 +19,7 @@
         </mat-icon>
       </div>
       <div class="d-flex flex-column">
-        <small style="height: 20px">{{aS.getDisplayName()}}</small>
+        <small style="height: 20px">{{'adventure.action-panel.' + aS.getDisplayName() | translate}}</small>
 
         <mat-slider [max]="1" [min]="0" [step]="0.01" [value]="aS.volume"
                     (input)="aS.setVolume($event.value)">
@@ -33,7 +33,7 @@
   <mat-divider class="mx-2 mb-2 mt-0" [inset]="false"></mat-divider>
 
   <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="rollDices()" [disabled]="disableActions">
-    Roll dices
+    {{'adventure.action-panel.roll-dices' | translate}}
   </button>
 
   <mat-divider class="m-2" [inset]="false"></mat-divider>
@@ -63,7 +63,7 @@
           tooltipClass="mw-75"
           [container]="'body'"
           placement="left">
-    Current initiative
+    {{'adventure.action-panel.current-initiative' | translate}}
     <ng-template #tooltipContent>
       <app-initiative-displayer style="height: 350px"
                                 [currentInitiative]="currentInitiative"
@@ -73,7 +73,7 @@
   <ng-container *ngIf="authService.isGM">
     <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="rollInitiative()"
             [disabled]="disableActions">
-      Roll initiative
+      {{'adventure.action-panel.roll-initiative' | translate}}
     </button>
   </ng-container>
 
@@ -81,12 +81,15 @@
 
   <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="endTurn()"
           [disabled]="disableActions || (!isMyTurn && !authService.isGM)">
-    End turn
+    {{'adventure.action-panel.end-turn' | translate}}
   </button>
 </div>
 
 <div class="flex-shrink-0 d-flex flex-column justify-content-end" *ngIf="authService.isGM">
-  <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="prevAdventure()">Previous adventure
+  <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="prevAdventure()">
+    {{'adventure.action-panel.previous-adventure' | translate}}
   </button>
-  <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="nextAdventure()">Next adventure</button>
+  <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="nextAdventure()">
+    {{'adventure.action-panel.next-adventure' | translate}}
+  </button>
 </div>
