@@ -1,18 +1,18 @@
 <ng-container *ngIf="adventure">
   <div class="d-flex flex-column flex-shrink-0">
 
-    <div class="d-flex">
-      <div class="flex-1 d-flex justify-content-start align-items-center mr-2">
+    <div class="d-flex mx-2 mt-2">
+      <div class="flex-1 d-flex justify-content-start align-items-center">
         <button mat-raised-button (click)="toggleLogPanel()">Show logs</button>
       </div>
-      <div class="flex-1 d-flex justify-content-center align-items-center">
+      <div class="flex-3 d-flex justify-content-center align-items-center">
         <h3 class="mb-0">{{adventure.name}}
           <ng-container *ngIf="!authService.isGM">
             ({{getCharacterNamesFromId(authService.currentUserValue.id)}})
           </ng-container>
         </h3>
       </div>
-      <div class="flex-1 d-flex justify-content-end align-items-center mr-2">
+      <div class="flex-1 d-flex justify-content-end align-items-center">
         <button mat-raised-button (click)="actionPanelDrawer.toggle()">Show actions</button>
       </div>
     </div>
