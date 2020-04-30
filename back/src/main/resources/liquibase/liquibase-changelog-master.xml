@@ -31,4 +31,5 @@
     <include file="liquibase/changelog/liquibase-diff-20200425-211710.xml"/>
     <include file="liquibase/changelog/liquibase-diff-20200426-114413.xml"/>
     <include file="liquibase/changelog/liquibase-diff-20200429-122018.xml"/>
+    <include file="liquibase/init/liquibase-init-character-items-2.xml"/>
 </databaseChangeLog>
