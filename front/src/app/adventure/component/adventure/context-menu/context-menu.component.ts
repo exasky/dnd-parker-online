@@ -102,7 +102,7 @@ export class ContextMenuComponent {
   }
 
   openChest(item: ChestLayerGridsterItem) {
-    const currCharItem = this.characterItems.find(char => char.character.userId === this.authService.currentUserValue.id);
+    const currCharItem = this.characterItems.find(char => char.character.name === this.currentInitiative.characterName);
     if (item.specificCard) {
       this.adventureCardService.drawCard(this.adventureId, currCharItem.character.id, item.specificCard.id);
       // this.adventureService.deleteLayerItem(this.adventureId, item.id);
