@@ -7,21 +7,21 @@
   <ng-template matMenuContent let-item="item">
     <ng-container *ngIf="item.type === LayerElementType.MONSTER">
       <button mat-menu-item (click)="attackMonster(item)" [disabled]="">
-        <span class="mdi mdi-sword-cross" style="font-size: 140%; margin-right: 20px;"></span>
+        <span class="mdi mdi-sword-cross mdi-large"></span>
         Attack
       </button>
     </ng-container>
     <ng-container *ngIf="item.type === LayerElementType.CHARACTER">
       <button mat-menu-item (click)="attackCharacter(item)" [disabled]="authService.isGM && !selectedMonsterId">
-        <span class="mdi mdi-sword-cross" style="font-size: 140%; margin-right: 20px;"></span>
+        <span class="mdi mdi-sword-cross mdi-large"></span>
         {{'adventure.context-menu.attack' | translate}}
       </button>
       <button mat-menu-item *ngIf="canTradeWith(item)" (click)="askTrade(item)">
-        <span class="mdi mdi-hand-heart" style="font-size: 140%; margin-right: 20px;"></span>
+        <span class="mdi mdi-hand-heart mdi-large"></span>
         {{'adventure.context-menu.trade' | translate}}
       </button>
       <button mat-menu-item *ngIf="canSwitchEquipment(item)" (click)="askSwitch(item)">
-        <span class="mdi mdi-sack" style="font-size: 140%; margin-right: 20px;"></span>
+        <span class="mdi mdi-sack mdi-large"></span>
         {{'adventure.context-menu.switch-equipment' | translate}}
       </button>
     </ng-container>
@@ -38,7 +38,7 @@
         {{'adventure.context-menu.set-card' | translate}}
       </button>
       <button mat-menu-item *ngIf="canOpenChest(item)" (click)="openChest(item)">
-        <span class="mdi mdi-treasure-chest" style="font-size: 140%; margin-right: 20px;"></span>
+        <span class="mdi mdi-treasure-chest mdi-large"></span>
         {{'adventure.context-menu.open-chest' | translate}}
       </button>
     </ng-container>

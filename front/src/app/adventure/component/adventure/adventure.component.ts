@@ -136,7 +136,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       const currentUser = this.authService.currentUserValue;
       currentUser.characters = this.adventure.campaignCharacters.filter(character => character.userId === currentUser.id);
 
-      this.logs = adventure.logs;
+      this.logs = adventure.logs.reverse();
       this.currentTurn = this.adventure.currentTurn;
       this.characterTurns = this.adventure.characterTurns;
 
@@ -304,7 +304,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             }));
             break;
           case AdventureMessageType.ADD_LOG:
-            this.logs.push(message.message);
+            this.logs.unshift(message.message);
             break;
         }
       }

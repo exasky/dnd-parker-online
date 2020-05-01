@@ -82,7 +82,10 @@
       "switch-with": " with {{toId}}",
       "trade-full": "{{from}} traded {{fromId}} with {{to}}'s {{toId}}",
       "trade-one-way": "{{from}} gave {{fromId}} to {{to}}",
-      "trade-nothing": "{{from}} traded nothing with {{to}}"
+      "trade-nothing": "{{from}} traded nothing with {{to}}",
+      "accept-chest": "{{from}} opened a chest and drew: {{fromId}}",
+      "refuse-chest": "{{from}} opened a chest and threw the loot away",
+      "trapped-chest": "{{from}} was trapped by {{to}}"
     },
     "gm-panel": {
       "tools": "Tools",

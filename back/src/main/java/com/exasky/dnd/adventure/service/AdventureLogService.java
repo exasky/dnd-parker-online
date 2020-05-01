@@ -1,7 +1,6 @@
 package com.exasky.dnd.adventure.service;
 
 import com.exasky.dnd.adventure.model.Adventure;
-import com.exasky.dnd.adventure.model.Character;
 import com.exasky.dnd.adventure.model.log.AdventureLog;
 import com.exasky.dnd.adventure.model.log.AdventureLogType;
 import com.exasky.dnd.adventure.repository.AdventureLogRepository;
@@ -116,9 +115,22 @@ public class AdventureLogService {
     public AdventureLog logOpenChest(Long adventureId, Long characterId, String characterItem) {
         Adventure adventure = adventureRepository.getOne(adventureId);
 
-        AdventureLog adventureLog = new AdventureLog(adventure, AdventureLogType.SWITCH);
+        AdventureLog adventureLog = new AdventureLog(adventure, AdventureLogType.OPEN_CHEST);
         adventureLog.setFrom(characterRepository.getOne(characterId).getDisplayName());
         adventureLog.setFromId(characterItem);
+
+        adventure.getLogs().add(adventureLog);
+
+        return adventureLogRepository.save(adventureLog);
+    }
+
+    @Transactional
+    public AdventureLog logTrapChest(Long adventureId, Long characterId, String trapItem) {
+        Adventure adventure = adventureRepository.getOne(adventureId);
+
+        AdventureLog adventureLog = new AdventureLog(adventure, AdventureLogType.OPEN_CHEST);
+        adventureLog.setFrom(characterRepository.getOne(characterId).getDisplayName());
+        adventureLog.setTo(trapItem);
 
         adventure.getLogs().add(adventureLog);
 

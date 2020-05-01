@@ -1,8 +1,11 @@
 package com.exasky.dnd.adventure.rest;
 
 import com.exasky.dnd.adventure.model.Character;
+import com.exasky.dnd.adventure.model.card.CardType;
+import com.exasky.dnd.adventure.model.card.CharacterItem;
 import com.exasky.dnd.adventure.model.layer.item.ChestLayerItem;
 import com.exasky.dnd.adventure.model.log.AdventureLog;
+import com.exasky.dnd.adventure.repository.CharacterItemRepository;
 import com.exasky.dnd.adventure.rest.dto.AdventureLogDto;
 import com.exasky.dnd.adventure.rest.dto.CharacterDto;
 import com.exasky.dnd.adventure.rest.dto.card.AskDrawCardDto;
@@ -29,16 +32,22 @@ public class AdventureCardController {
     private final AdventureService adventureService;
     private final AdventureLogService adventureLogService;
     private final ChestLayerItemService chestLayerItemService;
+
+    // TODO remove. UGLY
+    private final CharacterItemRepository characterItemRepository;
+
     private final SimpMessageSendingOperations messagingTemplate;
 
     @Autowired
     public AdventureCardController(AdventureService adventureService,
                                    AdventureLogService adventureLogService,
                                    ChestLayerItemService chestLayerItemService,
+                                   CharacterItemRepository characterItemRepository,
                                    SimpMessageSendingOperations messagingTemplate) {
         this.adventureService = adventureService;
         this.adventureLogService = adventureLogService;
         this.chestLayerItemService = chestLayerItemService;
+        this.characterItemRepository = characterItemRepository;
         this.messagingTemplate = messagingTemplate;
     }
 
@@ -56,12 +65,6 @@ public class AdventureCardController {
         DrawnCardDto drawnCardDto = new DrawnCardDto(drawCardDto.getAdventureId(), drawCardDto.getCharacterId(), drawCardDto.getChestItemId(), dto);
         CardMessageDto messageDto = new CardMessageDto(CardMessageDto.CardMessageType.DRAW_CARD, drawnCardDto);
         messagingTemplate.convertAndSend("/topic/drawn-card/" + adventureId, messageDto);
-
-        AdventureLog adventureLog = adventureLogService.logOpenChest(adventureId, drawCardDto.getCharacterId(), dto.getName());
-        AdventureMessageDto wsDto = new AdventureMessageDto();
-        wsDto.setType(AdventureMessageDto.AdventureMessageType.ADD_LOG);
-        wsDto.setMessage(AdventureLogDto.toDto(adventureLog));
-        messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
     }
 
     @GetMapping("/draw-card/{adventureId}/{isEquipment}")
@@ -78,14 +81,28 @@ public class AdventureCardController {
     public void drawCardValidate(@RequestBody ValidateCardDto dto) {
         Long adventureId = dto.getAdventureId();
         AdventureMessageDto wsDto = new AdventureMessageDto();
+        AdventureLog adventureLog;
 
         if (dto.getValidation()) {
             Character updatedCharacter = adventureService.validateDrawnCard(adventureId, dto);
+            CharacterItem charItem = characterItemRepository.getOne(dto.getCharacterItemId());
             if (Objects.nonNull(updatedCharacter)) {
                 wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_CHARACTER);
                 wsDto.setMessage(CharacterDto.toDto(updatedCharacter));
                 messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
+
+                adventureLog = charItem.getType().equals(CardType.TRAP)
+                        ? adventureLogService.logTrapChest(adventureId, dto.getCharacterId(), charItem.getName())
+                        : adventureLogService.logOpenChest(adventureId, dto.getCharacterId(), charItem.getName());
+            } else {
+                adventureLog = charItem.getType().equals(CardType.TRAP)
+                        ? adventureLogService.logTrapChest(adventureId, dto.getCharacterId(), charItem.getName())
+                        : adventureLogService.logOpenChest(adventureId, dto.getCharacterId(), null);
             }
+
+            wsDto.setType(AdventureMessageDto.AdventureMessageType.ADD_LOG);
+            wsDto.setMessage(AdventureLogDto.toDto(adventureLog));
+            messagingTemplate.convertAndSend("/topic/adventure/" + adventureId, wsDto);
 
             ChestLayerItem chestItem = chestLayerItemService.getOne(dto.getChestItemId());
             adventureService.deleteLayerItem(adventureId, chestItem);
