@@ -319,14 +319,12 @@ export class AdventureComponent implements OnInit, OnDestroy {
             this.actionPanelDrawer.opened = true;
             this.openDialog(DrawnCardDialogComponent, {
               ...message.message,
-              characters: this.characters.map(char => char.character)
+              characters: this.characters.map(char => char.character),
+              currentInitiative: this.currentTurn
             }).afterClosed().subscribe(() => {
               this.actionPanelDrawer.opened = drawerOpenedSaved;
             });
             break;
-          case CardMessageType.CLOSE_DIALOG:
-            this.closeDialog();
-            break
         }
       }
     })

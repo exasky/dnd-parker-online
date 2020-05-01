@@ -12,14 +12,21 @@ export class AdventureCardService {
   constructor(private http: HttpClient) {
   }
 
-  drawCard(adventureId, characterId, characterEquipmentId?) {
-    return this.http.post(AdventureCardService.API_URL + '/draw-card', {adventureId, characterId, characterItemId: characterEquipmentId}).subscribe();
+  drawCard(adventureId, characterId, chestItemId, characterEquipmentId?) {
+    return this.http.post(AdventureCardService.API_URL + '/draw-card', {adventureId, characterId, chestItemId, characterItemId: characterEquipmentId}).subscribe();
   }
 
-  validateDrawnCard(adventureId, characterItemId, validation) {
+  drawCardSetEmplacement(adventureId, isEquipment) {
+    return this.http.get(AdventureCardService.API_URL + '/draw-card/' + adventureId + '/' + isEquipment).subscribe();
+  }
+
+  validateDrawnCard(adventureId, characterId, characterItemId, chestItemId, equipToEquipment, validation) {
     return this.http.post(AdventureCardService.API_URL + '/draw-card-validate', {
       adventureId,
+      characterId,
       characterItemId,
+      chestItemId,
+      equipToEquipment,
       validation
     }).subscribe();
   }

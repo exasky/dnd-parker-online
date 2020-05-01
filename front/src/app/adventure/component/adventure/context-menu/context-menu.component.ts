@@ -104,15 +104,9 @@ export class ContextMenuComponent {
   openChest(item: ChestLayerGridsterItem) {
     const currCharItem = this.characterItems.find(char => char.character.name === this.currentInitiative.characterName);
     if (item.specificCard) {
-      this.adventureCardService.drawCard(this.adventureId, currCharItem.character.id, item.specificCard.id);
-      // this.adventureService.deleteLayerItem(this.adventureId, item.id);
-      // TODO remove chest only if mj accepted
-    } else {
-      if (currCharItem) {
-        this.adventureCardService.drawCard(this.adventureId, currCharItem.character.id);
-        // this.adventureService.deleteLayerItem(this.adventureId, item.id);
-        // TODO remove chest only if mj accepted
-      }
+      this.adventureCardService.drawCard(this.adventureId, currCharItem.character.id, item.id, item.specificCard.id);
+    } else if (currCharItem) {
+      this.adventureCardService.drawCard(this.adventureId, currCharItem.character.id, item.id);
     }
   }
 
@@ -151,7 +145,10 @@ export class ContextMenuComponent {
   }
 
   askTrade(item: CharacterLayerGridsterItem) {
-    this.adventureService.askTrade(this.adventureId, {from: this.getCurrentCharacterTurn().character.id, to: item.character.id});
+    this.adventureService.askTrade(this.adventureId, {
+      from: this.getCurrentCharacterTurn().character.id,
+      to: item.character.id
+    });
   }
 
   canSwitchEquipment(item: CharacterLayerGridsterItem): boolean {

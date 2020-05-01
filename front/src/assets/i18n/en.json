@@ -179,7 +179,9 @@
         "send": "Send"
       },
       "draw-card": {
-        "header": "Drawn card for {{char}}"
+        "header": "Drawn card for {{char}}",
+        "add-equipment": "Add to equipment",
+        "add-backpack": "Add to backpack"
       }
     }
   },

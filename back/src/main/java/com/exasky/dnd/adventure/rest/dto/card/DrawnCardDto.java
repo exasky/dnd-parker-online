@@ -3,13 +3,15 @@ package com.exasky.dnd.adventure.rest.dto.card;
 import com.exasky.dnd.gameMaster.rest.dto.CharacterItemDto;
 
 public class DrawnCardDto {
-    private Long adventureId; // will be used to log actions
+    private Long adventureId;
     private Long characterId;
+    private Long chestItemId;
     private CharacterItemDto characterItem;
 
-    public DrawnCardDto(Long adventureId, Long characterId, CharacterItemDto characterItem) {
+    public DrawnCardDto(Long adventureId, Long characterId, Long chestItemId, CharacterItemDto characterItem) {
         this.adventureId = adventureId;
         this.characterId = characterId;
+        this.chestItemId = chestItemId;
         this.characterItem = characterItem;
     }
 
@@ -29,6 +31,14 @@ public class DrawnCardDto {
 
     public void setCharacterId(Long characterId) {
         this.characterId = characterId;
+    }
+
+    public Long getChestItemId() {
+        return chestItemId;
+    }
+
+    public void setChestItemId(Long chestItemId) {
+        this.chestItemId = chestItemId;
     }
 
     public CharacterItemDto getCharacterItem() {

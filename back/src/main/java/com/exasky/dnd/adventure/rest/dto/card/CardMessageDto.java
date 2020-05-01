@@ -5,11 +5,7 @@ import com.exasky.dnd.common.dto.WsMessageDto;
 public class CardMessageDto extends WsMessageDto<CardMessageDto.CardMessageType> {
     public enum CardMessageType {
         DRAW_CARD,
-        CLOSE_DIALOG
-    }
-
-    public CardMessageDto(CardMessageType cardMessageType) {
-        this(cardMessageType, null);
+        SELECT_EQUIPMENT
     }
 
     public CardMessageDto(CardMessageType cardMessageType, Object message) {

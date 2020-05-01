@@ -3,6 +3,7 @@ package com.exasky.dnd.adventure.rest.dto.card;
 public class AskDrawCardDto {
     private Long adventureId;
     private Long characterId;
+    private Long chestItemId;
     private Long characterItemId;
 
     // region Getters & Setters
@@ -21,6 +22,14 @@ public class AskDrawCardDto {
 
     public void setCharacterId(Long characterId) {
         this.characterId = characterId;
+    }
+
+    public Long getChestItemId() {
+        return chestItemId;
+    }
+
+    public void setChestItemId(Long chestItemId) {
+        this.chestItemId = chestItemId;
     }
 
     public Long getCharacterItemId() {

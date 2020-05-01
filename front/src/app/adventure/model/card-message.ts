@@ -5,5 +5,5 @@ export class CardMessage {
 
 export enum CardMessageType {
   DRAW_CARD = 'DRAW_CARD',
-  CLOSE_DIALOG = 'CLOSE_DIALOG'
+  SELECT_EQUIPMENT = 'SELECT_EQUIPMENT'
 }

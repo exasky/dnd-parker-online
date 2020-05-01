@@ -8,6 +8,7 @@ import com.exasky.dnd.adventure.model.card.CharacterItem;
 import com.exasky.dnd.adventure.model.layer.item.LayerItem;
 import com.exasky.dnd.adventure.model.template.CharacterTemplate;
 import com.exasky.dnd.adventure.repository.*;
+import com.exasky.dnd.adventure.rest.dto.card.ValidateCardDto;
 import com.exasky.dnd.adventure.rest.dto.switch_equipment.ValidateSwitchDto;
 import com.exasky.dnd.adventure.rest.dto.trade.ValidateTradeDto;
 import com.exasky.dnd.common.Constant;
@@ -245,24 +246,30 @@ public class AdventureService {
     }
 
     @PreAuthorize("hasRole('ROLE_GM')")
-    public CharacterItem validateDrawnCard(Long adventureId, Long characterItemId) {
+    public Character validateDrawnCard(Long adventureId, ValidateCardDto dto) {
         Campaign campaign = campaignRepository.getByAdventureId(adventureId);
 
         if (Objects.isNull(campaign)) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
         }
 
-        Optional<CharacterItem> optCharacterItem = characterItemRepository.findById(characterItemId);
+        Optional<CharacterItem> optCharacterItem = characterItemRepository.findById(dto.getCharacterItemId());
         if (!optCharacterItem.isPresent()) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CHARACTER_ITEM.NOT_FOUND);
         }
 
         CharacterItem drawnCard = optCharacterItem.get();
 
-        campaign.getDrawnItems().add(drawnCard);
-        campaignRepository.save(campaign);
+        if (Objects.isNull(dto.getEquipToEquipment())) {
+            campaign.getDrawnItems().add(drawnCard);
+            campaignRepository.save(campaign);
+        } else {
+            Character character = characterRepository.getOne(dto.getCharacterId());
+            (dto.getEquipToEquipment() ? character.getEquipments() : character.getBackPack()).add(drawnCard);
+            return characterRepository.save(character);
+        }
 
-        return drawnCard;
+        return null;
     }
 
     @PreAuthorize("hasRole('ROLE_GM')")

@@ -180,7 +180,9 @@
         "send": "Envoyer"
       },
       "draw-card": {
-        "header": "Pioche pour {{char}}"
+        "header": "Pioche pour {{char}}",
+        "add-equipment": "Ajouter à l'équipement",
+        "add-backpack": "Mettre dans le sac à dos"
       }
     }
   },
