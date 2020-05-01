@@ -18,7 +18,7 @@
     </div>
 
     <div class="d-flex align-items-center" *ngIf="authService.isGM">
-      <button mat-raised-button class="flex-shrink-0 h-100 mx-2" (click)="toggleGmPanel()">{{'adventure.gm-panel-label' | translate}}</button>
+      <button mat-raised-button class="mx-2" (click)="toggleGmPanel()">{{'adventure.gm-panel-label' | translate}}</button>
       <app-adventure-item-displayer [layerElements]="addableLayerElements"></app-adventure-item-displayer>
     </div>
   </div>
