@@ -5,5 +5,6 @@ public enum CardType {
     POTION,
     SPELL,
     WEAPON,
-    TRAP
+    TRAP,
+    ITEM
 }

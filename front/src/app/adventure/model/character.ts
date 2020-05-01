@@ -42,5 +42,6 @@ export enum ItemType {
   POTION = 'POTION',
   SPELL = 'SPELL',
   WEAPON = 'WEAPON',
-  TRAP = 'TRAP'
+  TRAP = 'TRAP',
+  ITEM = 'ITEM'
 }

@@ -2,6 +2,7 @@ import {Component, HostBinding, Input} from "@angular/core";
 import {CharacterEquipment} from "../../model/character";
 import {StringUtils} from "../../../common/utils/string-utils";
 import {ItemDisplayer, ItemNode} from "../../../common/component/item.displayer";
+import {CardUtils} from "../../../common/utils/card-utils";
 
 @Component({
   selector: 'app-character-item-displayer',
@@ -9,6 +10,8 @@ import {ItemDisplayer, ItemNode} from "../../../common/component/item.displayer"
 })
 export class CharacterItemDisplayerComponent extends ItemDisplayer<CharacterEquipment> {
   @HostBinding('class') cssClass = 'd-flex flex-column'
+
+  getCardImage = CardUtils.getCardImage;
 
   @Input()
   set characterItems(characterItems: CharacterEquipment[]) {
@@ -26,12 +29,16 @@ export class CharacterItemDisplayerComponent extends ItemDisplayer<CharacterEqui
           typeNode = {name: characterItem.type, children: []};
           data.push(typeNode);
         }
-        let levelNode = typeNode.children.find(value => value.name === characterItem.level + '');
-        if (!levelNode) {
-          levelNode = {name: characterItem.level + '', children: []};
-          typeNode.children.push(levelNode);
+        if (characterItem.level) { // Card case
+          let levelNode = typeNode.children.find(value => value.name === characterItem.level + '');
+          if (!levelNode) {
+            levelNode = {name: characterItem.level + '', children: []};
+            typeNode.children.push(levelNode);
+          }
+          levelNode.children.push(characterItem);
+        } else { // Item case
+          typeNode.children.push(characterItem);
         }
-        levelNode.children.push(characterItem);
       }
     });
     data.forEach(typeNode => typeNode.children.sort((a, b) => a.name < b.name ? -1 : 1));

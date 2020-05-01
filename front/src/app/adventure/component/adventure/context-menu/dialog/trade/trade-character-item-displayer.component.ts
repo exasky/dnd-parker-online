@@ -1,5 +1,6 @@
 import {Component, EventEmitter, HostBinding, Input, Output} from "@angular/core";
 import {Character, CharacterEquipment} from "../../../../../model/character";
+import {CardUtils} from "../../../../../../common/utils/card-utils";
 
 @Component({
   selector: 'app-trade-character-item-displayer',
@@ -8,6 +9,8 @@ import {Character, CharacterEquipment} from "../../../../../model/character";
 })
 export class TradeCharacterItemDisplayerComponent {
   @HostBinding('class') cssClasses = 'flex-grow d-flex position-relative';
+
+  getCardImage = CardUtils.getCardImage;
 
   @Input()
   tradeEnabled: boolean = true;

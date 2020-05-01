@@ -6,7 +6,8 @@
     </ng-container>
     <ng-container *ngIf="character.equippedItems.length !== 0">
       <div *ngFor="let item of character.equippedItems" style="position:relative;">
-        <img [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
+        <img [src]="CardUtils.getCardImage(item)"
+             [alt]="item.name"
              draggable="true"
              (dragstart)="equipmentDragStartHandler($event, item)"
              width="150px" height="230px">
@@ -61,7 +62,7 @@
              autocomplete="false" type="number">
     </mat-form-field>
   </div>
-  <img *ngIf="character.name" width="300px" [src]="'assets/character/' + character.name.toLowerCase() + '.jpg'">
+  <img *ngIf="character.name" width="300px" [src]="CardUtils.getCharacterImage(character)" [alt]="character.name">
 </div>
 
 <!-- Backpack items-->
@@ -72,7 +73,8 @@
     </ng-container>
     <ng-container *ngIf="character.backpackItems.length !== 0">
       <div class="position-relative" *ngFor="let item of character.backpackItems">
-        <img [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
+        <img [src]="CardUtils.getCardImage(item)"
+             [alt]="item.name"
              draggable="true"
              (dragstart)="backpackDragStartHandler($event, item)"
              width="150px" height="230px">

@@ -2,7 +2,7 @@
   <mat-card-content class="d-flex flex-column align-items-center">
     <img *ngIf="!editable && character.name"
          width="50%"
-         [src]="'assets/character/' + character.name.toLowerCase() + '-card.jpg'">
+         [src]="CardUtils.getCharacterCardImage(character)">
 
     <ng-container *ngIf="editable">
       <div class="d-flex w-100 justify-content-around">
@@ -74,7 +74,7 @@
       </div>
       <ng-container *ngIf="character.equippedItems.length !== 0">
         <div *ngFor="let item of character.equippedItems" class="m-auto position-relative">
-          <img [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
+          <img [src]="CardUtils.getCardImage(item)"
                draggable="true"
                (dragstart)="equipmentDragStartHandler($event, item)"
                width="150px" height="230px">
@@ -103,7 +103,7 @@
         <div *ngFor="let item of character.backpackItems"
              class="m-auto"
              style="position:relative;">
-          <img [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
+          <img [src]="CardUtils.getCardImage(item)"
                draggable="true"
                class="m-auto"
                (dragstart)="backpackDragStartHandler($event, item)"

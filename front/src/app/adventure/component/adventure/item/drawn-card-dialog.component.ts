@@ -4,6 +4,7 @@ import {Character, CharacterEquipment} from "../../../model/character";
 import {AudioService} from "../../../service/audio.service";
 import {AuthService} from "../../../../login/auth.service";
 import {AdventureCardService} from "../../../service/adventure-card.service";
+import {CardUtils} from "../../../../common/utils/card-utils";
 
 @Component({
   selector: 'app-drawn-card-dialog',
@@ -11,6 +12,8 @@ import {AdventureCardService} from "../../../service/adventure-card.service";
   styleUrls: ['./drawn-card-dialog.component.scss']
 })
 export class DrawnCardDialogComponent {
+
+  getCardImage = CardUtils.getCardImage;
 
   public characterName;
 

@@ -10,6 +10,7 @@ import {SocketResponseType} from "../../../../../common/model/websocket.response
 import {AdventureMessage, AdventureMessageType} from "../../../../model/adventure-message";
 import {GmService} from "../../../../service/gm.service";
 import {AudioService} from "../../../../service/audio.service";
+import {CardUtils} from "../../../../../common/utils/card-utils";
 
 @Component({
   selector: 'app-switch-equipment-dialog',
@@ -20,6 +21,8 @@ export class SwitchEquipmentDialogComponent implements OnInit, OnDestroy {
   @HostBinding('style.height') height = '75vh';
   @HostBinding('style.width') width = '50vw';
   @HostBinding('class') cssClass = 'd-flex flex-column';
+
+  getCardImage =  CardUtils.getCardImage;
 
   private advSub: Subscription;
 

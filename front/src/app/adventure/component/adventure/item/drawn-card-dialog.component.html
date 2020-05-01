@@ -7,8 +7,7 @@
   <div id="treasurechest-bottom"></div>
   <div id="treasurechest-bg"></div>
 
-  <img id="card"
-       [src]="'assets/card/' + data.characterItem.type.toLowerCase() + '/' + data.characterItem.level + '/' + data.characterItem.name + '.jpg'">
+  <img id="card" [src]="getCardImage(data.characterItem)" [alt]="data.characterItem.name">
 </div>
 
 <mat-dialog-actions class="d-flex justify-content-center" *ngIf="authService.isGM">

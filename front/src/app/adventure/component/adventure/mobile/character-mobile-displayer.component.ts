@@ -4,6 +4,7 @@ import {AdventureService} from "../../../service/adventure.service";
 import {SelectCardDialogComponent} from "../context-menu/dialog/select-card-dialog.component";
 import {DialogUtils} from "../../../../common/dialog/dialog.utils";
 import {MatDialog} from "@angular/material/dialog";
+import {CardUtils} from "../../../../common/utils/card-utils";
 
 @Component({
   selector: 'app-character-mobile-displayer',
@@ -12,6 +13,8 @@ import {MatDialog} from "@angular/material/dialog";
 })
 export class CharacterMobileDisplayerComponent {
   @HostBinding('class') cssClasses = 'd-flex flex-column h-100';
+
+  CardUtils = CardUtils;
 
   @Input()
   character: Character;

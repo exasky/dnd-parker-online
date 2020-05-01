@@ -1,5 +1,6 @@
 import {FlatTreeControl} from "@angular/cdk/tree";
 import {MatTreeFlatDataSource, MatTreeFlattener} from "@angular/material/tree";
+import { ItemType } from 'src/app/adventure/model/character';
 
 export interface ItemNode {
   name: string;
@@ -13,6 +14,8 @@ interface ItemFlatNode {
 }
 
 export abstract class ItemDisplayer<T extends { name: string }> {
+  ItemType = ItemType;
+
   protected elements: T[];
 
   private _transformer = (node: ItemNode, level: number) => {

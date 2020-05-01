@@ -7,7 +7,7 @@
          alt="{{equipped.name}}"
          class="m-1"
          [class.selected]="itemSelected && equipped.id === itemSelected.id"
-         [src]="'assets/card/' + equipped.type.toLowerCase() + '/' + equipped.level + '/' + equipped.name + '.jpg'"
+         [src]="getCardImage(equipped)"
          (click)="selectEquipment(equipped, true)">
   </div>
   <mat-divider></mat-divider>
@@ -15,8 +15,9 @@
   <div class="flex-1 flex-grow d-flex overflow">
     <img *ngFor="let backpack of character.backpackItems"
          width="150px" height="230px"
+         alt="{{backpack.name}}"
          [class.selected]="itemSelected && backpack.id === itemSelected.id"
-         [src]="'assets/card/' + backpack.type.toLowerCase() + '/' + backpack.level + '/' + backpack.name + '.jpg'"
+         [src]="getCardImage(backpack)"
          (click)="selectEquipment(backpack, false)">
   </div>
 </div>

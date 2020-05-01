@@ -6,7 +6,7 @@
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding
                  draggable="true"
                  (dragstart)="dragStartHandler($event, node.item)">
-    <img width="50px" [src]="'assets/card/' + node.item.type.toLowerCase() + '/' + node.item.level + '/' + node.item.name + '.jpg'">
+    <img width="50px" [src]="getCardImage(node.item)">
     {{node.name.split('_').join(' ')}}
   </mat-tree-node>
 

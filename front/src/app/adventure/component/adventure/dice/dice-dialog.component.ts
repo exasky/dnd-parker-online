@@ -15,6 +15,7 @@ import {SocketResponseType} from "../../../../common/model/websocket.response";
 import {DiceMessage, DiceMessageType} from "../../../model/dice-message";
 import {LayerGridsterItem} from "../../../model/layer-gridster-item";
 import {LayerElementType} from "../../../model/adventure";
+import {CardUtils} from "../../../../common/utils/card-utils";
 
 abstract class AbstractDiceDialogComponent implements OnInit, OnDestroy {
   @ViewChildren('diceCmp') diceComponents: QueryList<DiceComponent>;
@@ -111,6 +112,8 @@ export class DiceDialogComponent extends AbstractDiceDialogComponent {
   templateUrl: './dice-attack-dialog.component.html',
 })
 export class DiceAttackDialogComponent extends AbstractDiceDialogComponent {
+  CardUtils = CardUtils;
+
   constructor(protected gmService: GmService,
               public authService: AuthService,
               protected diceWS: DiceWebsocketService,

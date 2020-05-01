@@ -3,7 +3,7 @@
   <div *ngIf="character.equippedItems.length !== 0"
        class="flex-grow d-flex justify-content-around align-items-center flex-wrap">
     <img *ngFor="let item of character.equippedItems"
-         [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
+         [src]="CardUtils.getCardImage(item)"
          [width]="cardWidth" [height]="cardHeight">
   </div>
   <div *ngIf="character.equippedItems.length === 0" class="flex-grow d-flex justify-content-center align-items-center">
@@ -11,13 +11,13 @@
   </div>
 </div>
 
-<img [src]="'assets/character/' + character.name.toLowerCase() + '-wearables.jpg'" style="object-fit: scale-down">
+<img [src]="CardUtils.getCharacterWearablesImage(character)" style="object-fit: scale-down">
 
 <div class="d-flex flex-column justify-content-around align-items-center">
   <img *ngIf="character.name && displayCard"
        [width]="300"
        [height]="450"
-       [src]="'assets/character/' + character.name.toLowerCase() + '-card.jpg'">
+       [src]="CardUtils.getCharacterCardImage(character)">
 
   <div *ngIf="!displayCard" class="d-flex justify-content-center"
        style="text-transform: capitalize">{{character.name}}</div>
@@ -32,7 +32,7 @@
     <div class="status-bar-text">{{'common.mp' | translate}} : {{character.mp}} / {{character.maxMp}}</div>
   </section>
 
-  <img [src]="'assets/character/' + character.name.toLowerCase() + '-characteristics.jpg'"
+  <img [src]="CardUtils.getCharacterCharacteristicsImage(character)"
        style="object-fit: scale-down">
 </div>
 
@@ -43,7 +43,7 @@
   <div *ngIf="character.backpackItems.length !== 0"
        class="flex-grow d-flex justify-content-around align-items-center flex-wrap">
     <img *ngFor="let item of character.backpackItems"
-         [src]="'assets/card/' + item.type.toLowerCase() + '/' + item.level + '/' + item.name + '.jpg'"
+         [src]="CardUtils.getCardImage(item)"
          [width]="cardWidth" [height]="cardHeight">
   </div>
   <div *ngIf="character.backpackItems.length === 0"

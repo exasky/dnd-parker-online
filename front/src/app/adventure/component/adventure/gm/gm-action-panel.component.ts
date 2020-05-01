@@ -7,6 +7,7 @@ import {Router} from "@angular/router";
 import {MatDrawer} from "@angular/material/sidenav";
 import {Initiative, MonsterLayerItem} from "../../../model/adventure";
 import {CharacterItem, MonsterItem} from "../../../model/item";
+import {CardUtils} from "../../../../common/utils/card-utils";
 
 @Component({
   selector: 'app-gm-action-panel',
@@ -15,6 +16,8 @@ import {CharacterItem, MonsterItem} from "../../../model/item";
 })
 export class GmActionPanelComponent {
   @HostBinding('class') cssClasses = 'flex-grow d-flex';
+
+  getMonsterImage = CardUtils.getMonsterImage;
 
   SoundType = SoundType;
   SoundMacroType = SoundMacroType;

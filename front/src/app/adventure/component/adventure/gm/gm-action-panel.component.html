@@ -99,7 +99,7 @@
            [class.selected]="monster.id === selectedMonsterId">
         <mat-card-subtitle>{{monster.monster.element.name}} n°{{i}}</mat-card-subtitle>
         <div class="d-flex align-items-center">
-          <img [src]="'assets/monster/' + monster.monster.element.name + '.jpg'" width="150px"
+          <img [src]="getMonsterImage(monster.monster)" width="150px"
                (click)="selectMonster.emit(monster.id)">
           <mat-form-field class="mx-2" style="max-width: 50px">
             <mat-label>{{'common.hp' | translate}}</mat-label>

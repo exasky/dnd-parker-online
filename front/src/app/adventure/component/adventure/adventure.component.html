@@ -108,7 +108,7 @@
                 </app-character-tooltip-displayer>
               </ng-template>
               <ng-template [ngSwitchCase]="LayerElementType.MONSTER">
-                <img width="300" [src]="'assets/monster/' + item.name + '-description.jpg'">
+                <img width="300" [src]="getMonsterDescriptionImage(item.monster)">
               </ng-template>
               <div *ngSwitchDefault>
               </div>

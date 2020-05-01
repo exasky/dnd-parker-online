@@ -2,10 +2,10 @@
   <div class="d-flex flex-column align-items-center justify-content-evenly">
     {{'adventure.dialog.dice.attacker' | translate }}
     <ng-container *ngIf="data.fromAttack.type === LayerElementType.CHARACTER">
-      <img width="200" [src]="'assets/character/' + data.fromAttack['character'].name + '-character.jpg'">
+      <img width="200" [src]="CardUtils.getCharacterCharacterImage(data.fromAttack['character'])">
     </ng-container>
     <ng-container *ngIf="data.fromAttack.type === LayerElementType.MONSTER">
-      <img width="200" [src]="'assets/monster/' + data.fromAttack['monster'].element.name + '-description.jpg'">
+      <img width="200" [src]="CardUtils.getMonsterDescriptionImage(data.fromAttack['monster'])">
     </ng-container>
   </div>
   <div class="d-flex flex-column">
@@ -29,10 +29,10 @@
   <div class="d-flex flex-column align-items-center justify-content-evenly">
     {{'adventure.dialog.dice.attacked' | translate }}
     <ng-container *ngIf="data.toAttack.type === LayerElementType.CHARACTER">
-      <img width="200" [src]="'assets/character/' + data.toAttack['character'].name + '-character.jpg'">
+      <img width="200" [src]="CardUtils.getCharacterCharacterImage(data.toAttack['character'])">
     </ng-container>
     <ng-container *ngIf="data.toAttack.type === LayerElementType.MONSTER">
-      <img width="200" [src]="'assets/monster/' + data.toAttack['monster'].element.name + '-description.jpg'">
+      <img width="200" [src]="CardUtils.getMonsterDescriptionImage(data.toAttack['monster'])">
     </ng-container>
   </div>
 </div>

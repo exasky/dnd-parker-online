@@ -2,6 +2,7 @@ import {Component, HostBinding, Inject, OnInit} from "@angular/core";
 import {GmService} from "../../../../service/gm.service";
 import {CharacterEquipment} from "../../../../model/character";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {CardUtils} from "../../../../../common/utils/card-utils";
 
 @Component({
   selector: 'app-select-card-dialog',
@@ -11,6 +12,8 @@ export class SelectCardDialogComponent implements OnInit {
   @HostBinding('style.height') height = '75vh';
   @HostBinding('style.width') width = '50vw';
   @HostBinding('class') cssClass = 'd-flex flex-column'
+
+  getCardImage = CardUtils.getCardImage;
 
   allCharacterItems: CharacterEquipment[];
 

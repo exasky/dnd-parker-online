@@ -51,6 +51,7 @@ import {NextTurnDialogComponent} from "./action/next-turn-dialog.component";
 import {Character} from "../../model/character";
 import {TradeDialogComponent} from "./context-menu/dialog/trade/trade-dialog.component";
 import {SwitchEquipmentDialogComponent} from "./context-menu/dialog/switch-equipment-dialog.component";
+import {CardUtils} from "../../../common/utils/card-utils";
 
 @Component({
   selector: 'app-adventure',
@@ -68,6 +69,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
   @ViewChild('mainDrawerContainer', {read: ElementRef}) mainDrawerContainer: ElementRef;
 
   @ViewChild('gridster', {read: GridsterComponent}) gridster: GridsterComponent;
+
+  getMonsterDescriptionImage = CardUtils.getMonsterDescriptionImage;
 
   private lastMouseMoveSend: number;
   private mouseMoveDelay = 33; // 30fps

@@ -1,5 +1,6 @@
 import {Component, HostBinding, Input, OnInit} from "@angular/core";
 import {Character} from "../../../model/character";
+import {CardUtils} from "../../../../common/utils/card-utils";
 
 @Component({
   selector: 'app-character-tooltip-displayer',
@@ -8,6 +9,8 @@ import {Character} from "../../../model/character";
 })
 export class CharacterTooltipDisplayerComponent implements OnInit {
   @HostBinding('class') cssClasses = "d-flex";
+
+  CardUtils = CardUtils;
 
   @Input()
   character: Character;

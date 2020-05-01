@@ -1,6 +1,7 @@
 import {Component, EventEmitter, HostBinding, Input, Output} from "@angular/core";
 import {Character, CharacterEquipment, CharacterTemplate} from "../../../model/character";
 import {MatSelectChange} from "@angular/material/select";
+import {CardUtils} from "../../../../common/utils/card-utils";
 
 @Component({
   selector: 'app-character-creator',
@@ -8,6 +9,8 @@ import {MatSelectChange} from "@angular/material/select";
 })
 export class CharacterCreatorComponent {
   @HostBinding('class') cssClasses = "d-flex";
+
+  CardUtils = CardUtils;
 
   @Input()
   character: Character;
@@ -51,7 +54,7 @@ export class CharacterCreatorComponent {
     ev.preventDefault();
     try {
       // Move case
-      const moveItem: {from: number, item: number, isFromEquipment: boolean} = JSON.parse(ev.dataTransfer.getData("text"))
+      const moveItem: { from: number, item: number, isFromEquipment: boolean } = JSON.parse(ev.dataTransfer.getData("text"))
 
       const character = this.allCharacters[moveItem.from];
       const fromItemList = moveItem.isFromEquipment ? character.equippedItems : character.backpackItems;
@@ -70,12 +73,20 @@ export class CharacterCreatorComponent {
   }
 
   equipmentDragStartHandler(ev: DragEvent, item: CharacterEquipment) {
-    ev.dataTransfer.setData('text/plain', JSON.stringify({from: this.positionInList, item: item.id, isFromEquipment: true}));
+    ev.dataTransfer.setData('text/plain', JSON.stringify({
+      from: this.positionInList,
+      item: item.id,
+      isFromEquipment: true
+    }));
     ev.dataTransfer.dropEffect = 'move';
   }
 
   backpackDragStartHandler(ev: DragEvent, item: CharacterEquipment) {
-    ev.dataTransfer.setData('text/plain', JSON.stringify({from: this.positionInList, item: item.id, isFromEquipment: false}));
+    ev.dataTransfer.setData('text/plain', JSON.stringify({
+      from: this.positionInList,
+      item: item.id,
+      isFromEquipment: false
+    }));
     ev.dataTransfer.dropEffect = 'move';
   }
 

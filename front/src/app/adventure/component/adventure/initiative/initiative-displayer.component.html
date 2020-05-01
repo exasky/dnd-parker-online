@@ -2,5 +2,5 @@
      class="d-flex flex-column m-2 align-items-center"
      [class.selected]="currentInitiative && init.characterName === currentInitiative.characterName">
   <p>N°{{init.number}}</p>
-  <img [src]="'assets/character/' + init.characterName + '-character.jpg'" alt="character-character"/>
+  <img [src]="getCharacterCharacterImage(init.characterName)" alt="character-character"/>
 </div>
