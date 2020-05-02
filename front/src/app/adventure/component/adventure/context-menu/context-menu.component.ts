@@ -140,8 +140,12 @@ export class ContextMenuComponent {
   }
 
   canTradeWith(item: CharacterLayerGridsterItem): boolean {
-    return item.character.name !== this.currentInitiative.characterName
-      && AdventureUtils.areItemsNextToEachOther(item, this.getCurrentCharacterTurn());
+    if (this.getCurrentCharacterTurn()) {
+      return item.character.name !== this.currentInitiative.characterName
+        && AdventureUtils.areItemsNextToEachOther(item, this.getCurrentCharacterTurn());
+    } else {
+      return false;
+    }
   }
 
   askTrade(item: CharacterLayerGridsterItem) {
