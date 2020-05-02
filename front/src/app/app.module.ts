@@ -79,9 +79,7 @@ import {environment} from "../environments/environment";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 
 export function translateLoader(http: HttpClient): TranslateLoader {
-  // const dontCacheDuringDev = environment.production ? '' : '?' + new Date();
-  // return new TranslateHttpLoader(http, './assets/i18n/', '.json' + dontCacheDuringDev);
-  return new TranslateHttpLoader(http);
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
