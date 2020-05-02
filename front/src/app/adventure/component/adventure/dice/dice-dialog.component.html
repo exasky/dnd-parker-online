@@ -8,7 +8,9 @@
 </div>
 <mat-dialog-content>
   <div class="d-flex flex-wrap justify-content-evenly">
+    <!-- DO NOT REMOVE diceCmp. It's used by abstract parent class -->
     <app-dice *ngFor="let dice of selectedDices"
+              #diceCmp
               [diceType]="dice.name"
               (click)="removeDiceFromList(dice)"></app-dice>
   </div>
