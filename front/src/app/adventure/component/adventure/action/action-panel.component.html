@@ -47,7 +47,7 @@
           [disableTooltip]="!charItem.character.id"
           tooltipClass="tooltip-action-panel"
           [container]="'body'">
-    {{charItem.character.name}}
+    {{charItem.character.name}} ({{charItem.character.userName}})
     <ng-template #tooltipContent>
       <app-character-tooltip-displayer [character]="charItem.character"
                                        [displayCard]="true"

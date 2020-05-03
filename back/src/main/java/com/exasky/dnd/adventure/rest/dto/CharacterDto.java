@@ -24,6 +24,7 @@ public class CharacterDto {
     private Short backpackSize;
 
     private Long userId;
+    private String userName;
 
     public static Character toBo(CharacterDto dto) {
         Character character = new Character(dto.id);
@@ -63,6 +64,7 @@ public class CharacterDto {
         dto.backpackItems = CharacterItemDto.toDto(bo.getBackPack());
         if (Objects.nonNull(bo.getUser())) {
             dto.userId = bo.getUser().getId();
+            dto.userName = bo.getUser().getUsername();
         }
 
         return dto;
@@ -156,6 +158,14 @@ public class CharacterDto {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     // endregion
