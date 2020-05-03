@@ -12,6 +12,6 @@
 </div>
 
 <mat-dialog-actions *ngIf="authService.isGM" class="d-flex justify-content-evenly">
-  <button mat-button (click)="this.close(false)" cdkfocusinitial="">{{'common.cancel' | translate}}</button>
-  <button mat-button (click)="this.close(true)">{{'common.validate' | translate}}</button>
+  <button mat-button (click)="this.close(false)" [disabled]="waitForValidation">{{'common.cancel' | translate}}</button>
+  <button mat-button (click)="this.close(true)" cdkfocusinitial="" [disabled]="waitForValidation">{{'common.validate' | translate}}</button>
 </mat-dialog-actions>

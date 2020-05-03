@@ -10,12 +10,15 @@ import {Initiative} from "../../../model/adventure";
   styleUrls: ['./next-turn-dialog.component.scss']
 })
 export class NextTurnDialogComponent {
+  waitForValidation = false;
+
   constructor(public authService: AuthService,
               private adventureService: AdventureService,
               @Inject(MAT_DIALOG_DATA) public data: {adventureId: number, currentTurn: Initiative}) {
   }
 
   close(validation: boolean) {
+    this.waitForValidation = true;
     this.adventureService.validateNextTurn(this.data.adventureId, validation);
   }
 }
