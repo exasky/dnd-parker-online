@@ -3,7 +3,7 @@
      [style.top]="contextMenuPosition.y"
      [matMenuTriggerFor]="contextMenu">
 </div>
-<mat-menu #contextMenu="matMenu">
+<mat-menu #contextMenu="matMenu" (close)="closeMenu.emit()">
   <ng-template matMenuContent let-item="item">
     <ng-container *ngIf="item.type === LayerElementType.MONSTER">
       <button mat-menu-item (click)="attackMonster(item)" [disabled]="">
@@ -12,18 +12,35 @@
       </button>
     </ng-container>
     <ng-container *ngIf="item.type === LayerElementType.CHARACTER">
-      <button mat-menu-item (click)="attackCharacter(item)" [disabled]="authService.isGM && !selectedMonsterId">
-        <span class="mdi mdi-sword-cross mdi-large"></span>
-        {{'adventure.context-menu.attack' | translate}}
+      <button mat-menu-item *ngIf="canMove(item)" (click)="startMove(item)">
+        <span class="mdi mdi-shoe-print mdi-large"></span>
+        {{'adventure.context-menu.move' | translate}}
       </button>
-      <button mat-menu-item *ngIf="canTradeWith(item)" (click)="askTrade(item)">
-        <span class="mdi mdi-hand-heart mdi-large"></span>
-        {{'adventure.context-menu.trade' | translate}}
-      </button>
-      <button mat-menu-item *ngIf="canSwitchEquipment(item)" (click)="askSwitch(item)">
-        <span class="mdi mdi-sack mdi-large"></span>
-        {{'adventure.context-menu.switch-equipment' | translate}}
-      </button>
+      <ng-container *ngIf="isCharacterMove">
+        <button mat-menu-item (click)="resetMove(item)">
+          <span class="mdi mdi-shoe-print mdi-large"></span>
+          {{'adventure.context-menu.move-reset' | translate}}
+        </button>
+        <button mat-menu-item (click)="validateMove(item)">
+          <span class="mdi mdi-shoe-print mdi-large"></span>
+          {{'adventure.context-menu.move-validate' | translate}}
+        </button>
+        <mat-divider></mat-divider>
+      </ng-container>
+      <ng-container *ngIf="!isCharacterMove">
+        <button mat-menu-item (click)="attackCharacter(item)" [disabled]="authService.isGM && !selectedMonsterId">
+          <span class="mdi mdi-sword-cross mdi-large"></span>
+          {{'adventure.context-menu.attack' | translate}}
+        </button>
+        <button mat-menu-item *ngIf="canTradeWith(item)" (click)="askTrade(item)">
+          <span class="mdi mdi-hand-heart mdi-large"></span>
+          {{'adventure.context-menu.trade' | translate}}
+        </button>
+        <button mat-menu-item *ngIf="canSwitchEquipment(item)" (click)="askSwitch(item)">
+          <span class="mdi mdi-sack mdi-large"></span>
+          {{'adventure.context-menu.switch-equipment' | translate}}
+        </button>
+      </ng-container>
     </ng-container>
     <ng-container *ngIf="item.type === LayerElementType.TRAP">
       <button *ngIf="authService.isGM && item.shown === false && item.deactivated === false" mat-menu-item
@@ -42,13 +59,13 @@
         {{'adventure.context-menu.open-chest' | translate}}
       </button>
     </ng-container>
-    <ng-container>
-      <button *ngIf="isItemFlippable(item)" mat-menu-item (click)="flipElement(item, $event)">
-        <mat-icon>flip</mat-icon>
-        {{'adventure.context-menu.flip' | translate}}
-      </button>
+    <button *ngIf="isItemFlippable(item)" mat-menu-item (click)="flipElement(item, $event)">
+      <mat-icon>flip</mat-icon>
+      {{'adventure.context-menu.flip' | translate}}
+    </button>
+    <ng-container *ngIf="authService.isGM">
       <mat-divider></mat-divider>
-      <button *ngIf="authService.isGM" mat-menu-item (click)="deleteItem(item)">
+      <button mat-menu-item (click)="deleteItem(item)">
         <mat-icon>delete</mat-icon>
         {{'common.delete' | translate}}
       </button>

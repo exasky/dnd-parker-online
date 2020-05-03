@@ -33,7 +33,7 @@ export class Initiative {
   characterName: string;
   number: number;
 
-  static isGm(init: Initiative) {
+  static isGmTurn(init: Initiative) {
     return init.characterName === GM_CHAR_NAME;
   }
 }

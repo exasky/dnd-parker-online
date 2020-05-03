@@ -101,6 +101,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   selectedMonsterId: number;
 
+  beforeMoveSelectedItem: CharacterLayerGridsterItem;
   selectedItem: LayerGridsterItem;
   // increased each time a player/monster move in order to keep the last moving item on top
   currentLayerIndexForSelectedItem = 1;
@@ -472,6 +473,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   stopItemDrag(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
+    this.focusMainDrawer()
+
+    if (!this.authService.isGM) return;
+
     if (item.x === itemComponent.$item.x && item.y === itemComponent.$item.y) { // Case click
       if (this.isSameItemAsSelected(item)) { // Click on case selected case
         this.selectedItem = null;
@@ -481,11 +486,36 @@ export class AdventureComponent implements OnInit, OnDestroy {
         } else {
           this.selectedItem = item;
         }
-        this.mainDrawerContainer.nativeElement.focus();
       }
     } else { // Case drag&drop
       this.selectedItem = null;
     }
+  }
+
+  startCharacterMove(item: CharacterLayerGridsterItem) {
+    this.beforeMoveSelectedItem = JSON.parse(JSON.stringify(item));
+    this.beforeMoveSelectedItem.dragEnabled = false;
+    this.beforeMoveSelectedItem.id = null;
+    this.beforeMoveSelectedItem.layerIndex--;
+
+    this.selectedItem = item;
+
+    this.dashboard.push(this.beforeMoveSelectedItem);
+    this.focusMainDrawer()
+  }
+
+  resetCharacterMove() {
+    this.selectedItem.x = this.beforeMoveSelectedItem.x;
+    this.selectedItem.y = this.beforeMoveSelectedItem.y;
+
+    this.adventureService.updateLayerItem(this.adventure.id, AdventureUtils.existingGridsterItemToLayerItem(this.selectedItem));
+    this.focusMainDrawer()
+  }
+
+  validateCharacterMove() {
+    this.dashboard.splice(this.dashboard.indexOf(this.beforeMoveSelectedItem), 1);
+    this.beforeMoveSelectedItem = null;
+    this.selectedItem = null;
   }
 
   onMouseMove(e: MouseEvent) {
@@ -575,6 +605,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
         drawerContent.scrollBy(0, relativePos.bottom);
       }
     }
+  }
+
+  focusMainDrawer() {
+    this.mainDrawerContainer.nativeElement.focus();
   }
 
   // region Webservice calls to update item
@@ -692,7 +726,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   // endregion
 
   getCharacterNamesFromId(userId) {
-    const characters = this.characters.filter(char => char.character.userId === userId);
+    const characters = this.characters.filter(char => char.id && char.character.userId === userId);
     return characters.length !== 0 ? characters.map(char => char.name) : ['MJ'];
   }
 
@@ -720,8 +754,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
     return baseLayerItem
   }
 
-  tooltipDisabled(itemType: LayerElementType): boolean {
-    return [LayerElementType.CHARACTER, LayerElementType.MONSTER].indexOf(itemType) === -1;
+  tooltipDisabled(item: LayerGridsterItem): boolean {
+    return !item.id || [LayerElementType.CHARACTER, LayerElementType.MONSTER].indexOf(item.type) === -1;
   }
 
   private findInDashboard(item: LayerItem) {

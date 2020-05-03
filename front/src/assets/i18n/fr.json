@@ -142,6 +142,7 @@
     },
     "context-menu": {
       "attack": "Attaquer",
+      "move": "Se déplacer",
       "trade": "Echanger",
       "switch-equipment": "Changer d'équipement",
       "show-trap": "Montrer le piège",

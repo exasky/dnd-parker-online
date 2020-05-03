@@ -18,7 +18,8 @@
     </div>
 
     <div class="d-flex align-items-center" *ngIf="authService.isGM">
-      <button mat-raised-button class="flex-shrink-0 mx-2" (click)="toggleGmPanel()">{{'adventure.gm-panel-label' | translate}}</button>
+      <button mat-raised-button class="flex-shrink-0 mx-2"
+              (click)="toggleGmPanel()">{{'adventure.gm-panel-label' | translate}}</button>
       <app-adventure-item-displayer [layerElements]="addableLayerElements"></app-adventure-item-displayer>
     </div>
   </div>
@@ -88,7 +89,7 @@
                          [ngSwitch]="item.type"
                          style="background: none !important;"
                          [ngbTooltip]="tipContent"
-                         [disableTooltip]="tooltipDisabled(item.type)"
+                         [disableTooltip]="tooltipDisabled(item)"
                          [container]="'body'"
                          #t="ngbTooltip"
                          [closeDelay]="10"
@@ -181,5 +182,9 @@
                     [characterItems]="characters"
                     [currentInitiative]="currentTurn"
                     [selectedMonsterId]="selectedMonsterId"
-                    [addableLayerElements]="addableLayerElements"></app-context-menu>
+                    [addableLayerElements]="addableLayerElements"
+                    (startCharacterMove)="startCharacterMove($event)"
+                    (resetCharacterMove)="resetCharacterMove()"
+                    (validateCharacterMove)="validateCharacterMove()"
+                    (closeMenu)="focusMainDrawer()"></app-context-menu>
 </ng-container>
