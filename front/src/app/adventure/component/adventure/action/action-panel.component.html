@@ -47,7 +47,7 @@
           [disableTooltip]="!charItem.character.id"
           tooltipClass="tooltip-action-panel"
           [container]="'body'">
-    {{charItem.character.name}} ({{charItem.character.userName}})
+    {{charItem.character.name}} <ng-container *ngIf="!isGm(charItem.character)">({{charItem.character.userName}})</ng-container>
     <ng-template #tooltipContent>
       <app-character-tooltip-displayer [character]="charItem.character"
                                        [displayCard]="true"
@@ -82,6 +82,12 @@
   <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="endTurn()"
           [disabled]="disableActions || (!isMyTurn && !authService.isGM)">
     {{'adventure.action-panel.end-turn' | translate}}
+  </button>
+</div>
+
+<div *ngIf="!authService.isGM" class="d-flex justify-content-center">
+  <button mat-icon-button (click)="openMobileVersion()">
+    <mat-icon>open_in_new</mat-icon>
   </button>
 </div>
 

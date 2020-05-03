@@ -1,3 +1,5 @@
+import {GM_CHAR_NAME} from "./adventure";
+
 export class CharacterTemplate {
   id: number;
   name: string;
@@ -21,10 +23,15 @@ export class Character {
   backpackSize: number;
 
   userId?: number;
+  userName?: string;
 
   constructor() {
     this.equippedItems = [];
     this.backpackItems = [];
+  }
+
+  static isGm(char: Character) {
+    return char.name === GM_CHAR_NAME;
   }
 }
 

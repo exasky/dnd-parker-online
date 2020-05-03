@@ -8,6 +8,9 @@ import {AdventureService} from "../../../service/adventure.service";
 import {AudioService, AmbientAudioService} from "../../../service/audio.service";
 import {AdventureCardService} from "../../../service/adventure-card.service";
 import {CharacterItem} from "../../../model/item";
+import {Router} from "@angular/router";
+import {AdventureUtils} from "../utils/utils";
+import {Character} from "../../../model/character";
 
 @Component({
   selector: 'app-action-panel',
@@ -15,6 +18,8 @@ import {CharacterItem} from "../../../model/item";
 })
 export class ActionPanelComponent {
   @HostBinding('class') cssClasses = "d-flex flex-column";
+
+  isGm = Character.isGm;
 
   @Input()
   currentInitiative: Initiative;
@@ -39,6 +44,7 @@ export class ActionPanelComponent {
               private adventureService: AdventureService,
               private adventureCardService: AdventureCardService,
               private dialog: MatDialog,
+              private router: Router,
               private diceService: DiceService,
               public authService: AuthService,
               public audioService: AudioService,
@@ -74,6 +80,11 @@ export class ActionPanelComponent {
     if (!this.disableActions) {
       this.adventureService.askNextTurn(this.adventure.id);
     }
+  }
+
+  openMobileVersion() {
+    const strWindowFeatures = "menubar=no,toolbar=no,location=no,status=no,width=599,height=" + window.outerHeight;
+    window.open(this.router.url, '_blank', strWindowFeatures);
   }
 
   prevAdventure() {
