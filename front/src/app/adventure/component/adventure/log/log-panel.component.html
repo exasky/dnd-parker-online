@@ -1,4 +1,4 @@
-<h3 class="m-2">History !</h3>
+<h3 class="m-2">{{'adventure.log.header' | translate}}</h3>
 <ul role="list">
   <li role="listitem" *ngFor="let log of logs" [ngSwitch]="log.type">
     <ng-container *ngSwitchCase="AdventureLogType.ATTACK">

@@ -76,6 +76,7 @@
       "CHARACTER": "Character"
     },
     "log": {
+      "header": "History !",
       "attack": "{{from}} attacked {{to}}",
       "die": "{{from}} died",
       "switch": "{{from}} switched {{fromId}}",
