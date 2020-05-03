@@ -55,7 +55,7 @@ export class ContextMenuComponent {
   }
 
   openMenu(event: MouseEvent, item: LayerGridsterItem) {
-    if (this.isContextMenuEnabled()) {
+    if (this.isContextMenuEnabled(item)) {
       event.preventDefault();
       this.contextMenuPosition.x = event.clientX + 'px';
       this.contextMenuPosition.y = event.clientY + 'px';
@@ -65,12 +65,27 @@ export class ContextMenuComponent {
     }
   }
 
-  private isContextMenuEnabled() {
-    return this.authService.isGM || AdventureUtils.isMyTurn(this.authService.currentUserValue, this.currentInitiative);
+  private isContextMenuEnabled(item: LayerGridsterItem) {
+    if (this.authService.isGM) return true;
+    if (!AdventureUtils.isMyTurn(this.authService.currentUserValue, this.currentInitiative)) return false;
+    if (ContextMenuComponent.interactiveItemsForPlayer().indexOf(item.type) === -1) return false;
+    if (ContextMenuComponent.flippableItems().indexOf(item.type) !== -1 && !this.isItemFlippable(item)) return false;
+
+    return true;
   }
 
-  isItemFlippable(type: LayerElementType) {
-    return [LayerElementType.TRAP, LayerElementType.DOOR].indexOf(type) !== -1;
+  private static interactiveItemsForPlayer(): LayerElementType[] {
+    return [LayerElementType.DOOR, LayerElementType.CHARACTER, LayerElementType.CHEST, LayerElementType.MONSTER];
+  }
+
+  isItemFlippable(item: LayerGridsterItem) {
+    return ContextMenuComponent.flippableItems().indexOf(item.type) !== -1
+      && (this.authService.isGM
+        || (AdventureUtils.areItemsNextToEachOther(item, this.getCurrentCharacterTurn())) && item.type === LayerElementType.DOOR);
+  }
+
+  private static flippableItems(): LayerElementType[] {
+    return [LayerElementType.TRAP, LayerElementType.DOOR];
   }
 
   flipElement(item: LayerGridsterItem, event: MouseEvent) {

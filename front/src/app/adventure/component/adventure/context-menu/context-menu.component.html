@@ -42,13 +42,13 @@
         {{'adventure.context-menu.open-chest' | translate}}
       </button>
     </ng-container>
-    <ng-container *ngIf="authService.isGM">
-      <button *ngIf="authService.isGM && isItemFlippable(item.type)" mat-menu-item (click)="flipElement(item, $event)">
+    <ng-container>
+      <button *ngIf="isItemFlippable(item)" mat-menu-item (click)="flipElement(item, $event)">
         <mat-icon>flip</mat-icon>
         {{'adventure.context-menu.flip' | translate}}
       </button>
       <mat-divider></mat-divider>
-      <button mat-menu-item (click)="deleteItem(item)">
+      <button *ngIf="authService.isGM" mat-menu-item (click)="deleteItem(item)">
         <mat-icon>delete</mat-icon>
         {{'common.delete' | translate}}
       </button>
