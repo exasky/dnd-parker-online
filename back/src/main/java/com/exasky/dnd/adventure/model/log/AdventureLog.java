@@ -3,6 +3,7 @@ package com.exasky.dnd.adventure.model.log;
 import com.exasky.dnd.adventure.model.Adventure;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "adventure_log")
@@ -10,6 +11,10 @@ public class AdventureLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "log_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date logDate;
 
     @ManyToOne
     @JoinColumn(name = "adventure_id")
@@ -32,17 +37,27 @@ public class AdventureLog {
     private String toId;
 
     public AdventureLog() {
+        this.logDate = new Date();
     }
 
     public AdventureLog(Adventure attachedAdventure, AdventureLogType type) {
         this.adventure = attachedAdventure;
         this.type = type;
+        this.logDate = new Date();
     }
 
     // region Getters & Setters
 
     public Long getId() {
         return id;
+    }
+
+    public Date getLogDate() {
+        return logDate;
+    }
+
+    public void setLogDate(Date logDate) {
+        this.logDate = logDate;
     }
 
     public Adventure getAdventure() {

@@ -97,6 +97,7 @@ export enum ImageRotation {
 
 export class AdventureLog {
   id: number;
+  logDate: any;
   type: AdventureLogType;
   from: string;
   fromId: string;

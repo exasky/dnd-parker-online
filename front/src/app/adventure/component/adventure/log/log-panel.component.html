@@ -3,16 +3,19 @@
   <li role="listitem" *ngFor="let log of logs" [ngSwitch]="log.type">
     <ng-container *ngSwitchCase="AdventureLogType.ATTACK">
       <span class="mdi mdi-sword-cross mdi-large"></span>
+      {{log.logDate | date:'h:mm:ss'}}
       {{'adventure.log.attack' | translate:{from: log.from | equipmentFormat, to: log.to | equipmentFormat} }}
     </ng-container>
 
     <ng-container *ngSwitchCase="AdventureLogType.DIE">
       <span class="mdi mdi-skull mdi-large"></span>
+      {{log.logDate | date:'h:mm:ss'}}
       {{'adventure.log.die' | translate:{from: log.from | equipmentFormat} }}
     </ng-container>
 
     <ng-container *ngSwitchCase="AdventureLogType.OPEN_CHEST">
       <span class="mdi mdi-treasure-chest mdi-large"></span>
+      {{log.logDate | date:'h:mm:ss'}}
       <ng-container *ngIf="log.fromId">
         {{'adventure.log.accept-chest' | translate:{
         from: log.from | equipmentFormat,
@@ -31,6 +34,7 @@
 
     <ng-container *ngSwitchCase="AdventureLogType.SWITCH">
       <span class="mdi mdi-sack mdi-large"></span>
+      {{log.logDate | date:'h:mm:ss'}}
       {{'adventure.log.switch' | translate:{from: log.from | equipmentFormat, fromId: log.fromId | equipmentFormat} }}
       <ng-container *ngIf="log.toId">
         {{'adventure.log.switch-with' | translate:{toId: log.toId | equipmentFormat} }}
@@ -39,6 +43,7 @@
 
     <ng-container *ngSwitchCase="AdventureLogType.TRADE">
       <span class="mdi mdi-hand-heart mdi-large"></span>
+      {{log.logDate | date:'h:mm:ss'}}
       <ng-container *ngIf="log.fromId">
         <ng-container *ngIf="log.toId">
           {{'adventure.log.trade-full' | translate:{
