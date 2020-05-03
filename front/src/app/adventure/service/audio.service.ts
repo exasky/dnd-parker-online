@@ -74,6 +74,7 @@ export class AmbientAudioService implements IAudioService {
     const delta = this.volume / (this.fadeInOutTime/this.fadeInOutIntervalDelay);
     this.ambientSound = new Audio(src);
     this.ambientSound.volume = 0;
+    this.ambientSound.loop = true;
     this.ambientSound.play();
     const interval = setInterval(() => {
       this.ambientSound.volume += delta;
