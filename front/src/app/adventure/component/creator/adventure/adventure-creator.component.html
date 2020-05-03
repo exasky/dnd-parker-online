@@ -1,7 +1,7 @@
 <mat-horizontal-stepper [linear]="true" class="flex-grow d-flex flex-column">
   <mat-step label="{{'campaign-creator.adventure-creator.choose-board' | translate}}">
 
-    <div class="d-flex flex-column" style="height: 85vh">
+    <div class="d-flex flex-column" style="height: calc(100vh - 192px)">
       <div>
         <div style="overflow-x: scroll; overflow-y: hidden; white-space: nowrap;">
           <ng-container *ngFor="let board of availableBoards">
@@ -41,14 +41,17 @@
         </gridster-item>
       </gridster>
 
-      <div class="d-flex justify-content-center">
-        <button mat-button (click)="adventureDeleted.emit()">{{'common.delete' | translate}}</button>
+      <div class="flex-shrink-0 d-flex justify-content-center mt-1" style="margin-bottom: -20px">
+        <button mat-raised-button color="warn" (click)="adventureDeleted.emit()">
+          <mat-icon>delete</mat-icon>
+          {{'common.delete' | translate}}
+        </button>
       </div>
     </div>
   </mat-step>
 
   <mat-step label="{{'campaign-creator.adventure-creator.adventure-info' | translate}}">
-    <div class="d-flex flex-column" style="height: 85vh">
+    <div class="d-flex flex-column" style="height: calc(100vh - 192px)">
       <div class="flex-grow d-flex flex-column justify-content-center align-items-center">
         <mat-form-field>
           <mat-label>{{'campaign-creator.adventure-creator.name' | translate}}</mat-label>
@@ -67,8 +70,11 @@
         </mat-form-field>
       </div>
 
-      <div class="d-flex justify-content-center">
-        <button mat-button (click)="adventureDeleted.emit()">{{'common.delete' | translate}}</button>
+      <div class="flex-shrink-0 d-flex justify-content-center" style="margin-bottom: -20px">
+        <button mat-raised-button color="warn" (click)="adventureDeleted.emit()">
+          <mat-icon>delete</mat-icon>
+          {{'common.delete' | translate}}
+        </button>
       </div>
     </div>
   </mat-step>

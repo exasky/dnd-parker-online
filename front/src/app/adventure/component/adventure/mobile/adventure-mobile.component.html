@@ -1,6 +1,6 @@
 <ng-container *ngIf="adventure">
   <ng-container *ngIf="authService.isGM">
-    <mat-tab-group class="flex-grow">
+    <mat-tab-group color="accent" class="flex-grow">
       <mat-tab label="GM">
         <app-gm-action-panel [adventureId]="adventure.id"
                              [initiatives]="characterTurns"
@@ -12,7 +12,7 @@
       <mat-tab label="Characters">
         <ng-template mat-tab-label>{{'adventure.gm-panel.characters' | translate}}</ng-template>
         <ng-template matTabContent>
-          <mat-tab-group class="flex-grow">
+          <mat-tab-group color="accent" class="flex-grow">
             <mat-tab *ngFor="let character of characters">
               <ng-template mat-tab-label>
                 <mat-icon *ngIf="currentTurn && currentTurn.characterName === character.name"
@@ -33,7 +33,7 @@
     </mat-tab-group>
   </ng-container>
   <ng-container *ngIf="!authService.isGM">
-    <mat-tab-group *ngIf="!authService.isGM" class="flex-grow">
+    <mat-tab-group *ngIf="!authService.isGM" color="accent" class="flex-grow">
       <mat-tab *ngFor="let character of characters">
         <ng-template mat-tab-label>
           <mat-icon *ngIf="currentTurn && currentTurn.characterName === character.name"

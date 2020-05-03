@@ -12,7 +12,7 @@
       <mat-option [value]="null">All</mat-option>
       <mat-option *ngFor="let character of data.characters"
                   [value]="character">
-        {{character.displayName}} (TODO Player name)
+        {{character.displayName}} ({{character.userName}})
       </mat-option>
     </mat-select>
   </mat-form-field>

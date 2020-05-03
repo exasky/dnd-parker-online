@@ -75,7 +75,7 @@ export class CampaignCreatorComponent implements OnInit {
   addNewAdventure() {
     const adventure = new Adventure();
 
-    adventure.name = 'todo';
+    adventure.name = 'Change Me ' + (this.campaign.adventures.length + 1);
 
     this.campaign.adventures.push(adventure);
   }
