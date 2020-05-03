@@ -32,10 +32,13 @@ $dark-primary: mat-palette($mat-grey, 900);
 $dark-accent: mat-palette($mat-brown);
 $dark-warn: mat-palette($mat-deep-orange);
 $dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
+
+$my-dark-primary: map-merge($dark-primary, (default: #212121AA));
 $my-dark-theme-background: map_merge($mat-dark-theme-background, (background: #323232));
+
 .unicorn-dark-theme {
   @include angular-material-theme(
-      (primary: $dark-primary,
+      (primary: $my-dark-primary,
         accent: $dark-accent,
         warn: $dark-warn,
         is-dark: true,
