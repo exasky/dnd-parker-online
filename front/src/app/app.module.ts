@@ -75,9 +75,9 @@ import {SwitchEquipmentDialogComponent} from "./adventure/component/adventure/co
 import {LogPanelComponent} from "./adventure/component/adventure/log/log-panel.component";
 import {EquipmentFormatterPipe} from "./common/pipe/equipment-formatter.pipe";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
-import {environment} from "../environments/environment";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {SelectWeaponDialogComponent} from "./adventure/component/adventure/context-menu/dialog/select-weapon-dialog.component";
+import {TimeAgoPipe} from "./common/pipe/time-ago.pipe";
 
 export function translateLoader(http: HttpClient): TranslateLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -121,7 +121,8 @@ export function translateLoader(http: HttpClient): TranslateLoader {
     SwitchEquipmentDialogComponent,
     LogPanelComponent,
     EquipmentFormatterPipe,
-    SelectWeaponDialogComponent
+    SelectWeaponDialogComponent,
+    TimeAgoPipe
   ],
   imports: [
     BrowserModule,
@@ -175,7 +176,8 @@ export function translateLoader(http: HttpClient): TranslateLoader {
     DrawnCardWebsocketService,
     DiceWebsocketService,
     CapitalizePipe,
-    SortPipe
+    SortPipe,
+    TimeAgoPipe
   ],
   bootstrap: [AppComponent]
 })

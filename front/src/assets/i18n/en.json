@@ -14,7 +14,18 @@
     "max-hp": "Max HP",
     "hp": "HP",
     "max-mp": "Max MP",
-    "mp": "MP"
+    "mp": "MP",
+    "time": {
+      "second_ago": "secs ago",
+      "minute_ago": "min ago",
+      "minutes_ago": "{{X}} min ago",
+      "hour_ago": "Hour ago",
+      "hours_ago": "{{X}} hours ago",
+      "day_ago": "day ago",
+      "days_ago": "{{X}} days ago",
+      "month_ago": "month ago",
+      "months_ago": "{{X}} months ago"
+    }
   },
   "login": {
     "username": "Username",

@@ -15,7 +15,18 @@
     "max-hp": "PV max",
     "hp": "PV",
     "max-mp": "PM max",
-    "mp": "PM"
+    "mp": "PM",
+    "time": {
+      "second_ago": "À l'instant",
+      "minute_ago": "1 min",
+      "minutes_ago": "{{X}} mins",
+      "hour_ago": "1 heure",
+      "hours_ago": "{{X}} heures",
+      "day_ago": "1 jour",
+      "days_ago": "{{X}} jours",
+      "month_ago": "1 mois",
+      "months_ago": "{{X}} mois"
+    }
   },
   "login": {
     "username": "Nom d'utilisateur",

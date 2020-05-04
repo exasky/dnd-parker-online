@@ -1,13 +1,36 @@
-::ng-deep .mat-list .mat-list-item .mat-line {
-  word-wrap: break-word;
-  white-space: pre-wrap;
+ul {
+  list-style-type: none;
+  padding-left: 0 !important;
 }
 
-::ng-deep .mat-list .mat-list-item {
-  min-height: 48px;
-  height: initial !important;
+li {
+  padding-left: 35px;
 }
 
-.mdi-large {
-  margin-right: 5px !important;
+li:before {
+  display: inline-block;
+  font: normal normal normal 24px/1 "Material Design Icons";
+  width: 6px;
+  margin-left: -30px;
+  margin-right: 20px;
+}
+
+li.li-type-TRADE:before {
+  content: "\F10F1";
+}
+
+li.li-type-SWITCH:before {
+  content: "\F0D2E";
+}
+
+li.li-type-ATTACK:before {
+  content: "\F0787";
+}
+
+li.li-type-DIE:before {
+  content: "\F068C";
+}
+
+li.li-type-OPEN_CHEST:before {
+  content: "\F0726";
 }

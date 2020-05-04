@@ -3,8 +3,8 @@ package com.exasky.dnd.adventure.rest.dto;
 import com.exasky.dnd.adventure.model.log.AdventureLog;
 import com.exasky.dnd.adventure.model.log.AdventureLogType;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class AdventureLogDto {
     private Long id;
-    private LocalDateTime logDate;
+    private ZonedDateTime logDate;
     private AdventureLogType type;
     private String from;
     private String fromId;
@@ -29,7 +29,7 @@ public class AdventureLogDto {
         AdventureLogDto dto = new AdventureLogDto();
 
         dto.setId(bo.getId());
-        dto.setLogDate(bo.getLogDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        dto.setLogDate(bo.getLogDate().toInstant().atZone(ZoneId.of("UTC")));
         dto.setType(bo.getType());
         dto.setFrom(bo.getFrom());
         dto.setFromId(bo.getFromId());
@@ -49,11 +49,11 @@ public class AdventureLogDto {
         this.id = id;
     }
 
-    public LocalDateTime getLogDate() {
+    public ZonedDateTime getLogDate() {
         return logDate;
     }
 
-    public void setLogDate(LocalDateTime logDate) {
+    public void setLogDate(ZonedDateTime logDate) {
         this.logDate = logDate;
     }
 
