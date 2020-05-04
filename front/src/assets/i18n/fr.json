@@ -156,6 +156,8 @@
     "context-menu": {
       "attack": "Attaquer",
       "move": "Se déplacer",
+      "move-reset": "Annuler le déplacement",
+      "move-validate": "Valider le déplacement",
       "trade": "Echanger",
       "switch-equipment": "Changer d'équipement",
       "show-trap": "Montrer le piège",
