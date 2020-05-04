@@ -4,6 +4,7 @@ import com.exasky.dnd.adventure.rest.dto.SimpleUserDto;
 
 public class OpenAttackDiceDto {
     private Long fromAttackId;
+    private Long fromAttackWeaponId;
     private Long toAttackId;
     private Boolean isMonsterAttack;
     private Boolean isMonsterAttacked;
@@ -17,6 +18,14 @@ public class OpenAttackDiceDto {
 
     public void setFromAttackId(Long fromAttackId) {
         this.fromAttackId = fromAttackId;
+    }
+
+    public Long getFromAttackWeaponId() {
+        return fromAttackWeaponId;
+    }
+
+    public void setFromAttackWeaponId(Long fromAttackWeaponId) {
+        this.fromAttackWeaponId = fromAttackWeaponId;
     }
 
     public Long getToAttackId() {

@@ -77,6 +77,7 @@ import {EquipmentFormatterPipe} from "./common/pipe/equipment-formatter.pipe";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {environment} from "../environments/environment";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+import {SelectWeaponDialogComponent} from "./adventure/component/adventure/context-menu/dialog/select-weapon-dialog.component";
 
 export function translateLoader(http: HttpClient): TranslateLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -119,7 +120,8 @@ export function translateLoader(http: HttpClient): TranslateLoader {
     TradeCharacterItemDisplayerComponent,
     SwitchEquipmentDialogComponent,
     LogPanelComponent,
-    EquipmentFormatterPipe
+    EquipmentFormatterPipe,
+    SelectWeaponDialogComponent
   ],
   imports: [
     BrowserModule,

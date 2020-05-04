@@ -19,6 +19,7 @@ import {AdventureCardService} from "../../../service/adventure-card.service";
 import {AdventureUtils} from "../utils/utils";
 import {CharacterEquipment} from "../../../model/character";
 import {DiceService} from "../../../service/dice.service";
+import {SelectWeaponDialogComponent} from "./dialog/select-weapon-dialog.component";
 
 @Component({
   selector: 'app-context-menu',
@@ -174,7 +175,11 @@ export class ContextMenuComponent {
     if (Initiative.isGmTurn(this.currentInitiative)) {
       this.diceService.openDiceAttackDialog(this.adventureId, this.selectedMonsterId, item.id, true, true);
     } else {
-      this.diceService.openDiceAttackDialog(this.adventureId, this.getCurrentCharacterTurn().character.id, item.id, false, true);
+      this.dialog.open(SelectWeaponDialogComponent, DialogUtils.getDefaultConfig({character: this.getCurrentCharacterTurn().character}))
+        .afterClosed().subscribe((value: CharacterEquipment) => {
+        if (!value) return;
+        this.diceService.openDiceAttackDialog(this.adventureId, this.getCurrentCharacterTurn().character.id, item.id, false, true, value.id);
+      });
     }
   }
 
@@ -182,7 +187,12 @@ export class ContextMenuComponent {
     if (Initiative.isGmTurn(this.currentInitiative)) {
       this.diceService.openDiceAttackDialog(this.adventureId, this.selectedMonsterId, item.id, true, false);
     } else {
-      this.diceService.openDiceAttackDialog(this.adventureId, this.getCurrentCharacterTurn().character.id, item.id, false, false);
+      this.dialog.open(SelectWeaponDialogComponent, DialogUtils.getDefaultConfig({character: this.getCurrentCharacterTurn().character}))
+        .afterClosed().subscribe((value: CharacterEquipment) => {
+        if (!value) return;
+        this.diceService.openDiceAttackDialog(this.adventureId, this.getCurrentCharacterTurn().character.id, item.id, false, false, value.id);
+      });
+
     }
   }
 

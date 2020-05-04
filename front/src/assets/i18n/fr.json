@@ -79,6 +79,7 @@
     "log": {
       "header": "Historique !",
       "attack": "{{from}} a attaqué {{to}}",
+      "attack-with": "{{from}} a attaqué {{to}} avec {{fromId}}",
       "die": "{{from}} est mort",
       "switch": "{{from}} a transféré {{fromId}}",
       "switch-with": " avec {{toId}}",
@@ -163,6 +164,10 @@
       "select-card": {
         "header": "Sélection de carte",
         "validate": "Valider la carte"
+      },
+      "select-weapon": {
+        "header": "Sélection d'une arme",
+        "validate": "Valider l'arme"
       },
       "trade": {
         "header": "Echange d'équipement",

@@ -52,6 +52,7 @@ import {Character} from "../../model/character";
 import {TradeDialogComponent} from "./context-menu/dialog/trade/trade-dialog.component";
 import {SwitchEquipmentDialogComponent} from "./context-menu/dialog/switch-equipment-dialog.component";
 import {CardUtils} from "../../../common/utils/card-utils";
+import {CharacterItem} from "../../model/item";
 
 @Component({
   selector: 'app-adventure',
@@ -347,7 +348,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             this.actionPanelDrawer.opened = true;
 
             const attackParameters = diceMessage.message;
-            let fromAttack, toAttack;
+            let fromAttack, toAttack, fromAttackWeapon;
 
             fromAttack = attackParameters.isMonsterAttack
               ? this.monsters.find(monster => monster.id === attackParameters.fromAttackId)
@@ -360,11 +361,17 @@ export class AdventureComponent implements OnInit, OnDestroy {
               toAttack = this.characters.find(character => character.id === attackParameters.toAttackId);
             }
 
+            if (!attackParameters.isMonsterAttack && attackParameters.fromAttackWeaponId) {
+              fromAttackWeapon = (fromAttack as CharacterItem).character.equippedItems
+                .find(equipped => equipped.id === attackParameters.fromAttackWeaponId);
+            }
+
             this.openDialog(DiceAttackDialogComponent, {
               adventureId,
               user: attackParameters.user,
               fromAttack,
-              toAttack
+              toAttack,
+              fromAttackWeapon
             }).afterClosed().subscribe(() => {
               this.actionPanelDrawer.opened = saveDrawerOpen;
             });

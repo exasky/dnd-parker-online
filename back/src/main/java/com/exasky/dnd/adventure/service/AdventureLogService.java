@@ -44,7 +44,12 @@ public class AdventureLogService {
         } else {
             adventure.getCharacters().stream()
                     .filter(characterLayer -> characterLayer.getCharacter().getId().equals(dto.getFromAttackId())).findFirst()
-                    .ifPresent(characterLayerItem -> adventureLog.setFrom(characterLayerItem.getCharacter().getDisplayName()));
+                    .ifPresent(characterLayerItem -> {
+                        adventureLog.setFrom(characterLayerItem.getCharacter().getDisplayName());
+                        characterLayerItem.getCharacter().getEquipments().stream()
+                                .filter(equipment -> equipment.getId().equals(dto.getFromAttackWeaponId()))
+                                .findFirst().ifPresent(attackWeapon -> adventureLog.setFromId(attackWeapon.getName()));
+                    });
         }
 
         if (dto.getIsMonsterAttacked()) {

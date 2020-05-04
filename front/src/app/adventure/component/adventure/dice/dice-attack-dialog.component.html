@@ -1,11 +1,20 @@
 <div class="d-flex">
   <div class="d-flex flex-column align-items-center justify-content-evenly">
     {{'adventure.dialog.dice.attacker' | translate }}
-    <ng-container *ngIf="data.fromAttack.type === LayerElementType.CHARACTER">
-      <img width="200" [src]="CardUtils.getCharacterCharacterImage(data.fromAttack['character'])">
-    </ng-container>
+    <div *ngIf="data.fromAttack.type === LayerElementType.CHARACTER" class="position-relative">
+      <img width="200"
+           [src]="CardUtils.getCharacterCharacterImage(data.fromAttack['character'])"
+           [alt]="data.fromAttack['character'].name">
+      <ng-container *ngIf="data.fromAttackWeapon">
+        <img width="170" class="position-absolute" style="bottom: 0; right: 0"
+             [src]="CardUtils.getCardImage(data.fromAttackWeapon)"
+             [alt]="data.fromAttackWeapon.name">
+      </ng-container>
+    </div>
     <ng-container *ngIf="data.fromAttack.type === LayerElementType.MONSTER">
-      <img width="200" [src]="CardUtils.getMonsterDescriptionImage(data.fromAttack['monster'])">
+      <img width="200"
+           [src]="CardUtils.getMonsterDescriptionImage(data.fromAttack['monster'])"
+           [alt]="data.fromAttack['monster'].element.name">
     </ng-container>
   </div>
   <div class="d-flex flex-column">
@@ -14,12 +23,14 @@
         <img height="70px" width="70px"
              style="border-radius: 5px"
              [src]="'assets/dice/' + dice.name + '/1.jpeg'"
+             [alt]="dice.name"
              (click)="addToDiceList(dice)">
       </div>
     </div>
     <mat-dialog-content>
       <div class="d-flex flex-wrap justify-content-evenly">
         <!-- DO NOT REMOVE diceCmp. It's used by abstract parent class -->
+        <!--suppress JSUnusedGlobalSymbols -->
         <app-dice *ngFor="let dice of selectedDices"
                   #diceCmp
                   [diceType]="dice.name"
@@ -30,10 +41,14 @@
   <div class="d-flex flex-column align-items-center justify-content-evenly">
     {{'adventure.dialog.dice.attacked' | translate }}
     <ng-container *ngIf="data.toAttack.type === LayerElementType.CHARACTER">
-      <img width="200" [src]="CardUtils.getCharacterCharacterImage(data.toAttack['character'])">
+      <img width="200"
+           [src]="CardUtils.getCharacterCharacterImage(data.toAttack['character'])"
+           [alt]="data.toAttack['character'].name">
     </ng-container>
     <ng-container *ngIf="data.toAttack.type === LayerElementType.MONSTER">
-      <img width="200" [src]="CardUtils.getMonsterDescriptionImage(data.toAttack['monster'])">
+      <img width="200"
+           [src]="CardUtils.getMonsterDescriptionImage(data.toAttack['monster'])"
+           [alt]="data.toAttack['monster'].element.name">
     </ng-container>
   </div>
 </div>

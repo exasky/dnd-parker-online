@@ -16,6 +16,7 @@ import {DiceMessage, DiceMessageType} from "../../../model/dice-message";
 import {LayerGridsterItem} from "../../../model/layer-gridster-item";
 import {LayerElementType} from "../../../model/adventure";
 import {CardUtils} from "../../../../common/utils/card-utils";
+import {CharacterEquipment} from "../../../model/character";
 
 abstract class AbstractDiceDialogComponent implements OnInit, OnDestroy {
   @ViewChildren('diceCmp') diceComponents: QueryList<DiceComponent>;
@@ -124,7 +125,8 @@ export class DiceAttackDialogComponent extends AbstractDiceDialogComponent {
                 adventureId: string,
                 user: SimpleUser,
                 fromAttack: LayerGridsterItem,
-                toAttack: LayerGridsterItem
+                toAttack: LayerGridsterItem,
+                fromAttackWeapon?: CharacterEquipment
               }) {
     super(gmService, authService, diceWS, diceService, toaster, audioService, data);
   }
