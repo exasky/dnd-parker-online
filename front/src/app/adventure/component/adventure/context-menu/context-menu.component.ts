@@ -8,7 +8,7 @@ import {
   MonsterLayerGridsterItem,
   TrapLayerGridsterItem
 } from "../../../model/layer-gridster-item";
-import {Initiative, LayerElement, LayerElementType} from "../../../model/adventure";
+import {GM_CHAR_NAME, Initiative, LayerElement, LayerElementType} from "../../../model/adventure";
 import {AuthService} from "../../../../login/auth.service";
 import {AdventureService} from "../../../service/adventure.service";
 import {GmService} from "../../../service/gm.service";
@@ -196,7 +196,6 @@ export class ContextMenuComponent {
         if (!value) return;
         this.diceService.openDiceAttackDialog(this.adventureId, this.getCurrentCharacterTurn().character.id, item.id, false, false, value.id);
       });
-
     }
   }
 
@@ -233,13 +232,18 @@ export class ContextMenuComponent {
 
   private getCurrentInitiative(): Initiative {
     if (!this.currentInitiative) {
-
+      let characterName = '';
+      if (this.selectedItem) {
+        if (this.selectedItem.type === LayerElementType.CHARACTER) {
+          characterName = (this.selectedItem as CharacterLayerGridsterItem).character.name;
+        } else if (this.selectedItem.type === LayerElementType.MONSTER) {
+          characterName = GM_CHAR_NAME;
+        }
+      }
       return {
-        characterName: this.selectedItem ? (this.selectedItem as CharacterLayerGridsterItem).character.name : '',
+        characterName,
         number: 0
       };
-    } else {
-
     }
     return this.currentInitiative;
   }

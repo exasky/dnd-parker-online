@@ -27,7 +27,7 @@
         </button>
       </ng-container>
       <ng-container *ngIf="!isCharacterMove">
-        <button mat-menu-item (click)="attackCharacter(item)" [disabled]="authService.isGM && !selectedMonsterId">
+        <button mat-menu-item (click)="attackCharacter(item)" [disabled]="authService.isGM && (!selectedMonsterId || !selectedItem)">
           <span class="mdi mdi-sword-cross mdi-large"></span>
           {{'adventure.context-menu.attack' | translate}}
         </button>

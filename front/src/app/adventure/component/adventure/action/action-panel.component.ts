@@ -1,6 +1,6 @@
 import {Component, HostBinding, Input} from "@angular/core";
 import {GmService} from "../../../service/gm.service";
-import {Adventure, Initiative} from "../../../model/adventure";
+import {Adventure, GM_CHAR_NAME, Initiative} from "../../../model/adventure";
 import {MatDialog} from "@angular/material/dialog";
 import {DiceService} from "../../../service/dice.service";
 import {AuthService} from "../../../../login/auth.service";
@@ -58,7 +58,7 @@ export class ActionPanelComponent {
       this.initiatives.sort((a, b) => a.number - b.number)
         .forEach((init, idx) => {
           const characterItem = characterItems.find(charItem => charItem.character.name === init.characterName);
-          this.sortedCharacterItems[idx] = characterItem ? characterItem : ({character: {name: 'game-master'}}) as unknown as CharacterItem;
+          this.sortedCharacterItems[idx] = characterItem ? characterItem : ({character: {name: GM_CHAR_NAME}}) as unknown as CharacterItem;
         });
     }
   }
