@@ -115,9 +115,10 @@ public class GMService {
         if (Objects.isNull(adventure)) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.ADVENTURE.NOT_FOUND);
         }
+        adventure.setCurrentInitiative(null);
+
         adventure.getCampaign().getCharacterTurns().forEach(initiativeRepository::delete);
         adventure.getCampaign().getCharacterTurns().clear();
-        adventure.setCurrentInitiative(null);
     }
 
     @Transactional
@@ -143,11 +144,14 @@ public class GMService {
     public Long findPreviousAdventureId(Long adventureId) {
         Adventure adventure = this.adventureService.getById(adventureId);
         Campaign campaign = adventure.getCampaign();
+
         List<Adventure> adventures = campaign.getAdventures();
         int adventureIdx = adventures.indexOf(adventure);
         if (adventureIdx <= 0) {
             return adventure.getId();
         } else {
+            adventure.setCurrentInitiative(null);
+            campaign.getCharacterTurns().clear();
             Adventure newCurrentAdventure = adventures.get(adventureIdx - 1);
             campaign.setCurrentAdventure(newCurrentAdventure);
             return newCurrentAdventure.getId();
@@ -158,11 +162,14 @@ public class GMService {
     public Long findNextAdventureId(Long adventureId) {
         Adventure adventure = this.adventureService.getById(adventureId);
         Campaign campaign = adventure.getCampaign();
+
         List<Adventure> adventures = campaign.getAdventures();
         int adventureIdx = adventures.indexOf(adventure);
         if (adventureIdx >= adventures.size() - 1) {
             return adventure.getId();
         } else {
+            adventure.setCurrentInitiative(null);
+            campaign.getCharacterTurns().clear();
             Adventure newCurrentAdventure = adventures.get(adventureIdx + 1);
             campaign.setCurrentAdventure(newCurrentAdventure);
             return newCurrentAdventure.getId();
