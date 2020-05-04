@@ -13,7 +13,11 @@ export class DragOverDirective {
       this.enterTarget = event.target;
       event.stopPropagation();
       event.preventDefault();
-      el.nativeElement.style.border = '5px dashed white';
+      if (!!localStorage.getItem('isDark')) {
+        el.nativeElement.style.border = '5px dashed white';
+      } else {
+        el.nativeElement.style.border = '5px dashed black';
+      }
       return false;
     };
 
