@@ -2,14 +2,20 @@ package com.exasky.dnd.adventure.service.layer;
 
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.layer.item.CharacterLayerItem;
+import com.exasky.dnd.adventure.repository.CharacterRepository;
 import com.exasky.dnd.adventure.repository.LayerElementRepository;
 import com.exasky.dnd.adventure.repository.layer.CharacterLayerItemRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CharacterLayerItemService extends ParentLayerItemService<CharacterLayerItem> {
-    public CharacterLayerItemService(CharacterLayerItemRepository characterLayerItemRepository, LayerElementRepository repo) {
+    private final CharacterRepository characterRepository;
+
+    public CharacterLayerItemService(CharacterLayerItemRepository characterLayerItemRepository,
+                                     LayerElementRepository repo,
+                                     CharacterRepository characterRepository) {
         super(characterLayerItemRepository, repo);
+        this.characterRepository = characterRepository;
     }
 
     @Override
@@ -19,7 +25,7 @@ public class CharacterLayerItemService extends ParentLayerItemService<CharacterL
 
     @Override
     protected void specific_create(CharacterLayerItem newLayerItem, CharacterLayerItem toCreate, Adventure attachedAdventure) {
-        newLayerItem.setCharacter(toCreate.getCharacter());
+        newLayerItem.setCharacter(characterRepository.getOne(toCreate.getCharacter().getId()));
     }
 
     @Override

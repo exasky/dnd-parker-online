@@ -4,6 +4,7 @@ import com.exasky.dnd.adventure.model.Character;
 import com.exasky.dnd.adventure.model.card.CharacterItem;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -11,6 +12,7 @@ import javax.persistence.Table;
 @Table(name = "layer_item_character")
 public class CharacterLayerItem extends LayerItem {
     @ManyToOne
+    @JoinColumn(name = "character_id")
     private Character character;
 
     public CharacterLayerItem() {
