@@ -215,13 +215,16 @@ export class AdventureComponent implements OnInit, OnDestroy {
           case AdventureMessageType.ROLL_INITIATIVE:
             const charTurns: Initiative[] = message.message;
             this.characterTurns = charTurns;
-            this.currentTurn = this.characterTurns[0];
-            const characterGItem = this.characters.find(char => char.name === this.currentTurn.characterName);
-            if (characterGItem) {
-              characterGItem.dragEnabled = this.isDragEnabledForGridsterItem(characterGItem);
-              this.updateGridsterItem(characterGItem);
+            if (!this.characterTurns || this.characterTurns.length === 0) { // Reset initiative
+              this.currentTurn = null;
+            } else {
+              this.currentTurn = this.characterTurns[0];
+              this.openDialog(InitiativeDialogComponent, {adventureId: this.adventure.id, initiatives: charTurns});
             }
-            this.openDialog(InitiativeDialogComponent, {adventureId: this.adventure.id, initiatives: charTurns});
+            this.characters.forEach(char => {
+              char.dragEnabled = this.isDragEnabledForGridsterItem(char);
+              this.updateGridsterItem(char);
+            })
             break;
           case AdventureMessageType.ADD_LAYER_ITEM:
             this.addItem(message.message);
@@ -482,7 +485,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   stopItemDrag(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
     this.focusMainDrawer()
 
-    if (!this.authService.isGM) return;
+    if (!this.authService.isGM && this.currentTurn) return;
 
     if (item.x === itemComponent.$item.x && item.y === itemComponent.$item.y) { // Case click
       if (this.isSameItemAsSelected(item)) { // Click on case selected case
@@ -494,8 +497,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
           this.selectedItem = item;
         }
       }
-    } else { // Case drag&drop
-      this.selectedItem = null;
     }
   }
 
@@ -522,7 +523,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   validateCharacterMove() {
     this.dashboard.splice(this.dashboard.indexOf(this.beforeMoveSelectedItem), 1);
     this.beforeMoveSelectedItem = null;
-    this.selectedItem = null;
+    if (this.currentTurn) this.selectedItem = null;
   }
 
   onMouseMove(e: MouseEvent) {
@@ -709,25 +710,37 @@ export class AdventureComponent implements OnInit, OnDestroy {
   private isDragEnabledForItem(item: LayerItem): boolean {
     const user = this.authService.currentUserValue;
 
-    return user.role === ROLE_GM || (
-      item.element.type === LayerElementType.CHARACTER
-      && AdventureUtils.isMyTurn(user, this.currentTurn)
-      && this.currentTurn.characterName === (item as CharacterLayerItem).character.name
-      && user.characters.some(char => char.name.toLowerCase() === (item as CharacterLayerItem).character.name.toLowerCase())
-      && (item as CharacterLayerItem).character.hp !== 0
-    )
+    if (user.role === ROLE_GM) return true;
+
+    if (item.element.type === LayerElementType.CHARACTER) {
+      if (!user.characters.some(char => char.name.toLowerCase() === item.element.name.toLowerCase())) return false;
+      if ((item as CharacterLayerItem).character.hp === 0) return false;
+      if (!this.currentTurn) return true;
+      if (AdventureUtils.isMyTurn(user, this.currentTurn)
+        && this.currentTurn.characterName === (item as CharacterLayerItem).character.name) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private isDragEnabledForGridsterItem(item: LayerGridsterItem): boolean {
     const user = this.authService.currentUserValue;
 
-    return user.role === ROLE_GM || (
-      item.type === LayerElementType.CHARACTER
-      && AdventureUtils.isMyTurn(user, this.currentTurn)
-      && this.currentTurn.characterName === (item as CharacterLayerGridsterItem).character.name
-      && user.characters.some(char => char.name.toLowerCase() === item.name.toLowerCase())
-      && (item as CharacterLayerGridsterItem).character.hp !== 0
-    )
+    if (user.role === ROLE_GM) return true;
+
+    if (item.type === LayerElementType.CHARACTER) {
+      if (!user.characters.some(char => char.name.toLowerCase() === item.name.toLowerCase())) return false;
+      if ((item as CharacterLayerGridsterItem).character.hp === 0) return false;
+      if (!this.currentTurn) return true;
+      if (AdventureUtils.isMyTurn(user, this.currentTurn)
+        && this.currentTurn.characterName === (item as CharacterLayerGridsterItem).character.name) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   // endregion

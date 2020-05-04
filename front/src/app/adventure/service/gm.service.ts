@@ -33,6 +33,10 @@ export class GmService {
     return this.http.get(GmService.API_URL + '/initiative/' + adventureId).subscribe();
   }
 
+  resetInitiative(adventureId: number | string) {
+    return this.http.get(GmService.API_URL + '/initiative-reset/' + adventureId).subscribe();
+  }
+
   updateInitiatives(adventureId: number | string, initiatives: Initiative[]) {
     return this.http.post(GmService.API_URL + '/initiative/' + adventureId, initiatives).subscribe();
   }

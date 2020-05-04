@@ -109,6 +109,18 @@ public class GMService {
     }
 
     @Transactional
+    public void resetInitiative(Long adventureId) {
+        Adventure adventure = adventureService.getById(adventureId);
+
+        if (Objects.isNull(adventure)) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.ADVENTURE.NOT_FOUND);
+        }
+        adventure.getCampaign().getCharacterTurns().forEach(initiativeRepository::delete);
+        adventure.getCampaign().getCharacterTurns().clear();
+        adventure.setCurrentInitiative(null);
+    }
+
+    @Transactional
     public List<Initiative> updateInitiative(Long adventureId, List<Initiative> updated) {
         Campaign campaign = campaignRepository.getByAdventureId(adventureId);
 

@@ -5,11 +5,10 @@ import {MatDialog} from "@angular/material/dialog";
 import {DiceService} from "../../../service/dice.service";
 import {AuthService} from "../../../../login/auth.service";
 import {AdventureService} from "../../../service/adventure.service";
-import {AudioService, AmbientAudioService} from "../../../service/audio.service";
+import {AmbientAudioService, AudioService} from "../../../service/audio.service";
 import {AdventureCardService} from "../../../service/adventure-card.service";
 import {CharacterItem} from "../../../model/item";
 import {Router} from "@angular/router";
-import {AdventureUtils} from "../utils/utils";
 import {Character} from "../../../model/character";
 
 @Component({
@@ -52,11 +51,16 @@ export class ActionPanelComponent {
   }
 
   private sortCharactersByInitiative(characterItems: CharacterItem[]) {
-    this.initiatives.sort((a, b) => a.number - b.number)
-      .forEach((init, idx) => {
-        const characterItem = characterItems.find(charItem => charItem.character.name === init.characterName);
-        this.sortedCharacterItems[idx] = characterItem ? characterItem : ({character: {name: 'game-master'}}) as unknown as CharacterItem;
-      });
+    if (!this.initiatives || this.initiatives.length === 0) {
+      this.sortedCharacterItems = characterItems;
+      this.sortedCharacterItems.sort((c1, c2) => c1.character.name < c2.character.name ? -1 : 1);
+    } else {
+      this.initiatives.sort((a, b) => a.number - b.number)
+        .forEach((init, idx) => {
+          const characterItem = characterItems.find(charItem => charItem.character.name === init.characterName);
+          this.sortedCharacterItems[idx] = characterItem ? characterItem : ({character: {name: 'game-master'}}) as unknown as CharacterItem;
+        });
+    }
   }
 
   get isMyTurn(): boolean {
@@ -73,6 +77,12 @@ export class ActionPanelComponent {
   rollInitiative() {
     if (!this.disableActions) {
       this.gmService.rollInitiative(this.adventure.id);
+    }
+  }
+
+  resetInitiative() {
+    if (!this.disableActions) {
+      this.gmService.resetInitiative(this.adventure.id);
     }
   }
 
