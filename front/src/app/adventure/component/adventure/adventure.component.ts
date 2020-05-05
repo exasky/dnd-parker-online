@@ -1,4 +1,15 @@
-import {Component, ElementRef, HostBinding, OnDestroy, OnInit, Type, ViewChild} from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostBinding,
+  OnDestroy,
+  OnInit,
+  Type,
+  ViewChild,
+  ChangeDetectorRef,
+  NgZone
+} from "@angular/core";
 import {
   CompactType,
   DisplayGrid,
@@ -53,11 +64,13 @@ import {TradeDialogComponent} from "./context-menu/dialog/trade/trade-dialog.com
 import {SwitchEquipmentDialogComponent} from "./context-menu/dialog/switch-equipment-dialog.component";
 import {CardUtils} from "../../../common/utils/card-utils";
 import {CharacterItem} from "../../model/item";
+import {PlayersCursorComponent} from "./cursor/players-cursor.component";
 
 @Component({
   selector: 'app-adventure',
   templateUrl: './adventure.component.html',
-  styleUrls: ['./adventure.component.scss']
+  styleUrls: ['./adventure.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdventureComponent implements OnInit, OnDestroy {
   @HostBinding('class') cssClasses = "flex-grow d-flex flex-column";
@@ -70,6 +83,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
   @ViewChild('mainDrawerContainer', {read: ElementRef}) mainDrawerContainer: ElementRef;
 
   @ViewChild('gridster', {read: GridsterComponent}) gridster: GridsterComponent;
+
+  @ViewChild('playersCursor', {read: PlayersCursorComponent}) playersCursor: PlayersCursorComponent;
 
   getMonsterDescriptionImage = CardUtils.getMonsterDescriptionImage;
 
@@ -125,7 +140,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
               private audioService: AudioService,
               private ambientService: AmbientAudioService,
               private router: Router,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private cdr: ChangeDetectorRef,
+              private zone: NgZone) {
   }
 
   ngOnInit() {
@@ -148,6 +165,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
       this.initGridsterConf();
       this.initDashboard();
+
+      this.zone.runOutsideAngular(() => {
+        this.boardPanel.nativeElement.addEventListener('mousemove', this.onMouseMove.bind(this));
+        this.boardPanel.nativeElement.addEventListener('mouseout', this.onMouseOut.bind(this));
+      });
     });
 
     this.adventureWSObs = this.adventureWS.getObservable(adventureId).subscribe((receivedMsg: SocketResponse) => {
@@ -180,6 +202,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
                   this.otherPlayersCursors[playerCursorIxd] = mouseMoveEvent;
                 }
               }
+              this.playersCursor.playerCursors = this.otherPlayersCursors;
+              // this.otherPlayersCursors = JSON.parse(JSON.stringify(this.otherPlayersCursors));
+              // this.cdr.detectChanges();
             }
             break;
           case AdventureMessageType.UPDATE_CAMPAIGN:
@@ -226,18 +251,23 @@ export class AdventureComponent implements OnInit, OnDestroy {
               char.dragEnabled = this.isDragEnabledForGridsterItem(char);
               this.updateGridsterItem(char);
             })
+            this.cdr.detectChanges();
             break;
           case AdventureMessageType.ADD_LAYER_ITEM:
             this.addItem(message.message);
+            this.cdr.detectChanges();
             break;
           case AdventureMessageType.UPDATE_LAYER_ITEM:
             this.updateItem(message.message);
+            this.cdr.detectChanges();
             break;
           case AdventureMessageType.REMOVE_LAYER_ITEM:
             this.removeItem(message.message);
+            this.cdr.detectChanges();
             break;
           case AdventureMessageType.SELECT_MONSTER:
             this.selectedMonsterId = message.message;
+            this.cdr.detectChanges();
             break;
           case AdventureMessageType.ALERT:
             const alert: AlertMessage = message.message;
@@ -292,6 +322,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             }
 
             this.closeDialog();
+            this.cdr.detectChanges();
             break;
           case AdventureMessageType.ASK_TRADE:
             const trade = message.message;
@@ -461,6 +492,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     this.adventure.monsters.forEach(monster => this.updateItem(monster));
     this.adventure.characters.forEach(character => this.updateItem(character));
     this.adventure.otherItems.forEach(item => this.updateItem(item));
+    this.cdr.detectChanges();
   }
 
   toggleLogPanel() {
@@ -815,4 +847,16 @@ export class AdventureComponent implements OnInit, OnDestroy {
   private isSameItemAsSelected(item: LayerGridsterItem): boolean {
     return this.selectedItem && this.selectedItem.type === item.type && this.selectedItem.id === item.id;
   }
+
+  // region trackBy perf
+  trackByUserId(index, item) {
+    return item.userId;
+  }
+
+  trackById(index, item) {
+    console.log('trackById: ');
+    console.log(item);
+    return item.id;
+  }
+  // endregion
 }

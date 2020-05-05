@@ -78,6 +78,7 @@ import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {SelectWeaponDialogComponent} from "./adventure/component/adventure/context-menu/dialog/select-weapon-dialog.component";
 import {TimeAgoPipe} from "./common/pipe/time-ago.pipe";
+import {PlayersCursorComponent} from "./adventure/component/adventure/cursor/players-cursor.component";
 
 export function translateLoader(http: HttpClient): TranslateLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -122,7 +123,8 @@ export function translateLoader(http: HttpClient): TranslateLoader {
     LogPanelComponent,
     EquipmentFormatterPipe,
     SelectWeaponDialogComponent,
-    TimeAgoPipe
+    TimeAgoPipe,
+    PlayersCursorComponent
   ],
   imports: [
     BrowserModule,
