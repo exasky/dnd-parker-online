@@ -210,7 +210,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
                   this.otherPlayersCursors[playerCursorIxd] = mouseMoveEvent;
                 }
               }
-              this.playersCursor.playerCursors = this.otherPlayersCursors;
+              this.playersCursor.setCharacters(this.characters);
+              this.playersCursor.setPlayerCursors(this.otherPlayersCursors);
             }
             break;
           case AdventureMessageType.UPDATE_CAMPAIGN:

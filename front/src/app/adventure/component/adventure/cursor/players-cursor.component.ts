@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from "@angular/core";
 import {MouseMove} from "../../../model/adventure-message";
 import {CharacterLayerGridsterItem} from "../../../model/layer-gridster-item";
 
@@ -10,14 +10,19 @@ import {CharacterLayerGridsterItem} from "../../../model/layer-gridster-item";
 })
 export class PlayersCursorComponent {
 
-  @Input()
-  characters: CharacterLayerGridsterItem[];
+  // TODO set here receive WS for mousemove
 
+  characters: CharacterLayerGridsterItem[];
   enhancedCursors: MouseMove[];
 
-  @Input()
-  set playerCursors(playerCursors: MouseMove[]) {
-    console.log(playerCursors);
+  constructor(private cdr: ChangeDetectorRef) {
+  }
+
+  setCharacters(characters: CharacterLayerGridsterItem[]) {
+    this.characters = characters;
+  }
+
+  setPlayerCursors(playerCursors: MouseMove[]) {
     this.enhancedCursors = playerCursors;
     this.enhancedCursors.forEach(cursor => {
       const charNames = this.getCharacterNamesFromId(cursor.userId);
@@ -25,9 +30,6 @@ export class PlayersCursorComponent {
       cursor['chars'] = charNames;
     })
     this.cdr.detectChanges();
-  }
-
-  constructor(private cdr: ChangeDetectorRef) {
   }
 
   private getCharacterNamesFromId(userId) {
