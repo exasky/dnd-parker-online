@@ -30,7 +30,7 @@ export class AdventureService {
   }
 
   playerMouseMove(adventureId, mouseMove: MouseMove) {
-    this.http.post(AdventureService.API_URL + '/mouse-move/' + adventureId, mouseMove).subscribe();
+    return this.http.post(AdventureService.API_URL + '/mouse-move/' + adventureId, mouseMove);
   }
 
   addLayerItem(adventureId, layerItem: LayerItem) {

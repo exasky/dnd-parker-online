@@ -75,6 +75,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   private lastMouseMoveSend: number;
   private mouseMoveDelay = 33; // 30fps
+  private isMoveSending: boolean = false;
 
   adventureWSObs: Subscription;
   drawnCardWSObs: Subscription;
@@ -527,12 +528,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   onMouseMove(e: MouseEvent) {
-    if (!this.showCursor) {
-      return;
-    }
-    if (Date.now() - this.lastMouseMoveSend < this.mouseMoveDelay) {
-      return;
-    }
+    if (!this.showCursor) return;
+    if (this.isMoveSending) return;
+    if (Date.now() - this.lastMouseMoveSend < this.mouseMoveDelay) return;
+
+    this.isMoveSending = true;
     this.lastMouseMoveSend = Date.now();
     const mouseMove = new MouseMove();
     mouseMove.x = e.pageX;
@@ -541,7 +541,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
     mouseMove.offsetY = this.boardPanel.nativeElement.getBoundingClientRect().top;
     mouseMove.userId = this.authService.currentUserValue.id;
     mouseMove.username = this.authService.currentUserValue.username;
-    this.adventureService.playerMouseMove(this.adventure.id, mouseMove);
+    this.adventureService.playerMouseMove(this.adventure.id, mouseMove).subscribe(() => {
+      this.isMoveSending = false;
+    })
   }
 
   onMouseOut() {
@@ -549,7 +551,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
     mouseMove.x = -1;
     mouseMove.y = -1;
     mouseMove.userId = this.authService.currentUserValue.id;
-    this.adventureService.playerMouseMove(this.adventure.id, mouseMove);
+    this.adventureService.playerMouseMove(this.adventure.id, mouseMove).subscribe(() => {
+      this.isMoveSending = false;
+    });
   }
 
   onKeyboard(e: KeyboardEvent) {
