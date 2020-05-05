@@ -73,6 +73,14 @@ import {PlayersCursorComponent} from "./cursor/players-cursor.component";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdventureComponent implements OnInit, OnDestroy {
+
+  // TODO Performance
+  // create components pour each type of GridsterLayerItem with ChangeDetectionStrategy.OnPush
+  // on ws receive: update the right element instead of all oh them
+  // how to add element without updating others ?
+  // @ViewChildren to have the list of items ?
+  // One ViewChildren per type of components ?
+
   @HostBinding('class') cssClasses = "flex-grow d-flex flex-column";
 
   @ViewChild('boardPanel', {read: ElementRef}) boardPanel: ElementRef;
@@ -203,8 +211,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
                 }
               }
               this.playersCursor.playerCursors = this.otherPlayersCursors;
-              // this.otherPlayersCursors = JSON.parse(JSON.stringify(this.otherPlayersCursors));
-              // this.cdr.detectChanges();
             }
             break;
           case AdventureMessageType.UPDATE_CAMPAIGN:
@@ -847,16 +853,4 @@ export class AdventureComponent implements OnInit, OnDestroy {
   private isSameItemAsSelected(item: LayerGridsterItem): boolean {
     return this.selectedItem && this.selectedItem.type === item.type && this.selectedItem.id === item.id;
   }
-
-  // region trackBy perf
-  trackByUserId(index, item) {
-    return item.userId;
-  }
-
-  trackById(index, item) {
-    console.log('trackById: ');
-    console.log(item);
-    return item.id;
-  }
-  // endregion
 }

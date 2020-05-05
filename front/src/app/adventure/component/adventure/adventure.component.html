@@ -51,22 +51,8 @@
                        'height': gamePanelYSize * 700 + 'px',
                        'margin': '0 auto',
                        'position': 'relative'}">
-<!--           (mousemove)="onMouseMove($event)"-->
-<!--           (mouseout)="onMouseOut()">-->
         <app-players-cursor #playersCursor [characters]="characters"
                             [playerCursors]="otherPlayersCursors"></app-players-cursor>
-<!--        <ng-container *ngIf="otherPlayersCursors">-->
-<!--          <div *ngFor="let pc of otherPlayersCursors; trackBy: trackByUserId"-->
-<!--               class="player-cursor d-flex flex-column player-{{getCharacterNamesFromId(pc.userId)[0]}}"-->
-<!--               [ngStyle]="{'top': pc.y + 'px',-->
-<!--                   'left': pc.x + 'px'}">-->
-<!--            <mat-icon style="transform: rotate(-90deg)">near_me</mat-icon>-->
-<!--            <span *ngFor="let char of getCharacterNamesFromId(pc.userId)">-->
-<!--              {{char}}-->
-<!--            </span>-->
-<!--            ({{pc.username}})-->
-<!--          </div>-->
-<!--        </ng-container>-->
 
         <ng-template ngFor let-boardRow [ngForOf]="adventure.boards" let-rowIdx="index">
           <ng-template ngFor let-boardCol [ngForOf]="boardRow" let-colIdx="index">
@@ -86,7 +72,7 @@
         </ng-template>
 
         <gridster #gridster [options]="options" style="flex-grow: 1; z-index: 10">
-          <gridster-item *ngFor="let item of dashboard; trackBy: trackById"
+          <gridster-item *ngFor="let item of dashboard"
                          [item]="item"
                          [ngSwitch]="item.type"
                          style="background: none !important;"

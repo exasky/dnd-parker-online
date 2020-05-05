@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from "@angular/core";
 import {MouseMove} from "../../../model/adventure-message";
 import {CharacterLayerGridsterItem} from "../../../model/layer-gridster-item";
 
@@ -8,7 +8,7 @@ import {CharacterLayerGridsterItem} from "../../../model/layer-gridster-item";
   styleUrls: ['./players-cursor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlayersCursorComponent implements OnChanges {
+export class PlayersCursorComponent {
 
   @Input()
   characters: CharacterLayerGridsterItem[];
@@ -17,13 +17,14 @@ export class PlayersCursorComponent implements OnChanges {
 
   @Input()
   set playerCursors(playerCursors: MouseMove[]) {
+    console.log(playerCursors);
     this.enhancedCursors = playerCursors;
     this.enhancedCursors.forEach(cursor => {
       const charNames = this.getCharacterNamesFromId(cursor.userId);
       cursor['char'] = charNames[0];
       cursor['chars'] = charNames;
-      this.cdr.detectChanges();
     })
+    this.cdr.detectChanges();
   }
 
   constructor(private cdr: ChangeDetectorRef) {
@@ -32,9 +33,5 @@ export class PlayersCursorComponent implements OnChanges {
   private getCharacterNamesFromId(userId) {
     const characters = this.characters.filter(char => char.id && char.character.userId === userId);
     return characters.length !== 0 ? characters.map(char => char.name) : ['MJ'];
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('CHANGES !!!');
   }
 }
