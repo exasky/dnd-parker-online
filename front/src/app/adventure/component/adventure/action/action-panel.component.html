@@ -46,6 +46,7 @@
           [ngbTooltip]="tooltipContent"
           [disableTooltip]="!charItem.character.id"
           tooltipClass="tooltip-action-panel"
+          [openDelay]="500"
           [container]="'body'">
     {{charItem.character.name}}
     <ng-container *ngIf="!isGm(charItem.character)">({{charItem.character.userName}})</ng-container>

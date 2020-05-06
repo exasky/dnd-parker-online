@@ -1,4 +1,12 @@
-import {Component, HostBinding, Input} from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  HostBinding,
+  Input,
+  OnDestroy,
+  OnInit
+} from "@angular/core";
 import {GmService} from "../../../service/gm.service";
 import {Adventure, GM_CHAR_NAME, Initiative} from "../../../model/adventure";
 import {MatDialog} from "@angular/material/dialog";
@@ -10,12 +18,14 @@ import {AdventureCardService} from "../../../service/adventure-card.service";
 import {CharacterItem} from "../../../model/item";
 import {Router} from "@angular/router";
 import {Character} from "../../../model/character";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-action-panel',
-  templateUrl: './action-panel.component.html'
+  templateUrl: './action-panel.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ActionPanelComponent {
+export class ActionPanelComponent implements OnInit, OnDestroy {
   @HostBinding('class') cssClasses = "d-flex flex-column";
 
   isGm = Character.isGm;
@@ -33,11 +43,12 @@ export class ActionPanelComponent {
     this.sortCharactersByInitiative(characterItems);
   }
 
-  @Input()
   disableActions: boolean = false;
 
   @Input()
   adventure: Adventure;
+  private afterOpenSub: Subscription;
+  private afterCloseSub: Subscription;
 
   constructor(private gmService: GmService,
               private adventureService: AdventureService,
@@ -47,7 +58,24 @@ export class ActionPanelComponent {
               private diceService: DiceService,
               public authService: AuthService,
               public audioService: AudioService,
-              public ambientAudioService: AmbientAudioService) {
+              public ambientAudioService: AmbientAudioService,
+              private cdr: ChangeDetectorRef) {
+  }
+
+  ngOnInit() {
+    this.afterOpenSub = this.dialog.afterOpened.subscribe(() => {
+      this.disableActions = true;
+      this.cdr.detectChanges();
+    });
+    this.afterCloseSub = this.dialog.afterAllClosed.subscribe(() => {
+      this.disableActions = false;
+      this.cdr.detectChanges();
+    });
+  }
+
+  ngOnDestroy() {
+    this.afterOpenSub.unsubscribe();
+    this.afterCloseSub.unsubscribe();
   }
 
   private sortCharactersByInitiative(characterItems: CharacterItem[]) {
@@ -61,6 +89,7 @@ export class ActionPanelComponent {
           this.sortedCharacterItems[idx] = characterItem ? characterItem : ({character: {name: GM_CHAR_NAME}}) as unknown as CharacterItem;
         });
     }
+    this.cdr.detectChanges();
   }
 
   get isMyTurn(): boolean {
@@ -69,27 +98,19 @@ export class ActionPanelComponent {
   }
 
   rollDices() {
-    if (!this.disableActions) {
-      this.diceService.openDiceDialog(this.adventure.id);
-    }
+    if (!this.disableActions) this.diceService.openDiceDialog(this.adventure.id);
   }
 
   rollInitiative() {
-    if (!this.disableActions) {
-      this.gmService.rollInitiative(this.adventure.id);
-    }
+    if (!this.disableActions) this.gmService.rollInitiative(this.adventure.id);
   }
 
   resetInitiative() {
-    if (!this.disableActions) {
-      this.gmService.resetInitiative(this.adventure.id);
-    }
+    if (!this.disableActions) this.gmService.resetInitiative(this.adventure.id);
   }
 
   endTurn() {
-    if (!this.disableActions) {
-      this.adventureService.askNextTurn(this.adventure.id);
-    }
+    if (!this.disableActions) this.adventureService.askNextTurn(this.adventure.id);
   }
 
   openMobileVersion() {

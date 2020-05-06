@@ -118,8 +118,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   showCursor: boolean = true;
 
-  disableActions: boolean = false;
-
   selectedMonsterId: number;
 
   beforeMoveSelectedItem: CharacterLayerGridsterItem;
@@ -794,11 +792,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   private openDialog(dialog: Type<any>, data: any) {
     this.closeDialog();
-    this.disableActions = true;
     this.currentDialog = this.dialog.open(dialog, DialogUtils.getDefaultConfig(data));
-    this.currentDialog.afterClosed().subscribe(() => {
-      this.disableActions = false;
-    });
     return this.currentDialog;
   }
 
