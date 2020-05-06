@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: '/rest/v1'
+  apiUrl: '/rest/v1',
+  perf: true
 };
 
 /*
