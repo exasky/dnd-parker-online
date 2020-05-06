@@ -1,6 +1,11 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from "@angular/core";
-import {MouseMove} from "../../../model/adventure-message";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from "@angular/core";
+import {AdventureMessage, AdventureMessageType, MouseMove} from "../../../model/adventure-message";
 import {CharacterLayerGridsterItem} from "../../../model/layer-gridster-item";
+import {AdventureWebsocketService} from "../../../../common/service/ws/adventure.websocket.service";
+import {SocketResponse} from "../../../../common/model";
+import {Subscription} from "rxjs";
+import {SocketResponseType} from "../../../../common/model/websocket.response";
+import {AuthService} from "../../../../login/auth.service";
 
 @Component({
   selector: 'app-players-cursor',
@@ -8,28 +13,61 @@ import {CharacterLayerGridsterItem} from "../../../model/layer-gridster-item";
   styleUrls: ['./players-cursor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlayersCursorComponent {
+export class PlayersCursorComponent implements OnInit, OnDestroy {
+  @Input()
+  adventureId: number;
 
-  // TODO set here receive WS for mousemove
-
+  @Input()
   characters: CharacterLayerGridsterItem[];
-  enhancedCursors: MouseMove[];
 
-  constructor(private cdr: ChangeDetectorRef) {
+  private adventureWSObs: Subscription;
+
+  cursors: MouseMove[] = [];
+
+  constructor(private adventureWS: AdventureWebsocketService,
+              private authService: AuthService,
+              private cdr: ChangeDetectorRef) {
   }
 
-  setCharacters(characters: CharacterLayerGridsterItem[]) {
-    this.characters = characters;
+  ngOnInit() {
+    this.adventureWSObs = this.adventureWS.getObservable(this.adventureId).subscribe((receivedMsg: SocketResponse) => {
+      if (receivedMsg.type === SocketResponseType.SUCCESS) {
+        const message: AdventureMessage = receivedMsg.data;
+        if (message.type === AdventureMessageType.MOUSE_MOVE) {
+          const mouseMoveEvent: MouseMove = message.message;
+          // Do not add own cursor
+          if (mouseMoveEvent.userId !== this.authService.currentUserValue.id) {
+            // Mouse out
+            if (mouseMoveEvent.x === mouseMoveEvent.y && mouseMoveEvent.y === -1) {
+              let playerCursorIxd = this.cursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
+              if (playerCursorIxd !== -1) {
+                this.cursors.splice(playerCursorIxd, 1);
+              }
+              // Mouse move
+            } else {
+              mouseMoveEvent.x = mouseMoveEvent.x - mouseMoveEvent.offsetX;
+              mouseMoveEvent.y = mouseMoveEvent.y - mouseMoveEvent.offsetY;
+
+              const charNames = this.getCharacterNamesFromId(mouseMoveEvent.userId);
+              mouseMoveEvent['char'] = charNames[0];
+              mouseMoveEvent['chars'] = charNames;
+
+              let playerCursorIxd = this.cursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
+              if (playerCursorIxd === -1) {
+                this.cursors.push(mouseMoveEvent);
+              } else {
+                this.cursors[playerCursorIxd] = mouseMoveEvent;
+              }
+            }
+            this.cdr.detectChanges();
+          }
+        }
+      }
+    });
   }
 
-  setPlayerCursors(playerCursors: MouseMove[]) {
-    this.enhancedCursors = playerCursors;
-    this.enhancedCursors.forEach(cursor => {
-      const charNames = this.getCharacterNamesFromId(cursor.userId);
-      cursor['char'] = charNames[0];
-      cursor['chars'] = charNames;
-    })
-    this.cdr.detectChanges();
+  ngOnDestroy() {
+    this.adventureWSObs.unsubscribe();
   }
 
   private getCharacterNamesFromId(userId) {

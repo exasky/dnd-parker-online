@@ -51,7 +51,8 @@
                        'height': gamePanelYSize * 700 + 'px',
                        'margin': '0 auto',
                        'position': 'relative'}">
-        <app-players-cursor #playersCursor></app-players-cursor>
+        <app-players-cursor [adventureId]="this.adventure.id"
+                            [characters]="characters"></app-players-cursor>
 
         <ng-template ngFor let-boardRow [ngForOf]="adventure.boards" let-rowIdx="index">
           <ng-template ngFor let-boardCol [ngForOf]="boardRow" let-colIdx="index">

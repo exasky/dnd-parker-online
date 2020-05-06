@@ -1,14 +1,14 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostBinding,
+  NgZone,
   OnDestroy,
   OnInit,
   Type,
-  ViewChild,
-  ChangeDetectorRef,
-  NgZone
+  ViewChild
 } from "@angular/core";
 import {
   CompactType,
@@ -20,7 +20,8 @@ import {
   GridType
 } from "angular-gridster2";
 import {
-  Adventure, AdventureLog,
+  Adventure,
+  AdventureLog,
   Board,
   CharacterLayerItem,
   DoorLayerItem,
@@ -46,7 +47,7 @@ import {SocketResponseType} from "../../../common/model/websocket.response";
 import {ToasterService} from "../../../common/service/toaster.service";
 import {DialogUtils} from "../../../common/dialog/dialog.utils";
 import {DiceMessage, DiceMessageType} from "../../model/dice-message";
-import {DiceDialogComponent, DiceAttackDialogComponent} from "./dice/dice-dialog.component";
+import {DiceAttackDialogComponent, DiceDialogComponent} from "./dice/dice-dialog.component";
 import {DiceWebsocketService} from "../../../common/service/ws/dice.websocket.service";
 import {MatDrawer} from "@angular/material/sidenav";
 import {AdventureWebsocketService} from "../../../common/service/ws/adventure.websocket.service";
@@ -64,7 +65,6 @@ import {TradeDialogComponent} from "./context-menu/dialog/trade/trade-dialog.com
 import {SwitchEquipmentDialogComponent} from "./context-menu/dialog/switch-equipment-dialog.component";
 import {CardUtils} from "../../../common/utils/card-utils";
 import {CharacterItem} from "../../model/item";
-import {PlayersCursorComponent} from "./cursor/players-cursor.component";
 
 @Component({
   selector: 'app-adventure',
@@ -92,8 +92,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   @ViewChild('gridster', {read: GridsterComponent}) gridster: GridsterComponent;
 
-  @ViewChild('playersCursor', {read: PlayersCursorComponent}) playersCursor: PlayersCursorComponent;
-
   getMonsterDescriptionImage = CardUtils.getMonsterDescriptionImage;
 
   private lastMouseMoveSend: number;
@@ -120,7 +118,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
   gamePanelYSize = 0;
 
   showCursor: boolean = true;
-  otherPlayersCursors: MouseMove[] = [];
 
   disableActions: boolean = false;
 
@@ -177,6 +174,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
       this.zone.runOutsideAngular(() => {
         this.boardPanel.nativeElement.addEventListener('mousemove', this.onMouseMove.bind(this));
         this.boardPanel.nativeElement.addEventListener('mouseout', this.onMouseOut.bind(this));
+        // TODO remove event listerner on destroy ?
       });
     });
 
@@ -189,31 +187,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
               window.location.reload();
             });
             break
-          case AdventureMessageType.MOUSE_MOVE:
-            const mouseMoveEvent: MouseMove = message.message;
-            // Do not add own cursor
-            if (mouseMoveEvent.userId !== this.authService.currentUserValue.id) {
-              // Mouse out
-              if (mouseMoveEvent.x === mouseMoveEvent.y && mouseMoveEvent.y === -1) {
-                let playerCursorIxd = this.otherPlayersCursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
-                if (playerCursorIxd !== -1) {
-                  this.otherPlayersCursors.splice(playerCursorIxd, 1);
-                }
-                // Mouse move
-              } else {
-                mouseMoveEvent.x = mouseMoveEvent.x - mouseMoveEvent.offsetX;
-                mouseMoveEvent.y = mouseMoveEvent.y - mouseMoveEvent.offsetY;
-                let playerCursorIxd = this.otherPlayersCursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
-                if (playerCursorIxd === -1) {
-                  this.otherPlayersCursors.push(mouseMoveEvent);
-                } else {
-                  this.otherPlayersCursors[playerCursorIxd] = mouseMoveEvent;
-                }
-              }
-              this.playersCursor.setCharacters(this.characters);
-              this.playersCursor.setPlayerCursors(this.otherPlayersCursors);
-            }
-            break;
           case AdventureMessageType.UPDATE_CAMPAIGN:
             if (!message.message) {
               this.toaster.warning("Your GM has deleted all adventures for this campaign... Such an idiot");
