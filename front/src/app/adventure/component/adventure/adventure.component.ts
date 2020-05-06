@@ -21,7 +21,6 @@ import {
 } from "angular-gridster2";
 import {
   Adventure,
-  AdventureLog,
   Board,
   CharacterLayerItem,
   DoorLayerItem,
@@ -130,7 +129,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
 
   currentDialog: MatDialogRef<any>;
 
-  logs: AdventureLog[] = [];
   isLogPanel = true;
 
   constructor(private adventureService: AdventureService,
@@ -161,7 +159,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
       const currentUser = this.authService.currentUserValue;
       currentUser.characters = this.adventure.campaignCharacters.filter(character => character.userId === currentUser.id);
 
-      this.logs = adventure.logs.reverse();
       this.currentTurn = this.adventure.currentTurn;
       this.characterTurns = this.adventure.characterTurns;
 
@@ -319,9 +316,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
               adventureId: this.adventure.id,
               character
             }));
-            break;
-          case AdventureMessageType.ADD_LOG:
-            this.logs.unshift(message.message);
             break;
         }
       }
