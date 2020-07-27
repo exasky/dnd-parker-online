@@ -64,6 +64,7 @@ import {TradeDialogComponent} from "./context-menu/dialog/trade/trade-dialog.com
 import {SwitchEquipmentDialogComponent} from "./context-menu/dialog/switch-equipment-dialog.component";
 import {CardUtils} from "../../../common/utils/card-utils";
 import {CharacterItem} from "../../model/item";
+import {ContextMenuComponent} from "./context-menu/context-menu.component";
 
 @Component({
   selector: 'app-adventure',
@@ -90,6 +91,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
   @ViewChild('mainDrawerContainer', {read: ElementRef}) mainDrawerContainer: ElementRef;
 
   @ViewChild('gridster', {read: GridsterComponent}) gridster: GridsterComponent;
+
+  @ViewChild('contextMenu', {read: ContextMenuComponent}) contextMenu: ContextMenuComponent;
 
   getMonsterDescriptionImage = CardUtils.getMonsterDescriptionImage;
 
@@ -275,6 +278,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
             this.openDialog(NextTurnDialogComponent, {adventureId: this.adventure.id, currentTurn: this.currentTurn});
             break;
           case AdventureMessageType.VALIDATE_NEXT_TURN:
+            if (this.beforeMoveSelectedItem) {
+              this.contextMenu.validateMove(this.selectedItem as CharacterLayerGridsterItem);
+            }
+            
             const dashboardCharacters = this.dashboard.filter(item => item.type === LayerElementType.CHARACTER);
 
             let prevCharacterTurn: LayerGridsterItem;
