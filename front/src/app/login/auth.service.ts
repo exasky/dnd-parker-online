@@ -3,7 +3,8 @@ import {HttpClient} from "@angular/common/http";
 import {BehaviorSubject, Observable} from "rxjs";
 import {ROLE_GM, User} from "../user/user";
 import {map} from "rxjs/operators";
-import * as jwt_decode from 'jwt-decode';
+import jwtDecode from "jwt-decode";
+// import * as jwt_decode from 'jwt-decode';
 import {environment} from "../../environments/environment";
 import {Router} from "@angular/router";
 
@@ -34,7 +35,7 @@ export class AuthService {
   login(username: string, password: string) {
     return this.http.post<any>(AuthService.API_URL, { username, password })
       .pipe(map(res => {
-        const user = jwt_decode(res.token);
+        const user = jwtDecode(res.token) as any;
         user.token = res.token;
         // login successful if there's a jwt token in the response
         if (user && user.token) {

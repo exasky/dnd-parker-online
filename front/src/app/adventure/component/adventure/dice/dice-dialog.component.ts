@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit, QueryList, ViewChildren} from "@angular/core";
+import {Component, Inject, Injectable, OnDestroy, OnInit, QueryList, ViewChildren} from "@angular/core";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {GmService} from "../../../service/gm.service";
 import {AuthService} from "../../../../login/auth.service";
@@ -18,6 +18,7 @@ import {LayerElementType} from "../../../model/adventure";
 import {CardUtils} from "../../../../common/utils/card-utils";
 import {CharacterEquipment} from "../../../model/character";
 
+@Component({template: ''})
 abstract class AbstractDiceDialogComponent implements OnInit, OnDestroy {
   @ViewChildren('diceCmp') diceComponents: QueryList<DiceComponent>;
 
@@ -35,7 +36,7 @@ abstract class AbstractDiceDialogComponent implements OnInit, OnDestroy {
                         protected diceService: DiceService,
                         protected toaster: ToasterService,
                         protected audioService: AudioService,
-                        public data: { adventureId: string, user: SimpleUser }) {
+                        @Inject(MAT_DIALOG_DATA) public data: { adventureId: string, user: SimpleUser }) {
   }
 
   ngOnInit(): void {
