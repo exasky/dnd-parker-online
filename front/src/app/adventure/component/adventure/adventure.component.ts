@@ -94,7 +94,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
   getMonsterDescriptionImage = CardUtils.getMonsterDescriptionImage;
 
   private lastMouseMoveSend: number;
-  private mouseMoveDelay = 33; // 30fps
+  //private mouseMoveDelay = 33; // 33ms -> 30fps
+  private mouseMoveDelay = 100; // 100ms -> 10fps
   private isMoveSending: boolean = false;
 
   adventureWSObs: Subscription;
@@ -143,7 +144,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
               private router: Router,
               private dialog: MatDialog,
               private cdr: ChangeDetectorRef,
-              private zone: NgZone) {
+              private zone: NgZone,
+              private ref: ElementRef) {
   }
 
   ngOnInit() {
@@ -550,7 +552,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
     })
   }
 
-  onMouseOut() {
+  onMouseOut(e: MouseEvent) {
+    if (e.relatedTarget && this.ref.nativeElement !== e.relatedTarget) return;
     const mouseMove = new MouseMove();
     mouseMove.x = -1;
     mouseMove.y = -1;

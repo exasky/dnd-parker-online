@@ -56,7 +56,10 @@ export class PlayersCursorComponent implements OnInit, OnDestroy {
               if (playerCursorIxd === -1) {
                 this.cursors.push(mouseMoveEvent);
               } else {
-                this.cursors[playerCursorIxd] = mouseMoveEvent;
+                this.cursors[playerCursorIxd].x = mouseMoveEvent.x;
+                this.cursors[playerCursorIxd].y = mouseMoveEvent.y;
+                this.cursors[playerCursorIxd]['char'] = mouseMoveEvent['char'];
+                this.cursors[playerCursorIxd]['chars'] = mouseMoveEvent['chars'];
               }
             }
             this.cdr.detectChanges();
