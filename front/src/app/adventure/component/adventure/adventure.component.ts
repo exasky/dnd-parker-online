@@ -698,7 +698,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   selectMonster(layerItemId: number) {
-    this.selectedItem = this.dashboard.find(item => item.id === layerItemId);
+    this.selectedItem = this.dashboard.find(item => item.id === layerItemId && item.type === LayerElementType.MONSTER);
     this.selectedMonsterId = layerItemId;
     this.adventureService.selectMonster(this.adventure.id, layerItemId);
   }

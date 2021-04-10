@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.exasky</groupId>
     <artifactId>dnd</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0-next</version>
     <name>dnd-online-back</name>
     <description>Back end of DnD board game</description>
 
@@ -129,7 +129,7 @@
                 <configuration>
                     <driver>com.mysql.cj.jdbc.Driver</driver>
 <!--                    <url>jdbc:mysql://localhost:32781/dnd?useSSL=false&amp;allowPublicKeyRetrieval=true</url>-->
-                    <url>jdbc:mysql://localhost:33000/dnd?useSSL=false&amp;allowPublicKeyRetrieval=true</url>
+                    <url>jdbc:mysql://localhost:32781/dnd?useSSL=false&amp;allowPublicKeyRetrieval=true</url>
                     <username>root</username>
                     <password>root</password>
                     <changeLogFile>${liquibase.folder}/liquibase-changelog-master.xml</changeLogFile>
