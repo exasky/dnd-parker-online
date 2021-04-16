@@ -1,0 +1,64 @@
+<div class="flex-grow d-flex">
+  <button mat-raised-button color="accent"
+          class="flex-shrink-0 m-2"
+          [ngbTooltip]="'adventure.action-panel.roll-dices' | translate"
+          (click)="rollDices()"
+          [disabled]="disableActions"
+          placement="bottom">
+    <mat-icon>casino</mat-icon>
+  </button>
+
+  <ng-container *ngIf="currentInitiative">
+    <button mat-raised-button color="accent" class="flex-shrink-0 m-2"
+            [ngbTooltip]="tooltipContent"
+            [disableTooltip]="initiatives.length === 0"
+            [container]="'body'"
+            placement="bottom-right">
+      <mat-icon>pin</mat-icon>
+      <ng-template #tooltipContent>
+        <app-initiative-displayer style="height: 350px"
+                                  [currentInitiative]="currentInitiative"
+                                  [initiatives]="initiatives"></app-initiative-displayer>
+      </ng-template>
+    </button>
+  </ng-container>
+
+  <button mat-raised-button color="accent" class="flex-shrink-0 m-2"
+          [ngbTooltip]="'adventure.action-panel.end-turn' | translate"
+          placement="bottom"
+          (click)="endTurn()"
+          [disabled]="disableActions || (!isMyTurn && !authService.isGM)">
+    <mat-icon>check_circle</mat-icon>
+  </button>
+
+  <button mat-raised-button class="flex-shrink-0 m-2"
+          [ngbTooltip]="'Volume'"
+          placement="bottom"
+          [matMenuTriggerFor]="soundMenu">
+    <mat-icon>volume_up</mat-icon>
+  </button>
+  <mat-menu #soundMenu="matMenu" [overlapTrigger]="true">
+    <div *ngFor="let aS of [audioService, ambientAudioService]"
+         mat-menu-item disableRipple
+         class="d-flex align-items-center"
+         style="height: unset !important;"
+         (click)="$event.preventDefault(); $event.stopPropagation()">
+      <div class="d-flex align-items-center">
+        <mat-icon>
+          <ng-container *ngIf="aS.volume === 0">volume_off</ng-container>
+          <ng-container *ngIf="aS.volume > 0 && aS.volume <=0.33">volume_mute</ng-container>
+          <ng-container *ngIf="aS.volume > 0.33 && aS.volume <= 0.66">volume_down</ng-container>
+          <ng-container *ngIf="aS.volume > 0.66">volume_up</ng-container>
+        </mat-icon>
+      </div>
+      <div class="d-flex flex-column">
+        <small style="height: 20px">{{'adventure.action-panel.' + aS.getDisplayName() | translate}}</small>
+
+        <mat-slider [max]="1" [min]="0" [step]="0.01" [value]="aS.volume"
+                    (input)="aS.setVolume($event.value)">
+        </mat-slider>
+      </div>
+
+    </div>
+  </mat-menu>
+</div>

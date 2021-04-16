@@ -38,6 +38,8 @@ import {CharacterTooltipDisplayerComponent} from "./adventure/component/adventur
 import {RxStompService} from "@stomp/ng2-stompjs";
 import {AdventureWebsocketService} from "./common/service/ws/adventure.websocket.service";
 import {ActionPanelComponent} from "./adventure/component/adventure/action/action-panel.component";
+import {TopActionPanelLeftComponent} from "./adventure/component/adventure/action/top-action-panel-left.component";
+import {TopActionPanelRightComponent} from "./adventure/component/adventure/action/top-action-panel-right.component";
 import {DrawnCardDialogComponent} from "./adventure/component/adventure/item/drawn-card-dialog.component";
 import {DrawnCardWebsocketService} from "./common/service/ws/drawn-card.websocket.service";
 import {WebSocketWrapperService} from "./common/service/ws/web-socket-wrapper.service";
@@ -100,6 +102,8 @@ export function translateLoader(http: HttpClient): TranslateLoader {
     AdventureItemDisplayerComponent,
     CharacterTooltipDisplayerComponent,
     ActionPanelComponent,
+    TopActionPanelLeftComponent,
+    TopActionPanelRightComponent,
     GmActionPanelComponent,
     DrawnCardDialogComponent,
     DiceComponent,
