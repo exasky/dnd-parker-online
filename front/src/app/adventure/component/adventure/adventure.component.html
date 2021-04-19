@@ -99,17 +99,11 @@
             </div>
 
             <ng-template #tipContent [ngSwitch]="item.type">
-              <ng-template [ngSwitchCase]="LayerElementType.CHARACTER">
-                <app-character-tooltip-displayer [character]="item.character"
-                                                 [ngStyle]="{'height': getCharacterTooltipHeight(item.character) + 'px'}">
-                </app-character-tooltip-displayer>
-              </ng-template>
               <ng-template [ngSwitchCase]="LayerElementType.MONSTER">
                 <img width="300" [src]="getMonsterDescriptionImage(item.monster)">
               </ng-template>
               <div *ngSwitchDefault>
               </div>
-
             </ng-template>
 
             <div *ngSwitchCase="LayerElementType.CHARACTER"

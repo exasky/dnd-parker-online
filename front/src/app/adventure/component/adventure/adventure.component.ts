@@ -281,7 +281,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             if (this.beforeMoveSelectedItem) {
               this.contextMenu.validateMove(this.selectedItem as CharacterLayerGridsterItem);
             }
-            
+
             const dashboardCharacters = this.dashboard.filter(item => item.type === LayerElementType.CHARACTER);
 
             let prevCharacterTurn: LayerGridsterItem;
@@ -793,7 +793,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   tooltipDisabled(item: LayerGridsterItem): boolean {
-    return !item.id || [LayerElementType.CHARACTER, LayerElementType.MONSTER].indexOf(item.type) === -1;
+    return !item.id || item.type !== LayerElementType.MONSTER;
   }
 
   private findInDashboard(item: LayerItem) {
@@ -811,10 +811,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
       this.currentDialog.close();
       this.currentDialog = null;
     }
-  }
-
-  getCharacterTooltipHeight(character: Character) {
-    return Math.min(2, Math.max(character.equippedItems.length, character.backpackItems.length)) * 230;
   }
 
   private updateGridsterItem(item: LayerGridsterItem) {
