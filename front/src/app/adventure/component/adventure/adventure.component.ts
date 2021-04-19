@@ -208,6 +208,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
               if (this.isSameItemAsSelected(characterItem)) {
                 this.selectedItem = null;
               }
+              this.cdr.detectChanges();
             }
             break;
           case AdventureMessageType.UPDATE_MONSTER:
@@ -798,9 +799,13 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Update item on board<br\>
+   * Don't forget to call cdr.detectChanges after this call !
+   * @param item
+   */
   private updateGridsterItem(item: LayerGridsterItem) {
-    this.dashboard.splice(this.dashboard.indexOf(item), 1);
-    this.dashboard.push({...item});
+    this.dashboard[this.dashboard.indexOf(item)] = item;
   }
 
   private isSameItemAsSelected(item: LayerGridsterItem): boolean {
