@@ -27,7 +27,7 @@
           [ngbTooltip]="'adventure.action-panel.end-turn' | translate"
           placement="bottom"
           (click)="endTurn()"
-          [disabled]="disableActions || (!isMyTurn && !authService.isGM)">
+          [disabled]="disableActions || (!isMyTurn && !authService.isGM) || !currentInitiative">
     <mat-icon>check_circle</mat-icon>
   </button>
 

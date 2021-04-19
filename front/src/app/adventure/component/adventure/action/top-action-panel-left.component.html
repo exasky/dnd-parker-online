@@ -1,5 +1,5 @@
 <div class="flex-grow d-flex justify-content-end">
-  <button *ngFor="let charItem of characterItems"
+  <button *ngFor="let charItem of sortedCharacterItems"
           mat-raised-button
           [color]="currentInitiative && charItem.character.name === currentInitiative.characterName ? 'warn' : 'primary'"
           class="char-button flex-shrink-0 m-2"
