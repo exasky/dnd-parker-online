@@ -34,6 +34,8 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
 
   selectedMonsterId: number;
 
+  selectedCharacterTab: number = 0;
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               public authService: AuthService,
