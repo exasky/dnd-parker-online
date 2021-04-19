@@ -86,7 +86,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
   @ViewChild('boardPanel', {read: ElementRef}) boardPanel: ElementRef;
 
   @ViewChild('leftPanelDrawer', {read: MatDrawer}) leftPanelDrawer: MatDrawer;
-  @ViewChild('actionPanelDrawer', {read: MatDrawer}) actionPanelDrawer: MatDrawer;
 
   @ViewChild('mainDrawerContainer', {read: ElementRef}) mainDrawerContainer: ElementRef;
 
@@ -333,14 +332,10 @@ export class AdventureComponent implements OnInit, OnDestroy {
         const message: CardMessage = receivedMsg.data;
         switch (message.type) {
           case CardMessageType.DRAW_CARD:
-            const drawerOpenedSaved = this.actionPanelDrawer.opened;
-            this.actionPanelDrawer.opened = true;
             this.openDialog(DrawnCardDialogComponent, {
               ...message.message,
               characters: this.characters.map(char => char.character),
               currentInitiative: this.currentTurn
-            }).afterClosed().subscribe(() => {
-              this.actionPanelDrawer.opened = drawerOpenedSaved;
             });
             break;
         }
@@ -352,17 +347,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
         const diceMessage: DiceMessage = receivedMsg.data;
         switch (diceMessage.type) {
           case DiceMessageType.OPEN_DIALOG:
-            const drawerOpenedSaved = this.actionPanelDrawer.opened;
-            this.actionPanelDrawer.opened = true;
-            this.openDialog(DiceDialogComponent, {adventureId, user: receivedMsg.data.message})
-              .afterClosed().subscribe(() => {
-              this.actionPanelDrawer.opened = drawerOpenedSaved;
-            });
+            this.openDialog(DiceDialogComponent, {adventureId, user: receivedMsg.data.message});
             break;
           case DiceMessageType.OPEN_ATTACK_DIALOG:
-            const saveDrawerOpen = this.actionPanelDrawer.opened;
-            this.actionPanelDrawer.opened = true;
-
             const attackParameters = diceMessage.message;
             let fromAttack, toAttack, fromAttackWeapon;
 
@@ -388,8 +375,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
               fromAttack,
               toAttack,
               fromAttackWeapon
-            }).afterClosed().subscribe(() => {
-              this.actionPanelDrawer.opened = saveDrawerOpen;
             });
             break;
           case DiceMessageType.CLOSE_DIALOG:
