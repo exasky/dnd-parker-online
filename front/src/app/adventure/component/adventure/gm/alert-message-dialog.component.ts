@@ -1,13 +1,18 @@
 import {Component, Inject} from "@angular/core";
 import {GmService} from "../../../service/gm.service";
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialogModule} from "@angular/material/dialog";
 import {Character} from "../../../model/character";
 import {AlertMessageType} from "../../../model/alert-message";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { TranslateModule } from "@ngx-translate/core";
+import { FormsModule } from "@angular/forms";
+import { MatSelectModule } from "@angular/material/select";
 
 @Component({
   selector: 'app-alert-message-dialog',
   templateUrl: './alert-message-dialog.component.html',
-  styleUrls: ['./alert-message-dialog.component.scss']
+  styleUrls: ['./alert-message-dialog.component.scss'],
+  imports: [MatFormFieldModule, TranslateModule, FormsModule, MatSelectModule, MatDialogModule]
 })
 export class AlertMessageDialogComponent {
   AlertMessageType = AlertMessageType;

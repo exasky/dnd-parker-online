@@ -1,11 +1,30 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Adventure, Board, ImageRotation} from "../../../model/adventure";
-import {CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType} from "angular-gridster2";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Adventure, Board, ImageRotation } from "../../../model/adventure";
+import { CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridsterModule, GridType } from "angular-gridster2";
+import { MatStepperModule } from "@angular/material/stepper";
+import { CommonModule } from "@angular/common";
+import { MatIconModule } from "@angular/material/icon";
+import { TranslateModule } from "@ngx-translate/core";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { FormsModule } from "@angular/forms";
+import { MatInputModule } from "@angular/material/input";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
-  selector: 'app-adventure-creator',
-  templateUrl: './adventure-creator.component.html',
-  styleUrls: ['./adventure-creator.component.scss']
+  selector: "app-adventure-creator",
+  templateUrl: "./adventure-creator.component.html",
+  styleUrls: ["./adventure-creator.component.scss"],
+  imports: [
+    MatStepperModule,
+    GridsterModule,
+    CommonModule,
+    MatIconModule,
+    TranslateModule,
+    MatFormFieldModule,
+    FormsModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
 })
 export class AdventureCreatorComponent implements OnInit {
   @Output()
@@ -13,12 +32,12 @@ export class AdventureCreatorComponent implements OnInit {
 
   _adventure: Adventure;
 
-  availableBoards: Board[] = Array.from(Array(10), (_, i) => i + 1).map(boardNumber => {
+  availableBoards: Board[] = Array.from(Array(10), (_, i) => i + 1).map((boardNumber) => {
     return {
       boardNumber,
-      rotation: ImageRotation.NONE
-    }
-  })
+      rotation: ImageRotation.NONE,
+    };
+  });
   gridsterBoards: GridsterItem[] = [];
 
   options: GridsterConfig;
@@ -35,19 +54,18 @@ export class AdventureCreatorComponent implements OnInit {
             y: rowIdx,
             rows: 1,
             cols: 1,
-            board: board
-          })
+            board: board,
+          });
         }
-      })
-    })
+      });
+    });
   }
 
   get adventure() {
     return this._adventure;
   }
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit() {
     this.options = {
@@ -85,29 +103,31 @@ export class AdventureCreatorComponent implements OnInit {
       swap: false,
       disablePushOnDrag: false,
       disablePushOnResize: false,
-      pushDirections: {north: true, east: true, south: true, west: true},
+      pushDirections: { north: true, east: true, south: true, west: true },
       pushResizeItems: false,
       displayGrid: DisplayGrid.Always,
       disableWindowResize: true,
       disableWarnings: false,
       scrollToNewItems: false,
       allowMultiLayer: true,
-      itemChangeCallback: this.updateBoards.bind(this)
+      itemChangeCallback: this.updateBoards.bind(this),
     };
   }
 
   // region first step
   dragStartHandler(ev, board: Board) {
-    ev.dataTransfer.setData('text/plain', board.boardNumber);
-    ev.dataTransfer.dropEffect = 'copy';
+    ev.dataTransfer.setData("text/plain", board.boardNumber);
+    ev.dataTransfer.dropEffect = "copy";
   }
 
   emptyCellDropCallback(event: MouseEvent, item: GridsterItem) {
-    const boardNumber = +(event as any).dataTransfer.getData('text');
-    const boardToAdd = JSON.parse(JSON.stringify(this.availableBoards.find(board => board.boardNumber === boardNumber)));
+    const boardNumber = +(event as any).dataTransfer.getData("text");
+    const boardToAdd = JSON.parse(
+      JSON.stringify(this.availableBoards.find((board) => board.boardNumber === boardNumber)),
+    );
     this.gridsterBoards.push({
       ...item,
-      board: boardToAdd
+      board: boardToAdd,
     });
 
     this.updateBoards();
@@ -159,18 +179,18 @@ export class AdventureCreatorComponent implements OnInit {
   }
 
   updateBoards() {
-    this._adventure.boards = []
-    this.gridsterBoards.forEach(value => {
+    this._adventure.boards = [];
+    this.gridsterBoards.forEach((value) => {
       const row = value.y;
       const col = value.x;
 
       if (!this.adventure.boards[row]) {
-        this.adventure.boards[row] = []
+        this.adventure.boards[row] = [];
       }
       this.adventure.boards[row][col] = {
-        boardNumber: value.board.boardNumber,
-        rotation: value.board.rotation
-      }
-    })
+        boardNumber: value["board"].boardNumber,
+        rotation: value["board"].rotation,
+      };
+    });
   }
 }

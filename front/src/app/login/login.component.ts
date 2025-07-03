@@ -1,46 +1,51 @@
-import {Component, HostBinding, OnInit} from "@angular/core";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AuthService} from "./auth.service";
-import {ToasterService} from "../common/service/toaster.service";
+import { Component, HostBinding, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AuthService } from "./auth.service";
+import { ToasterService } from "../common/service/toaster.service";
+import { TranslateModule } from "@ngx-translate/core";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html'
+  selector: "app-login",
+  templateUrl: "./login.component.html",
+  imports: [TranslateModule, FormsModule, ReactiveFormsModule, CommonModule],
 })
 export class LoginComponent implements OnInit {
-  @HostBinding('style.flex-grow') flexGrow = '1';
-  @HostBinding('class') cssClasses = "d-flex justify-content-center align-items-center flex-column"
+  @HostBinding("style.flex-grow") flexGrow = "1";
+  @HostBinding("class") cssClasses = "d-flex justify-content-center align-items-center flex-column";
 
   loginForm: FormGroup;
   loading = false;
   submitted = false;
   returnUrl: string;
 
-  constructor(private formBuilder: FormBuilder,
-              private route: ActivatedRoute,
-              private router: Router,
-              private authService: AuthService,
-              private toasterService: ToasterService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService,
+    private toasterService: ToasterService,
+  ) {
     // redirect to home if already logged in
     if (this.authService.currentUserValue) {
-      this.router.navigate(['/']);
+      this.router.navigate(["/"]);
     }
   }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
+      username: ["", Validators.required],
+      password: ["", Validators.required],
     });
 
     // get return url from route parameters or default to '/'
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/";
   }
 
   // convenience getter for easy access to form fields
   get f() {
-    return this.loginForm.controls;
+    return this.loginForm.controls as any; // TODO: fix type
   }
 
   onSubmit() {
@@ -52,12 +57,12 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authService.login(this.f.username.value, this.f.password.value)
-      .subscribe(
-        () => this.router.navigate([this.returnUrl]),
-        () => {
-          this.loading = false;
-          this.loginForm.reset({})
-        });
+    this.authService.login(this.f.username.value, this.f.password.value).subscribe(
+      () => this.router.navigate([this.returnUrl]),
+      () => {
+        this.loading = false;
+        this.loginForm.reset({});
+      },
+    );
   }
 }

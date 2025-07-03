@@ -1,19 +1,22 @@
 <mat-form-field style="width: 100%">
-  <input matInput placeholder="{{'common.search' | translate}}" (input)="filterChanged($event.target.value)">
+  <input matInput placeholder="{{ 'common.search' | translate }}" (input)="filterChanged($event.target['value'])" />
 </mat-form-field>
 
 <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="overflow">
-  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding
-                 draggable="true"
-                 (dragstart)="dragStartHandler($event, node.item)">
-    <img width="50px" [src]="getCardImage(node.item)">
-    {{node.name.split('_').join(' ')}}
+  <mat-tree-node
+    *matTreeNodeDef="let node"
+    matTreeNodePadding
+    draggable="true"
+    (dragstart)="dragStartHandler($event, node.item)"
+  >
+    <img width="50px" [src]="getCardImage(node.item)" />
+    {{ node.name.split("_").join(" ") }}
   </mat-tree-node>
 
-  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
     <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-      <mat-icon>{{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}</mat-icon>
+      <mat-icon>{{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}</mat-icon>
     </button>
-    {{'item-displayer.' + node.name | translate}}
+    {{ "item-displayer." + node.name | translate }}
   </mat-tree-node>
 </mat-tree>

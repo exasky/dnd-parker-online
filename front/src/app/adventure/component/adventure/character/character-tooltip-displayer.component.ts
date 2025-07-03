@@ -1,11 +1,15 @@
 import {Component, HostBinding, Input, OnInit} from "@angular/core";
 import {Character} from "../../../model/character";
 import {CardUtils} from "../../../../common/utils/card-utils";
+import { TranslateModule } from "@ngx-translate/core";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { CommonModule } from "@angular/common";
 
 @Component({
   selector: 'app-character-tooltip-displayer',
   templateUrl: './character-tooltip-displayer.component.html',
-  styleUrls: ['./character-tooltip-displayer.component.scss']
+  styleUrls: ['./character-tooltip-displayer.component.scss'],
+  imports: [TranslateModule, MatProgressBarModule, CommonModule]
 })
 export class CharacterTooltipDisplayerComponent implements OnInit {
   @HostBinding('class') cssClasses = "d-flex";

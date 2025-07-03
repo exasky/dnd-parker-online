@@ -1,17 +1,20 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from "@angular/core";
-import {AdventureMessage, AdventureMessageType, MouseMove} from "../../../model/adventure-message";
-import {CharacterLayerGridsterItem} from "../../../model/layer-gridster-item";
-import {AdventureWebsocketService} from "../../../../common/service/ws/adventure.websocket.service";
-import {SocketResponse} from "../../../../common/model";
-import {Subscription} from "rxjs";
-import {SocketResponseType} from "../../../../common/model/websocket.response";
-import {AuthService} from "../../../../login/auth.service";
+import { CommonModule } from "@angular/common";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { MatIconModule } from "@angular/material/icon";
+import { Subscription } from "rxjs";
+import { SocketResponse } from "../../../../common/model";
+import { SocketResponseType } from "../../../../common/model/websocket.response";
+import { AdventureWebsocketService } from "../../../../common/service/ws/adventure.websocket.service";
+import { AuthService } from "../../../../login/auth.service";
+import { AdventureMessage, AdventureMessageType, MouseMove } from "../../../model/adventure-message";
+import { CharacterLayerGridsterItem } from "../../../model/layer-gridster-item";
 
 @Component({
-  selector: 'app-players-cursor',
-  templateUrl: './players-cursor.component.html',
-  styleUrls: ['./players-cursor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: "app-players-cursor",
+  templateUrl: "./players-cursor.component.html",
+  styleUrls: ["./players-cursor.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, MatIconModule],
 })
 export class PlayersCursorComponent implements OnInit, OnDestroy {
   @Input()
@@ -24,10 +27,11 @@ export class PlayersCursorComponent implements OnInit, OnDestroy {
 
   cursors: MouseMove[] = [];
 
-  constructor(private adventureWS: AdventureWebsocketService,
-              private authService: AuthService,
-              private cdr: ChangeDetectorRef) {
-  }
+  constructor(
+    private adventureWS: AdventureWebsocketService,
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.adventureWSObs = this.adventureWS.getObservable(this.adventureId).subscribe((receivedMsg: SocketResponse) => {
@@ -39,7 +43,7 @@ export class PlayersCursorComponent implements OnInit, OnDestroy {
           if (mouseMoveEvent.userId !== this.authService.currentUserValue.id) {
             // Mouse out
             if (mouseMoveEvent.x === mouseMoveEvent.y && mouseMoveEvent.y === -1) {
-              let playerCursorIxd = this.cursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
+              let playerCursorIxd = this.cursors.findIndex((pc) => pc.userId === mouseMoveEvent.userId);
               if (playerCursorIxd !== -1) {
                 this.cursors.splice(playerCursorIxd, 1);
               }
@@ -49,10 +53,10 @@ export class PlayersCursorComponent implements OnInit, OnDestroy {
               mouseMoveEvent.y = mouseMoveEvent.y - mouseMoveEvent.offsetY;
 
               const charNames = this.getCharacterNamesFromId(mouseMoveEvent.userId);
-              mouseMoveEvent['char'] = charNames[0];
-              mouseMoveEvent['chars'] = charNames;
+              mouseMoveEvent["char"] = charNames[0];
+              mouseMoveEvent["chars"] = charNames;
 
-              let playerCursorIxd = this.cursors.findIndex(pc => pc.userId === mouseMoveEvent.userId);
+              let playerCursorIxd = this.cursors.findIndex((pc) => pc.userId === mouseMoveEvent.userId);
               if (playerCursorIxd === -1) {
                 this.cursors.push(mouseMoveEvent);
               } else {
@@ -71,7 +75,7 @@ export class PlayersCursorComponent implements OnInit, OnDestroy {
   }
 
   private getCharacterNamesFromId(userId) {
-    const characters = this.characters.filter(char => char.id && char.character.userId === userId);
-    return characters.length !== 0 ? characters.map(char => char.name) : ['MJ'];
+    const characters = this.characters.filter((char) => char.id && char.character.userId === userId);
+    return characters.length !== 0 ? characters.map((char) => char.name) : ["MJ"];
   }
 }

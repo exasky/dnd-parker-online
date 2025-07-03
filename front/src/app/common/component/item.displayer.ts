@@ -1,6 +1,6 @@
-import {FlatTreeControl} from "@angular/cdk/tree";
-import {MatTreeFlatDataSource, MatTreeFlattener} from "@angular/material/tree";
-import { ItemType } from 'src/app/adventure/model/character';
+import { FlatTreeControl } from "@angular/cdk/tree";
+import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
+import { ItemType } from "../../adventure/model/character";
 
 export interface ItemNode {
   name: string;
@@ -23,13 +23,21 @@ export abstract class ItemDisplayer<T extends { name: string }> {
       expandable: !!node.children && node.children.length > 0,
       name: node.name,
       level: level,
-      item: node
+      item: node,
     };
-  }
+  };
 
-  treeControl = new FlatTreeControl<ItemFlatNode>(node => node.level, node => node.expandable);
+  treeControl = new FlatTreeControl<ItemFlatNode>(
+    (node) => node.level,
+    (node) => node.expandable,
+  );
 
-  treeFlattener = new MatTreeFlattener(this._transformer, node => node.level, node => node.expandable, node => node.children);
+  treeFlattener = new MatTreeFlattener(
+    this._transformer,
+    (node) => node.level,
+    (node) => node.expandable,
+    (node) => node.children,
+  );
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 

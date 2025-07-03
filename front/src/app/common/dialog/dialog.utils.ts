@@ -1,4 +1,4 @@
-import {MatDialogConfig} from "@angular/material/dialog/dialog-config";
+import {MatDialogConfig} from "@angular/material/dialog";
 
 export class DialogUtils {
   static getDefaultConfig(data?: any): MatDialogConfig {

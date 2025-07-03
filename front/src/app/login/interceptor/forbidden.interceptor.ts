@@ -1,24 +1,26 @@
-import {Injectable} from '@angular/core';
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {Observable, throwError} from 'rxjs';
-import {catchError} from 'rxjs/operators';
-import {AuthService} from "../auth.service";
-import {Router} from "@angular/router";
+import {
+  HttpEvent,
+  HttpHandlerFn,
+  HttpRequest
+} from "@angular/common/http";
+import { inject } from "@angular/core";
+import { Observable, throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
+import { AuthService } from "../auth.service";
 
-@Injectable()
-export class ForbiddenInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService,
-              private router: Router) {
-  }
-
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(request).pipe(catchError(err => {
-      if (err.status === 401 && this.router.url !== '/login') {
-        this.authService.logout();
+export function forbiddenInterceptor(
+  request: HttpRequest<unknown>,
+  next: HttpHandlerFn
+): Observable<HttpEvent<unknown>> {
+  const authService = inject(AuthService);
+  return next(request).pipe(
+    catchError((err) => {
+      if (err.status === 401 && this.router.url !== "/login") {
+        authService.logout();
       }
 
       const error = err.error.message || err.statusText;
-      return throwError(error);
-    }))
-  }
+      return throwError(() => error);
+    })
+  );
 }

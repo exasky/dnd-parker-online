@@ -1,4 +1,4 @@
-import {Character} from "../adventure/model/character";
+import { Character } from "../adventure/model/character";
 
 export class User {
   id: number;
@@ -11,4 +11,4 @@ export class User {
   token: string;
 }
 
-export const ROLE_GM = 'ROLE_GM';
+export const ROLE_GM = "ROLE_GM";

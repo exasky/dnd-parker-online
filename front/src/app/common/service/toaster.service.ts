@@ -1,15 +1,16 @@
-import {Injectable} from '@angular/core';
-import {ToastrService} from 'ngx-toastr';
+import { Injectable } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+import { ToastrService } from "ngx-toastr";
 // import {TranslateService} from '@ngx-translate/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ToasterService {
-
-  constructor(private toaster: ToastrService/*,
-              private translate: TranslateService*/) {
-  }
+  constructor(
+    private toaster: ToastrService,
+    private translate: TranslateService,
+  ) {}
 
   public success(message: string) {
     this.toaster.success(this.getMessage(message));
@@ -24,14 +25,14 @@ export class ToasterService {
   }
 
   private getMessage(message: string) {
-    return message;
-    // let toDisplay;
-    // try {
-    //   toDisplay = this.translate.instant(message);
-    // } catch (e) {
-    //   toDisplay = message;
-    // }
-    //
-    // return toDisplay;
+    // return message;
+    let toDisplay;
+    try {
+      toDisplay = this.translate.instant(message);
+    } catch (e) {
+      toDisplay = message;
+    }
+
+    return toDisplay;
   }
 }

@@ -12,7 +12,7 @@ For building and running the application you need:
 ## Prerequisite
 
 - MySQL database (see application.properties)
-    - create the db 'dnd' by hand
+  - create the db 'dnd' by hand
 - After launchin the app, call post localhost:8080/rest/v1/register <code>{ username: $username, password: $password}</code> to add the first ADMIN user
 
 ## Running the application locally
@@ -22,6 +22,5 @@ There are several ways to run a Spring Boot application on your local machine. O
 Alternatively you can use the [Spring Boot Maven plugin](https://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html) like so:
 
 ```shell
-mvn spring-boot:run
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
-

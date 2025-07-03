@@ -1,21 +1,47 @@
-import {Component, EventEmitter, HostBinding, Input, Output} from "@angular/core";
-import {MatDialog} from "@angular/material/dialog";
-import {AlertMessageDialogComponent} from "./alert-message-dialog.component";
-import {GmService} from "../../../service/gm.service";
-import {AdventureService} from "../../../service/adventure.service";
-import {Router} from "@angular/router";
-import {MatDrawer} from "@angular/material/sidenav";
-import {Initiative, MonsterLayerItem} from "../../../model/adventure";
-import {CharacterItem, MonsterItem} from "../../../model/item";
-import {CardUtils} from "../../../../common/utils/card-utils";
+import { Component, EventEmitter, HostBinding, Input, Output } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatIconModule } from "@angular/material/icon";
+import { MatDrawer } from "@angular/material/sidenav";
+import { Router } from "@angular/router";
+import { TranslateModule } from "@ngx-translate/core";
+import { CardUtils } from "../../../../common/utils/card-utils";
+import { Initiative, MonsterLayerItem } from "../../../model/adventure";
+import { CharacterItem, MonsterItem } from "../../../model/item";
+import { AdventureService } from "../../../service/adventure.service";
+import { GmService } from "../../../service/gm.service";
+import { AlertMessageDialogComponent } from "./alert-message-dialog.component";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatCardModule } from "@angular/material/card";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { FormsModule } from "@angular/forms";
+import { CapitalizePipe } from "../../../../common/pipe/capitalize.pipe";
+import { MatSliderModule } from "@angular/material/slider";
+import { MatSelectModule } from "@angular/material/select";
+import { CommonModule } from "@angular/common";
+import { SortPipe } from "../../../../common/pipe/sort.pipe";
 
 @Component({
-  selector: 'app-gm-action-panel',
-  templateUrl: './gm-action-panel.component.html',
-  styleUrls: ['./gm-action-panel.component.scss']
+  selector: "app-gm-action-panel",
+  templateUrl: "./gm-action-panel.component.html",
+  styleUrls: ["./gm-action-panel.component.scss"],
+  imports: [
+    MatExpansionModule,
+    MatIconModule,
+    TranslateModule,
+    MatMenuModule,
+    MatCardModule,
+    MatFormFieldModule,
+    FormsModule,
+    CapitalizePipe,
+    MatSliderModule,
+    MatSelectModule,
+    CommonModule,
+    SortPipe,
+  ],
 })
 export class GmActionPanelComponent {
-  @HostBinding('class') cssClasses = 'flex-grow d-flex';
+  @HostBinding("class") cssClasses = "flex-grow d-flex";
 
   getMonsterImage = CardUtils.getMonsterImage;
 
@@ -49,18 +75,19 @@ export class GmActionPanelComponent {
   @Input()
   exportable: MatDrawer;
 
-  constructor(private dialog: MatDialog,
-              private router: Router,
-              private gmService: GmService,
-              private adventureService: AdventureService,) {
-  }
+  constructor(
+    private dialog: MatDialog,
+    private router: Router,
+    private gmService: GmService,
+    private adventureService: AdventureService,
+  ) {}
 
   sendAlert() {
     this.dialog.open(AlertMessageDialogComponent, {
       data: {
         adventureId: this.adventureId,
-        characters: this.characters.map(charItem => charItem.character)
-      }
+        characters: this.characters.map((charItem) => charItem.character),
+      },
     });
   }
 
@@ -71,25 +98,25 @@ export class GmActionPanelComponent {
     }
     switch (type) {
       case SoundType.BOW:
-        this.gmService.playSound(this.adventureId, 'bow_' + GmActionPanelComponent.randNumber(2) + '.mp3');
+        this.gmService.playSound(this.adventureId, "bow_" + GmActionPanelComponent.randNumber(2) + ".mp3");
         break;
       case SoundType.MELEE_SWORD:
-        this.gmService.playSound(this.adventureId, 'melee_sword_' + GmActionPanelComponent.randNumber(2) + '.mp3');
+        this.gmService.playSound(this.adventureId, "melee_sword_" + GmActionPanelComponent.randNumber(2) + ".mp3");
         break;
       case SoundType.POTION:
-        this.gmService.playSound(this.adventureId, 'potion_' + GmActionPanelComponent.randNumber(2) + '.mp3');
+        this.gmService.playSound(this.adventureId, "potion_" + GmActionPanelComponent.randNumber(2) + ".mp3");
         break;
       case SoundType.SPELL_FIRE:
-        this.gmService.playSound(this.adventureId, 'spell_fire_' + GmActionPanelComponent.randNumber(1) + '.mp3');
+        this.gmService.playSound(this.adventureId, "spell_fire_" + GmActionPanelComponent.randNumber(1) + ".mp3");
         break;
       case SoundType.SPELL_HEAL:
-        this.gmService.playSound(this.adventureId, 'spell_heal_' + GmActionPanelComponent.randNumber(1) + '.mp3');
-        break
+        this.gmService.playSound(this.adventureId, "spell_heal_" + GmActionPanelComponent.randNumber(1) + ".mp3");
+        break;
       case SoundType.SPELL_GENERIC:
-        this.gmService.playSound(this.adventureId, 'spell_generic_' + GmActionPanelComponent.randNumber(1) + '.mp3');
+        this.gmService.playSound(this.adventureId, "spell_generic_" + GmActionPanelComponent.randNumber(1) + ".mp3");
         break;
       case SoundType.MONSTER_HIT:
-        this.gmService.playSound(this.adventureId, 'monster_death_' + GmActionPanelComponent.randNumber(1) + '.mp3');
+        this.gmService.playSound(this.adventureId, "monster_death_" + GmActionPanelComponent.randNumber(1) + ".mp3");
         break;
       default:
         this.gmService.playSound(this.adventureId, type);
@@ -101,8 +128,17 @@ export class GmActionPanelComponent {
     e.stopPropagation();
     switch (type) {
       case SoundMacroType.SWORDS_AND_ARROWS:
-        this.timeoutMacro([SoundType.MELEE_SWORD, SoundType.BOW, SoundType.MELEE_SWORD,
-          SoundType.BOW, SoundType.MELEE_SWORD, SoundType.BOW,], 3);
+        this.timeoutMacro(
+          [
+            SoundType.MELEE_SWORD,
+            SoundType.BOW,
+            SoundType.MELEE_SWORD,
+            SoundType.BOW,
+            SoundType.MELEE_SWORD,
+            SoundType.BOW,
+          ],
+          3,
+        );
         break;
       default:
         break;
@@ -119,10 +155,13 @@ export class GmActionPanelComponent {
     const delayToAddBetweenSounds = 200;
     let addedDelay = 0;
     for (let repetitionIdx = 0; repetitionIdx < repetition; repetitionIdx++) {
-      sounds.forEach(sound => {
-        setTimeout(() => {
-          this.sendSound(null, sound);
-        }, GmActionPanelComponent.randNumber(maxDelay + addedDelay, minDelay + addedDelay));
+      sounds.forEach((sound) => {
+        setTimeout(
+          () => {
+            this.sendSound(null, sound);
+          },
+          GmActionPanelComponent.randNumber(maxDelay + addedDelay, minDelay + addedDelay),
+        );
         addedDelay += delayToAddBetweenSounds;
       });
     }
@@ -146,16 +185,21 @@ export class GmActionPanelComponent {
 
   openMobileVersion() {
     const strWindowFeatures = "menubar=no,toolbar=no,location=no,status=no,width=599,height=" + window.outerHeight;
-    window.open(this.router.url, '_blank', strWindowFeatures);
+    window.open(this.router.url, "_blank", strWindowFeatures);
     this.exportable.close();
   }
-
 }
 
 enum SoundType {
-  MELEE_SWORD, BOW, POTION, SPELL_FIRE, MONSTER_HIT, SPELL_GENERIC, SPELL_HEAL
+  MELEE_SWORD,
+  BOW,
+  POTION,
+  SPELL_FIRE,
+  MONSTER_HIT,
+  SPELL_GENERIC,
+  SPELL_HEAL,
 }
 
 enum SoundMacroType {
-  SWORDS_AND_ARROWS
+  SWORDS_AND_ARROWS,
 }

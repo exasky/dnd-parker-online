@@ -1,33 +1,37 @@
 <mat-horizontal-stepper [linear]="true" class="flex-grow d-flex flex-column">
-  <mat-step label="{{'campaign-creator.adventure-creator.choose-board' | translate}}">
-
+  <mat-step label="{{ 'campaign-creator.adventure-creator.choose-board' | translate }}">
     <div class="d-flex flex-column" style="height: calc(100vh - 192px)">
       <div>
-        <div style="overflow-x: scroll; overflow-y: hidden; white-space: nowrap;">
+        <div style="overflow-x: scroll; overflow-y: hidden; white-space: nowrap">
           <ng-container *ngFor="let board of availableBoards">
-            <img class="draggable-board"
-                 draggable="true"
-                 alt="board"
-                 [src]="'assets/board/' + board.boardNumber + '.JPG'"
-                 (dragstart)="dragStartHandler($event, board)">
+            <img
+              class="draggable-board"
+              draggable="true"
+              alt="board"
+              [src]="'assets/board/' + board.boardNumber + '.JPG'"
+              (dragstart)="dragStartHandler($event, board)"
+            />
           </ng-container>
         </div>
       </div>
 
       <gridster [options]="options" style="flex-grow: 1">
-        <gridster-item *ngFor="let item of gridsterBoards"
-                       [item]="item">
-          <div class="selected-board-gridster-background"
-               *ngIf="item.board"
-               [ngStyle]="{'background-image': 'url(\'assets/board/' + item.board.boardNumber + '.JPG\')',
-                      'transform': 'rotate(' + item.board.rotation + 'deg)'}"></div>
+        <gridster-item *ngFor="let item of gridsterBoards" [item]="item">
+          <div
+            class="selected-board-gridster-background"
+            *ngIf="item['board']"
+            [ngStyle]="{
+              'background-image': 'url(\'assets/board/' + item['board'].boardNumber + '.JPG\')',
+              transform: 'rotate(' + item['board'].rotation + 'deg)',
+            }"
+          ></div>
 
           <div style="height: 100%" class="d-flex flex-column justify-content-between">
             <div class="d-flex justify-content-between">
-              <button mat-mini-fab (mousedown)="rotateLeft(item.board)">
+              <button mat-mini-fab (mousedown)="rotateLeft(item['board'])">
                 <mat-icon>rotate_left</mat-icon>
               </button>
-              <button mat-mini-fab (mousedown)="rotateRight(item.board)">
+              <button mat-mini-fab (mousedown)="rotateRight(item['board'])">
                 <mat-icon>rotate_right</mat-icon>
               </button>
             </div>
@@ -44,36 +48,46 @@
       <div class="flex-shrink-0 d-flex justify-content-center mt-1" style="margin-bottom: -20px">
         <button mat-raised-button color="warn" (click)="adventureDeleted.emit()">
           <mat-icon>delete</mat-icon>
-          {{'common.delete' | translate}}
+          {{ "common.delete" | translate }}
         </button>
       </div>
     </div>
   </mat-step>
 
-  <mat-step label="{{'campaign-creator.adventure-creator.adventure-info' | translate}}">
+  <mat-step label="{{ 'campaign-creator.adventure-creator.adventure-info' | translate }}">
     <div class="d-flex flex-column" style="height: calc(100vh - 192px)">
       <div class="flex-grow d-flex flex-column justify-content-center align-items-center">
         <mat-form-field>
-          <mat-label>{{'campaign-creator.adventure-creator.name' | translate}}</mat-label>
-          <input matInput [(ngModel)]="adventure.name"
-                 placeholder="{{'campaign-creator.adventure-creator.name-placeholder' | translate}}"
-                 required
-                 autocomplete="false">
+          <mat-label>{{ "campaign-creator.adventure-creator.name" | translate }}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="adventure.name"
+            placeholder="{{ 'campaign-creator.adventure-creator.name-placeholder' | translate }}"
+            required
+            autocomplete="false"
+          />
         </mat-form-field>
         <mat-form-field>
-          <mat-label>{{'campaign-creator.adventure-creator.level' | translate}}</mat-label>
-          <input matInput type="number" min="1" max="3"
-                 inputmode="numeric" pattern="[0-9]*"
-                 [(ngModel)]="adventure.level"
-                 placeholder="{{'campaign-creator.adventure-creator.level' | translate}}"
-                 required autocomplete="false">
+          <mat-label>{{ "campaign-creator.adventure-creator.level" | translate }}</mat-label>
+          <input
+            matInput
+            type="number"
+            min="1"
+            max="3"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            [(ngModel)]="adventure.level"
+            placeholder="{{ 'campaign-creator.adventure-creator.level' | translate }}"
+            required
+            autocomplete="false"
+          />
         </mat-form-field>
       </div>
 
       <div class="flex-shrink-0 d-flex justify-content-center" style="margin-bottom: -20px">
         <button mat-raised-button color="warn" (click)="adventureDeleted.emit()">
           <mat-icon>delete</mat-icon>
-          {{'common.delete' | translate}}
+          {{ "common.delete" | translate }}
         </button>
       </div>
     </div>

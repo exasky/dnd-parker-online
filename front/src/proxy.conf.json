@@ -5,7 +5,9 @@
     "ws": true,
     "logLevel": "debug"
   },
-  "/rest/v1/*": {
-    "target": "http://localhost:8080"
+  "/rest": {
+    "target": "http://localhost:8080",
+    "changeOrigin": true,
+    "secure": false
   }
 }

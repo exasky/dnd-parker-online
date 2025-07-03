@@ -1,47 +1,45 @@
 <mat-card class="flex-grow m-2 overflow">
   <mat-card-content class="d-flex flex-column align-items-center">
-    <img *ngIf="!editable && character.name"
-         width="50%"
-         [src]="CardUtils.getCharacterCardImage(character)">
+    <img *ngIf="!editable && character.name" width="50%" [src]="CardUtils.getCharacterCardImage(character)" />
 
     <ng-container *ngIf="editable">
       <div class="d-flex w-100 justify-content-around">
         <div class="d-flex flex-column">
-          <mat-label style="padding-left: 8px">{{'common.hp' | translate}}</mat-label>
-          <mat-slider color="primary"
-                      [min]="0" [max]="character.maxHp" [step]="1"
-                      [thumbLabel]="true" [tickInterval]="1"
-                      [(ngModel)]="character.hp"
-                      (change)="updateCharacter(character)">
+          <mat-label style="padding-left: 8px">{{ "common.hp" | translate }}</mat-label>
+          <mat-slider
+            color="primary"
+            [min]="0"
+            [max]="character.maxHp"
+            [step]="1"
+            (change)="updateCharacter(character)"
+          >
+            <input matSliderThumb [(ngModel)]="character.hp" />
           </mat-slider>
         </div>
         <div class="d-flex flex-column">
-          <mat-label style="padding-left: 8px">{{'common.max-hp' | translate}}</mat-label>
-          <mat-slider color="primary"
-                      [min]="0" max="20" [step]="1"
-                      [thumbLabel]="true" [tickInterval]="1"
-                      [(ngModel)]="character.maxHp"
-                      (change)="updateCharacter(character)">
+          <mat-label style="padding-left: 8px">{{ "common.max-hp" | translate }}</mat-label>
+          <mat-slider color="primary" [min]="0" max="20" [step]="1" (change)="updateCharacter(character)">
+            <input matSliderThumb [(ngModel)]="character.maxHp" />
           </mat-slider>
         </div>
       </div>
       <div class="d-flex w-100 justify-content-around">
         <div class="d-flex flex-column">
-          <mat-label style="padding-left: 8px">{{'common.mp' | translate}}</mat-label>
-          <mat-slider color="primary"
-                      [min]="0" [max]="character.maxMp" [step]="1"
-                      [thumbLabel]="true" [tickInterval]="1"
-                      [(ngModel)]="character.mp"
-                      (change)="updateCharacter(character)">
+          <mat-label style="padding-left: 8px">{{ "common.mp" | translate }}</mat-label>
+          <mat-slider
+            color="primary"
+            [min]="0"
+            [max]="character.maxMp"
+            [step]="1"
+            (change)="updateCharacter(character)"
+          >
+            <input matSliderThumb [(ngModel)]="character.mp" />
           </mat-slider>
         </div>
         <div class="d-flex flex-column">
-          <mat-label style="padding-left: 8px">{{'common.max-mp' | translate}}</mat-label>
-          <mat-slider color="primary"
-                      [min]="0" max="20" [step]="1"
-                      [thumbLabel]="true" [tickInterval]="1"
-                      [(ngModel)]="character.maxMp"
-                      (change)="updateCharacter(character)">
+          <mat-label style="padding-left: 8px">{{ "common.max-mp" | translate }}</mat-label>
+          <mat-slider color="primary" [min]="0" max="20" [step]="1" (change)="updateCharacter(character)">
+            <input matSliderThumb [(ngModel)]="character.maxMp" />
           </mat-slider>
         </div>
       </div>
@@ -51,67 +49,81 @@
       <section class="status-bar w-100">
         <mat-progress-bar color="warn" mode="determinate" [value]="(character.hp * 100) / character.maxHp">
         </mat-progress-bar>
-        <div class="status-bar-text">{{'common.hp' | translate}} : {{character.hp}} / {{character.maxHp}}</div>
+        <div class="status-bar-text">{{ "common.hp" | translate }} : {{ character.hp }} / {{ character.maxHp }}</div>
       </section>
       <section class="status-bar w-100" *ngIf="character.maxMp">
         <mat-progress-bar color="accent" mode="determinate" [value]="(character.mp * 100) / character.maxMp">
         </mat-progress-bar>
-        <div class="status-bar-text">{{'common.mp' | translate}} : {{character.mp}} / {{character.maxMp}}</div>
+        <div class="status-bar-text">{{ "common.mp" | translate }} : {{ character.mp }} / {{ character.maxMp }}</div>
       </section>
     </ng-container>
 
     <div mat-subheader>
-      {{'common.equipped' | translate}}
+      {{ "common.equipped" | translate }}
       <button *ngIf="editable" mat-icon-button (click)="openSelectCardEquippedItem()">
         <mat-icon>add</mat-icon>
       </button>
     </div>
-    <div class="w-100 d-flex align-items-center justify-content-center"
-         style="overflow-y: hidden; min-height: 100px"
-         dragOver (drop)="addEquippedItem($event)">
+    <div
+      class="w-100 d-flex align-items-center justify-content-center"
+      style="overflow-y: hidden; min-height: 100px"
+      dragOver
+      (drop)="addEquippedItem($event)"
+    >
       <div *ngIf="character.equippedItems.length === 0">
-        {{'common.drag&drop' | translate}}
+        {{ "common.drag&drop" | translate }}
       </div>
       <ng-container *ngIf="character.equippedItems.length !== 0">
         <div *ngFor="let item of character.equippedItems" class="m-auto position-relative">
-          <img [src]="CardUtils.getCardImage(item)"
-               draggable="true"
-               (dragstart)="equipmentDragStartHandler($event, item)"
-               width="150px" height="230px">
-          <button *ngIf="editable"
-                  mat-mini-fab
-                  style="position: absolute; top: 0; left: 73px"
-                  (click)="removeEquipmentItem(item)">
+          <img
+            [src]="CardUtils.getCardImage(item)"
+            draggable="true"
+            (dragstart)="equipmentDragStartHandler($event, item)"
+            width="150px"
+            height="230px"
+          />
+          <button
+            *ngIf="editable"
+            mat-mini-fab
+            style="position: absolute; top: 0; left: 73px"
+            (click)="removeEquipmentItem(item)"
+          >
             <mat-icon>delete</mat-icon>
           </button>
         </div>
       </ng-container>
     </div>
     <div mat-subheader>
-      {{'common.backpack' | translate}}
+      {{ "common.backpack" | translate }}
       <button *ngIf="editable" mat-icon-button (click)="openSelectCardBackPackItem()">
         <mat-icon>add</mat-icon>
       </button>
     </div>
-    <div class="w-100 d-flex align-items-center justify-content-center"
-         style="overflow-y: hidden; min-height: 100px"
-         dragOver (drop)="addBackPackItem($event)">
+    <div
+      class="w-100 d-flex align-items-center justify-content-center"
+      style="overflow-y: hidden; min-height: 100px"
+      dragOver
+      (drop)="addBackPackItem($event)"
+    >
       <div *ngIf="character.backpackItems.length === 0">
-        {{'common.drag&drop' | translate}}
+        {{ "common.drag&drop" | translate }}
       </div>
       <ng-container *ngIf="character.backpackItems.length !== 0">
-        <div *ngFor="let item of character.backpackItems"
-             class="m-auto"
-             style="position:relative;">
-          <img [src]="CardUtils.getCardImage(item)"
-               draggable="true"
-               class="m-auto"
-               (dragstart)="backpackDragStartHandler($event, item)"
-               width="150px" height="230px">
-          <button *ngIf="editable"
-                  mat-mini-fab
-                  style="position: absolute; top: 0; left: 73px"
-                  (click)="removeBackpackItem(item)">
+        <div *ngFor="let item of character.backpackItems" class="m-auto" style="position: relative">
+          <img
+            [src]="CardUtils.getCardImage(item)"
+            draggable="true"
+            class="m-auto"
+            (dragstart)="backpackDragStartHandler($event, item)"
+            width="150px"
+            height="230px"
+          />
+          <button
+            *ngIf="editable"
+            mat-mini-fab
+            style="position: absolute; top: 0; left: 73px"
+            (click)="removeBackpackItem(item)"
+          >
             <mat-icon>delete</mat-icon>
           </button>
         </div>

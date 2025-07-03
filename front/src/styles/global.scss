@@ -1,15 +1,14 @@
-@import "material/material";
-@import "~bootstrap/scss/bootstrap";
+@use "material/material";
 
-@import '~ngx-toastr/toastr';
+@use "flex";
 
-@import "flex";
-@import "bootstrap/bootstrap";
-
-@import "tooltip";
+@use "tooltip";
+@use "bootstrap/scss/bootstrap";
+@import "ngx-toastr/toastr";
 
 /* You can add global styles to this file, and also import other style files */
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -24,12 +23,10 @@ app-root {
   background-size: cover;
 }
 
-.unicorn-light-theme {
-
+.light-mode {
   app-root {
-    background-image: url('/assets/wallpaper/light.jpg') !important;
+    background-image: url("/assets/wallpaper/light.jpg") !important;
   }
-
 }
 
 .overflow {

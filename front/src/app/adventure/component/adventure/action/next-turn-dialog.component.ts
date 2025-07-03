@@ -1,21 +1,26 @@
-import {AuthService} from "../../../../login/auth.service";
-import {Component, Inject} from "@angular/core";
-import {AdventureService} from "../../../service/adventure.service";
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {Initiative} from "../../../model/adventure";
+import { AuthService } from "../../../../login/auth.service";
+import { Component, inject, Inject } from "@angular/core";
+import { AdventureService } from "../../../service/adventure.service";
+import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
+import { Initiative } from "../../../model/adventure";
+import { TranslateModule } from "@ngx-translate/core";
+import { CapitalizePipe } from "../../../../common/pipe/capitalize.pipe";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-next-turn-dialog',
-  templateUrl: './next-turn-dialog.component.html',
-  styleUrls: ['./next-turn-dialog.component.scss']
+  selector: "app-next-turn-dialog",
+  templateUrl: "./next-turn-dialog.component.html",
+  styleUrls: ["./next-turn-dialog.component.scss"],
+  imports: [MatDialogModule, TranslateModule, CapitalizePipe, CommonModule],
 })
 export class NextTurnDialogComponent {
   waitForValidation = false;
+  data: { adventureId: number; currentTurn: Initiative } = inject(MAT_DIALOG_DATA);
 
-  constructor(public authService: AuthService,
-              private adventureService: AdventureService,
-              @Inject(MAT_DIALOG_DATA) public data: {adventureId: number, currentTurn: Initiative}) {
-  }
+  constructor(
+    public authService: AuthService,
+    private adventureService: AdventureService,
+  ) {}
 
   close(validation: boolean) {
     this.waitForValidation = true;
