@@ -1,25 +1,19 @@
-<div class="d-flex flex-column flex-shrink-0">
-  <button mat-raised-button class="flex-shrink-0 m-3" (click)="createUser()">
-    <div class="d-flex align-items-center">
+<div class="left-panel">
+  <div class="users">
+    <button mat-raised-button (click)="createUser()">
       <mat-icon class="mr-2">add</mat-icon>
       {{ "common.create" | translate }}
-    </div>
-  </button>
-  <div class="flex-grow overflow d-flex flex-column">
-    <button
-      mat-raised-button
-      color="accent"
-      *ngFor="let user of users"
-      class="flex-shrink-0 m-3"
-      (click)="selectUser(user)"
-    >
-      {{ user.username }}
     </button>
+    @for (user of users; track user.id) {
+      <button mat-raised-button color="accent" (click)="selectUser(user)">
+        {{ user.username }}
+      </button>
+    }
   </div>
 </div>
 
-<div class="flex-grow d-flex justify-content-center align-items-center flex-wrap">
-  <mat-card class="m-3 h-75 w-lg-50 w-75 d-flex flex-column" *ngIf="selectedUser">
+<div class="user-detail">
+  <mat-card class="d-flex flex-column" *ngIf="selectedUser">
     <mat-card-header
       class="flex-shrink-0 d-flex align-items-start flex-wrap"
       style="margin-bottom: 1em; align-items: center !important"

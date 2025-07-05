@@ -19,16 +19,18 @@
         </mat-select>
       </mat-form-field>
 
-      <div *ngFor="let character of currentUser.characters">
-        <mat-form-field>
-          <mat-label>{{ "user.campaign" | translate }}</mat-label>
-          <input matInput [value]="character.campaignName" disabled />
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>{{ "user.character" | translate }}</mat-label>
-          <input matInput [value]="character.name" disabled />
-        </mat-form-field>
-      </div>
+      @for (character of currentUser.characters; track $index) {
+        <div>
+          <mat-form-field>
+            <mat-label>{{ "user.campaign" | translate }}</mat-label>
+            <input matInput [value]="character.campaignName" disabled />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>{{ "user.character" | translate }}</mat-label>
+            <input matInput [value]="character.name" disabled />
+          </mat-form-field>
+        </div>
+      }
     </mat-card-content>
 
     <mat-card-actions class="d-flex justify-content-center">

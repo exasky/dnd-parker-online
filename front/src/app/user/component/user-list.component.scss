@@ -1,0 +1,31 @@
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 25vw;
+  margin: 1em 0em 0 1em;
+
+  .users {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+  }
+}
+
+.user-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+  margin: 1em;
+
+  mat-card {
+    width: 100%;
+    // max-width: 600px;
+    height: 100%;
+    max-height: 800px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+}
