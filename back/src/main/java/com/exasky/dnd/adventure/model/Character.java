@@ -3,7 +3,7 @@ package com.exasky.dnd.adventure.model;
 import com.exasky.dnd.adventure.model.card.CharacterItem;
 import com.exasky.dnd.user.model.DnDUser;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,15 +46,11 @@ public class Character {
     private Initiative characterTurn;
 
     @ManyToMany
-    @JoinTable(name = "character_equipment",
-            joinColumns = @JoinColumn(name = "character_id", table = "character_item"),
-            inverseJoinColumns = @JoinColumn(name = "character_item_id"))
+    @JoinTable(name = "character_equipment", joinColumns = @JoinColumn(name = "character_id", table = "character_item"), inverseJoinColumns = @JoinColumn(name = "character_item_id"))
     private List<CharacterItem> equipments = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(name = "character_backpack",
-            joinColumns = @JoinColumn(name = "character_id", table = "character_item"),
-            inverseJoinColumns = @JoinColumn(name = "character_item_id"))
+    @JoinTable(name = "character_backpack", joinColumns = @JoinColumn(name = "character_id", table = "character_item"), inverseJoinColumns = @JoinColumn(name = "character_item_id"))
     private List<CharacterItem> backPack = new ArrayList<>();
 
     public Character() {

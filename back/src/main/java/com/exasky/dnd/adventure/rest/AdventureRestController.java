@@ -10,7 +10,6 @@ import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
 import com.exasky.dnd.gameMaster.rest.dto.InitiativeDto;
 import com.exasky.dnd.gameMaster.rest.dto.SimpleCampaignDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +23,9 @@ public class AdventureRestController {
     private final AdventureLogService adventureLogService;
     private final SimpMessageSendingOperations messagingTemplate;
 
-    @Autowired
     public AdventureRestController(AdventureService adventureService,
-                                   AdventureLogService adventureLogService,
-                                   SimpMessageSendingOperations messagingTemplate) {
+            AdventureLogService adventureLogService,
+            SimpMessageSendingOperations messagingTemplate) {
         this.adventureService = adventureService;
         this.adventureLogService = adventureLogService;
         this.messagingTemplate = messagingTemplate;
@@ -82,7 +80,8 @@ public class AdventureRestController {
     }
 
     @PostMapping("/update-character/{adventureId}/{characterId}")
-    public void updateCharacter(@PathVariable Long adventureId, @PathVariable Long characterId, @RequestBody CharacterDto dto) {
+    public void updateCharacter(@PathVariable Long adventureId, @PathVariable Long characterId,
+            @RequestBody CharacterDto dto) {
         Character character = adventureService.updateCharacter(adventureId, characterId, CharacterDto.toBo(dto));
 
         AdventureMessageDto wsDto = new AdventureMessageDto();

@@ -4,7 +4,6 @@ import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.user.model.DnDUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +15,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
@@ -35,16 +34,14 @@ public class ExceptionHandlerControllerAdvice {
 
     private static final String EXCEPTION_PREFIX = "EXCEPTION ";
 
-    @Autowired
-    public ExceptionHandlerControllerAdvice() {
-    }
-
     @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<ExceptionMessage> nullPointerExceptionHandler(HttpServletRequest request, NullPointerException exception) {
+    public ResponseEntity<ExceptionMessage> nullPointerExceptionHandler(HttpServletRequest request,
+            NullPointerException exception) {
         ExceptionMessage message = ExceptionMessage.builder()
                 .date(LocalDateTime.now().format(formatter))
                 .path(request.getRequestURI() + "?" + request.getQueryString())
-                .addError("Tu veux éviter les null ? N'hésite pas à lire cet article: https://www.developpez.net/forums/blogs/473169-gugelhupf/b2944/java-astuces-eviter-nullpointerexception/")
+                .addError(
+                        "Tu veux éviter les null ? N'hésite pas à lire cet article: https://www.developpez.net/forums/blogs/473169-gugelhupf/b2944/java-astuces-eviter-nullpointerexception/")
                 .build();
 
         logError(message.toString(), exception);
@@ -53,7 +50,8 @@ public class ExceptionHandlerControllerAdvice {
     }
 
     @ExceptionHandler(ValidationCheckException.class)
-    public ResponseEntity<ExceptionMessage> customExceptionHandler(HttpServletRequest request, ValidationCheckException exception) {
+    public ResponseEntity<ExceptionMessage> customExceptionHandler(HttpServletRequest request,
+            ValidationCheckException exception) {
         ExceptionMessage message = ExceptionMessage.builder()
                 .date(LocalDateTime.now().format(formatter))
                 .path(request.getRequestURI() + "?" + request.getQueryString())
@@ -66,7 +64,8 @@ public class ExceptionHandlerControllerAdvice {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ExceptionMessage> badCredentialsExceptionHandler(HttpServletRequest request, BadCredentialsException exception) {
+    public ResponseEntity<ExceptionMessage> badCredentialsExceptionHandler(HttpServletRequest request,
+            BadCredentialsException exception) {
         ExceptionMessage message = ExceptionMessage.builder()
                 .date(LocalDateTime.now().format(formatter))
                 .path(request.getRequestURI() + "?" + request.getQueryString())
@@ -79,7 +78,8 @@ public class ExceptionHandlerControllerAdvice {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ExceptionMessage> constraintViolationExceptionHandler(HttpServletRequest request, ConstraintViolationException exception) {
+    public ResponseEntity<ExceptionMessage> constraintViolationExceptionHandler(HttpServletRequest request,
+            ConstraintViolationException exception) {
         ExceptionMessage message = ExceptionMessage.builder()
                 .date(LocalDateTime.now().format(formatter))
                 .path(request.getRequestURI() + "?" + request.getQueryString())
@@ -95,7 +95,8 @@ public class ExceptionHandlerControllerAdvice {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ExceptionMessage> accessDeniedExceptionHandler(HttpServletRequest request, AccessDeniedException exception) {
+    public ResponseEntity<ExceptionMessage> accessDeniedExceptionHandler(HttpServletRequest request,
+            AccessDeniedException exception) {
         ExceptionMessage message = ExceptionMessage.builder()
                 .date(LocalDateTime.now().format(formatter))
                 .path(request.getRequestURI() + "?" + request.getQueryString())
@@ -108,7 +109,8 @@ public class ExceptionHandlerControllerAdvice {
     }
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<ExceptionMessage> responseStatusExceptionHandler(HttpServletRequest request, ResponseStatusException exception) {
+    public ResponseEntity<ExceptionMessage> responseStatusExceptionHandler(HttpServletRequest request,
+            ResponseStatusException exception) {
         ExceptionMessage message = ExceptionMessage.builder()
                 .date(LocalDateTime.now().format(formatter))
                 .path(request.getRequestURI() + "?" + request.getQueryString())
@@ -117,11 +119,12 @@ public class ExceptionHandlerControllerAdvice {
 
         logError(message.toString(), exception);
 
-        return new ResponseEntity<>(message, exception.getStatus());
+        return new ResponseEntity<>(message, exception.getStatusCode());
     }
 
-    @ExceptionHandler({HttpMessageNotReadableException.class, ValidationException.class})
-    public ResponseEntity<ExceptionMessage> responseStatusExceptionHandler(HttpServletRequest request, RuntimeException exception) {
+    @ExceptionHandler({ HttpMessageNotReadableException.class, ValidationException.class })
+    public ResponseEntity<ExceptionMessage> responseStatusExceptionHandler(HttpServletRequest request,
+            RuntimeException exception) {
         ExceptionMessage message = ExceptionMessage.builder()
                 .date(LocalDateTime.now().format(formatter))
                 .path(request.getRequestURI() + "?" + request.getQueryString())
@@ -133,8 +136,9 @@ public class ExceptionHandlerControllerAdvice {
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({EntityNotFoundException.class, EmptyResultDataAccessException.class})
-    public ResponseEntity<ExceptionMessage> notFoundExceptionHandler(HttpServletRequest request, RuntimeException exception) {
+    @ExceptionHandler({ EntityNotFoundException.class, EmptyResultDataAccessException.class })
+    public ResponseEntity<ExceptionMessage> notFoundExceptionHandler(HttpServletRequest request,
+            RuntimeException exception) {
         ExceptionMessage message = ExceptionMessage.builder()
                 .date(LocalDateTime.now().format(formatter))
                 .path(request.getRequestURI() + "?" + request.getQueryString())
@@ -147,7 +151,8 @@ public class ExceptionHandlerControllerAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionMessage> controllerDtoValidationExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException exception) {
+    public ResponseEntity<ExceptionMessage> controllerDtoValidationExceptionHandler(HttpServletRequest request,
+            MethodArgumentNotValidException exception) {
         ExceptionMessage.Builder exceptionBuilder = ExceptionMessage.builder()
                 .date(LocalDateTime.now().format(formatter))
                 .path(request.getRequestURI() + "?" + request.getQueryString());
@@ -161,7 +166,8 @@ public class ExceptionHandlerControllerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionMessage> genericExceptionHandler(HttpServletRequest request, Exception exception) {
+    public ResponseEntity<ExceptionMessage> genericExceptionHandler(HttpServletRequest request,
+            Exception exception) {
         ExceptionMessage message = ExceptionMessage.builder()
                 .date(LocalDateTime.now().format(formatter))
                 .path(request.getRequestURI() + "?" + request.getQueryString())

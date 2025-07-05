@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-DndApplication<dnd>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.exasky.dnd.DndApplication",
+            "projectName": "dnd",
+            "args": "-Dspring-boot.run.profiles=dev",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

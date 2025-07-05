@@ -3,7 +3,7 @@ package com.exasky.dnd.adventure.model.layer.item;
 import com.exasky.dnd.adventure.model.Adventure;
 import com.exasky.dnd.adventure.model.layer.LayerElement;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @MappedSuperclass
 public abstract class LayerItem {

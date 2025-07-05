@@ -19,7 +19,6 @@ import com.exasky.dnd.adventure.service.layer.ChestLayerItemService;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
 import com.exasky.dnd.gameMaster.rest.dto.CharacterItemDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,12 +37,11 @@ public class AdventureCardController {
 
     private final SimpMessageSendingOperations messagingTemplate;
 
-    @Autowired
     public AdventureCardController(AdventureService adventureService,
-                                   AdventureLogService adventureLogService,
-                                   ChestLayerItemService chestLayerItemService,
-                                   CharacterItemRepository characterItemRepository,
-                                   SimpMessageSendingOperations messagingTemplate) {
+            AdventureLogService adventureLogService,
+            ChestLayerItemService chestLayerItemService,
+            CharacterItemRepository characterItemRepository,
+            SimpMessageSendingOperations messagingTemplate) {
         this.adventureService = adventureService;
         this.adventureLogService = adventureLogService;
         this.chestLayerItemService = chestLayerItemService;
@@ -62,7 +60,8 @@ public class AdventureCardController {
                         ? adventureService.getNextCardToDraw(adventureId)
                         : adventureService.drawSpecificCard(drawCardDto.getCharacterItemId()));
 
-        DrawnCardDto drawnCardDto = new DrawnCardDto(drawCardDto.getAdventureId(), drawCardDto.getCharacterId(), drawCardDto.getChestItemId(), dto);
+        DrawnCardDto drawnCardDto = new DrawnCardDto(drawCardDto.getAdventureId(), drawCardDto.getCharacterId(),
+                drawCardDto.getChestItemId(), dto);
         CardMessageDto messageDto = new CardMessageDto(CardMessageDto.CardMessageType.DRAW_CARD, drawnCardDto);
         messagingTemplate.convertAndSend("/topic/drawn-card/" + adventureId, messageDto);
     }
@@ -85,7 +84,7 @@ public class AdventureCardController {
 
         if (dto.getValidation()) {
             Character updatedCharacter = adventureService.validateDrawnCard(adventureId, dto);
-            CharacterItem charItem = characterItemRepository.getOne(dto.getCharacterItemId());
+            CharacterItem charItem = characterItemRepository.getReferenceById(dto.getCharacterItemId());
             if (Objects.nonNull(updatedCharacter)) {
                 wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_CHARACTER);
                 wsDto.setMessage(CharacterDto.toDto(updatedCharacter));

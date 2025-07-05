@@ -13,7 +13,6 @@ import com.exasky.dnd.adventure.service.AdventureLogService;
 import com.exasky.dnd.adventure.service.AdventureService;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.gameMaster.rest.dto.AdventureMessageDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +25,9 @@ public class AdventureTradeController {
 
     private final SimpMessageSendingOperations messagingTemplate;
 
-    @Autowired
     public AdventureTradeController(AdventureService adventureService,
-                                    AdventureLogService adventureLogService,
-                                    SimpMessageSendingOperations messagingTemplate) {
+            AdventureLogService adventureLogService,
+            SimpMessageSendingOperations messagingTemplate) {
         this.adventureService = adventureService;
         this.adventureLogService = adventureLogService;
         this.messagingTemplate = messagingTemplate;
@@ -88,7 +86,8 @@ public class AdventureTradeController {
     @PostMapping("/validate-switch/{adventureId}")
     public void validateSwitch(@PathVariable Long adventureId, @RequestBody ValidateSwitchDto switchDto) {
         Character character = this.adventureService.switchEquipment(switchDto);
-        AdventureLog adventureLog = adventureLogService.logSwitch(adventureId, character.getName(), switchDto.getCharacterEquippedItemId(), switchDto.getCharacterBackpackItemId());
+        AdventureLog adventureLog = adventureLogService.logSwitch(adventureId, character.getName(),
+                switchDto.getCharacterEquippedItemId(), switchDto.getCharacterBackpackItemId());
 
         final AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_CHARACTER);

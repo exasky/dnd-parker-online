@@ -1,12 +1,11 @@
 package com.exasky.dnd.adventure.model.layer.item;
 
 import com.exasky.dnd.adventure.model.Character;
-import com.exasky.dnd.adventure.model.card.CharacterItem;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "layer_item_character")

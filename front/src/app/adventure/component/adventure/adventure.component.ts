@@ -126,7 +126,9 @@ export class AdventureComponent implements OnInit, OnDestroy {
   getMonsterDescriptionImage = CardUtils.getMonsterDescriptionImage;
 
   private lastMouseMoveSend: number;
-  private mouseMoveDelay = 33; // 30fps
+  // private mouseMoveDelay = 132; // 7fps
+  private mouseMoveDelay = 66; // 15fps
+  // private mouseMoveDelay = 33; // 30fps
   private isMoveSending: boolean = false;
 
   adventureWSObs: Subscription;

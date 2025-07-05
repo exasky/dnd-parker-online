@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -24,8 +25,8 @@ public class CampaignService {
     private final CharacterService characterService;
 
     public CampaignService(CampaignRepository campaignRepository,
-                           AdventureService adventureService,
-                           CharacterService characterService) {
+            AdventureService adventureService,
+            CharacterService characterService) {
         this.campaignRepository = campaignRepository;
         this.adventureService = adventureService;
         this.characterService = characterService;
@@ -36,35 +37,34 @@ public class CampaignService {
     }
 
     public Campaign getCampaign(Long id) {
-        Campaign foundCampaign = campaignRepository.getById(id);
-
-        if (Objects.isNull(foundCampaign)) {
+        try {
+            return campaignRepository.getReferenceById(id);
+        } catch (EntityNotFoundException e) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+            return null;
         }
-
-        return foundCampaign;
     }
 
     public Campaign copyCampaign(Long campaignId) {
-        Campaign toCopy = this.campaignRepository.getById(campaignId);
-        if (Objects.isNull(toCopy)) {
+        try {
+            var toCopy = campaignRepository.getReferenceById(campaignId);
+            var newCampaign = new Campaign();
+            newCampaign.setName(toCopy.getName() + " - copy");
+
+            newCampaign.setAdventures(toCopy.getAdventures().stream()
+                    .map(adventure -> adventureService.copy(adventure, newCampaign))
+                    .collect(Collectors.toList()));
+
+            newCampaign.setCharacters(toCopy.getCharacters().stream()
+                    .map(character -> characterService.copy(character, newCampaign))
+                    .collect(Collectors.toList()));
+
+            return newCampaign;
+        } catch (EntityNotFoundException e) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+            return null;
         }
-
-        Campaign newCampaign = new Campaign();
-        newCampaign.setName(toCopy.getName() + " - copy");
-
-        newCampaign.setAdventures(toCopy.getAdventures().stream()
-                .map(adventure -> adventureService.copy(adventure, newCampaign))
-                .collect(Collectors.toList()));
-
-        newCampaign.setCharacters(toCopy.getCharacters().stream()
-                .map(character -> characterService.copy(character, newCampaign))
-                .collect(Collectors.toList()));
-
-        return newCampaign;
     }
-
 
     @Transactional
     public Campaign createCampaign(Campaign toCreate) {
@@ -72,8 +72,8 @@ public class CampaignService {
 
         attachedCampaign.setName(toCreate.getName());
 
-        attachedCampaign.updateAdventures(toCreate.getAdventures().stream().
-                map(adventure -> adventureService.createOrUpdate(adventure, attachedCampaign))
+        attachedCampaign.updateAdventures(toCreate.getAdventures().stream()
+                .map(adventure -> adventureService.createOrUpdate(adventure, attachedCampaign))
                 .collect(Collectors.toList()));
 
         attachedCampaign.updateCharacters(toCreate.getCharacters().stream()
@@ -89,56 +89,55 @@ public class CampaignService {
 
     @Transactional
     public Campaign updateCampaign(Long id, Campaign toUpdate) {
-        Campaign attachedCampaign = this.campaignRepository.getById(id);
+        try {
+            var attachedCampaign = campaignRepository.getReferenceById(id);
+            attachedCampaign.setName(toUpdate.getName());
 
-        if (Objects.isNull(attachedCampaign)) {
-            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
-        }
+            attachedCampaign.updateAdventures(toUpdate.getAdventures().stream()
+                    .map(adventure -> adventureService.createOrUpdate(adventure, attachedCampaign))
+                    .collect(Collectors.toList()));
 
-        attachedCampaign.setName(toUpdate.getName());
+            attachedCampaign.updateCharacters(toUpdate.getCharacters().stream()
+                    .map(character -> characterService.createOrUpdate(character, attachedCampaign))
+                    .collect(Collectors.toList()));
 
-        attachedCampaign.updateAdventures(toUpdate.getAdventures().stream().
-                map(adventure -> adventureService.createOrUpdate(adventure, attachedCampaign))
-                .collect(Collectors.toList()));
-
-        attachedCampaign.updateCharacters(toUpdate.getCharacters().stream()
-                .map(character -> characterService.createOrUpdate(character, attachedCampaign))
-                .collect(Collectors.toList()));
-
-        if (!attachedCampaign.getAdventures().isEmpty()) {
-            if (Objects.nonNull(attachedCampaign.getCurrentAdventure()) &&
-                    attachedCampaign.getAdventures().stream()
-                            .noneMatch(adv -> adv.getId().equals(attachedCampaign.getCurrentAdventure().getId()))) {
-                attachedCampaign.setCurrentAdventure(attachedCampaign.getAdventures().get(0));
-            } else if (Objects.isNull(attachedCampaign.getCurrentAdventure())) {
-                attachedCampaign.setCurrentAdventure(attachedCampaign.getAdventures().get(0));
+            if (!attachedCampaign.getAdventures().isEmpty()) {
+                if (Objects.nonNull(attachedCampaign.getCurrentAdventure()) &&
+                        attachedCampaign.getAdventures().stream()
+                                .noneMatch(adv -> adv.getId().equals(attachedCampaign.getCurrentAdventure().getId()))) {
+                    attachedCampaign.setCurrentAdventure(attachedCampaign.getAdventures().get(0));
+                } else if (Objects.isNull(attachedCampaign.getCurrentAdventure())) {
+                    attachedCampaign.setCurrentAdventure(attachedCampaign.getAdventures().get(0));
+                }
+            } else {
+                attachedCampaign.setCurrentAdventure(null);
             }
-        } else {
-            attachedCampaign.setCurrentAdventure(null);
+            return attachedCampaign;
+        } catch (EntityNotFoundException e) {
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+            return null;
         }
-
-        return attachedCampaign;
     }
 
     @Transactional
     public void deleteCampaign(Long campaignId) {
-        Campaign campaign = this.campaignRepository.getById(campaignId);
+        try {
+            var campaign = this.campaignRepository.getReferenceById(campaignId);
 
-        if (Objects.isNull(campaign)) {
+            campaign.getAdventures().forEach(adventureService::delete);
+            campaign.getAdventures().clear();
+
+            campaign.getCharacters().forEach(character -> {
+                character.getEquipments().clear();
+                character.getBackPack().clear();
+            });
+            campaign.getCharacters().clear();
+
+            campaign.getDrawnItems().clear();
+
+            campaignRepository.delete(campaign);
+        } catch (EntityNotFoundException e) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
         }
-
-        campaign.getAdventures().forEach(adventureService::delete);
-        campaign.getAdventures().clear();
-
-        campaign.getCharacters().forEach(character -> {
-            character.getEquipments().clear();
-            character.getBackPack().clear();
-        });
-        campaign.getCharacters().clear();
-
-        campaign.getDrawnItems().clear();
-
-        campaignRepository.delete(campaign);
     }
 }

@@ -1,5 +1,15 @@
 package com.exasky.dnd.gameMaster.rest;
 
+import java.util.List;
+
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.exasky.dnd.adventure.model.log.AdventureLog;
 import com.exasky.dnd.adventure.rest.dto.AdventureLogDto;
 import com.exasky.dnd.adventure.rest.dto.AlertMessageDto;
@@ -13,11 +23,6 @@ import com.exasky.dnd.gameMaster.rest.dto.CharacterItemDto;
 import com.exasky.dnd.gameMaster.rest.dto.InitiativeDto;
 import com.exasky.dnd.gameMaster.rest.dto.MonsterItemDto;
 import com.exasky.dnd.gameMaster.service.GMService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(Constant.REST_URL + "/game-master")
@@ -27,10 +32,9 @@ public class GMRestController {
     private final AdventureLogService adventureLogService;
     private final SimpMessageSendingOperations messagingTemplate;
 
-    @Autowired
     public GMRestController(GMService gmService,
-                            AdventureLogService adventureLogService,
-                            SimpMessageSendingOperations messagingTemplate) {
+            AdventureLogService adventureLogService,
+            SimpMessageSendingOperations messagingTemplate) {
         this.gmService = gmService;
         this.adventureLogService = adventureLogService;
         this.messagingTemplate = messagingTemplate;
@@ -52,8 +56,10 @@ public class GMRestController {
     }
 
     @PostMapping("/update-monster/{adventureId}/{monsterId}")
-    public void updateMonster(@PathVariable Long adventureId, @PathVariable Long monsterId, @RequestBody MonsterItemDto dto) {
-        MonsterLayerItemDto resultDto = MonsterLayerItemDto.toDto(gmService.updateMonster(adventureId, monsterId, MonsterItemDto.toBo(dto)));
+    public void updateMonster(@PathVariable Long adventureId, @PathVariable Long monsterId,
+            @RequestBody MonsterItemDto dto) {
+        MonsterLayerItemDto resultDto = MonsterLayerItemDto
+                .toDto(gmService.updateMonster(adventureId, monsterId, MonsterItemDto.toBo(dto)));
 
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.UPDATE_MONSTER);
@@ -89,7 +95,8 @@ public class GMRestController {
 
     @PostMapping("/initiative/{adventureId}")
     public void updateInitiatives(@PathVariable Long adventureId, @RequestBody List<InitiativeDto> dto) {
-        List<InitiativeDto> resDto = InitiativeDto.toDto(gmService.updateInitiative(adventureId, InitiativeDto.toBo(dto)));
+        List<InitiativeDto> resDto = InitiativeDto
+                .toDto(gmService.updateInitiative(adventureId, InitiativeDto.toBo(dto)));
 
         AdventureMessageDto wsDto = new AdventureMessageDto();
         wsDto.setType(AdventureMessageDto.AdventureMessageType.ROLL_INITIATIVE);

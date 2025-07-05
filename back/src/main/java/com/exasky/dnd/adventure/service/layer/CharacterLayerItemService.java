@@ -12,8 +12,8 @@ public class CharacterLayerItemService extends ParentLayerItemService<CharacterL
     private final CharacterRepository characterRepository;
 
     public CharacterLayerItemService(CharacterLayerItemRepository characterLayerItemRepository,
-                                     LayerElementRepository repo,
-                                     CharacterRepository characterRepository) {
+            LayerElementRepository repo,
+            CharacterRepository characterRepository) {
         super(characterLayerItemRepository, repo);
         this.characterRepository = characterRepository;
     }
@@ -24,8 +24,9 @@ public class CharacterLayerItemService extends ParentLayerItemService<CharacterL
     }
 
     @Override
-    protected void specific_create(CharacterLayerItem newLayerItem, CharacterLayerItem toCreate, Adventure attachedAdventure) {
-        newLayerItem.setCharacter(characterRepository.getOne(toCreate.getCharacter().getId()));
+    protected void specific_create(CharacterLayerItem newLayerItem, CharacterLayerItem toCreate,
+            Adventure attachedAdventure) {
+        newLayerItem.setCharacter(characterRepository.getReferenceById(toCreate.getCharacter().getId()));
     }
 
     @Override

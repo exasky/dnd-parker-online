@@ -15,12 +15,11 @@ import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.common.exception.ValidationCheckException;
 import com.exasky.dnd.gameMaster.repository.InitiativeRepository;
 import com.exasky.dnd.gameMaster.repository.MonsterTemplateRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -38,13 +37,12 @@ public class GMService {
     private final InitiativeRepository initiativeRepository;
     private final AdventureService adventureService;
 
-    @Autowired
     public GMService(LayerElementRepository repository,
-                     CharacterItemRepository characterItemRepository,
-                     MonsterTemplateRepository monsterTemplateRepository,
-                     CampaignRepository campaignRepository,
-                     InitiativeRepository initiativeRepository,
-                     AdventureService adventureService) {
+            CharacterItemRepository characterItemRepository,
+            MonsterTemplateRepository monsterTemplateRepository,
+            CampaignRepository campaignRepository,
+            InitiativeRepository initiativeRepository,
+            AdventureService adventureService) {
         this.layerElementRepository = repository;
         this.characterItemRepository = characterItemRepository;
         this.monsterTemplateRepository = monsterTemplateRepository;
@@ -52,7 +50,6 @@ public class GMService {
         this.initiativeRepository = initiativeRepository;
         this.adventureService = adventureService;
     }
-
 
     public List<LayerElement> getAddableElements() {
         return layerElementRepository.findAll();
@@ -72,17 +69,19 @@ public class GMService {
 
         if (Objects.isNull(adventure)) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.ADVENTURE.NOT_FOUND);
+            return null; // This line is unreachable but added to satisfy the compiler
         }
 
         if (adventure.getCharacters().size() != 4) {
-            ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.ADVENTURE.CHARACTERS_SIZE_MISMATCH);
+            ValidationCheckException.throwError(HttpStatus.NOT_FOUND,
+                    Constant.Errors.ADVENTURE.CHARACTERS_SIZE_MISMATCH);
         }
 
         Campaign campaign = adventure.getCampaign();
 
         List<Initiative> charTurns;
 
-        if(campaign.getCharacterTurns().isEmpty()) {
+        if (campaign.getCharacterTurns().isEmpty()) {
             charTurns = campaign.getCharacters().stream()
                     .map(character -> new Initiative(campaign, character))
                     .collect(Collectors.toList());
@@ -104,7 +103,6 @@ public class GMService {
 
         adventure.setCurrentInitiative(initiatives.get(0));
 
-
         return charTurns;
     }
 
@@ -114,6 +112,7 @@ public class GMService {
 
         if (Objects.isNull(adventure)) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.ADVENTURE.NOT_FOUND);
+            return; // This line is unreachable but added to satisfy the compiler
         }
         adventure.setCurrentInitiative(null);
 
@@ -127,10 +126,12 @@ public class GMService {
 
         if (Objects.isNull(campaign)) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+            return Collections.emptyList(); // This line is unreachable but added to satisfy the compiler
         }
 
         updated.forEach(update -> {
-            Optional<Initiative> optInit = campaign.getCharacterTurns().stream().filter(ct -> ct.getId().equals(update.getId())).findFirst();
+            Optional<Initiative> optInit = campaign.getCharacterTurns().stream()
+                    .filter(ct -> ct.getId().equals(update.getId())).findFirst();
             if (!optInit.isPresent()) {
                 ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.INITIATIVE.NOT_FOUND);
             }
@@ -182,10 +183,11 @@ public class GMService {
 
         if (Objects.isNull(adventure)) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.ADVENTURE.NOT_FOUND);
+            return null; // This line is unreachable but added to satisfy the compiler
         }
 
-        Optional<MonsterLayerItem> optMonster
-                = adventure.getMonsters().stream().filter(advMonster -> advMonster.getId().equals(monsterId)).findFirst();
+        Optional<MonsterLayerItem> optMonster = adventure.getMonsters().stream()
+                .filter(advMonster -> advMonster.getId().equals(monsterId)).findFirst();
 
         if (!optMonster.isPresent()) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.MONSTER.NOT_FOUND);

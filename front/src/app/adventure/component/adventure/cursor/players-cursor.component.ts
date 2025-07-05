@@ -30,42 +30,42 @@ export class PlayersCursorComponent implements OnInit, OnDestroy {
   constructor(
     private adventureWS: AdventureWebsocketService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
     this.adventureWSObs = this.adventureWS.getObservable(this.adventureId).subscribe((receivedMsg: SocketResponse) => {
-      if (receivedMsg.type === SocketResponseType.SUCCESS) {
-        const message: AdventureMessage = receivedMsg.data;
-        if (message.type === AdventureMessageType.MOUSE_MOVE) {
-          const mouseMoveEvent: MouseMove = message.message;
-          // Do not add own cursor
-          if (mouseMoveEvent.userId !== this.authService.currentUserValue.id) {
-            // Mouse out
-            if (mouseMoveEvent.x === mouseMoveEvent.y && mouseMoveEvent.y === -1) {
-              let playerCursorIxd = this.cursors.findIndex((pc) => pc.userId === mouseMoveEvent.userId);
-              if (playerCursorIxd !== -1) {
-                this.cursors.splice(playerCursorIxd, 1);
-              }
-              // Mouse move
-            } else {
-              mouseMoveEvent.x = mouseMoveEvent.x - mouseMoveEvent.offsetX;
-              mouseMoveEvent.y = mouseMoveEvent.y - mouseMoveEvent.offsetY;
+      if (receivedMsg.type != SocketResponseType.SUCCESS) return;
 
-              const charNames = this.getCharacterNamesFromId(mouseMoveEvent.userId);
-              mouseMoveEvent["char"] = charNames[0];
-              mouseMoveEvent["chars"] = charNames;
+      const message: AdventureMessage = receivedMsg.data;
+      if (message.type != AdventureMessageType.MOUSE_MOVE) return;
 
-              let playerCursorIxd = this.cursors.findIndex((pc) => pc.userId === mouseMoveEvent.userId);
-              if (playerCursorIxd === -1) {
-                this.cursors.push(mouseMoveEvent);
-              } else {
-                this.cursors[playerCursorIxd] = mouseMoveEvent;
-              }
-            }
-            this.cdr.detectChanges();
+      const mouseMoveEvent: MouseMove = message.message;
+      // Do not add own cursor
+      if (mouseMoveEvent.userId !== this.authService.currentUserValue.id) {
+        // Mouse out
+        if (mouseMoveEvent.x === mouseMoveEvent.y && mouseMoveEvent.y === -1) {
+          let playerCursorIxd = this.cursors.findIndex((pc) => pc.userId === mouseMoveEvent.userId);
+          if (playerCursorIxd !== -1) {
+            this.cursors.splice(playerCursorIxd, 1);
+          }
+          // Mouse move
+        } else {
+          mouseMoveEvent.x = mouseMoveEvent.x - mouseMoveEvent.offsetX;
+          mouseMoveEvent.y = mouseMoveEvent.y - mouseMoveEvent.offsetY;
+
+          const charNames = this.getCharacterNamesFromId(mouseMoveEvent.userId);
+          mouseMoveEvent["char"] = charNames[0];
+          mouseMoveEvent["chars"] = charNames;
+
+          let playerCursorIxd = this.cursors.findIndex((pc) => pc.userId === mouseMoveEvent.userId);
+          if (playerCursorIxd === -1) {
+            this.cursors.push(mouseMoveEvent);
+          } else {
+            this.cursors[playerCursorIxd] = mouseMoveEvent;
           }
         }
+        this.cdr.detectChanges();
       }
     });
   }

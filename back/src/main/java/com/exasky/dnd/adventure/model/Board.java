@@ -1,6 +1,6 @@
 package com.exasky.dnd.adventure.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "board")

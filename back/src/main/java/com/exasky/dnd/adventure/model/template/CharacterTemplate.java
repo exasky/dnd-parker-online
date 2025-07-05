@@ -1,6 +1,6 @@
 package com.exasky.dnd.adventure.model.template;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "dnd_character_template")
@@ -18,7 +18,8 @@ public class CharacterTemplate {
     @Column(name = "back_pack_size")
     private Short backPackSize;
 
-    public CharacterTemplate() {}
+    public CharacterTemplate() {
+    }
 
     // region Getters & Setters
 

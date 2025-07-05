@@ -1,6 +1,6 @@
 package com.exasky.dnd.adventure.model.card;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "character_item")

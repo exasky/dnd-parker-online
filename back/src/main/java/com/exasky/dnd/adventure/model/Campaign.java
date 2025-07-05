@@ -2,7 +2,7 @@ package com.exasky.dnd.adventure.model;
 
 import com.exasky.dnd.adventure.model.card.CharacterItem;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +24,7 @@ public class Campaign {
     private Adventure currentAdventure;
 
     @ManyToMany()
-    @JoinTable(name = "campaign_character_item",
-            joinColumns = @JoinColumn(name = "campaign_id", table = "character_item"),
-            inverseJoinColumns = @JoinColumn(name = "character_item_id"))
+    @JoinTable(name = "campaign_character_item", joinColumns = @JoinColumn(name = "campaign_id", table = "character_item"), inverseJoinColumns = @JoinColumn(name = "character_item_id"))
     List<CharacterItem> drawnItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "campaign", orphanRemoval = true, cascade = CascadeType.ALL)
