@@ -15,6 +15,4 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
     @Query(value = "SELECT a.campaign FROM Adventure a " +
             "WHERE a.id = :adventureId")
     Campaign getByAdventureId(Long adventureId);
-
-    Campaign getById(Long id);
 }

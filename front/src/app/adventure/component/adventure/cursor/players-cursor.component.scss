@@ -3,6 +3,10 @@
   z-index: 100;
   color: white;
 
+  transition:
+    top 0.1s ease,
+    left 0.1s ease;
+
   mat-icon {
     text-shadow: -2px 2px 2px black;
   }

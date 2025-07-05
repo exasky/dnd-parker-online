@@ -7,8 +7,9 @@ import com.exasky.dnd.user.rest.dto.DnDUserUpdatePasswordDto;
 import com.exasky.dnd.user.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(Constant.REST_URL + "/user")

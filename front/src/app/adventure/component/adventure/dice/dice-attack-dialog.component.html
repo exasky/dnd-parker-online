@@ -1,73 +1,89 @@
 <div class="d-flex">
   <div class="d-flex flex-column align-items-center justify-content-evenly">
-    {{'adventure.dialog.dice.attacker' | translate }}
+    {{ "adventure.dialog.dice.attacker" | translate }}
     <div *ngIf="data.fromAttack.type === LayerElementType.CHARACTER" class="position-relative">
-      <img width="200"
-           [src]="CardUtils.getCharacterCharacterImage(data.fromAttack['character'])"
-           [alt]="data.fromAttack['character'].name">
+      <img
+        width="200"
+        [src]="CardUtils.getCharacterCharacterImage(data.fromAttack['character'])"
+        [alt]="data.fromAttack['character'].name"
+      />
       <ng-container *ngIf="data.fromAttackWeapon">
-        <img width="170" class="position-absolute" style="bottom: 0; right: 0"
-             [src]="CardUtils.getCardImage(data.fromAttackWeapon)"
-             [alt]="data.fromAttackWeapon.name">
+        <img
+          width="170"
+          class="position-absolute"
+          style="bottom: 0; right: 0"
+          [src]="CardUtils.getCardImage(data.fromAttackWeapon)"
+          [alt]="data.fromAttackWeapon.name"
+        />
       </ng-container>
     </div>
     <ng-container *ngIf="data.fromAttack.type === LayerElementType.MONSTER">
-      <img width="200"
-           [src]="CardUtils.getMonsterDescriptionImage(data.fromAttack['monster'])"
-           [alt]="data.fromAttack['monster'].element.name">
+      <img
+        width="200"
+        [src]="CardUtils.getMonsterDescriptionImage(data.fromAttack['monster'])"
+        [alt]="data.fromAttack['monster'].element.name"
+      />
     </ng-container>
   </div>
   <div class="d-flex flex-column">
     <div class="d-flex justify-content-evenly flex-wrap mat-elevation-z3 p-2" style="border-radius: 4px">
       <div *ngFor="let dice of allDices" class="m-1">
-        <img height="70px" width="70px"
-             style="border-radius: 5px"
-             [src]="'assets/dice/' + dice.name + '/1.jpeg'"
-             [alt]="dice.name"
-             (click)="addToDiceList(dice)">
+        <img
+          height="70px"
+          width="70px"
+          style="border-radius: 5px"
+          [src]="'assets/dice/' + dice.name + '/1.jpeg'"
+          [alt]="dice.name"
+          (click)="addToDiceList(dice)"
+        />
       </div>
     </div>
     <mat-dialog-content>
       <div class="d-flex flex-wrap justify-content-evenly">
         <!-- DO NOT REMOVE diceCmp. It's used by abstract parent class -->
         <!--suppress JSUnusedGlobalSymbols -->
-        <app-dice *ngFor="let dice of selectedDices"
-                  #diceCmp
-                  [diceType]="dice.name"
-                  (click)="removeDiceFromList(dice)"></app-dice>
+        @for (dice of selectedDices; track dice.id) {
+          <app-dice #diceCmp [diceType]="dice.name" (click)="removeDiceFromList(dice)"></app-dice>
+        }
       </div>
     </mat-dialog-content>
   </div>
   <div class="d-flex flex-column align-items-center justify-content-evenly">
-    {{'adventure.dialog.dice.attacked' | translate }}
-    <ng-container *ngIf="data.toAttack.type === LayerElementType.CHARACTER">
-      <img width="200"
-           [src]="CardUtils.getCharacterCharacterImage(data.toAttack['character'])"
-           [alt]="data.toAttack['character'].name">
-    </ng-container>
-    <ng-container *ngIf="data.toAttack.type === LayerElementType.MONSTER">
-      <img width="200"
-           [src]="CardUtils.getMonsterDescriptionImage(data.toAttack['monster'])"
-           [alt]="data.toAttack['monster'].element.name">
-    </ng-container>
+    {{ "adventure.dialog.dice.attacked" | translate }}
+    @switch (data.toAttack.type) {
+      @case (LayerElementType.CHARACTER) {
+        <img
+          width="200"
+          [src]="CardUtils.getCharacterCharacterImage(data.toAttack['character'])"
+          [alt]="data.toAttack['character'].name"
+        />
+      }
+      @case (LayerElementType.MONSTER) {
+        <img
+          width="200"
+          [src]="CardUtils.getMonsterDescriptionImage(data.toAttack['monster'])"
+          [alt]="data.toAttack['monster'].element.name"
+        />
+      }
+    }
   </div>
 </div>
 <mat-dialog-actions class="d-flex justify-content-center position-relative">
-  <div class="position-absolute"
-       style="left: 0">
-    {{'adventure.dialog.dice.turn' | translate:{char: data.user.username} }}
+  <div class="position-absolute" style="left: 0">
+    {{ "adventure.dialog.dice.turn" | translate: { char: data.user.username } }}
   </div>
-  <button *ngIf="!rollDisabled" mat-raised-button
-          (click)="rollDices()"
-          [disabled]="selectedDices.length === 0">
-    {{'adventure.dialog.dice.roll' | translate }}
+  <button *ngIf="!rollDisabled" mat-raised-button (click)="rollDices()" [disabled]="selectedDices.length === 0">
+    {{ "adventure.dialog.dice.roll" | translate }}
   </button>
-  <button mat-raised-button color="accent"
-          *ngIf="authService.isGM"
-          class="position-absolute"
-          style="right: 0"
-          (click)="this.close()">
-    {{'common.close' | translate}}
+  <button
+    mat-raised-button
+    color="accent"
+    *ngIf="authService.isGM"
+    class="position-absolute"
+    style="right: 0"
+    (click)="this.close()"
+  >
+    {{ "common.close" | translate }}
   </button>
-  <div *ngIf="rollDisabled">{{'adventure.dialog.dice.no-turn' | translate }}</div>
+  <div *ngIf="rollDisabled">{{ "adventure.dialog.dice.no-turn" | translate }}</div>
 </mat-dialog-actions>

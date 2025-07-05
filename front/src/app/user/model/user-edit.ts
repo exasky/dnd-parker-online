@@ -3,12 +3,12 @@ export class UserEdit {
   password?: string;
   username: string;
   role: string;
-  characters: UserEditCharacters[]
+  characters: UserEditCharacters[];
 }
 
 export class UserEditCharacters {
   id: number;
   name: string;
-  campaignId: number;
+  campaignId?: number;
   campaignName: string;
 }

@@ -1,34 +1,39 @@
 <mat-form-field>
-  <input matInput placeholder="{{'common.search' | translate}}" (input)="filterChanged($event.target.value)">
+  <input matInput placeholder="{{ 'common.search' | translate }}" (input)="filterChanged($event.target['value'])" />
 </mat-form-field>
 
 <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="overflow d-flex" style="background-color: unset">
-  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding
-                 draggable="true"
-                 (dragstart)="dragStartHandler($event, node.item)"
-                 [ngSwitch]="node.item.type">
-    <img *ngSwitchCase="layerElementType.CHARACTER"
-         class="icon"
-         [src]="'assets/character/' + node.item.name + '-token.jpg'">
-    <img *ngSwitchCase="layerElementType.MONSTER"
-         class="icon"
-         [src]="'assets/monster/' + node.item.name + '-token.jpg'">
-    <img *ngSwitchCase="layerElementType.TRAP"
-         class="icon"
-         [src]="'assets/item/' + node.item.name + '-activated.jpg'">
-    <img *ngSwitchCase="layerElementType.DOOR"
-         class="icon"
-         [src]="'assets/item/door-' + node.item.name + '-closed.jpg'">
-    <img *ngSwitchDefault
-         class="icon"
-         [src]="'assets/item/' + node.item.name">
-    {{node.name.split('_').join(' ')}}
+  <mat-tree-node
+    *matTreeNodeDef="let node"
+    matTreeNodePadding
+    draggable="true"
+    (dragstart)="dragStartHandler($event, node.item)"
+  >
+    @switch (node.item.type) {
+      @case (layerElementType.CHARACTER) {
+        <img class="icon" [src]="'assets/character/' + node.item.name + '-token.jpg'" />
+      }
+      @case (layerElementType.MONSTER) {
+        <img class="icon" [src]="'assets/monster/' + node.item.name + '-token.jpg'" />
+      }
+      @case (layerElementType.TRAP) {
+        <img class="icon" [src]="'assets/item/' + node.item.name + '-activated.jpg'" />
+      }
+      @case (layerElementType.DOOR) {
+        <img class="icon" [src]="'assets/item/door-' + node.item.name + '-closed.jpg'" />
+      }
+      @default {
+        <img class="icon" [src]="'assets/item/' + node.item.name" />
+      }
+    }
+
+    {{ node.name.split("_").join(" ") }}
   </mat-tree-node>
 
-  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
     <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-      <mat-icon>{{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}</mat-icon>
+      <mat-icon>{{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}</mat-icon>
     </button>
-    {{'adventure.item-displayer.' + node.name | translate}}
+    {{ "adventure.item-displayer." + node.name | translate }}
   </mat-tree-node>
 </mat-tree>

@@ -2,7 +2,7 @@ package com.exasky.dnd.adventure.model.log;
 
 import com.exasky.dnd.adventure.model.Adventure;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -107,5 +107,5 @@ public class AdventureLog {
     public void setToId(String toId) {
         this.toId = toId;
     }
-// endregion
+    // endregion
 }

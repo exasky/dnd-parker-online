@@ -1,39 +1,41 @@
-<mat-card class="flex-shrink-0 w-100">
-  <mat-card-title>
-    {{'index.welcome' | translate}} {{authService.currentUserValue.username}} !
-  </mat-card-title>
+<mat-card class="flex-shrink-0 w-100 welcome-card">
+  <mat-card-title> {{ "index.welcome" | translate }} {{ authService.currentUserValue.username }} ! </mat-card-title>
 </mat-card>
 
 <div class="w-100 h-75 d-flex flex-column justify-content-evenly">
   <mat-card class="flex-grow-0 d-flex flex-column">
     <mat-card-header class="flex-shrink-0">
-      {{'index.available-campaigns' | translate}}
+      {{ "index.available-campaigns" | translate }}
     </mat-card-header>
     <mat-card-content class="flex-grow overflow d-flex flex-column">
-      <span *ngIf="campaigns && campaigns.length === 0">{{'index.no-available-campaigns' | translate}}</span>
-      <button *ngFor="let campaign of campaigns"
-              class="flex-shrink-0"
-              [disabled]="campaign.currentAdventureId === null"
-              mat-button
-              (click)="goToAdventure(campaign.currentAdventureId)">
-        {{campaign.name}} - {{campaign.currentAdventureName}}
-        <ng-container *ngIf="!authService.isGM"> ({{campaign.currentCharacterDisplayName}})</ng-container>
+      <span *ngIf="campaigns && campaigns.length === 0">{{ "index.no-available-campaigns" | translate }}</span>
+      <button
+        *ngFor="let campaign of campaigns"
+        class="flex-shrink-0"
+        [disabled]="campaign.currentAdventureId === null"
+        mat-button
+        (click)="goToAdventure(campaign.currentAdventureId)"
+      >
+        {{ campaign.name }} - {{ campaign.currentAdventureName }}
+        <ng-container *ngIf="!authService.isGM"> ({{ campaign.currentCharacterDisplayName }})</ng-container>
       </button>
     </mat-card-content>
   </mat-card>
 
   <mat-card *ngIf="authService.isGM" class="flex-grow-0 d-flex flex-column mt-4">
-    <mat-card-header class="flex-shrink-0">{{'index.update-campaign' | translate}}</mat-card-header>
+    <mat-card-header class="flex-shrink-0">{{ "index.update-campaign" | translate }}</mat-card-header>
     <mat-card-content class="flex-grow overflow d-flex flex-column">
-      <button *ngFor="let campaign of campaigns"
-              class="flex-shrink-0"
-              mat-button
-              (click)="goToCampaignEditor(campaign.id)">
-        {{campaign.name}}
+      <button
+        *ngFor="let campaign of campaigns"
+        class="flex-shrink-0"
+        mat-button
+        (click)="goToCampaignEditor(campaign.id)"
+      >
+        {{ campaign.name }}
       </button>
     </mat-card-content>
   </mat-card>
 </div>
 <div class="flex-shrink-0 d-flex flex-column w-100" *ngIf="authService.isGM">
-  <button mat-raised-button (click)="createCampaignAdventure()">{{'index.create-campaign' | translate}}</button>
+  <button mat-raised-button (click)="createCampaignAdventure()">{{ "index.create-campaign" | translate }}</button>
 </div>

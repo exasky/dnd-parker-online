@@ -8,9 +8,9 @@ import com.exasky.dnd.user.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,8 +20,8 @@ public class UserService {
     private final CharacterService characterService;
 
     public UserService(UserRepository userRepository,
-                       LoginService loginService,
-                       CharacterService characterService) {
+            LoginService loginService,
+            CharacterService characterService) {
         this.userRepository = userRepository;
         this.loginService = loginService;
         this.characterService = characterService;
@@ -32,7 +32,7 @@ public class UserService {
     }
 
     public DnDUser getById(Long id) {
-        return userRepository.getOne(id);
+        return userRepository.getReferenceById(id);
     }
 
     @Transactional
@@ -42,8 +42,7 @@ public class UserService {
         attachedUser.setRole(toCreate.getRole());
         attachedUser.updateCharacters(toCreate.getCharacters().stream()
                 .map(character -> characterService.findById(character.getId()))
-                .collect(Collectors.toList())
-        );
+                .collect(Collectors.toList()));
         attachedUser.getCharacters().forEach(character -> character.setUser(attachedUser));
 
         return attachedUser;
@@ -51,51 +50,50 @@ public class UserService {
 
     @Transactional
     public DnDUser update(Long id, DnDUser toUpdate) {
-        DnDUser attachedUser = userRepository.getOne(id);
+        try {
+            DnDUser attachedUser = userRepository.getReferenceById(id);
 
-        //noinspection ConstantConditions
-        if (Objects.isNull(attachedUser)) {
+            attachedUser.getCharacters().forEach(prevCharacter -> prevCharacter.setUser(null));
+
+            attachedUser.setUsername(toUpdate.getUsername());
+            attachedUser.setRole(toUpdate.getRole());
+            attachedUser.updateCharacters(toUpdate.getCharacters().stream()
+                    .map(character -> characterService.findById(character.getId()))
+                    .collect(Collectors.toList()));
+            attachedUser.getCharacters().forEach(character -> character.setUser(attachedUser));
+
+            return attachedUser;
+        } catch (EntityNotFoundException e) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.USER.NOT_FOUND);
+            return null; // This line is unreachable but added to satisfy the compiler
         }
-
-        attachedUser.getCharacters().forEach(prevCharacter -> prevCharacter.setUser(null));
-
-        attachedUser.setUsername(toUpdate.getUsername());
-        attachedUser.setRole(toUpdate.getRole());
-        attachedUser.updateCharacters(toUpdate.getCharacters().stream()
-                .map(character -> characterService.findById(character.getId()))
-                .collect(Collectors.toList())
-        );
-        attachedUser.getCharacters().forEach(character -> character.setUser(attachedUser));
-
-        return attachedUser;
     }
 
     @Transactional
     public DnDUser updatePassword(Long id, DnDUser toUpdate) {
-        DnDUser attachedUser = userRepository.getOne(id);
+        try {
+            DnDUser attachedUser = userRepository.getReferenceById(id);
 
-        //noinspection ConstantConditions
-        if (Objects.isNull(attachedUser)) {
+            attachedUser.setPassword(loginService.encorePassword(toUpdate.getPassword()));
+
+            return attachedUser;
+        } catch (EntityNotFoundException e) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.USER.NOT_FOUND);
+            return null; // This line is unreachable but added to satisfy the compiler
         }
-
-        attachedUser.setPassword(loginService.encorePassword(toUpdate.getPassword()));
-
-        return attachedUser;
     }
 
     @Transactional
     public void delete(Long id) {
-        DnDUser attachedUser = userRepository.getOne(id);
+        try {
+            DnDUser attachedUser = userRepository.getReferenceById(id);
 
-        //noinspection ConstantConditions
-        if (Objects.isNull(attachedUser)) {
+            attachedUser.getCharacters().forEach(prevCharacter -> prevCharacter.setUser(null));
+
+            userRepository.delete(attachedUser);
+        } catch (EntityNotFoundException e) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.USER.NOT_FOUND);
+            return; // This line is unreachable but added to satisfy the compiler
         }
-
-        attachedUser.getCharacters().forEach(prevCharacter -> prevCharacter.setUser(null));
-
-        userRepository.delete(attachedUser);
     }
 }

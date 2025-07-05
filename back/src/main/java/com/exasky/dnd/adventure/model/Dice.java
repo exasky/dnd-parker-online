@@ -1,6 +1,6 @@
 package com.exasky.dnd.adventure.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "dice")
@@ -12,7 +12,8 @@ public class Dice {
     @Column
     private String name;
 
-    public Dice() {}
+    public Dice() {
+    }
 
     // region Getters & Setters
 

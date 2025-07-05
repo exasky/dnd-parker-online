@@ -3,7 +3,7 @@ package com.exasky.dnd.adventure.model;
 import com.exasky.dnd.adventure.model.layer.item.*;
 import com.exasky.dnd.adventure.model.log.AdventureLog;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 

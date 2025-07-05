@@ -9,8 +9,9 @@ cd "${SCRIPT_DIR}/front"
 npm run build:prod
 
 cd "${SCRIPT_DIR}/back"
+mkdir -p src/main/resources/static
 rm -rf src/main/resources/static/*
-cp -rf "${SCRIPT_DIR}/front/dist/front/"* src/main/resources/static/
+cp -rf "${SCRIPT_DIR}/front/dist/front/browser/"* src/main/resources/static/
 #mvn clean install
 mvn clean package -Pproduction
 

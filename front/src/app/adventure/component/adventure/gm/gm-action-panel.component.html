@@ -6,105 +6,140 @@
   </div>
   <mat-expansion-panel class="flex-shrink-0 d-flex flex-column mb-0">
     <mat-expansion-panel-header>
-      <mat-panel-title>{{'adventure.gm-panel.tools' | translate}}</mat-panel-title>
+      <mat-panel-title>{{ "adventure.gm-panel.tools" | translate }}</mat-panel-title>
     </mat-expansion-panel-header>
 
     <div class="d-flex flex-column">
-      <button mat-raised-button class="mb-1" (click)="sendAlert()">{{'adventure.gm-panel.send-alert' | translate}}</button>
+      <button mat-raised-button class="mb-1" (click)="sendAlert()">
+        {{ "adventure.gm-panel.send-alert" | translate }}
+      </button>
       <button mat-raised-button class="mb-1" (click)="toggleCursor.emit()">
-        {{'adventure.gm-panel.' + (cursorEnabled ? 'hide-cursor' : 'show-cursor') | translate}}
+        {{ "adventure.gm-panel." + (cursorEnabled ? "hide-cursor" : "show-cursor") | translate }}
       </button>
       <button mat-raised-button class="mb-1 position-relative" [matMenuTriggerFor]="soundMenu">
-        {{'adventure.gm-panel.sounds' | translate}}
-        <mat-icon class="position-absolute" style="right: 10px; top: 6px"
-                  [matMenuTriggerFor]="soundMenu"
-                  #soundMenuTrigger="matMenuTrigger"
-                  (mouseover)="soundMenuTrigger.openMenu()">keyboard_arrow_down
+        {{ "adventure.gm-panel.sounds" | translate }}
+        <mat-icon
+          class="position-absolute"
+          style="right: 10px; top: 6px"
+          [matMenuTriggerFor]="soundMenu"
+          #soundMenuTrigger="matMenuTrigger"
+          (mouseover)="soundMenuTrigger.openMenu()"
+          >keyboard_arrow_down
         </mat-icon>
       </button>
       <mat-menu #soundMenu="matMenu" xPosition="before">
-        <button mat-menu-item class="mb-1"
-                (click)="sendSound($event, SoundType.MELEE_SWORD)">{{'adventure.gm-panel.sound.melee' | translate}}</button>
-        <button mat-menu-item class="mb-1"
-                (click)="sendSound($event, SoundType.BOW)">{{'adventure.gm-panel.sound.bow' | translate}}</button>
-        <button mat-menu-item class="mb-1"
-                (click)="sendSound($event, SoundType.POTION)">{{'adventure.gm-panel.sound.drink-potion' | translate}}</button>
-        <button mat-menu-item class="mb-1"
-                [matMenuTriggerFor]="soundSpell">{{'adventure.gm-panel.sound.spell' | translate}}</button>
-        <button mat-menu-item class="mb-1"
-                [matMenuTriggerFor]="soundMonster">{{'adventure.gm-panel.sound.monster' | translate}}</button>
-        <button mat-menu-item class="mb-1"
-                [matMenuTriggerFor]="soundMisc">{{'adventure.gm-panel.sound.misc' | translate}}</button>
-        <button mat-menu-item class="mb-1"
-                [matMenuTriggerFor]="soundMacro">{{'adventure.gm-panel.sound.macro' | translate}}</button>
-        <button mat-menu-item class="mb-1"
-                [matMenuTriggerFor]="soundAmbient">{{'adventure.gm-panel.sound.ambient' | translate}}</button>
+        <button mat-menu-item class="mb-1" (click)="sendSound($event, SoundType.MELEE_SWORD)">
+          {{ "adventure.gm-panel.sound.melee" | translate }}
+        </button>
+        <button mat-menu-item class="mb-1" (click)="sendSound($event, SoundType.BOW)">
+          {{ "adventure.gm-panel.sound.bow" | translate }}
+        </button>
+        <button mat-menu-item class="mb-1" (click)="sendSound($event, SoundType.POTION)">
+          {{ "adventure.gm-panel.sound.drink-potion" | translate }}
+        </button>
+        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundSpell">
+          {{ "adventure.gm-panel.sound.spell" | translate }}
+        </button>
+        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundMonster">
+          {{ "adventure.gm-panel.sound.monster" | translate }}
+        </button>
+        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundMisc">
+          {{ "adventure.gm-panel.sound.misc" | translate }}
+        </button>
+        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundMacro">
+          {{ "adventure.gm-panel.sound.macro" | translate }}
+        </button>
+        <button mat-menu-item class="mb-1" [matMenuTriggerFor]="soundAmbient">
+          {{ "adventure.gm-panel.sound.ambient" | translate }}
+        </button>
       </mat-menu>
       <mat-menu #soundSpell="matMenu">
-        <button mat-menu-item
-                (click)="sendSound($event, SoundType.SPELL_FIRE)">{{'adventure.gm-panel.sound.fire' | translate}}</button>
-        <button mat-menu-item
-                (click)="sendSound($event, SoundType.SPELL_HEAL)">{{'adventure.gm-panel.sound.heal' | translate}}</button>
-        <button mat-menu-item
-                (click)="sendSound($event, SoundType.SPELL_GENERIC)">{{'adventure.gm-panel.sound.generic' | translate}}</button>
-        <button mat-menu-item
-                (click)="sendSound($event, 'magic_undo.mp3')">{{'adventure.gm-panel.sound.undo' | translate}}</button>
+        <button mat-menu-item (click)="sendSound($event, SoundType.SPELL_FIRE)">
+          {{ "adventure.gm-panel.sound.fire" | translate }}
+        </button>
+        <button mat-menu-item (click)="sendSound($event, SoundType.SPELL_HEAL)">
+          {{ "adventure.gm-panel.sound.heal" | translate }}
+        </button>
+        <button mat-menu-item (click)="sendSound($event, SoundType.SPELL_GENERIC)">
+          {{ "adventure.gm-panel.sound.generic" | translate }}
+        </button>
+        <button mat-menu-item (click)="sendSound($event, 'magic_undo.mp3')">
+          {{ "adventure.gm-panel.sound.undo" | translate }}
+        </button>
       </mat-menu>
       <mat-menu #soundMonster="matMenu">
-        <button mat-menu-item
-                (click)="sendSound($event, SoundType.MONSTER_HIT)">{{'adventure.gm-panel.sound.monster-hit' | translate}}</button>
-        <button mat-menu-item
-                (click)="sendSound($event, 'weak_goblin_pain.mp3')">{{'adventure.gm-panel.sound.goblin' | translate}}</button>
+        <button mat-menu-item (click)="sendSound($event, SoundType.MONSTER_HIT)">
+          {{ "adventure.gm-panel.sound.monster-hit" | translate }}
+        </button>
+        <button mat-menu-item (click)="sendSound($event, 'weak_goblin_pain.mp3')">
+          {{ "adventure.gm-panel.sound.goblin" | translate }}
+        </button>
       </mat-menu>
       <mat-menu #soundMisc="matMenu">
-        <button mat-menu-item
-                (click)="sendSound($event, 'ghost.mp3')">{{'adventure.gm-panel.sound.ghost' | translate}}</button>
-        <button mat-menu-item
-                (click)="sendSound($event, 'monster_breath.mp3')">{{'adventure.gm-panel.sound.evil-breath' | translate}}</button>
-        <button mat-menu-item
-                (click)="sendSound($event, 'eat_flesh.mp3')">{{'adventure.gm-panel.sound.eat-flesh' | translate}}</button>
-        <button mat-menu-item
-                (click)="sendSound($event, 'melee_sword_slime.mp3')">{{'adventure.gm-panel.sound.sword-slime' | translate}}</button>
-        <button mat-menu-item
-                (click)="sendSound($event, 'liche_appear.mp3')">{{'adventure.gm-panel.sound.liche-appear' | translate}}</button>
-        <button mat-menu-item
-                (click)="sendSound($event, 'meanwhile.mp3')">{{'adventure.gm-panel.sound.meanwhile' | translate}}</button>
+        <button mat-menu-item (click)="sendSound($event, 'ghost.mp3')">
+          {{ "adventure.gm-panel.sound.ghost" | translate }}
+        </button>
+        <button mat-menu-item (click)="sendSound($event, 'monster_breath.mp3')">
+          {{ "adventure.gm-panel.sound.evil-breath" | translate }}
+        </button>
+        <button mat-menu-item (click)="sendSound($event, 'eat_flesh.mp3')">
+          {{ "adventure.gm-panel.sound.eat-flesh" | translate }}
+        </button>
+        <button mat-menu-item (click)="sendSound($event, 'melee_sword_slime.mp3')">
+          {{ "adventure.gm-panel.sound.sword-slime" | translate }}
+        </button>
+        <button mat-menu-item (click)="sendSound($event, 'liche_appear.mp3')">
+          {{ "adventure.gm-panel.sound.liche-appear" | translate }}
+        </button>
+        <button mat-menu-item (click)="sendSound($event, 'meanwhile.mp3')">
+          {{ "adventure.gm-panel.sound.meanwhile" | translate }}
+        </button>
       </mat-menu>
       <mat-menu #soundMacro="matMenu">
-        <button mat-menu-item
-                (click)="sendMacro($event, SoundMacroType.SWORDS_AND_ARROWS)">{{'adventure.gm-panel.sound.swords-bows' | translate}}</button>
+        <button mat-menu-item (click)="sendMacro($event, SoundMacroType.SWORDS_AND_ARROWS)">
+          {{ "adventure.gm-panel.sound.swords-bows" | translate }}
+        </button>
       </mat-menu>
       <mat-menu #soundAmbient="matMenu">
         <button mat-menu-item (click)="sendAmbient($event, 'barren_wastes.mp3')">Barren wastes</button>
-        <button mat-menu-item
-                (click)="sendAmbient($event, 'battle.mp3')">{{'adventure.gm-panel.sound.battle' | translate}}</button>
-        <button mat-menu-item
-                (click)="sendAmbient($event, 'bridge.mp3')">{{'adventure.gm-panel.sound.bridge' | translate}}</button>
-        <button mat-menu-item
-                (click)="sendAmbient($event, 'dungeon.mp3')">{{'adventure.gm-panel.sound.dungeon' | translate}}</button>
+        <button mat-menu-item (click)="sendAmbient($event, 'battle.mp3')">
+          {{ "adventure.gm-panel.sound.battle" | translate }}
+        </button>
+        <button mat-menu-item (click)="sendAmbient($event, 'bridge.mp3')">
+          {{ "adventure.gm-panel.sound.bridge" | translate }}
+        </button>
+        <button mat-menu-item (click)="sendAmbient($event, 'dungeon.mp3')">
+          {{ "adventure.gm-panel.sound.dungeon" | translate }}
+        </button>
       </mat-menu>
-
     </div>
-
   </mat-expansion-panel>
 
   <mat-expansion-panel class="d-flex flex-column">
     <mat-expansion-panel-header class="flex-shrink-0">
-      <mat-panel-title>{{'adventure.gm-panel.monsters' | translate}}</mat-panel-title>
+      <mat-panel-title>{{ "adventure.gm-panel.monsters" | translate }}</mat-panel-title>
     </mat-expansion-panel-header>
 
     <div class="d-flex flex-column">
-      <div *ngFor="let monster of monsters; let i = index"
-           class="d-flex flex-column align-items-center p-1 mb-2"
-           [class.selected]="monster.id === selectedMonsterId">
-        <mat-card-subtitle>{{monster.monster.element.name}} n°{{i}}</mat-card-subtitle>
+      <div
+        *ngFor="let monster of monsters; let i = index"
+        class="d-flex flex-column align-items-center p-1 mb-2"
+        [class.selected]="monster.id === selectedMonsterId"
+      >
+        <mat-card-subtitle>{{ monster.monster.element.name }} n°{{ i }}</mat-card-subtitle>
         <div class="d-flex align-items-center">
-          <img [src]="getMonsterImage(monster.monster)" width="150px"
-               (click)="selectMonster.emit(monster.id)">
-          <mat-form-field class="mx-2" style="max-width: 50px">
-            <mat-label>{{'common.hp' | translate}}</mat-label>
-            <input matInput [(ngModel)]="monster.hp" type="number" min="0" inputmode="numeric" pattern="[0-9]*"
-                   (change)="updateMonster(monster)">
+          <img [src]="getMonsterImage(monster.monster)" width="150px" (click)="selectMonster.emit(monster.id)" />
+          <mat-form-field class="mx-2" style="max-width: 64px">
+            <mat-label>{{ "common.hp" | translate }}</mat-label>
+            <input
+              matInput
+              [(ngModel)]="monster.hp"
+              type="number"
+              min="0"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              (change)="updateMonster(monster)"
+            />
           </mat-form-field>
         </div>
       </div>
@@ -113,29 +148,41 @@
 
   <mat-expansion-panel class="d-none d-md-flex flex-column">
     <mat-expansion-panel-header class="flex-shrink-0">
-      <mat-panel-title>{{'adventure.gm-panel.characters' | translate}}</mat-panel-title>
+      <mat-panel-title>{{ "adventure.gm-panel.characters" | translate }}</mat-panel-title>
     </mat-expansion-panel-header>
 
     <div class="d-flex flex-column">
-      <div *ngFor="let charItem of characters | sort:'character.name'"
-           class="flex-grow d-flex align-items-center justify-content-around">
-        {{charItem.character.name | capitalize}}
+      <div
+        *ngFor="let charItem of characters | sort: 'character.name'"
+        class="flex-grow d-flex align-items-center justify-content-around"
+      >
+        {{ charItem.character.name | capitalize }}
         <div class="d-flex flex-column">
-          <mat-label style="padding-left: 8px">{{'common.hp' | translate}}</mat-label>
-          <mat-slider color="primary"
-                      [min]="0" [max]="charItem.character.maxHp" [step]="1"
-                      [thumbLabel]="true" [tickInterval]="1"
-                      [(ngModel)]="charItem.character.hp"
-                      (change)="updateCharacter(charItem)">
+          <mat-label style="padding-left: 8px">{{ "common.hp" | translate }}</mat-label>
+          <mat-slider
+            color="primary"
+            [min]="0"
+            [max]="charItem.character.maxHp"
+            [step]="1"
+            showTickMarks
+            discrete
+            (change)="updateCharacter(charItem)"
+          >
+            <input matSliderThumb [(ngModel)]="charItem.character.hp" />
           </mat-slider>
         </div>
         <div class="d-flex flex-column">
-          <mat-label style="padding-left: 8px">{{'common.mp' | translate}}</mat-label>
-          <mat-slider color="primary"
-                      [min]="0" [max]="charItem.character.maxMp" [step]="1"
-                      [thumbLabel]="true" [tickInterval]="1"
-                      [(ngModel)]="charItem.character.mp"
-                      (change)="updateCharacter(charItem)">
+          <mat-label style="padding-left: 8px">{{ "common.mp" | translate }}</mat-label>
+          <mat-slider
+            color="primary"
+            [min]="0"
+            [max]="charItem.character.maxMp"
+            [step]="1"
+            discrete
+            showTickMarks
+            (change)="updateCharacter(charItem)"
+          >
+            <input matSliderThumb [(ngModel)]="charItem.character.mp" />
           </mat-slider>
         </div>
       </div>
@@ -144,22 +191,21 @@
 
   <mat-expansion-panel class="d-flex flex-column">
     <mat-expansion-panel-header class="flex-shrink-0">
-      <mat-panel-title>{{'adventure.gm-panel.initiative' | translate}}</mat-panel-title>
+      <mat-panel-title>{{ "adventure.gm-panel.initiative" | translate }}</mat-panel-title>
     </mat-expansion-panel-header>
 
     <div class="d-flex flex-wrap justify-content-center initiatives">
       <mat-form-field *ngFor="let characterTurn of initiatives" class="mx-2" style="max-width: 100px">
-        <mat-label>{{characterTurn.characterName}}</mat-label>
+        <mat-label>{{ characterTurn.characterName }}</mat-label>
         <mat-select [(ngModel)]="characterTurn.number">
-          <mat-option *ngFor="let idx of [1,2,3,4,5]"
-                      [value]="idx">
-            {{idx}}
+          <mat-option *ngFor="let idx of [1, 2, 3, 4, 5]" [value]="idx">
+            {{ idx }}
           </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
     <button mat-raised-button style="float: right" (click)="updateInitiatives()">
-      {{'common.validate' | translate}}
+      {{ "common.validate" | translate }}
     </button>
   </mat-expansion-panel>
 </mat-accordion>

@@ -2,7 +2,7 @@ package com.exasky.dnd.adventure.model.layer.item;
 
 import com.exasky.dnd.adventure.model.template.MonsterTemplate;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "layer_item_monster")

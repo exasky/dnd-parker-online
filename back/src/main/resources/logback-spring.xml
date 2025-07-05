@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
     <!-- use Spring default values -->
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
 
-    <property name="LOGS" value="logs"/>
+    <property name="LOGS" value="logs" />
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
-        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by
+        default -->
         <encoder>
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
-            <!--            <pattern>%d{HH:mm:ss.SSS} [%t] %highlight(%-5level) %cyan(%logger{15}) - %msg%n</pattern>-->
+            <!--            <pattern>%d{HH:mm:ss.SSS} [%t] %highlight(%-5level) %cyan(%logger{15}) -
+            %msg%n</pattern>-->
         </encoder>
     </appender>
 
@@ -29,23 +31,23 @@
 
     <springProfile name="dev">
         <logger name="com.exasky.dnd" level="DEBUG" additivity="false">
-            <appender-ref ref="Application"/>
-            <appender-ref ref="Console"/>
+            <appender-ref ref="Application" />
+            <appender-ref ref="Console" />
         </logger>
 
-        <root level="INFO">
-            <appender-ref ref="Application"/>
-            <appender-ref ref="Console"/>
+        <root level="DEBUG">
+            <appender-ref ref="Application" />
+            <appender-ref ref="Console" />
         </root>
     </springProfile>
 
     <springProfile name="production">
         <logger name="com.exasky.dnd" level="DEBUG" additivity="false">
-            <appender-ref ref="Application"/>
+            <appender-ref ref="Application" />
         </logger>
 
         <root level="INFO">
-            <appender-ref ref="Application"/>
+            <appender-ref ref="Application" />
         </root>
     </springProfile>
 </configuration>

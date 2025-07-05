@@ -1,29 +1,34 @@
-import {Component, EventEmitter, Input, Output, ViewChild} from "@angular/core";
-import {MatMenuTrigger} from "@angular/material/menu";
+import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import { MatMenuModule, MatMenuTrigger } from "@angular/material/menu";
 import {
   CharacterLayerGridsterItem,
   ChestLayerGridsterItem,
   DoorLayerGridsterItem,
   LayerGridsterItem,
   MonsterLayerGridsterItem,
-  TrapLayerGridsterItem
+  TrapLayerGridsterItem,
 } from "../../../model/layer-gridster-item";
-import {GM_CHAR_NAME, Initiative, LayerElement, LayerElementType} from "../../../model/adventure";
-import {AuthService} from "../../../../login/auth.service";
-import {AdventureService} from "../../../service/adventure.service";
-import {GmService} from "../../../service/gm.service";
-import {DialogUtils} from "../../../../common/dialog/dialog.utils";
-import {MatDialog} from "@angular/material/dialog";
-import {SelectCardDialogComponent} from "./dialog/select-card-dialog.component";
-import {AdventureCardService} from "../../../service/adventure-card.service";
-import {AdventureUtils} from "../utils/utils";
-import {CharacterEquipment} from "../../../model/character";
-import {DiceService} from "../../../service/dice.service";
-import {SelectWeaponDialogComponent} from "./dialog/select-weapon-dialog.component";
+import { GM_CHAR_NAME, Initiative, LayerElement, LayerElementType } from "../../../model/adventure";
+import { AuthService } from "../../../../login/auth.service";
+import { AdventureService } from "../../../service/adventure.service";
+import { GmService } from "../../../service/gm.service";
+import { DialogUtils } from "../../../../common/dialog/dialog.utils";
+import { MatDialog } from "@angular/material/dialog";
+import { SelectCardDialogComponent } from "./dialog/select-card-dialog.component";
+import { AdventureCardService } from "../../../service/adventure-card.service";
+import { AdventureUtils } from "../utils/utils";
+import { CharacterEquipment } from "../../../model/character";
+import { DiceService } from "../../../service/dice.service";
+import { SelectWeaponDialogComponent } from "./dialog/select-weapon-dialog.component";
+import { TranslateModule } from "@ngx-translate/core";
+import { MatIconModule } from "@angular/material/icon";
+import { MatDividerModule } from "@angular/material/divider";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-context-menu',
-  templateUrl: './context-menu.component.html'
+  selector: "app-context-menu",
+  templateUrl: "./context-menu.component.html",
+  imports: [MatMenuModule, TranslateModule, MatIconModule, MatDividerModule, CommonModule],
 })
 export class ContextMenuComponent {
   @ViewChild(MatMenuTrigger) contextMenu: MatMenuTrigger;
@@ -48,7 +53,7 @@ export class ContextMenuComponent {
 
   LayerElementType = LayerElementType;
 
-  contextMenuPosition = {x: '0px', y: '0px'};
+  contextMenuPosition = { x: "0px", y: "0px" };
 
   isCharacterMove = false;
 
@@ -64,21 +69,22 @@ export class ContextMenuComponent {
   @Output()
   closeMenu: EventEmitter<void> = new EventEmitter<void>();
 
-  constructor(public authService: AuthService,
-              private adventureService: AdventureService,
-              private adventureCardService: AdventureCardService,
-              private gmService: GmService,
-              private diceService: DiceService,
-              private dialog: MatDialog) {
-  }
+  constructor(
+    public authService: AuthService,
+    private adventureService: AdventureService,
+    private adventureCardService: AdventureCardService,
+    private gmService: GmService,
+    private diceService: DiceService,
+    private dialog: MatDialog,
+  ) {}
 
   openMenu(event: MouseEvent, item: LayerGridsterItem) {
     if (this.isContextMenuEnabled(item)) {
       event.preventDefault();
-      this.contextMenuPosition.x = event.clientX + 'px';
-      this.contextMenuPosition.y = event.clientY + 'px';
-      this.contextMenu.menuData = {'item': item};
-      this.contextMenu.menu.focusFirstItem('mouse');
+      this.contextMenuPosition.x = event.clientX + "px";
+      this.contextMenuPosition.y = event.clientY + "px";
+      this.contextMenu.menuData = { item: item };
+      this.contextMenu.menu.focusFirstItem("mouse");
       this.contextMenu.openMenu();
     }
   }
@@ -99,9 +105,12 @@ export class ContextMenuComponent {
   }
 
   isItemFlippable(item: LayerGridsterItem) {
-    return ContextMenuComponent.flippableItems().indexOf(item.type) !== -1
-      && (this.authService.isGM
-        || (AdventureUtils.areItemsNextToEachOther(item, this.getCurrentCharacterTurn())) && item.type === LayerElementType.DOOR);
+    return (
+      ContextMenuComponent.flippableItems().indexOf(item.type) !== -1 &&
+      (this.authService.isGM ||
+        (AdventureUtils.areItemsNextToEachOther(item, this.getCurrentCharacterTurn()) &&
+          item.type === LayerElementType.DOOR))
+    );
   }
 
   private static flippableItems(): LayerElementType[] {
@@ -120,7 +129,7 @@ export class ContextMenuComponent {
       case LayerElementType.DOOR:
         const doorGridsterItem = item as DoorLayerGridsterItem;
         doorGridsterItem.open = !doorGridsterItem.open;
-        this.gmService.playSound(this.adventureId, 'door_' + (doorGridsterItem.open ? 'open' : 'close') + '_0.mp3');
+        this.gmService.playSound(this.adventureId, "door_" + (doorGridsterItem.open ? "open" : "close") + "_0.mp3");
         break;
     }
 
@@ -137,7 +146,9 @@ export class ContextMenuComponent {
   }
 
   openChest(item: ChestLayerGridsterItem) {
-    const currCharItem = this.characterItems.find(char => char.character.name === this.getCurrentInitiative().characterName);
+    const currCharItem = this.characterItems.find(
+      (char) => char.character.name === this.getCurrentInitiative().characterName,
+    );
     if (item.specificCard) {
       this.adventureCardService.drawCard(this.adventureId, currCharItem.character.id, item.id, item.specificCard.id);
     } else if (currCharItem) {
@@ -150,11 +161,13 @@ export class ContextMenuComponent {
   }
 
   setChestCard(item: ChestLayerGridsterItem) {
-    this.dialog.open(SelectCardDialogComponent, DialogUtils.getDefaultConfig(item['cardId']))
-      .afterClosed().subscribe((value: CharacterEquipment) => {
-      item.specificCard = value;
-      this.adventureService.updateLayerItem(this.adventureId, AdventureUtils.existingGridsterItemToLayerItem(item));
-    });
+    this.dialog
+      .open(SelectCardDialogComponent, DialogUtils.getDefaultConfig(item["cardId"]))
+      .afterClosed()
+      .subscribe((value: CharacterEquipment) => {
+        item.specificCard = value;
+        this.adventureService.updateLayerItem(this.adventureId, AdventureUtils.existingGridsterItemToLayerItem(item));
+      });
   }
 
   canMove(item: CharacterLayerGridsterItem) {
@@ -179,11 +192,23 @@ export class ContextMenuComponent {
     if (Initiative.isGmTurn(this.getCurrentInitiative())) {
       this.diceService.openDiceAttackDialog(this.adventureId, this.selectedMonsterId, item.id, true, true);
     } else {
-      this.dialog.open(SelectWeaponDialogComponent, DialogUtils.getDefaultConfig({character: this.getCurrentCharacterTurn().character}))
-        .afterClosed().subscribe((value: CharacterEquipment) => {
-        if (!value) return;
-        this.diceService.openDiceAttackDialog(this.adventureId, this.getCurrentCharacterTurn().character.id, item.id, false, true, value.id);
-      });
+      this.dialog
+        .open(
+          SelectWeaponDialogComponent,
+          DialogUtils.getDefaultConfig({ character: this.getCurrentCharacterTurn().character }),
+        )
+        .afterClosed()
+        .subscribe((value: CharacterEquipment) => {
+          if (!value) return;
+          this.diceService.openDiceAttackDialog(
+            this.adventureId,
+            this.getCurrentCharacterTurn().character.id,
+            item.id,
+            false,
+            true,
+            value.id,
+          );
+        });
     }
   }
 
@@ -191,11 +216,23 @@ export class ContextMenuComponent {
     if (Initiative.isGmTurn(this.getCurrentInitiative())) {
       this.diceService.openDiceAttackDialog(this.adventureId, this.selectedMonsterId, item.id, true, false);
     } else {
-      this.dialog.open(SelectWeaponDialogComponent, DialogUtils.getDefaultConfig({character: this.getCurrentCharacterTurn().character}))
-        .afterClosed().subscribe((value: CharacterEquipment) => {
-        if (!value) return;
-        this.diceService.openDiceAttackDialog(this.adventureId, this.getCurrentCharacterTurn().character.id, item.id, false, false, value.id);
-      });
+      this.dialog
+        .open(
+          SelectWeaponDialogComponent,
+          DialogUtils.getDefaultConfig({ character: this.getCurrentCharacterTurn().character }),
+        )
+        .afterClosed()
+        .subscribe((value: CharacterEquipment) => {
+          if (!value) return;
+          this.diceService.openDiceAttackDialog(
+            this.adventureId,
+            this.getCurrentCharacterTurn().character.id,
+            item.id,
+            false,
+            false,
+            value.id,
+          );
+        });
     }
   }
 
@@ -210,7 +247,7 @@ export class ContextMenuComponent {
   askTrade(item: CharacterLayerGridsterItem) {
     this.adventureService.askTrade(this.adventureId, {
       from: this.getCurrentCharacterTurn().character.id,
-      to: item.character.id
+      to: item.character.id,
     });
   }
 
@@ -223,16 +260,16 @@ export class ContextMenuComponent {
   }
 
   private getCurrentCharacterTurn(): CharacterLayerGridsterItem {
-    return this.characterItems.find(char => char.character.name === this.getCurrentInitiative().characterName);
+    return this.characterItems.find((char) => char.character.name === this.getCurrentInitiative().characterName);
   }
 
   private isItemMe(item: CharacterLayerGridsterItem): boolean {
-    return item.character.name === this.getCurrentInitiative().characterName
+    return item.character.name === this.getCurrentInitiative().characterName;
   }
 
   private getCurrentInitiative(): Initiative {
     if (!this.currentInitiative) {
-      let characterName = '';
+      let characterName = "";
       if (this.selectedItem) {
         if (this.selectedItem.type === LayerElementType.CHARACTER) {
           characterName = (this.selectedItem as CharacterLayerGridsterItem).character.name;
@@ -242,7 +279,7 @@ export class ContextMenuComponent {
       }
       return {
         characterName,
-        number: 0
+        number: 0,
       };
     }
     return this.currentInitiative;

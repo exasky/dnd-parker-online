@@ -2,18 +2,19 @@
 <div class="d-flex flex-2" dragOver (drop)="addEquippedItem($event)">
   <div class="flex-grow d-flex flex-wrap justify-content-around align-items-center">
     <ng-container *ngIf="character.equippedItems.length === 0">
-      {{'common.drag&drop' | translate}}
+      {{ "common.drag&drop" | translate }}
     </ng-container>
     <ng-container *ngIf="character.equippedItems.length !== 0">
-      <div *ngFor="let item of character.equippedItems" style="position:relative;">
-        <img [src]="CardUtils.getCardImage(item)"
-             [alt]="item.name"
-             draggable="true"
-             (dragstart)="equipmentDragStartHandler($event, item)"
-             width="150px" height="230px">
-        <button mat-mini-fab
-                style="position: absolute; top: 0; left: 73px"
-                (click)="removeEquipmentItem(item)">
+      <div *ngFor="let item of character.equippedItems" style="position: relative">
+        <img
+          [src]="CardUtils.getCardImage(item)"
+          [alt]="item.name"
+          draggable="true"
+          (dragstart)="equipmentDragStartHandler($event, item)"
+          width="150px"
+          height="230px"
+        />
+        <button mat-mini-fab style="position: absolute; top: 0; left: 73px" (click)="removeEquipmentItem(item)">
           <mat-icon>delete</mat-icon>
         </button>
       </div>
@@ -24,72 +25,100 @@
 <div class="flex-1 d-flex flex-column">
   <div class="d-flex justify-content-center">
     <mat-form-field style="max-width: 8rem">
-      <mat-label>{{'campaign-creator.name' | translate}}</mat-label>
+      <mat-label>{{ "campaign-creator.name" | translate }}</mat-label>
       <mat-select *ngIf="!character.displayName" (selectionChange)="selectCharacter($event)">
-        <mat-option *ngFor="let characterTemplate of availableCharacters"
-                    [value]="characterTemplate.displayName">
-          {{characterTemplate.displayName}}
+        <mat-option *ngFor="let characterTemplate of availableCharacters" [value]="characterTemplate.displayName">
+          {{ characterTemplate.displayName }}
         </mat-option>
       </mat-select>
-      <input matInput *ngIf="character.displayName" [value]="character.displayName" disabled>
+      <input matInput *ngIf="character.displayName" [value]="character.displayName" disabled />
     </mat-form-field>
   </div>
   <div class="d-flex justify-content-around">
-    <mat-form-field style="max-width: 4rem">
-      <mat-label>{{'common.max-hp' | translate}}</mat-label>
-      <input matInput [(ngModel)]="character.maxHp"
-             inputmode="numeric" pattern="[0-9]*" min="0"
-             autocomplete="false" type="number">
+    <mat-form-field style="max-width: 6rem">
+      <mat-label>{{ "common.max-hp" | translate }}</mat-label>
+      <input
+        matInput
+        [(ngModel)]="character.maxHp"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        min="0"
+        autocomplete="false"
+        type="number"
+      />
     </mat-form-field>
-    <mat-form-field style="max-width: 4rem">
-      <mat-label>{{'common.hp' | translate}}</mat-label>
-      <input matInput [(ngModel)]="character.hp"
-             inputmode="numeric" pattern="[0-9]*" min="0"
-             autocomplete="false" type="number">
+    <mat-form-field style="max-width: 6rem">
+      <mat-label>{{ "common.hp" | translate }}</mat-label>
+      <input
+        matInput
+        [(ngModel)]="character.hp"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        min="0"
+        autocomplete="false"
+        type="number"
+      />
     </mat-form-field>
   </div>
   <div class="d-flex justify-content-around">
-    <mat-form-field style="max-width: 4rem">
-      <mat-label>{{'common.max-mp' | translate}}</mat-label>
-      <input matInput [(ngModel)]="character.maxMp"
-             inputmode="numeric" pattern="[0-9]*" min="0"
-             autocomplete="false" type="number">
+    <mat-form-field style="max-width: 6rem">
+      <mat-label>{{ "common.max-mp" | translate }}</mat-label>
+      <input
+        matInput
+        [(ngModel)]="character.maxMp"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        min="0"
+        autocomplete="false"
+        type="number"
+      />
     </mat-form-field>
-    <mat-form-field style="max-width: 4rem">
-      <mat-label>{{'common.mp' | translate}}</mat-label>
-      <input matInput [(ngModel)]="character.mp"
-             inputmode="numeric" pattern="[0-9]*" min="0"
-             autocomplete="false" type="number">
+    <mat-form-field style="max-width: 6rem">
+      <mat-label>{{ "common.mp" | translate }}</mat-label>
+      <input
+        matInput
+        [(ngModel)]="character.mp"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        min="0"
+        autocomplete="false"
+        type="number"
+      />
     </mat-form-field>
   </div>
-  <img *ngIf="character.name" width="300px" [src]="CardUtils.getCharacterImage(character)" [alt]="character.name">
+  <img *ngIf="character.name" width="300px" [src]="CardUtils.getCharacterImage(character)" [alt]="character.name" />
 </div>
 
 <!-- Backpack items-->
 <div class="d-flex flex-2 position-relative" dragOver (drop)="addBackPackItem($event)">
   <div class="flex-grow d-flex flex-wrap justify-content-around align-items-center">
     <ng-container *ngIf="character.backpackItems.length === 0">
-      {{'common.drag&drop' | translate}}
+      {{ "common.drag&drop" | translate }}
     </ng-container>
     <ng-container *ngIf="character.backpackItems.length !== 0">
       <div class="position-relative" *ngFor="let item of character.backpackItems">
-        <img [src]="CardUtils.getCardImage(item)"
-             [alt]="item.name"
-             draggable="true"
-             (dragstart)="backpackDragStartHandler($event, item)"
-             width="150px" height="230px">
-        <button mat-mini-fab
-                style="position: absolute; top: 0; left: 73px"
-                (click)="removeBackpackItem(item)">
+        <img
+          [src]="CardUtils.getCardImage(item)"
+          [alt]="item.name"
+          draggable="true"
+          (dragstart)="backpackDragStartHandler($event, item)"
+          width="150px"
+          height="230px"
+        />
+        <button mat-mini-fab style="position: absolute; top: 0; left: 73px" (click)="removeBackpackItem(item)">
           <mat-icon>delete</mat-icon>
         </button>
       </div>
     </ng-container>
   </div>
 
-  <button mat-raised-button color="accent"
-          class="position-absolute mb-1 mr-1" style="bottom: 0; right: 0"
-          (click)="deleteCharacter()">
-    {{'common.delete' | translate}}
+  <button
+    mat-raised-button
+    color="accent"
+    class="position-absolute mb-1 mr-1"
+    style="bottom: 0; right: 0"
+    (click)="deleteCharacter()"
+  >
+    {{ "common.delete" | translate }}
   </button>
 </div>

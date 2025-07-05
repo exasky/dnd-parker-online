@@ -1,80 +1,102 @@
-<h3 class="m-2">{{'adventure.log.header' | translate}}</h3>
+<h3 class="m-2">{{ "adventure.log.header" | translate }}</h3>
 <ul role="list">
-  <li role="listitem" *ngFor="let log of logs" [ngSwitch]="log.type"
-      class="li-type-{{log.type}}">
-    <span>({{log.logDate | timeAgo}})</span>
-    <ng-container *ngSwitchCase="AdventureLogType.ATTACK">
-      <ng-container *ngIf="log.fromId">
-        {{'adventure.log.attack-with' | translate:{
-        from: log.from | equipmentFormat,
-        to: log.to | equipmentFormat,
-        fromId: log.fromId | equipmentFormat
-      } }}
-      </ng-container>
-      <ng-container *ngIf="!log.fromId">
-        {{'adventure.log.attack' | translate:{from: log.from | equipmentFormat, to: log.to | equipmentFormat} }}
-      </ng-container>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="AdventureLogType.DIE">
-      {{'adventure.log.die' | translate:{from: log.from | equipmentFormat} }}
-    </ng-container>
-
-    <ng-container *ngSwitchCase="AdventureLogType.OPEN_CHEST">
-      <ng-container *ngIf="log.fromId">
-        {{'adventure.log.accept-chest' | translate:{
-        from: log.from | equipmentFormat,
-        fromId: log.fromId | equipmentFormat
-      } }}
-      </ng-container>
-      <ng-container *ngIf="!log.fromId">
-        <ng-container *ngIf="log.to">
-          {{'adventure.log.trapped-chest' | translate:{
-          from: log.from | equipmentFormat,
-          to: log.to | equipmentFormat
-        } }}
-        </ng-container>
-        <ng-container *ngIf="!log.to">
-          {{'adventure.log.refuse-chest' | translate:{from: log.from | equipmentFormat} }}
-        </ng-container>
-      </ng-container>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="AdventureLogType.SWITCH">
-      {{'adventure.log.switch' | translate:{from: log.from | equipmentFormat, fromId: log.fromId | equipmentFormat} }}
-      <ng-container *ngIf="log.toId">
-        {{'adventure.log.switch-with' | translate:{toId: log.toId | equipmentFormat} }}
-      </ng-container>
-    </ng-container>
-
-    <ng-container *ngSwitchCase="AdventureLogType.TRADE">
-      <ng-container *ngIf="log.fromId">
-        <ng-container *ngIf="log.toId">
-          {{'adventure.log.trade-full' | translate:{
-          from: log.from, fromId: log.fromId | equipmentFormat,
-          to: log.to, toId: log.toId | equipmentFormat
-        } }}
-        </ng-container>
-        <ng-container *ngIf="!log.toId">
-          {{'adventure.log.trade-one-way' | translate:{
-          from: log.from,
-          fromId: log.fromId | equipmentFormat,
-          to: log.to
-        } }}
-        </ng-container>
-      </ng-container>
-      <ng-container *ngIf="!log.fromId">
-        <ng-container *ngIf="log.toId">
-          {{'adventure.log.trade-one-way' | translate:{
-          from: log.to,
-          fromId: log.toId | equipmentFormat,
-          to: log.from
-        } }}
-        </ng-container>
-        <ng-container *ngIf="!log.toId">
-          {{'adventure.log.trade-nothing' | translate:{from: log.from, to: log.to} }}
-        </ng-container>
-      </ng-container>
-    </ng-container>
-  </li>
+  @for (log of logs; track $index) {
+    <li role="listitem" class="li-type-{{ log.type }}">
+      <span>({{ log.logDate | timeAgo }})</span>
+      @switch (log.type) {
+        @case (AdventureLogType.ATTACK) {
+          @if (log.fromId) {
+            {{
+              "adventure.log.attack-with"
+                | translate
+                  : {
+                      from: log.from | equipmentFormat,
+                      to: log.to | equipmentFormat,
+                      fromId: log.fromId | equipmentFormat,
+                    }
+            }}
+          } @else {
+            {{ "adventure.log.attack" | translate: { from: log.from | equipmentFormat, to: log.to | equipmentFormat } }}
+          }
+        }
+        @case (AdventureLogType.DIE) {
+          {{ "adventure.log.die" | translate: { from: log.from | equipmentFormat } }}
+        }
+        @case (AdventureLogType.OPEN_CHEST) {
+          @if (log.fromId) {
+            {{
+              "adventure.log.accept-chest"
+                | translate
+                  : {
+                      from: log.from | equipmentFormat,
+                      fromId: log.fromId | equipmentFormat,
+                    }
+            }}
+          } @else {
+            @if (log.to) {
+              {{
+                "adventure.log.trapped-chest"
+                  | translate
+                    : {
+                        from: log.from | equipmentFormat,
+                        to: log.to | equipmentFormat,
+                      }
+              }}
+            } @else {
+              {{ "adventure.log.refuse-chest" | translate: { from: log.from | equipmentFormat } }}
+            }
+          }
+        }
+        @case (AdventureLogType.SWITCH) {
+          {{
+            "adventure.log.switch"
+              | translate: { from: log.from | equipmentFormat, fromId: log.fromId | equipmentFormat }
+          }}
+          @if (log.toId) {
+            {{ "adventure.log.switch-with" | translate: { toId: log.toId | equipmentFormat } }}
+          }
+        }
+        @case (AdventureLogType.TRADE) {
+          @if (log.fromId) {
+            @if (log.toId) {
+              {{
+                "adventure.log.trade-full"
+                  | translate
+                    : {
+                        from: log.from,
+                        fromId: log.fromId | equipmentFormat,
+                        to: log.to,
+                        toId: log.toId | equipmentFormat,
+                      }
+              }}
+            } @else {
+              {{
+                "adventure.log.trade-one-way"
+                  | translate
+                    : {
+                        from: log.from,
+                        fromId: log.fromId | equipmentFormat,
+                        to: log.to,
+                      }
+              }}
+            }
+          } @else {
+            @if (log.toId) {
+              {{
+                "adventure.log.trade-one-way"
+                  | translate
+                    : {
+                        from: log.to,
+                        fromId: log.toId | equipmentFormat,
+                        to: log.from,
+                      }
+              }}
+            } @else {
+              {{ "adventure.log.trade-nothing" | translate: { from: log.from, to: log.to } }}
+            }
+          }
+        }
+      }
+    </li>
+  }
 </ul>

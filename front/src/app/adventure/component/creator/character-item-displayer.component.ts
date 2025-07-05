@@ -1,53 +1,71 @@
-import {Component, HostBinding, Input} from "@angular/core";
-import {CharacterEquipment} from "../../model/character";
-import {StringUtils} from "../../../common/utils/string-utils";
-import {ItemDisplayer, ItemNode} from "../../../common/component/item.displayer";
-import {CardUtils} from "../../../common/utils/card-utils";
+import { Component, HostBinding, Input } from "@angular/core";
+import { CharacterEquipment } from "../../model/character";
+import { StringUtils } from "../../../common/utils/string-utils";
+import { ItemDisplayer, ItemNode } from "../../../common/component/item.displayer";
+import { CardUtils } from "../../../common/utils/card-utils";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { TranslateModule } from "@ngx-translate/core";
+import { MatTreeModule } from "@angular/material/tree";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { DragDropModule } from "@angular/cdk/drag-drop";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
-  selector: 'app-character-item-displayer',
-  templateUrl: './character-item-displayer.component.html'
+  selector: "app-character-item-displayer",
+  templateUrl: "./character-item-displayer.component.html",
+  imports: [
+    MatFormFieldModule,
+    TranslateModule,
+    MatTreeModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
+    DragDropModule,
+  ],
 })
 export class CharacterItemDisplayerComponent extends ItemDisplayer<CharacterEquipment> {
-  @HostBinding('class') cssClass = 'd-flex flex-column'
+  @HostBinding("class") cssClass = "d-flex flex-column";
 
   getCardImage = CardUtils.getCardImage;
 
   @Input()
   set characterItems(characterItems: CharacterEquipment[]) {
     this.elements = characterItems;
-    this.filterDataSource('');
+    this.filterDataSource("");
   }
 
   protected filterDataSource(filterText: string) {
     const data: ItemNode[] = [];
-    const splitFilter = filterText.split(' ');
-    this.elements.forEach(characterItem => {
-      if (StringUtils.isFilter(splitFilter, characterItem.name.split('_'))) {
-        let typeNode = data.find(value => value.name === characterItem.type);
+    const splitFilter = filterText.split(" ");
+    this.elements.forEach((characterItem) => {
+      if (StringUtils.isFilter(splitFilter, characterItem.name.split("_"))) {
+        let typeNode = data.find((value) => value.name === characterItem.type);
         if (!typeNode) {
-          typeNode = {name: characterItem.type, children: []};
+          typeNode = { name: characterItem.type, children: [] };
           data.push(typeNode);
         }
-        if (characterItem.level) { // Card case
-          let levelNode = typeNode.children.find(value => value.name === characterItem.level + '');
+        if (characterItem.level) {
+          // Card case
+          let levelNode = typeNode.children!.find((value) => value.name === characterItem.level + "");
           if (!levelNode) {
-            levelNode = {name: characterItem.level + '', children: []};
-            typeNode.children.push(levelNode);
+            levelNode = { name: characterItem.level + "", children: [] };
+            typeNode.children!.push(levelNode);
           }
-          levelNode.children.push(characterItem);
-        } else { // Item case
-          typeNode.children.push(characterItem);
+          levelNode.children!.push(characterItem);
+        } else {
+          // Item case
+          typeNode.children!.push(characterItem);
         }
       }
     });
-    data.forEach(typeNode => typeNode.children.sort((a, b) => a.name < b.name ? -1 : 1));
-    data.sort((a, b) => a.name < b.name ? -1 : 1);
+    data.forEach((typeNode) => typeNode.children!.sort((a, b) => (a.name < b.name ? -1 : 1)));
+    data.sort((a, b) => (a.name < b.name ? -1 : 1));
     this.dataSource.data = data;
   }
 
   dragStartHandler(ev: DragEvent, item: CharacterEquipment) {
-    ev.dataTransfer.setData('text/plain', item.id + '');
-    ev.dataTransfer.dropEffect = 'copy';
+    ev.dataTransfer!.setData("text/plain", item.id + "");
+    ev.dataTransfer!.dropEffect = "copy";
   }
 }

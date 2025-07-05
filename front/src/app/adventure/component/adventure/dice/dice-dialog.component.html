@@ -1,36 +1,40 @@
 <div class="d-flex justify-content-evenly mat-elevation-z3 p-2" style="border-radius: 4px">
-  <div *ngFor="let dice of allDices" class="m-1">
-    <img height="70px" width="70px"
-         style="border-radius: 5px"
-         [src]="'assets/dice/' + dice.name + '/1.jpeg'"
-         (click)="addToDiceList(dice)">
-  </div>
+  @for (dice of allDices; track $index) {
+    <div class="m-1">
+      <img
+        height="70px"
+        width="70px"
+        style="border-radius: 5px"
+        [src]="'assets/dice/' + dice.name + '/1.jpeg'"
+        (click)="addToDiceList(dice)"
+      />
+    </div>
+  }
 </div>
 <mat-dialog-content>
   <div class="d-flex flex-wrap justify-content-evenly">
     <!-- DO NOT REMOVE diceCmp. It's used by abstract parent class -->
-    <app-dice *ngFor="let dice of selectedDices"
-              #diceCmp
-              [diceType]="dice.name"
-              (click)="removeDiceFromList(dice)"></app-dice>
+    @for (dice of selectedDices; track dice.id) {
+      <app-dice #diceCmp [diceType]="dice.name" (click)="removeDiceFromList(dice)"></app-dice>
+    }
   </div>
 </mat-dialog-content>
 <mat-dialog-actions class="d-flex justify-content-center position-relative">
-  <div class="position-absolute"
-       style="left: 0">
-    {{'adventure.dialog.dice.turn' | translate:{char: data.user.username} }}
+  <div class="position-absolute" style="left: 0">
+    {{ "adventure.dialog.dice.turn" | translate: { char: data.user.username } }}
   </div>
-  <button *ngIf="!rollDisabled" mat-raised-button
-          (click)="rollDices()"
-          [disabled]="selectedDices.length === 0">
-    {{'adventure.dialog.dice.roll' | translate }}
+  <button *ngIf="!rollDisabled" mat-raised-button (click)="rollDices()" [disabled]="selectedDices.length === 0">
+    {{ "adventure.dialog.dice.roll" | translate }}
   </button>
-  <button mat-raised-button color="accent"
-          *ngIf="authService.isGM"
-          class="position-absolute"
-          style="right: 0"
-          (click)="this.close()">
-    {{'common.close' | translate}}
+  <button
+    mat-raised-button
+    color="accent"
+    *ngIf="authService.isGM"
+    class="position-absolute"
+    style="right: 0"
+    (click)="this.close()"
+  >
+    {{ "common.close" | translate }}
   </button>
-  <div *ngIf="rollDisabled">{{'adventure.dialog.dice.no-turn' | translate }}</div>
+  <div *ngIf="rollDisabled">{{ "adventure.dialog.dice.no-turn" | translate }}</div>
 </mat-dialog-actions>

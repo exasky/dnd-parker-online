@@ -1,11 +1,13 @@
-import {MatDialogConfig} from "@angular/material/dialog/dialog-config";
+import { MatDialogConfig } from "@angular/material/dialog";
 
 export class DialogUtils {
   static getDefaultConfig(data?: any): MatDialogConfig {
     return {
       disableClose: true,
       hasBackdrop: false,
-      data
-    }
+      width: "800px",
+      maxWidth: "100vw",
+      data,
+    };
   }
 }

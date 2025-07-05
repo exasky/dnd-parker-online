@@ -3,7 +3,7 @@ package com.exasky.dnd.gameMaster.rest.dto;
 import com.exasky.dnd.adventure.model.Character;
 import com.exasky.dnd.common.Constant;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

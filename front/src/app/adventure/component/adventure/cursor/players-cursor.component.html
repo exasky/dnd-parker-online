@@ -1,10 +1,14 @@
-<div *ngFor="let pc of cursors"
-     class="player-cursor d-flex flex-column player-{{pc['char']}}"
-     [ngStyle]="{'top': pc.y + 'px',
-                   'left': pc.x + 'px'}">
-  <mat-icon style="transform: rotate(-90deg)">near_me</mat-icon>
-  <span *ngFor="let char of pc['chars']">
-              {{char}}
-            </span>
-  ({{pc.username}})
-</div>
+@for (pc of cursors; track pc.userId) {
+  <div
+    class="player-cursor d-flex flex-column player-{{ pc['char'] }}"
+    [ngStyle]="{ top: pc.y + 'px', left: pc.x + 'px' }"
+  >
+    <mat-icon style="transform: rotate(-90deg)">near_me</mat-icon>
+    @for (char of pc["chars"]; track char) {
+      <span>
+        {{ char }}
+      </span>
+    }
+    ({{ pc.username }})
+  </div>
+}

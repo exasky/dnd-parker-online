@@ -1,4 +1,5 @@
-import {Component, ElementRef, Input, ViewChild} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import {Component, ElementRef, input, Input, ViewChild} from "@angular/core";
 
 /**
  * Inspired by https://codesandbox.io/s/animated-3d-dice-roll-hormj?file=/styles.css:1710-2273
@@ -6,13 +7,13 @@ import {Component, ElementRef, Input, ViewChild} from "@angular/core";
 @Component({
   selector: 'app-dice',
   templateUrl: './dice.component.html',
-  styleUrls: ['./dice.component.scss']
+  styleUrls: ['./dice.component.scss'],
+  imports: [CommonModule]
 })
 export class DiceComponent {
   @ViewChild('dice', {read: ElementRef}) diceElement: ElementRef;
 
-  @Input()
-  diceType: string;
+  diceType = input<string>();
 
   constructor() {
   }
@@ -33,7 +34,7 @@ export class DiceComponent {
     die.classList.toggle("even-roll");
   }
 
-  getRandomNumber(min, max) {
+  getRandomNumber(min: number, max: number): number {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;

@@ -13,12 +13,11 @@ import com.exasky.dnd.adventure.rest.dto.switch_equipment.ValidateSwitchDto;
 import com.exasky.dnd.adventure.rest.dto.trade.ValidateTradeDto;
 import com.exasky.dnd.common.Constant;
 import com.exasky.dnd.common.exception.ValidationCheckException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -36,14 +35,13 @@ public class AdventureService {
     private final BridgeLayerItemService layerItemService;
     private final BoardService boardService;
 
-    @Autowired
     public AdventureService(AdventureRepository repository,
-                            CampaignRepository campaignRepository,
-                            CharacterRepository characterRepository,
-                            CharacterItemRepository characterItemRepository,
-                            CharacterTemplateRepository characterTemplateRepository,
-                            BridgeLayerItemService layerItemService,
-                            BoardService boardService) {
+            CampaignRepository campaignRepository,
+            CharacterRepository characterRepository,
+            CharacterItemRepository characterItemRepository,
+            CharacterTemplateRepository characterTemplateRepository,
+            BridgeLayerItemService layerItemService,
+            BoardService boardService) {
         this.repository = repository;
         this.campaignRepository = campaignRepository;
         this.characterRepository = characterRepository;
@@ -62,13 +60,13 @@ public class AdventureService {
     }
 
     public Adventure getById(Long id) {
-        return this.repository.getOne(id);
+        return this.repository.getReferenceById(id);
     }
 
     @Transactional
     public Adventure createOrUpdate(Adventure adventure, Campaign attachedCampaign) {
         Adventure attachedAdventure = Objects.nonNull(adventure.getId())
-                ? repository.getOne(adventure.getId())
+                ? repository.getReferenceById(adventure.getId())
                 : repository.save(new Adventure(attachedCampaign));
 
         attachedAdventure.setName(adventure.getName());
@@ -108,9 +106,11 @@ public class AdventureService {
 
         if (Objects.isNull(campaign)) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+            return null; // This line is unreachable but added to satisfy the compiler
         }
 
-        Optional<Character> first = campaign.getCharacters().stream().filter(character -> character.getId().equals(characterId)).findFirst();
+        Optional<Character> first = campaign.getCharacters().stream()
+                .filter(character -> character.getId().equals(characterId)).findFirst();
 
         if (!first.isPresent()) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CHARACTER.NOT_FOUND);
@@ -122,10 +122,10 @@ public class AdventureService {
         toUpdate.setMaxMp(toBo.getMaxMp());
         toUpdate.setMp(toBo.getMp());
         toUpdate.updateEquipments(toBo.getEquipments().stream()
-                .map(characterItem -> characterItemRepository.getOne(characterItem.getId()))
+                .map(characterItem -> characterItemRepository.getReferenceById(characterItem.getId()))
                 .collect(Collectors.toList()));
         toUpdate.updateBackPack(toBo.getBackPack().stream()
-                .map(characterItem -> characterItemRepository.getOne(characterItem.getId()))
+                .map(characterItem -> characterItemRepository.getReferenceById(characterItem.getId()))
                 .collect(Collectors.toList()));
 
         return characterRepository.save(toUpdate);
@@ -133,7 +133,7 @@ public class AdventureService {
 
     @Transactional
     public <T extends LayerItem> T addLayerItem(Long adventureId, T toAdd) {
-        Adventure attachedAdventure = repository.getOne(adventureId);
+        Adventure attachedAdventure = repository.getReferenceById(adventureId);
 
         T newLayerItem = layerItemService.createOrUpdate(toAdd, attachedAdventure);
         List<T> elementListForLayerItem = getElementListForLayerItem(attachedAdventure, toAdd);
@@ -144,7 +144,7 @@ public class AdventureService {
 
     @Transactional
     public <T extends LayerItem> T updateLayerItem(Long adventureId, T toAdd) {
-        Adventure attachedAdventure = repository.getOne(adventureId);
+        Adventure attachedAdventure = repository.getReferenceById(adventureId);
 
         T attachedLayerItem = this.layerItemService.createOrUpdate(toAdd, attachedAdventure);
         List<T> elementListForLayerItem = getElementListForLayerItem(attachedAdventure, toAdd);
@@ -162,10 +162,9 @@ public class AdventureService {
         return attachedLayerItem;
     }
 
-
     @Transactional
     public <T extends LayerItem> void deleteLayerItem(Long adventureId, T toDelete) {
-        Adventure attachedAdventure = repository.getOne(adventureId);
+        Adventure attachedAdventure = repository.getReferenceById(adventureId);
         T attachedLayerItem = layerItemService.getOne(toDelete);
 
         List<T> elementListForLayerItem = getElementListForLayerItem(attachedAdventure, attachedLayerItem);
@@ -195,9 +194,10 @@ public class AdventureService {
 
         if (Objects.isNull(campaign)) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+            return null; // This line is unreachable but added to satisfy the compiler
         }
 
-        //noinspection OptionalGetWithoutIsPresent
+        // noinspection OptionalGetWithoutIsPresent
         Short adventureLevel = campaign.getAdventures()
                 .stream()
                 .filter(a -> a.getId().equals(adventureId)).findFirst().get().getLevel();
@@ -232,7 +232,8 @@ public class AdventureService {
     }
 
     /**
-     * Does not add the card to the drawn items because the card should be a unique item (like star level items)
+     * Does not add the card to the drawn items because the card should be a unique
+     * item (like star level items)
      */
     @PreAuthorize("hasRole('ROLE_GM')")
     public CharacterItem drawSpecificCard(Long characterItemId) {
@@ -251,11 +252,13 @@ public class AdventureService {
 
         if (Objects.isNull(campaign)) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CAMPAIGN.NOT_FOUND);
+            return null; // This line is unreachable but added to satisfy the compiler
         }
 
         Optional<CharacterItem> optCharacterItem = characterItemRepository.findById(dto.getCharacterItemId());
         if (!optCharacterItem.isPresent()) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.CHARACTER_ITEM.NOT_FOUND);
+            return null; // This line is unreachable but added to satisfy the compiler
         }
 
         CharacterItem drawnCard = optCharacterItem.get();
@@ -264,7 +267,7 @@ public class AdventureService {
             campaign.getDrawnItems().add(drawnCard);
             campaignRepository.save(campaign);
         } else {
-            Character character = characterRepository.getOne(dto.getCharacterId());
+            Character character = characterRepository.getReferenceById(dto.getCharacterId());
             (dto.getEquipToEquipment() ? character.getEquipments() : character.getBackPack()).add(drawnCard);
             return characterRepository.save(character);
         }
@@ -278,6 +281,7 @@ public class AdventureService {
 
         if (Objects.isNull(adventure)) {
             ValidationCheckException.throwError(HttpStatus.NOT_FOUND, Constant.Errors.ADVENTURE.NOT_FOUND);
+            return null; // This line is unreachable but added to satisfy the compiler
         }
 
         List<Initiative> characterTurns = adventure.getCampaign().getCharacterTurns();
@@ -302,8 +306,8 @@ public class AdventureService {
     @PreAuthorize("hasRole('ROLE_GM')")
     @Transactional
     public List<Character> trade(ValidateTradeDto trade) {
-        Character from = this.characterRepository.getOne(trade.getFromCharacterId());
-        Character to = this.characterRepository.getOne(trade.getToCharacterId());
+        Character from = this.characterRepository.getReferenceById(trade.getFromCharacterId());
+        Character to = this.characterRepository.getReferenceById(trade.getToCharacterId());
 
         simpleTrade(from, to,
                 trade.getFromCharacterEquipment(), trade.getFromCharacterIsEquipment(),
@@ -317,16 +321,18 @@ public class AdventureService {
     }
 
     private void simpleTrade(Character from, Character to,
-                             Long fromCharacterEquipmentId, Boolean fromCharacterIsEquipment,
-                             Boolean toCharacterIsEquipment) {
+            Long fromCharacterEquipmentId, Boolean fromCharacterIsEquipment,
+            Boolean toCharacterIsEquipment) {
         if (Objects.nonNull(fromCharacterEquipmentId)) {
             List<CharacterItem> items = fromCharacterIsEquipment ? from.getEquipments() : from.getBackPack();
-            Optional<CharacterItem> optFromItem = items.stream().filter(item -> item.getId().equals(fromCharacterEquipmentId)).findFirst();
+            Optional<CharacterItem> optFromItem = items.stream()
+                    .filter(item -> item.getId().equals(fromCharacterEquipmentId)).findFirst();
             if (optFromItem.isPresent()) {
                 CharacterItem fromItem = optFromItem.get();
                 items.remove(fromItem);
 
-                (toCharacterIsEquipment != null && toCharacterIsEquipment ? to.getEquipments() : to.getBackPack()).add(fromItem);
+                (toCharacterIsEquipment != null && toCharacterIsEquipment ? to.getEquipments() : to.getBackPack())
+                        .add(fromItem);
             }
         }
     }
@@ -334,11 +340,11 @@ public class AdventureService {
     @PreAuthorize("hasRole('ROLE_GM')")
     @Transactional
     public Character switchEquipment(ValidateSwitchDto switchDto) {
-        Character toUpdate = characterRepository.getOne(switchDto.getCharacterId());
+        Character toUpdate = characterRepository.getReferenceById(switchDto.getCharacterId());
 
         if (Objects.nonNull(switchDto.getCharacterEquippedItemId())) {
-            Optional<CharacterItem> optEq = toUpdate.getEquipments().stream().
-                    filter(eq -> eq.getId().equals(switchDto.getCharacterEquippedItemId())).findFirst();
+            Optional<CharacterItem> optEq = toUpdate.getEquipments().stream()
+                    .filter(eq -> eq.getId().equals(switchDto.getCharacterEquippedItemId())).findFirst();
             if (optEq.isPresent()) {
                 CharacterItem eq = optEq.get();
                 toUpdate.getEquipments().remove(eq);
