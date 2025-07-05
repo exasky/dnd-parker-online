@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from "@angular/cdk/layout";
-import { Component, HostBinding, OnDestroy, OnInit } from "@angular/core";
-import { Subscription } from "rxjs";
+import { Component, HostBinding } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { AdventureComponent } from "./adventure.component";
 import { AdventureMobileComponent } from "./mobile/adventure-mobile.component";
 
@@ -15,21 +15,15 @@ import { AdventureMobileComponent } from "./mobile/adventure-mobile.component";
   `,
   imports: [AdventureComponent, AdventureMobileComponent],
 })
-export class AdventureIndexComponent implements OnInit, OnDestroy {
+export class AdventureIndexComponent {
   @HostBinding("class") cssClasses = "flex-grow d-flex";
 
-  breakPointSubscription: Subscription;
   isMobile: boolean;
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
-
-  ngOnInit(): void {
-    this.breakPointSubscription = this.breakpointObserver.observe([Breakpoints.XSmall]).subscribe((value) => {
-      this.isMobile = value.matches;
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.breakPointSubscription.unsubscribe();
+  constructor(private breakpointObserver: BreakpointObserver) {
+    this.breakpointObserver
+      .observe([Breakpoints.XSmall])
+      .pipe(takeUntilDestroyed())
+      .subscribe((value) => (this.isMobile = value.matches));
   }
 }

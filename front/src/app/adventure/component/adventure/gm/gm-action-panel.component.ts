@@ -14,12 +14,14 @@ import { AlertMessageDialogComponent } from "./alert-message-dialog.component";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatCardModule } from "@angular/material/card";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CapitalizePipe } from "../../../../common/pipe/capitalize.pipe";
 import { MatSliderModule } from "@angular/material/slider";
 import { MatSelectModule } from "@angular/material/select";
 import { CommonModule } from "@angular/common";
 import { SortPipe } from "../../../../common/pipe/sort.pipe";
+import { MatInputModule } from "@angular/material/input";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-gm-action-panel",
@@ -38,6 +40,9 @@ import { SortPipe } from "../../../../common/pipe/sort.pipe";
     MatSelectModule,
     CommonModule,
     SortPipe,
+    MatInputModule,
+    MatButtonModule,
+    ReactiveFormsModule,
   ],
 })
 export class GmActionPanelComponent {

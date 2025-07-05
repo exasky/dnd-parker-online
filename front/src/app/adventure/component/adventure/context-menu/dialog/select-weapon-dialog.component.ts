@@ -4,15 +4,16 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/materia
 import { CardUtils } from "../../../../../common/utils/card-utils";
 import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from "@angular/common";
+import { MatButtonModule } from "@angular/material/button";
+import { DragOverDirective } from "../../../../../common/directive/drag-over.directive";
 
 @Component({
   selector: "app-select-card-dialog",
   templateUrl: "./select-weapon-dialog.component.html",
-  imports: [TranslateModule, MatDialogModule, CommonModule],
+  styles: [":host {height: 75vh; width: 50vw; margin: auto}"],
+  imports: [TranslateModule, MatDialogModule, CommonModule, MatButtonModule, DragOverDirective],
 })
 export class SelectWeaponDialogComponent {
-  @HostBinding("style.height") height = "75vh";
-  @HostBinding("style.width") width = "50vw";
   @HostBinding("class") cssClass = "d-flex flex-column";
 
   getCardImage = CardUtils.getCardImage;

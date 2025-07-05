@@ -14,16 +14,18 @@ import { Character, CharacterEquipment } from "../../../../model/character";
 import { AdventureService } from "../../../../service/adventure.service";
 import { AudioService } from "../../../../service/audio.service";
 import { GmService } from "../../../../service/gm.service";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-switch-equipment-dialog",
   templateUrl: "./switch-equipment-dialog.component.html",
-  styles: [".selected {background-color: rgb(160, 160, 160); border-radius: 7px; padding: 10px}"],
-  imports: [TranslateModule, MatDividerModule, MatDialogModule, CommonModule],
+  styles: [
+    ":host {height: 75vh; width: 50vw; margin: auto}",
+    ".selected {background-color: rgb(160, 160, 160); border-radius: 7px; padding: 10px}",
+  ],
+  imports: [TranslateModule, MatDividerModule, MatDialogModule, CommonModule, MatButtonModule],
 })
 export class SwitchEquipmentDialogComponent implements OnInit, OnDestroy {
-  @HostBinding("style.height") height = "75vh";
-  @HostBinding("style.width") width = "50vw";
   @HostBinding("class") cssClass = "d-flex flex-column";
 
   getCardImage = CardUtils.getCardImage;

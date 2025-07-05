@@ -129,7 +129,7 @@
         <mat-card-subtitle>{{ monster.monster.element.name }} n°{{ i }}</mat-card-subtitle>
         <div class="d-flex align-items-center">
           <img [src]="getMonsterImage(monster.monster)" width="150px" (click)="selectMonster.emit(monster.id)" />
-          <mat-form-field class="mx-2" style="max-width: 50px">
+          <mat-form-field class="mx-2" style="max-width: 64px">
             <mat-label>{{ "common.hp" | translate }}</mat-label>
             <input
               matInput
@@ -164,10 +164,11 @@
             [min]="0"
             [max]="charItem.character.maxHp"
             [step]="1"
-            [(ngModel)]="charItem.character.hp"
+            showTickMarks
+            discrete
             (change)="updateCharacter(charItem)"
           >
-            <input matSliderThumb />
+            <input matSliderThumb [(ngModel)]="charItem.character.hp" />
           </mat-slider>
         </div>
         <div class="d-flex flex-column">
@@ -177,10 +178,11 @@
             [min]="0"
             [max]="charItem.character.maxMp"
             [step]="1"
-            [(ngModel)]="charItem.character.mp"
+            discrete
+            showTickMarks
             (change)="updateCharacter(charItem)"
           >
-            <input matSliderThumb />
+            <input matSliderThumb [(ngModel)]="charItem.character.mp" />
           </mat-slider>
         </div>
       </div>

@@ -13,6 +13,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatIconModule } from "@angular/material/icon";
 import { CommonModule } from "@angular/common";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-character-mobile-displayer",
@@ -27,6 +28,8 @@ import { CommonModule } from "@angular/common";
     MatProgressBarModule,
     MatIconModule,
     CommonModule,
+    MatButtonModule,
+    MatIconModule,
   ],
 })
 export class CharacterMobileDisplayerComponent {

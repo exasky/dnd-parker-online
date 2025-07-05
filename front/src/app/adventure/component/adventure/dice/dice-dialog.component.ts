@@ -19,6 +19,7 @@ import { CardUtils } from "../../../../common/utils/card-utils";
 import { CharacterEquipment } from "../../../model/character";
 import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from "@angular/common";
+import { MatButtonModule } from "@angular/material/button";
 
 @Directive()
 abstract class AbstractDiceDialogComponent implements OnInit, OnDestroy {
@@ -110,7 +111,7 @@ abstract class AbstractDiceDialogComponent implements OnInit, OnDestroy {
 @Component({
   selector: "app-dice-dialog",
   templateUrl: "./dice-dialog.component.html",
-  imports: [TranslateModule, MatDialogModule, DiceComponent, CommonModule],
+  imports: [TranslateModule, MatDialogModule, DiceComponent, CommonModule, MatButtonModule],
 })
 export class DiceDialogComponent extends AbstractDiceDialogComponent {
   constructor() {
@@ -128,7 +129,7 @@ export class DiceDialogComponent extends AbstractDiceDialogComponent {
 @Component({
   selector: "app-dice-attack-dialog",
   templateUrl: "./dice-attack-dialog.component.html",
-  imports: [TranslateModule, MatDialogModule, DiceComponent, CommonModule],
+  imports: [TranslateModule, MatDialogModule, DiceComponent, CommonModule, MatButtonModule],
 })
 export class DiceAttackDialogComponent extends AbstractDiceDialogComponent {
   CardUtils = CardUtils;
@@ -156,5 +157,6 @@ export class DiceAttackDialogComponent extends AbstractDiceDialogComponent {
       fromAttackWeapon?: CharacterEquipment;
     } = inject(MAT_DIALOG_DATA);
     super(gmService, authService, diceWS, diceService, toaster, audioService, data);
+    this.data = data;
   }
 }

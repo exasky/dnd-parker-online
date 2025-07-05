@@ -7,12 +7,22 @@ import { MatTreeModule } from "@angular/material/tree";
 import { TranslateModule } from "@ngx-translate/core";
 import { MatIconModule } from "@angular/material/icon";
 import { CommonModule } from "@angular/common";
+import { MatInputModule } from "@angular/material/input";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-adventure-item-displayer",
   templateUrl: "./adventure-item-displayer.component.html",
   styleUrls: ["./adventure-item-displayer.component.scss"],
-  imports: [MatFormFieldModule, MatTreeModule, TranslateModule, MatIconModule, CommonModule],
+  imports: [
+    MatFormFieldModule,
+    MatTreeModule,
+    TranslateModule,
+    MatIconModule,
+    CommonModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
 })
 export class AdventureItemDisplayerComponent extends ItemDisplayer<LayerElement> {
   @HostBinding("class") cssClass = "flex-grow d-flex";

@@ -11,6 +11,8 @@
             [min]="0"
             [max]="character.maxHp"
             [step]="1"
+            discrete
+            showTickMarks
             (change)="updateCharacter(character)"
           >
             <input matSliderThumb [(ngModel)]="character.hp" />
@@ -18,7 +20,15 @@
         </div>
         <div class="d-flex flex-column">
           <mat-label style="padding-left: 8px">{{ "common.max-hp" | translate }}</mat-label>
-          <mat-slider color="primary" [min]="0" max="20" [step]="1" (change)="updateCharacter(character)">
+          <mat-slider
+            color="primary"
+            [min]="0"
+            max="20"
+            [step]="1"
+            discrete
+            showTickMarks
+            (change)="updateCharacter(character)"
+          >
             <input matSliderThumb [(ngModel)]="character.maxHp" />
           </mat-slider>
         </div>
@@ -31,6 +41,8 @@
             [min]="0"
             [max]="character.maxMp"
             [step]="1"
+            discrete
+            showTickMarks
             (change)="updateCharacter(character)"
           >
             <input matSliderThumb [(ngModel)]="character.mp" />
@@ -38,7 +50,15 @@
         </div>
         <div class="d-flex flex-column">
           <mat-label style="padding-left: 8px">{{ "common.max-mp" | translate }}</mat-label>
-          <mat-slider color="primary" [min]="0" max="20" [step]="1" (change)="updateCharacter(character)">
+          <mat-slider
+            color="primary"
+            [min]="0"
+            max="20"
+            [step]="1"
+            discrete
+            showTickMarks
+            (change)="updateCharacter(character)"
+          >
             <input matSliderThumb [(ngModel)]="character.maxMp" />
           </mat-slider>
         </div>

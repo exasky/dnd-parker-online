@@ -37,8 +37,7 @@
       <app-log-panel *ngIf="isLogPanel" class="h-100" style="width: 25vw" [adventure]="adventure"></app-log-panel>
       <app-gm-action-panel
         *ngIf="!isLogPanel"
-        class="h-100"
-        style="min-width: 150px"
+        style="min-height: 100%; min-width: 150px"
         [adventureId]="adventure.id"
         [initiatives]="characterTurns"
         [monsters]="monsters"
@@ -111,8 +110,7 @@
                 <app-character-tooltip-displayer
                   [character]="item['character']"
                   [ngStyle]="{ height: getCharacterTooltipHeight(item['character']) + 'px' }"
-                >
-                </app-character-tooltip-displayer>
+                />
               </ng-template>
               <ng-template [ngSwitchCase]="LayerElementType.MONSTER">
                 <img width="300" [src]="getMonsterDescriptionImage(item['monster'])" />

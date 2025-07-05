@@ -79,6 +79,8 @@ import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { CharacterTooltipDisplayerComponent } from "./character/character-tooltip-displayer.component";
 import { ActionPanelComponent } from "./action/action-panel.component";
 import { ContextMenuComponent } from "./context-menu/context-menu.component";
+import { MatInputModule } from "@angular/material/input";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-adventure",
@@ -98,6 +100,8 @@ import { ContextMenuComponent } from "./context-menu/context-menu.component";
     CharacterTooltipDisplayerComponent,
     ActionPanelComponent,
     ContextMenuComponent,
+    MatInputModule,
+    MatButtonModule,
   ],
 })
 export class AdventureComponent implements OnInit, OnDestroy {
