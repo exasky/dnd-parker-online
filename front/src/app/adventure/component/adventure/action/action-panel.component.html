@@ -84,7 +84,7 @@
       </ng-template>
     </button>
   </ng-container>
-  <ng-container *ngIf="authService.isGM">
+  <ng-container *ngIf="authService.isGM()">
     <mat-divider *ngIf="!currentInitiative" class="m-2" [inset]="false"></mat-divider>
     <button
       mat-raised-button
@@ -114,19 +114,19 @@
     color="accent"
     class="flex-shrink-0 m-2"
     (click)="endTurn()"
-    [disabled]="disableActions || (!isMyTurn && !authService.isGM)"
+    [disabled]="disableActions || (!isMyTurn && !authService.isGM())"
   >
     {{ "adventure.action-panel.end-turn" | translate }}
   </button>
 </div>
 
-<div *ngIf="!authService.isGM" class="d-flex justify-content-center">
+<div *ngIf="!authService.isGM()" class="d-flex justify-content-center">
   <button mat-icon-button (click)="openMobileVersion()">
     <mat-icon>open_in_new</mat-icon>
   </button>
 </div>
 
-<div class="flex-shrink-0 d-flex flex-column justify-content-end" *ngIf="authService.isGM">
+<div class="flex-shrink-0 d-flex flex-column justify-content-end" *ngIf="authService.isGM()">
   <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="prevAdventure()">
     {{ "adventure.action-panel.previous-adventure" | translate }}
   </button>

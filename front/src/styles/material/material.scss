@@ -16,6 +16,8 @@ html {
 body.dark-mode {
   color-scheme: dark;
   background-image: url("/assets/wallpaper/dark.jpg") !important;
+  background-size: cover;
+  background-position: center;
 
   img {
     -webkit-filter: brightness(80%);

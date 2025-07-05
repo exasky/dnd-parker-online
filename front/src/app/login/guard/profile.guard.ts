@@ -15,7 +15,7 @@ export class ProfileGuard implements CanActivate {
     state: RouterStateSnapshot,
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     const rolesToCheck = route.data["roles"] as string[];
-    if (rolesToCheck.indexOf(this.authService.currentUserValue.role) !== -1) {
+    if (rolesToCheck.indexOf(this.authService.currentUserValue().role) !== -1) {
       return true;
     } else {
       return this.router.navigate(["/"], { queryParams: { message: "unauthorized" } });

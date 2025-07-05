@@ -44,7 +44,7 @@ abstract class AbstractDiceDialogComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.rollDisabled = !this.authService.isGM && !(this.authService.currentUserValue.id === this.data.user.id);
+    this.rollDisabled = !this.authService.isGM() && !(this.authService.currentUserValue().id === this.data.user.id);
     this.diceService.getAllDices().subscribe((dices) => (this.allDices = dices));
     this.diceWSObs = this.diceWS.getObservable(this.data.adventureId).subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {

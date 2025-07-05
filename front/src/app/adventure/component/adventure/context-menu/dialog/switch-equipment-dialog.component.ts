@@ -76,7 +76,7 @@ export class SwitchEquipmentDialogComponent implements OnInit, OnDestroy {
   }
 
   isSwitchAuthorized(): boolean {
-    return this.authService.currentUserValue.characters.some((userChar) => userChar.id === this.data.character.id);
+    return this.authService.currentUserValue().characters.some((userChar) => userChar.id === this.data.character.id);
   }
 
   selectEquipment(item: CharacterEquipment, isEquipment) {

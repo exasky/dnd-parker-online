@@ -42,7 +42,7 @@ export class PlayersCursorComponent implements OnInit, OnDestroy {
 
       const mouseMoveEvent: MouseMove = message.message;
       // Do not add own cursor
-      if (mouseMoveEvent.userId !== this.authService.currentUserValue.id) {
+      if (mouseMoveEvent.userId !== this.authService.currentUserValue().id) {
         // Mouse out
         if (mouseMoveEvent.x === mouseMoveEvent.y && mouseMoveEvent.y === -1) {
           let playerCursorIxd = this.cursors.findIndex((pc) => pc.userId === mouseMoveEvent.userId);

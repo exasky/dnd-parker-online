@@ -7,8 +7,8 @@
       <div class="flex-3 d-flex justify-content-center align-items-center">
         <h3 class="mb-0">
           {{ adventure.name }}
-          <ng-container *ngIf="!authService.isGM">
-            ({{ getCharacterNamesFromId(authService.currentUserValue.id) }})
+          <ng-container *ngIf="!authService.isGM()">
+            ({{ getCharacterNamesFromId(authService.currentUserValue().id) }})
           </ng-container>
         </h3>
       </div>
@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <div class="d-flex align-items-center" *ngIf="authService.isGM">
+    <div class="d-flex align-items-center" *ngIf="authService.isGM()">
       <button mat-raised-button class="flex-shrink-0 mx-2" (click)="toggleGmPanel()">
         {{ "adventure.gm-panel-label" | translate }}
       </button>
@@ -144,8 +144,8 @@
             <div *ngSwitchCase="LayerElementType.TRAP">
               <div
                 class="adventure-board-item"
-                *ngIf="authService.isGM || item['shown'] === true || item['deactivated'] === true"
-                [class.trap-visible]="authService.isGM && item['shown'] === true"
+                *ngIf="authService.isGM() || item['shown'] === true || item['deactivated'] === true"
+                [class.trap-visible]="authService.isGM() && item['shown'] === true"
                 [ngStyle]="{
                   'background-image':
                     'url(\'assets/item/' +
@@ -170,7 +170,7 @@
             <div *ngSwitchCase="LayerElementType.CHEST">
               <div
                 class="adventure-board-item"
-                [class.chest-with-card]="authService.isGM && item['specificCard']"
+                [class.chest-with-card]="authService.isGM() && item['specificCard']"
                 [ngStyle]="{ 'background-image': 'url(\'assets/item/' + item.name + '\')' }"
               ></div>
             </div>

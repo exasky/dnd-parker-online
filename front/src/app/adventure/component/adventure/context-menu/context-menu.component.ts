@@ -90,9 +90,9 @@ export class ContextMenuComponent {
   }
 
   private isContextMenuEnabled(item: LayerGridsterItem) {
-    if (this.authService.isGM) return true;
+    if (this.authService.isGM()) return true;
     if (!this.currentInitiative && !this.selectedItem) return false;
-    if (!AdventureUtils.isMyTurn(this.authService.currentUserValue, this.currentInitiative)) return false;
+    if (!AdventureUtils.isMyTurn(this.authService.currentUserValue(), this.currentInitiative)) return false;
     if (ContextMenuComponent.interactiveItemsForPlayer().indexOf(item.type) === -1) return false;
     // noinspection RedundantIfStatementJS
     if (ContextMenuComponent.flippableItems().indexOf(item.type) !== -1 && !this.isItemFlippable(item)) return false;
@@ -107,7 +107,7 @@ export class ContextMenuComponent {
   isItemFlippable(item: LayerGridsterItem) {
     return (
       ContextMenuComponent.flippableItems().indexOf(item.type) !== -1 &&
-      (this.authService.isGM ||
+      (this.authService.isGM() ||
         (AdventureUtils.areItemsNextToEachOther(item, this.getCurrentCharacterTurn()) &&
           item.type === LayerElementType.DOOR))
     );
@@ -142,7 +142,7 @@ export class ContextMenuComponent {
   }
 
   canOpenChest(item: ChestLayerGridsterItem) {
-    return this.authService.isGM || AdventureUtils.areItemsNextToEachOther(item, this.getCurrentCharacterTurn());
+    return this.authService.isGM() || AdventureUtils.areItemsNextToEachOther(item, this.getCurrentCharacterTurn());
   }
 
   openChest(item: ChestLayerGridsterItem) {
@@ -171,7 +171,7 @@ export class ContextMenuComponent {
   }
 
   canMove(item: CharacterLayerGridsterItem) {
-    return !this.authService.isGM && !this.isCharacterMove && this.isItemMe(item);
+    return !this.authService.isGM() && !this.isCharacterMove && this.isItemMe(item);
   }
 
   startMove(item: CharacterLayerGridsterItem) {

@@ -70,7 +70,7 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
 
       this.characters = this.adventure.campaignCharacters;
 
-      this.authService.currentUserValue.characters = this.characters;
+      this.authService.currentUserValue().characters = this.characters;
 
       this.initMonsters();
     });

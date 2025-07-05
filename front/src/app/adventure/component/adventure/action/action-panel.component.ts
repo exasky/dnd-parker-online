@@ -122,9 +122,9 @@ export class ActionPanelComponent implements OnInit, OnDestroy {
 
   get isMyTurn(): boolean {
     if (!this.currentInitiative) return false;
-    return this.authService.currentUserValue.characters.some(
-      (char) => this.currentInitiative.characterName === char.name,
-    );
+    return this.authService
+      .currentUserValue()
+      .characters.some((char) => this.currentInitiative.characterName === char.name);
   }
 
   rollDices() {

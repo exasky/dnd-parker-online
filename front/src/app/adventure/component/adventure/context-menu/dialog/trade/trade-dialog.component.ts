@@ -83,9 +83,9 @@ export class TradeDialogComponent implements OnInit, OnDestroy {
   }
 
   isClickAuthorized(isFrom: boolean): boolean {
-    return this.authService.currentUserValue.characters.some(
-      (userChar) => userChar.id === (isFrom ? this.data.trade.from.id : this.data.trade.to.id),
-    );
+    return this.authService
+      .currentUserValue()
+      .characters.some((userChar) => userChar.id === (isFrom ? this.data.trade.from.id : this.data.trade.to.id));
   }
 
   validateTrade() {

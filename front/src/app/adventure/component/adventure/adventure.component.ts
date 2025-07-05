@@ -182,14 +182,14 @@ export class AdventureComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (this.authService.isGM) {
+    if (this.authService.isGM()) {
       this.gmService.getAddableElements().subscribe((elements) => (this.addableLayerElements = elements));
       this.gmService.getMonsterTemplates().subscribe((monsters) => (this.monsterTemplates = monsters));
     }
     const adventureId = this.route.snapshot.paramMap.get("id")!;
     this.adventureService.getAdventure(adventureId).subscribe((adventure) => {
       this.adventure = adventure;
-      const currentUser = this.authService.currentUserValue;
+      const currentUser = this.authService.currentUserValue();
       currentUser.characters = this.adventure.campaignCharacters.filter(
         (character) => character.userId === currentUser.id,
       );
@@ -289,7 +289,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             const alert: AlertMessage = message.message;
             if (
               !alert.characterId ||
-              this.authService.currentUserValue.characters.some((char) => char.id === alert.characterId)
+              this.authService.currentUserValue().characters.some((char) => char.id === alert.characterId)
             ) {
               switch (alert.type) {
                 case AlertMessageType.SUCCESS:
@@ -537,7 +537,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   toggleGmPanel() {
-    if (this.authService.isGM) {
+    if (this.authService.isGM()) {
       if (!this.isLogPanel && this.leftPanelDrawer.opened) {
         this.leftPanelDrawer.close();
       } else if (!this.leftPanelDrawer.opened) {
@@ -550,7 +550,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   stopItemDrag(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
     this.focusMainDrawer();
 
-    if (!this.authService.isGM && this.currentTurn) return;
+    if (!this.authService.isGM() && this.currentTurn) return;
 
     if (item.x === itemComponent.$item.x && item.y === itemComponent.$item.y) {
       // Case click
@@ -608,8 +608,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
     mouseMove.y = e.pageY;
     mouseMove.offsetX = this.boardPanel.nativeElement.getBoundingClientRect().left;
     mouseMove.offsetY = this.boardPanel.nativeElement.getBoundingClientRect().top;
-    mouseMove.userId = this.authService.currentUserValue.id;
-    mouseMove.username = this.authService.currentUserValue.username;
+    mouseMove.userId = this.authService.currentUserValue().id;
+    mouseMove.username = this.authService.currentUserValue().username;
     this.adventureService.playerMouseMove(this.adventure.id, mouseMove).subscribe(() => {
       this.isMoveSending = false;
     });
@@ -619,7 +619,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     const mouseMove = new MouseMove();
     mouseMove.x = -1;
     mouseMove.y = -1;
-    mouseMove.userId = this.authService.currentUserValue.id;
+    mouseMove.userId = this.authService.currentUserValue().id;
     this.adventureService.playerMouseMove(this.adventure.id, mouseMove).subscribe(() => {
       this.isMoveSending = false;
     });
@@ -785,7 +785,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   private isDragEnabledForItem(item: LayerItem): boolean {
-    const user = this.authService.currentUserValue;
+    const user = this.authService.currentUserValue();
 
     if (user.role === ROLE_GM) return true;
 
@@ -805,7 +805,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   private isDragEnabledForGridsterItem(item: LayerGridsterItem): boolean {
-    const user = this.authService.currentUserValue;
+    const user = this.authService.currentUserValue();
 
     if (user.role === ROLE_GM) return true;
 

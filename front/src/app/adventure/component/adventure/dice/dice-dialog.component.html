@@ -29,7 +29,7 @@
   <button
     mat-raised-button
     color="accent"
-    *ngIf="authService.isGM"
+    *ngIf="authService.isGM()"
     class="position-absolute"
     style="right: 0"
     (click)="this.close()"

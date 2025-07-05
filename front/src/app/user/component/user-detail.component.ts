@@ -48,7 +48,7 @@ export class UserDetailComponent implements OnInit {
     private formBuilder: FormBuilder,
   ) {
     this.userService
-      .getById(this.authService.currentUserValue.id)
+      .getById(this.authService.currentUserValue().id)
       .subscribe((userEdit) => (this.currentUser = userEdit));
   }
 
