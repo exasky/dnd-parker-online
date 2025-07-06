@@ -7,11 +7,11 @@
   <div id="treasurechest-bottom"></div>
   <div id="treasurechest-bg"></div>
 
-  <img id="card" [src]="getCardImage(data.characterItem)" [alt]="data.characterItem.name" />
+  <img id="card" [src]="data.characterItem | getCardImage" [alt]="data.characterItem.name" />
 </div>
 
 <mat-dialog-actions class="d-flex justify-content-around align-items-center">
-  <ng-container *ngIf="authService.isGM()">
+  @if (authService.isGM()) {
     <button mat-raised-button (click)="this.close(false)">{{ "common.cancel" | translate }}</button>
     <mat-checkbox
       [(ngModel)]="isEquipmentSelected"
@@ -22,15 +22,19 @@
       {{ "adventure.dialog.draw-card.add-equipment" | translate }}
     </mat-checkbox>
     <button mat-raised-button (click)="this.close(true)">{{ "common.validate" | translate }}</button>
-  </ng-container>
-  <ng-container *ngIf="isMyTurn(authService.currentUserValue(), data.currentInitiative)">
+  }
+  @if (isMyTurn(authService.currentUserValue(), data.currentInitiative)) {
     <button mat-button [color]="isEquipmentSelected === true ? 'warn' : undefined" (click)="this.addItem(true)">
-      <mat-icon *ngIf="isEquipmentSelected === true">done</mat-icon>
+      @if (isEquipmentSelected) {
+        <mat-icon>done</mat-icon>
+      }
       {{ "adventure.dialog.draw-card.add-equipment" | translate }}
     </button>
     <button mat-button [color]="isEquipmentSelected === false ? 'warn' : undefined" (click)="this.addItem(false)">
-      <mat-icon *ngIf="isEquipmentSelected === false">done</mat-icon>
+      @if (!isEquipmentSelected) {
+        <mat-icon>done</mat-icon>
+      }
       {{ "adventure.dialog.draw-card.add-backpack" | translate }}
     </button>
-  </ng-container>
+  }
 </mat-dialog-actions>

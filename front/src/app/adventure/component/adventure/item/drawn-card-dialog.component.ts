@@ -4,7 +4,7 @@ import { Character, CharacterEquipment } from "../../../model/character";
 import { AudioService } from "../../../service/audio.service";
 import { AuthService } from "../../../../login/auth.service";
 import { AdventureCardService } from "../../../service/adventure-card.service";
-import { CardUtils } from "../../../../common/utils/card-utils";
+import { CardUtils, GetCardImagePipe } from "../../../../common/utils/card-utils";
 import { DrawnCardWebsocketService } from "../../../../common/service/ws/drawn-card.websocket.service";
 import { Subscription } from "rxjs";
 import { SocketResponseType } from "../../../../common/model/websocket.response";
@@ -30,10 +30,10 @@ import { CommonModule } from "@angular/common";
     MatButtonModule,
     MatIconModule,
     CommonModule,
+    GetCardImagePipe,
   ],
 })
 export class DrawnCardDialogComponent implements OnInit, OnDestroy {
-  getCardImage = CardUtils.getCardImage;
   isMyTurn = AdventureUtils.isMyTurn;
 
   public characterName;

@@ -2,20 +2,20 @@
   <input matInput placeholder="{{ 'common.search' | translate }}" (input)="filterChanged($event.target['value'])" />
 </mat-form-field>
 
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="overflow">
+<mat-tree #tree [dataSource]="datasource()" [childrenAccessor]="childrenAccessor" class="overflow">
   <mat-tree-node
     *matTreeNodeDef="let node"
     matTreeNodePadding
     draggable="true"
-    (dragstart)="dragStartHandler($event, node.item)"
+    (dragstart)="dragStartHandler($event, node)"
   >
-    <img width="50px" [src]="getCardImage(node.item)" />
+    <img width="50px" [src]="node | getCardImage" />
     {{ node.name.split("_").join(" ") }}
   </mat-tree-node>
 
   <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
     <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-      <mat-icon>{{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}</mat-icon>
+      <mat-icon>{{ tree.isExpanded(node) ? "expand_more" : "chevron_right" }}</mat-icon>
     </button>
     {{ "item-displayer." + node.name | translate }}
   </mat-tree-node>
