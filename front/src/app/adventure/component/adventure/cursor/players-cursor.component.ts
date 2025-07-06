@@ -74,7 +74,7 @@ export class PlayersCursorComponent implements OnInit, OnDestroy {
     this.adventureWSObs.unsubscribe();
   }
 
-  private getCharacterNamesFromId(userId) {
+  private getCharacterNamesFromId(userId: number) {
     const characters = this.characters.filter((char) => char.id && char.character.userId === userId);
     return characters.length !== 0 ? characters.map((char) => char.name) : ["MJ"];
   }

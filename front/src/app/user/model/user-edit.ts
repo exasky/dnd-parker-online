@@ -4,6 +4,10 @@ export class UserEdit {
   username: string;
   role: string;
   characters: UserEditCharacters[];
+
+  constructor() {
+    this.characters = [];
+  }
 }
 
 export class UserEditCharacters {

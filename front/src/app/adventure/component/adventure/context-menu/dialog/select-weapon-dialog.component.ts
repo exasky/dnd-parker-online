@@ -1,22 +1,20 @@
-import { Component, HostBinding, Inject } from "@angular/core";
-import { Character, CharacterEquipment } from "../../../../model/character";
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
-import { CardUtils } from "../../../../../common/utils/card-utils";
-import { TranslateModule } from "@ngx-translate/core";
 import { CommonModule } from "@angular/common";
+import { Component, HostBinding, Inject } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { TranslateModule } from "@ngx-translate/core";
 import { DragOverDirective } from "../../../../../common/directive/drag-over.directive";
+import { GetCardImagePipe } from "../../../../../common/utils/card-utils";
+import { Character, CharacterEquipment } from "../../../../model/character";
 
 @Component({
   selector: "app-select-card-dialog",
   templateUrl: "./select-weapon-dialog.component.html",
   styles: [":host {height: 75vh; width: 50vw; margin: auto}"],
-  imports: [TranslateModule, MatDialogModule, CommonModule, MatButtonModule, DragOverDirective],
+  imports: [TranslateModule, MatDialogModule, CommonModule, MatButtonModule, DragOverDirective, GetCardImagePipe],
 })
 export class SelectWeaponDialogComponent {
   @HostBinding("class") cssClass = "d-flex flex-column";
-
-  getCardImage = CardUtils.getCardImage;
 
   selectedCard: CharacterEquipment;
 

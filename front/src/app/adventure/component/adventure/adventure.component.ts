@@ -347,13 +347,13 @@ export class AdventureComponent implements OnInit, OnDestroy {
             const trade = message.message;
             const from = this.characters.find((char) => char.character.id === trade.from)!.character;
             const to = this.characters.find((char) => char.character.id === trade.to)!.character;
-            this.currentDialog = this.dialog.open(
-              TradeDialogComponent,
-              DialogUtils.getDefaultConfig({
+            this.currentDialog = this.dialog.open(TradeDialogComponent, {
+              ...DialogUtils.getDefaultConfig({
                 adventureId: this.adventure.id,
                 trade: { from, to },
               }),
-            );
+              width: "85vw",
+            });
             break;
           case AdventureMessageType.ASK_SWITCH:
             const character = this.characters.find((char) => char.character.id === message.message)!.character;
@@ -626,9 +626,11 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   onKeyboard(e: KeyboardEvent) {
+    if (!this.selectedItem) return;
+
     if (e.code === "Escape") {
       this.selectedItem = null;
-    } else if (this.selectedItem && ["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].indexOf(e.code) !== -1) {
+    } else if (["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].indexOf(e.code) !== -1) {
       e.preventDefault();
       e.stopPropagation();
 
@@ -785,40 +787,35 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   private isDragEnabledForItem(item: LayerItem): boolean {
+    if (this.authService.isGM()) return true;
+    if (item.element.type !== LayerElementType.CHARACTER) return false;
+
     const user = this.authService.currentUserValue();
-
-    if (user.role === ROLE_GM) return true;
-
-    if (item.element.type === LayerElementType.CHARACTER) {
-      if (!user.characters.some((char) => char.name.toLowerCase() === item.element.name.toLowerCase())) return false;
-      if ((item as CharacterLayerItem).character.hp === 0) return false;
-      if (!this.currentTurn) return true;
-      if (
-        AdventureUtils.isMyTurn(user, this.currentTurn) &&
-        this.currentTurn.characterName === (item as CharacterLayerItem).character.name
-      ) {
-        return true;
-      }
+    if (!user.characters.some((char) => char.name.toLowerCase() === item.element.name.toLowerCase())) return false;
+    if ((item as CharacterLayerItem).character.hp === 0) return false;
+    if (!this.currentTurn) return true;
+    if (
+      AdventureUtils.isMyTurn(user, this.currentTurn) &&
+      this.currentTurn.characterName === (item as CharacterLayerItem).character.name
+    ) {
+      return true;
     }
-
     return false;
   }
 
   private isDragEnabledForGridsterItem(item: LayerGridsterItem): boolean {
+    if (this.authService.isGM()) return true;
+    if (item.type !== LayerElementType.CHARACTER) return false;
+
     const user = this.authService.currentUserValue();
-
-    if (user.role === ROLE_GM) return true;
-
-    if (item.type === LayerElementType.CHARACTER) {
-      if (!user.characters.some((char) => char.name.toLowerCase() === item.name.toLowerCase())) return false;
-      if ((item as CharacterLayerGridsterItem).character.hp === 0) return false;
-      if (!this.currentTurn) return true;
-      if (
-        AdventureUtils.isMyTurn(user, this.currentTurn) &&
-        this.currentTurn.characterName === (item as CharacterLayerGridsterItem).character.name
-      ) {
-        return true;
-      }
+    if (!user.characters.some((char) => char.name.toLowerCase() === item.name.toLowerCase())) return false;
+    if ((item as CharacterLayerGridsterItem).character.hp === 0) return false;
+    if (!this.currentTurn) return true;
+    if (
+      AdventureUtils.isMyTurn(user, this.currentTurn) &&
+      this.currentTurn.characterName === (item as CharacterLayerGridsterItem).character.name
+    ) {
+      return true;
     }
 
     return false;

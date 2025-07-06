@@ -5,7 +5,7 @@
       {{ "common.create" | translate }}
     </button>
     @for (user of users; track user.id) {
-      <button mat-raised-button color="accent" (click)="selectUser(user)">
+      <button [matButton]="selectedUser?.id == user.id ? 'filled' : 'elevated'" (click)="selectUser(user)">
         {{ user.username }}
       </button>
     }
@@ -13,90 +13,95 @@
 </div>
 
 <div class="user-detail">
-  <mat-card class="d-flex flex-column" *ngIf="selectedUser">
-    <mat-card-header
-      class="flex-shrink-0 d-flex align-items-start flex-wrap"
-      style="margin-bottom: 1em; align-items: center !important"
-    >
-      <mat-card-title>
-        <div *ngIf="selectedUser.username">{{ selectedUser.username }}</div>
-        <div *ngIf="!selectedUser.username">{{ "user.new" | translate }}</div>
-      </mat-card-title>
-      <div class="flex-grow d-flex justify-content-end" *ngIf="!isEdit">
-        <button mat-raised-button (click)="editUser()">
-          <mat-icon>edit</mat-icon>
-          {{ "common.edit" | translate }}
-        </button>
-        <button mat-raised-button color="warn" class="mx-2" *ngIf="selectedUser.id" (click)="deleteUser()">
-          <mat-icon>delete</mat-icon>
-          {{ "common.delete" | translate }}
-        </button>
-      </div>
-      <div class="flex-grow d-flex justify-content-end" *ngIf="isEdit">
-        <button mat-raised-button (click)="cancel()">
-          <mat-icon>undo</mat-icon>
-          {{ "common.cancel" | translate }}
-        </button>
-        <button mat-raised-button color="accent" class="mx-2" (click)="saveUser()">
-          <mat-icon>save</mat-icon>
-          {{ "common.save" | translate }}
-        </button>
-        <button mat-raised-button color="warn" class="mx-2" *ngIf="selectedUser.id" (click)="resetPassword()">
-          <mat-icon>vpn_key</mat-icon>
-          {{ "user.reset-password" | translate }}
-        </button>
-      </div>
-    </mat-card-header>
-    <mat-card-content class="d-flex flex-column overflow">
-      <mat-form-field>
-        <mat-label>{{ "user.username" | translate }}</mat-label>
-        <input
-          matInput
-          [(ngModel)]="userEdit.username"
-          placeholder="{{ 'user.username' | translate }}"
-          required
-          autocomplete="nope"
-          [disabled]="!isEdit"
-        />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>{{ "user.password" | translate }}</mat-label>
-        <input
-          matInput
-          [(ngModel)]="userEdit.password"
-          placeholder="{{ 'user.password' | translate }}"
-          type="password"
-          required
-          autocomplete="new-password"
-          [disabled]="!isEdit"
-        />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Role</mat-label>
-        <mat-select [(ngModel)]="userEdit.role" [disabled]="!isEdit">
-          <mat-option value="ROLE_GM">{{ "user.role.gm" | translate }}</mat-option>
-          <mat-option value="ROLE_PLAYER">{{ "user.role.player" | translate }}</mat-option>
-        </mat-select>
-      </mat-form-field>
+  @if (selectedUser) {
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          @if (selectedUser.username) {
+            {{ selectedUser.username }}
+          } @else {
+            {{ "user.new" | translate }}
+          }
+        </mat-card-title>
+        <div class="actions">
+          @if (!isEdit) {
+            <button matButton="elevated" (click)="editUser()">
+              <mat-icon>edit</mat-icon>
+              {{ "common.edit" | translate }}
+            </button>
+            @if (selectedUser.id) {
+              <button matButton="elevated" (click)="deleteUser()">
+                <mat-icon>delete</mat-icon>
+                {{ "common.delete" | translate }}
+              </button>
+            }
+          } @else {
+            <button matButton="elevated" (click)="cancel()">
+              <mat-icon>undo</mat-icon>
+              {{ "common.cancel" | translate }}
+            </button>
+            <button matButton="elevated" (click)="saveUser()">
+              <mat-icon>save</mat-icon>
+              {{ "common.save" | translate }}
+            </button>
+            @if (selectedUser.id) {
+              <button matButton="elevated" (click)="resetPassword()">
+                <mat-icon>vpn_key</mat-icon>
+                {{ "user.reset-password" | translate }}
+              </button>
+            }
+          }
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field>
+          <mat-label>{{ "user.username" | translate }}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="userEdit.username"
+            placeholder="{{ 'user.username' | translate }}"
+            required
+            autocomplete="nope"
+            [disabled]="!isEdit"
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ "user.password" | translate }}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="userEdit.password"
+            placeholder="{{ 'user.password' | translate }}"
+            type="password"
+            required
+            autocomplete="new-password"
+            [disabled]="!isEdit"
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Role</mat-label>
+          <mat-select [(ngModel)]="userEdit.role" [disabled]="!isEdit">
+            <mat-option value="ROLE_GM">{{ "user.role.gm" | translate }}</mat-option>
+            <mat-option value="ROLE_PLAYER">{{ "user.role.player" | translate }}</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-      <mat-list class="flex-grow">
-        <ng-container *ngFor="let campaign of campaigns; let index = index">
-          <div mat-subheader>{{ campaign.name }}</div>
-          <div class="d-flex flex-wrap justify-content-between">
-            <mat-list-item *ngFor="let character of campaign.characters" style="width: unset">
-              <mat-checkbox
-                mat-line
-                [checked]="isCharacterSelected(character)"
-                (change)="toggleCharacterSelected($event, character)"
-                [disabled]="!isEdit"
-              >
-                {{ character.name }}
-              </mat-checkbox>
-            </mat-list-item>
-            <mat-divider *ngIf="index !== campaigns.length - 1" style="position: relative !important"></mat-divider>
-          </div>
-        </ng-container>
-      </mat-list>
-    </mat-card-content>
-  </mat-card>
+        <mat-list>
+          @for (campaign of campaigns; track campaign.id) {
+            <div mat-subheader>{{ campaign.name }}</div>
+            <div class="characters">
+              @for (character of campaign.characters; track character.id) {
+                <mat-checkbox
+                  [checked]="isCharacterSelected(character)"
+                  (change)="toggleCharacterSelected($event, character)"
+                  [disabled]="!isEdit"
+                >
+                  {{ character.name }}
+                </mat-checkbox>
+              }
+            </div>
+          }
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  }
 </div>

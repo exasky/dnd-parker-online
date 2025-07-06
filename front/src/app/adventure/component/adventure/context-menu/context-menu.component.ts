@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import { Component, computed, EventEmitter, Input, output, Output, signal, ViewChild } from "@angular/core";
 import { MatMenuModule, MatMenuTrigger } from "@angular/material/menu";
 import {
   CharacterLayerGridsterItem,
@@ -37,9 +37,6 @@ export class ContextMenuComponent {
   adventureId: number;
 
   @Input()
-  addableLayerElements: LayerElement[] = [];
-
-  @Input()
   characterItems: CharacterLayerGridsterItem[];
 
   @Input()
@@ -57,17 +54,10 @@ export class ContextMenuComponent {
 
   isCharacterMove = false;
 
-  @Output()
-  startCharacterMove: EventEmitter<CharacterLayerGridsterItem> = new EventEmitter<CharacterLayerGridsterItem>();
-
-  @Output()
-  resetCharacterMove: EventEmitter<CharacterLayerGridsterItem> = new EventEmitter<CharacterLayerGridsterItem>();
-
-  @Output()
-  validateCharacterMove: EventEmitter<CharacterLayerGridsterItem> = new EventEmitter<CharacterLayerGridsterItem>();
-
-  @Output()
-  closeMenu: EventEmitter<void> = new EventEmitter<void>();
+  startCharacterMove = output<CharacterLayerGridsterItem>();
+  resetCharacterMove = output<CharacterLayerGridsterItem>();
+  validateCharacterMove = output<CharacterLayerGridsterItem>();
+  closeMenu = output<void>();
 
   constructor(
     public authService: AuthService,
@@ -78,7 +68,10 @@ export class ContextMenuComponent {
     private dialog: MatDialog,
   ) {}
 
+  menuItem = signal<LayerGridsterItem>(null);
+
   openMenu(event: MouseEvent, item: LayerGridsterItem) {
+    this.menuItem.set(item);
     if (this.isContextMenuEnabled(item)) {
       event.preventDefault();
       this.contextMenuPosition.x = event.clientX + "px";
@@ -94,8 +87,7 @@ export class ContextMenuComponent {
     if (!this.currentInitiative && !this.selectedItem) return false;
     if (!AdventureUtils.isMyTurn(this.authService.currentUserValue(), this.currentInitiative)) return false;
     if (ContextMenuComponent.interactiveItemsForPlayer().indexOf(item.type) === -1) return false;
-    // noinspection RedundantIfStatementJS
-    if (ContextMenuComponent.flippableItems().indexOf(item.type) !== -1 && !this.isItemFlippable(item)) return false;
+    if (!this.isItemFlippable()) return false;
 
     return true;
   }
@@ -104,93 +96,118 @@ export class ContextMenuComponent {
     return [LayerElementType.DOOR, LayerElementType.CHARACTER, LayerElementType.CHEST, LayerElementType.MONSTER];
   }
 
-  isItemFlippable(item: LayerGridsterItem) {
+  isItemFlippable = computed(() => {
     return (
-      ContextMenuComponent.flippableItems().indexOf(item.type) !== -1 &&
+      ContextMenuComponent.flippableItems().indexOf(this.menuItem().type) !== -1 &&
       (this.authService.isGM() ||
-        (AdventureUtils.areItemsNextToEachOther(item, this.getCurrentCharacterTurn()) &&
-          item.type === LayerElementType.DOOR))
+        (AdventureUtils.areItemsNextToEachOther(this.menuItem(), this.getCurrentCharacterTurn()) &&
+          this.menuItem().type === LayerElementType.DOOR))
     );
-  }
+  });
 
   private static flippableItems(): LayerElementType[] {
     return [LayerElementType.TRAP, LayerElementType.DOOR];
   }
 
-  flipElement(item: LayerGridsterItem, event: MouseEvent) {
+  flipElement(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    switch (item.type) {
+    switch (this.menuItem().type) {
       case LayerElementType.TRAP:
-        const trapGridsterItem = item as TrapLayerGridsterItem;
-        trapGridsterItem.shown = false;
-        trapGridsterItem.deactivated = !trapGridsterItem.deactivated;
+        this.menuItem.update((m) => {
+          return { ...m, shown: false, deactivated: !m["deactivated"] };
+        });
         break;
       case LayerElementType.DOOR:
-        const doorGridsterItem = item as DoorLayerGridsterItem;
-        doorGridsterItem.open = !doorGridsterItem.open;
-        this.gmService.playSound(this.adventureId, "door_" + (doorGridsterItem.open ? "open" : "close") + "_0.mp3");
+        this.menuItem.update((m) => {
+          return { ...m, open: !m["open"] };
+        });
+        this.gmService.playSound(this.adventureId, "door_" + (this.menuItem()["open"] ? "open" : "close") + "_0.mp3");
         break;
     }
 
-    this.adventureService.updateLayerItem(this.adventureId, AdventureUtils.existingGridsterItemToLayerItem(item));
+    this.adventureService.updateLayerItem(
+      this.adventureId,
+      AdventureUtils.existingGridsterItemToLayerItem(this.menuItem()),
+    );
   }
 
-  showTrap(item: TrapLayerGridsterItem) {
-    item.shown = true;
-    this.adventureService.updateLayerItem(this.adventureId, AdventureUtils.existingGridsterItemToLayerItem(item));
+  canShowTrap = computed(() => this.authService.isGM() && !this.menuItem()["shown"] && !this.menuItem()["deactivated"]);
+  showTrap() {
+    this.menuItem.update((v) => {
+      return { ...v, shown: true };
+    });
+    this.adventureService.updateLayerItem(
+      this.adventureId,
+      AdventureUtils.existingGridsterItemToLayerItem(this.menuItem()),
+    );
   }
 
-  canOpenChest(item: ChestLayerGridsterItem) {
-    return this.authService.isGM() || AdventureUtils.areItemsNextToEachOther(item, this.getCurrentCharacterTurn());
-  }
-
-  openChest(item: ChestLayerGridsterItem) {
+  canOpenChest = computed(
+    () =>
+      this.authService.isGM() ||
+      AdventureUtils.areItemsNextToEachOther(this.menuItem(), this.getCurrentCharacterTurn()),
+  );
+  openChest() {
     const currCharItem = this.characterItems.find(
       (char) => char.character.name === this.getCurrentInitiative().characterName,
     );
-    if (item.specificCard) {
-      this.adventureCardService.drawCard(this.adventureId, currCharItem.character.id, item.id, item.specificCard.id);
+    if (this.menuItem()["specificCard"]) {
+      this.adventureCardService.drawCard(
+        this.adventureId,
+        currCharItem.character.id,
+        this.menuItem().id,
+        this.menuItem()["specificCard"].id,
+      );
     } else if (currCharItem) {
-      this.adventureCardService.drawCard(this.adventureId, currCharItem.character.id, item.id);
+      this.adventureCardService.drawCard(this.adventureId, currCharItem.character.id, this.menuItem().id);
     }
   }
 
-  deleteItem(item: LayerGridsterItem) {
-    this.adventureService.deleteLayerItem(this.adventureId, AdventureUtils.existingGridsterItemToLayerItem(item));
+  deleteItem() {
+    this.adventureService.deleteLayerItem(
+      this.adventureId,
+      AdventureUtils.existingGridsterItemToLayerItem(this.menuItem()),
+    );
   }
 
-  setChestCard(item: ChestLayerGridsterItem) {
+  setChestCard() {
     this.dialog
-      .open(SelectCardDialogComponent, DialogUtils.getDefaultConfig(item["cardId"]))
+      .open(SelectCardDialogComponent, DialogUtils.getDefaultConfig(this.menuItem()["cardId"]))
       .afterClosed()
       .subscribe((value: CharacterEquipment) => {
-        item.specificCard = value;
-        this.adventureService.updateLayerItem(this.adventureId, AdventureUtils.existingGridsterItemToLayerItem(item));
+        this.menuItem.update((v) => {
+          return { ...v, specificCard: value };
+        });
+        this.adventureService.updateLayerItem(
+          this.adventureId,
+          AdventureUtils.existingGridsterItemToLayerItem(this.menuItem()),
+        );
       });
   }
 
-  canMove(item: CharacterLayerGridsterItem) {
-    return !this.authService.isGM() && !this.isCharacterMove && this.isItemMe(item);
-  }
-
-  startMove(item: CharacterLayerGridsterItem) {
+  canMove = computed(() => {
+    return (
+      !this.authService.isGM() && !this.isCharacterMove && this.isItemMe(this.menuItem() as CharacterLayerGridsterItem)
+    );
+  });
+  startMove() {
     this.isCharacterMove = true;
-    this.startCharacterMove.emit(item);
+    this.startCharacterMove.emit(this.menuItem() as CharacterLayerGridsterItem);
   }
 
-  resetMove(item: CharacterLayerGridsterItem) {
-    this.resetCharacterMove.emit(item);
+  resetMove() {
+    this.resetCharacterMove.emit(this.menuItem() as CharacterLayerGridsterItem);
   }
 
-  validateMove(item: CharacterLayerGridsterItem) {
+  validateMove() {
     this.isCharacterMove = false;
-    this.validateCharacterMove.emit(item);
+    this.validateCharacterMove.emit(this.menuItem() as CharacterLayerGridsterItem);
   }
 
-  attackMonster(item: MonsterLayerGridsterItem) {
+  attackMonster() {
     if (Initiative.isGmTurn(this.getCurrentInitiative())) {
-      this.diceService.openDiceAttackDialog(this.adventureId, this.selectedMonsterId, item.id, true, true);
+      this.diceService.openDiceAttackDialog(this.adventureId, this.selectedMonsterId, this.menuItem().id, true, true);
     } else {
       this.dialog
         .open(
@@ -203,7 +220,7 @@ export class ContextMenuComponent {
           this.diceService.openDiceAttackDialog(
             this.adventureId,
             this.getCurrentCharacterTurn().character.id,
-            item.id,
+            this.menuItem().id,
             false,
             true,
             value.id,
@@ -212,9 +229,9 @@ export class ContextMenuComponent {
     }
   }
 
-  attackCharacter(item: CharacterLayerGridsterItem) {
+  attackCharacter() {
     if (Initiative.isGmTurn(this.getCurrentInitiative())) {
-      this.diceService.openDiceAttackDialog(this.adventureId, this.selectedMonsterId, item.id, true, false);
+      this.diceService.openDiceAttackDialog(this.adventureId, this.selectedMonsterId, this.menuItem().id, true, false);
     } else {
       this.dialog
         .open(
@@ -227,7 +244,7 @@ export class ContextMenuComponent {
           this.diceService.openDiceAttackDialog(
             this.adventureId,
             this.getCurrentCharacterTurn().character.id,
-            item.id,
+            this.menuItem().id,
             false,
             false,
             value.id,
@@ -236,27 +253,28 @@ export class ContextMenuComponent {
     }
   }
 
-  canTradeWith(item: CharacterLayerGridsterItem): boolean {
+  canTradeWith = computed(() => {
     if (this.getCurrentCharacterTurn()) {
-      return !this.isItemMe(item) && AdventureUtils.areItemsNextToEachOther(item, this.getCurrentCharacterTurn());
+      return (
+        !this.isItemMe(this.menuItem() as CharacterLayerGridsterItem) &&
+        AdventureUtils.areItemsNextToEachOther(this.menuItem(), this.getCurrentCharacterTurn())
+      );
     } else {
       return false;
     }
-  }
+  });
 
-  askTrade(item: CharacterLayerGridsterItem) {
+  askTrade() {
     this.adventureService.askTrade(this.adventureId, {
       from: this.getCurrentCharacterTurn().character.id,
-      to: item.character.id,
+      to: (this.menuItem() as CharacterLayerGridsterItem).character.id,
     });
   }
 
-  canSwitchEquipment(item: CharacterLayerGridsterItem): boolean {
-    return this.isItemMe(item);
-  }
+  canSwitchEquipment = computed(() => this.isItemMe(this.menuItem() as CharacterLayerGridsterItem));
 
-  askSwitch(item: CharacterLayerGridsterItem) {
-    this.adventureService.askSwitch(this.adventureId, item.character.id);
+  askSwitch() {
+    this.adventureService.askSwitch(this.adventureId, (this.menuItem() as CharacterLayerGridsterItem).character.id);
   }
 
   private getCurrentCharacterTurn(): CharacterLayerGridsterItem {

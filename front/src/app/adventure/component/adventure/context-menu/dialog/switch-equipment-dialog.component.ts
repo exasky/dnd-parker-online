@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, HostBinding, Inject, OnDestroy, OnInit } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
 import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 import { MatDividerModule } from "@angular/material/divider";
 import { TranslateModule } from "@ngx-translate/core";
@@ -7,28 +8,25 @@ import { Subscription } from "rxjs";
 import { SocketResponse } from "../../../../../common/model";
 import { SocketResponseType } from "../../../../../common/model/websocket.response";
 import { AdventureWebsocketService } from "../../../../../common/service/ws/adventure.websocket.service";
-import { CardUtils } from "../../../../../common/utils/card-utils";
+import { GetCardImagePipe } from "../../../../../common/utils/card-utils";
 import { AuthService } from "../../../../../login/auth.service";
 import { AdventureMessage, AdventureMessageType } from "../../../../model/adventure-message";
 import { Character, CharacterEquipment } from "../../../../model/character";
 import { AdventureService } from "../../../../service/adventure.service";
 import { AudioService } from "../../../../service/audio.service";
 import { GmService } from "../../../../service/gm.service";
-import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-switch-equipment-dialog",
   templateUrl: "./switch-equipment-dialog.component.html",
   styles: [
-    ":host {height: 75vh; width: 50vw; margin: auto}",
+    ":host {height: 75vh; margin: auto}",
     ".selected {background-color: rgb(160, 160, 160); border-radius: 7px; padding: 10px}",
   ],
-  imports: [TranslateModule, MatDividerModule, MatDialogModule, CommonModule, MatButtonModule],
+  imports: [TranslateModule, MatDividerModule, MatDialogModule, CommonModule, MatButtonModule, GetCardImagePipe],
 })
 export class SwitchEquipmentDialogComponent implements OnInit, OnDestroy {
   @HostBinding("class") cssClass = "d-flex flex-column";
-
-  getCardImage = CardUtils.getCardImage;
 
   private advSub: Subscription;
 
@@ -80,7 +78,7 @@ export class SwitchEquipmentDialogComponent implements OnInit, OnDestroy {
   }
 
   selectEquipment(item: CharacterEquipment, isEquipment) {
-    if (this.isSwitchAuthorized) {
+    if (this.isSwitchAuthorized()) {
       this.adventureService.selectSwitch(this.data.adventureId, { equipmentId: item.id, isEquipment });
     }
   }

@@ -1,24 +1,35 @@
-<h1 mat-dialog-title>{{'adventure.dialog.select-weapon.header' | translate}}</h1>
+<h1 mat-dialog-title>{{ "adventure.dialog.select-weapon.header" | translate }}</h1>
 <div class="flex-grow d-flex">
-  <div class="flex-1 d-flex justify-content-center align-items-center"
-       style="min-height: 100px"
-       dragOver (drop)="setSelectedCard($event)">
-    <span *ngIf="!selectedCard">{{'common.drag&drop' | translate}}</span>
-    <img *ngIf="selectedCard" [src]="getCardImage(selectedCard)" style="max-width: 80%; max-height: 80%;">
+  <div
+    class="flex-1 d-flex justify-content-center align-items-center"
+    style="min-height: 100px"
+    dragOver
+    (drop)="setSelectedCard($event)"
+  >
+    @if (!selectedCard) {
+      <span>{{ "common.drag&drop" | translate }}</span>
+    } @else {
+      <img [src]="selectedCard | getCardImage" style="max-width: 80%; max-height: 80%" />
+    }
   </div>
 
   <div class="flex-2 flex-grow d-flex flex-column justify-content-around align-items-center flex-wrap overflow">
-    <div *ngFor="let equipped of data.character.equippedItems"
-         class="d-flex flex-column mat-elevation-z2 m-2 p-2 align-items-center"
-         draggable="true"
-         (dragstart)="dragStartHandler($event, equipped)">
-      {{equipped.name.split('_').join(' ')}}
-      <img width="150px" [src]="getCardImage(equipped)">
-    </div>
+    @for (equipped of data.character.equippedItems; track $index) {
+      <div
+        class="d-flex flex-column mat-elevation-z2 m-2 p-2 align-items-center"
+        draggable="true"
+        (dragstart)="dragStartHandler($event, equipped)"
+      >
+        {{ equipped.name.split("_").join(" ") }}
+        <img width="150px" [src]="equipped | getCardImage" />
+      </div>
+    }
   </div>
 </div>
 
 <mat-dialog-actions>
-  <button mat-raised-button (click)="dialogRef.close()">{{'common.cancel' | translate}}</button>
-  <button mat-raised-button (click)="validateCard()">{{'adventure.dialog.select-weapon.validate' | translate}}</button>
+  <button mat-raised-button (click)="dialogRef.close()">{{ "common.cancel" | translate }}</button>
+  <button mat-raised-button (click)="validateCard()">
+    {{ "adventure.dialog.select-weapon.validate" | translate }}
+  </button>
 </mat-dialog-actions>

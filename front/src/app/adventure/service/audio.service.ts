@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import { Injectable } from "@angular/core";
 
 export interface IAudioService {
   getDisplayName(): string;
@@ -8,7 +8,7 @@ export interface IAudioService {
 }
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class AudioService implements IAudioService {
   private playingSounds: HTMLAudioElement[] = [];
@@ -16,7 +16,7 @@ export class AudioService implements IAudioService {
   public volume: number = 0.6;
 
   getDisplayName() {
-    return 'sound';
+    return "sound";
   }
 
   playSound(src: string) {
@@ -27,12 +27,12 @@ export class AudioService implements IAudioService {
     audio.play().then();
     audio.onended = () => {
       this.playingSounds.splice(this.playingSounds.indexOf(audio), 1);
-    }
+    };
   }
 
   setVolume(volume: number) {
     this.volume = volume;
-    this.playingSounds.forEach(sound => sound.volume = volume);
+    this.playingSounds.forEach((sound) => (sound.volume = volume));
   }
 
   getVolume(): number {
@@ -41,7 +41,7 @@ export class AudioService implements IAudioService {
 }
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class AmbientAudioService implements IAudioService {
   private ambientSound: HTMLAudioElement;
@@ -52,26 +52,26 @@ export class AmbientAudioService implements IAudioService {
   private fadeInOutIntervalDelay = 100;
 
   getDisplayName() {
-    return 'ambient';
+    return "ambient";
   }
 
   playSound(src: string) {
     if (this.ambientSound) {
-      const delta = this.volume / (this.fadeInOutTime/this.fadeInOutIntervalDelay);
+      const delta = this.volume / (this.fadeInOutTime / this.fadeInOutIntervalDelay);
       const interval = setInterval(() => {
         this.ambientSound.volume -= delta;
         if (this.ambientSound.volume <= 0.01) {
           clearInterval(interval);
           this.launchPlay(src);
         }
-      }, 100)
+      }, 100);
     } else {
       this.launchPlay(src);
     }
   }
 
   private launchPlay(src: string) {
-    const delta = this.volume / (this.fadeInOutTime/this.fadeInOutIntervalDelay);
+    const delta = this.volume / (this.fadeInOutTime / this.fadeInOutIntervalDelay);
     this.ambientSound = new Audio(src);
     this.ambientSound.volume = 0;
     this.ambientSound.loop = true;
@@ -86,7 +86,7 @@ export class AmbientAudioService implements IAudioService {
 
   setVolume(volume: number) {
     this.volume = volume;
-    this.ambientSound.volume = volume;
+    if (this.ambientSound) this.ambientSound.volume = volume;
   }
 
   getVolume(): number {

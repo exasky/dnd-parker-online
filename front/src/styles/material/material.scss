@@ -19,6 +19,14 @@ body.dark-mode {
   background-size: cover;
   background-position: center;
 
+  @include mat.theme(
+    (
+      color: mat.$blue-palette,
+      typography: Roboto,
+      density: 0,
+    )
+  );
+
   img {
     -webkit-filter: brightness(80%);
     -moz-filter: brightness(80%);

@@ -2,19 +2,18 @@ import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, HostBinding, Input, Output } from "@angular/core";
 import { MatDividerModule } from "@angular/material/divider";
 import { TranslateModule } from "@ngx-translate/core";
-import { CardUtils } from "../../../../../../common/utils/card-utils";
+import { CardUtils, GetCardImagePipe } from "../../../../../../common/utils/card-utils";
 import { Character, CharacterEquipment } from "../../../../../model/character";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-trade-character-item-displayer",
   templateUrl: "./trade-character-item-displayer.component.html",
   styles: [".selected {background-color: rgb(160, 160, 160); border-radius: 7px; padding: 10px}"],
-  imports: [TranslateModule, MatDividerModule, CommonModule],
+  imports: [TranslateModule, MatDividerModule, CommonModule, GetCardImagePipe, MatButtonModule],
 })
 export class TradeCharacterItemDisplayerComponent {
   @HostBinding("class") cssClasses = "flex-grow d-flex position-relative";
-
-  getCardImage = CardUtils.getCardImage;
 
   @Input()
   tradeEnabled: boolean = true;

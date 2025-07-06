@@ -1,3 +1,5 @@
+@use "@angular/material" as mat;
+
 .status-bar {
   display: flex;
   align-content: center;
@@ -8,9 +10,7 @@
 
 .status-bar-text {
   position: absolute;
-  padding: 10px;
-  left: 0;
-  right: 0;
+  top: 0;
   color: white;
   display: flex;
   justify-content: center;
@@ -18,4 +18,20 @@
 
 .mat-progress-bar {
   height: 30px;
+}
+
+.hp-bar {
+  @include mat.progress-bar-overrides(
+    (
+      active-indicator-color: rgb(238, 66, 66),
+    )
+  );
+}
+
+.mp-bar {
+  @include mat.progress-bar-overrides(
+    (
+      active-indicator-color: rgb(80, 80, 233),
+    )
+  );
 }
