@@ -47,7 +47,7 @@
       [ngbTooltip]="tooltipContent"
       [disableTooltip]="!charItem.character.id"
       [openDelay]="500"
-      [container]="'body'"
+      container="body"
       placement="left"
     >
       {{ charItem.character.name }}
@@ -72,13 +72,12 @@
       class="flex-shrink-0 m-2"
       [ngbTooltip]="tooltipContent"
       [disableTooltip]="initiatives.length === 0"
-      [container]="'body'"
+      container="body"
       placement="left"
     >
       {{ "adventure.action-panel.current-initiative" | translate }}
       <ng-template #tooltipContent>
         <app-initiative-displayer
-          style="height: 350px"
           [currentInitiative]="currentInitiative"
           [initiatives]="initiatives"
         ></app-initiative-displayer>

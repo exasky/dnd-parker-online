@@ -29,6 +29,7 @@ import { DiceService } from "../../../service/dice.service";
 import { GmService } from "../../../service/gm.service";
 import { CharacterTooltipDisplayerComponent } from "../character/character-tooltip-displayer.component";
 import { InitiativeDisplayerComponent } from "../initiative/initiative-displayer.component";
+import { OverlayModule } from "@angular/cdk/overlay";
 
 @Component({
   selector: "app-action-panel",

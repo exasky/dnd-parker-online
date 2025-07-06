@@ -39,8 +39,7 @@ app-root {
 }
 
 .w-0 {
-  //noinspection CssRedundantUnit
-  width: 0px;
+  width: 0;
 }
 
 .mw-75 {
@@ -54,4 +53,12 @@ app-root {
 .mdi-large {
   font-size: 140% !important;
   margin-right: 20px !important;
+}
+
+.tooltip {
+  z-index: 500;
+  background-color: rgba($color: black, $alpha: 0.8);
+  color: white;
+  padding: 1em !important;
+  border-radius: 8px;
 }

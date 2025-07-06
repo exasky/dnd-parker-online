@@ -4,11 +4,23 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
 import { AuthService } from "./auth.service";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
-  imports: [TranslateModule, FormsModule, ReactiveFormsModule, CommonModule],
+  styleUrl: "./login.component.scss",
+  imports: [
+    TranslateModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
 })
 export class LoginComponent implements OnInit {
   @HostBinding("style.flex-grow") flexGrow = "1";

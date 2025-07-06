@@ -15,6 +15,7 @@ export class AuthService {
   private currentUserSignal = signal<User>(JSON.parse(localStorage.getItem("currentUser")));
 
   readonly currentUserValue = computed(() => this.currentUserSignal());
+  readonly isLoggedIn = computed(() => !!this.currentUserValue());
   readonly isGM = computed(() => this.currentUserSignal()?.role === ROLE_GM);
 
   constructor(

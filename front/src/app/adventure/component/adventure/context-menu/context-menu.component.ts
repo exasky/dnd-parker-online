@@ -87,7 +87,8 @@ export class ContextMenuComponent {
     if (!this.currentInitiative && !this.selectedItem) return false;
     if (!AdventureUtils.isMyTurn(this.authService.currentUserValue(), this.currentInitiative)) return false;
     if (ContextMenuComponent.interactiveItemsForPlayer().indexOf(item.type) === -1) return false;
-    if (!this.isItemFlippable()) return false;
+    if (ContextMenuComponent.flippableItems().indexOf(this.menuItem().type) !== -1 && !this.isItemFlippable())
+      return false;
 
     return true;
   }

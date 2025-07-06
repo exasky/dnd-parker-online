@@ -20,7 +20,5 @@ export class InitiativeDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: { adventureId: number; initiatives: Initiative[] },
   ) {}
 
-  close() {
-    this.gmService.closeDialog(this.data.adventureId);
-  }
+  close = () => this.gmService.closeDialog(this.data.adventureId);
 }

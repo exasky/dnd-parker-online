@@ -82,7 +82,6 @@
             <!--                 class="adventure-board-background"></div>-->
           </ng-template>
         </ng-template>
-
         <gridster #gridster [options]="options" style="flex-grow: 1; z-index: 10">
           <gridster-item
             *ngFor="let item of dashboard"
@@ -92,10 +91,10 @@
             [ngbTooltip]="tipContent"
             [disableTooltip]="tooltipDisabled(item)"
             [openDelay]="500"
-            [container]="'body'"
+            container="body"
             #t="ngbTooltip"
             [closeDelay]="10"
-            [class.selected]="selectedItem && selectedItem.id === item.id && selectedItem.type === item.type"
+            [class.item-selected]="selectedItem && selectedItem.id === item.id && selectedItem.type === item.type"
             (mousedown)="t.close()"
             (contextmenu)="contextMenu.openMenu($event, item)"
           >

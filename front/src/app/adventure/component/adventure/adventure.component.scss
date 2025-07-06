@@ -5,7 +5,7 @@
 .adventure-board-background {
   height: 700px;
   width: 700px;
-  position: absolute
+  position: absolute;
 }
 
 .adventure-board-item {
@@ -16,20 +16,20 @@
   width: 100%;
 
   &.selected {
-    border: red 3px solid;
+    box-shadow: inset 0 0 0 3px red;
   }
 }
 
-.selected {
+gridster-item.item-selected {
   border: white 3px solid;
 }
 
 .trap-visible {
-  border: red 2px solid;
+  box-shadow: inset 0 0 0 3px red;
 }
 
 .chest-with-card {
-  border: gold 2px solid;
+  box-shadow: inset 0 0 0 3px gold;
 }
 
 gridster {
