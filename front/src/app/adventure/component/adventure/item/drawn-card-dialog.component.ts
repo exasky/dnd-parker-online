@@ -36,7 +36,7 @@ import { CommonModule } from "@angular/common";
 export class DrawnCardDialogComponent implements OnInit, OnDestroy {
   isMyTurn = AdventureUtils.isMyTurn;
 
-  public characterName;
+  public characterName: string;
 
   private drawnCardWSObs: Subscription;
   isEquipmentSelected: boolean = null;

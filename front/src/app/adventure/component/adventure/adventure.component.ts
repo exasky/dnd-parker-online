@@ -67,7 +67,7 @@ import { NextTurnDialogComponent } from "./action/next-turn-dialog.component";
 import { Character } from "../../model/character";
 import { TradeDialogComponent } from "./context-menu/dialog/trade/trade-dialog.component";
 import { SwitchEquipmentDialogComponent } from "./context-menu/dialog/switch-equipment-dialog.component";
-import { CardUtils } from "../../../common/utils/card-utils";
+import { CardUtils, GetMonsterImagePipe } from "../../../common/utils/card-utils";
 import { CharacterItem } from "../../model/item";
 import { AdventureItemDisplayerComponent } from "./item/adventure-item-displayer.component";
 import { TranslateModule } from "@ngx-translate/core";
@@ -102,6 +102,7 @@ import { MatButtonModule } from "@angular/material/button";
     ContextMenuComponent,
     MatInputModule,
     MatButtonModule,
+    GetMonsterImagePipe,
   ],
 })
 export class AdventureComponent implements OnInit, OnDestroy {
@@ -230,6 +231,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             } else {
               this.adventure = message.message;
               this.adventure.characters.forEach((layerItem) => this.updateItem(layerItem));
+              this.cdr.detectChanges();
             }
             break;
           case AdventureMessageType.UPDATE_CHARACTER:
@@ -244,6 +246,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
               if (this.isSameItemAsSelected(characterItem!)) {
                 this.selectedItem = null;
               }
+              this.cdr.detectChanges();
             }
             break;
           case AdventureMessageType.UPDATE_MONSTER:
@@ -251,6 +254,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             const monsterToUpdate = this.findInDashboard(monster) as MonsterLayerGridsterItem;
             if (monsterToUpdate) {
               monsterToUpdate.hp = monster.hp;
+              this.cdr.detectChanges();
             }
             break;
           case AdventureMessageType.ROLL_INITIATIVE:
@@ -715,7 +719,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
-  itemChange(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
+  itemChange(item: LayerGridsterItem, _: GridsterItemComponentInterface) {
     if (this.dashboard.indexOf(item) !== -1) {
       this.adventureService.updateLayerItem(this.adventure.id, AdventureUtils.existingGridsterItemToLayerItem(item));
     }

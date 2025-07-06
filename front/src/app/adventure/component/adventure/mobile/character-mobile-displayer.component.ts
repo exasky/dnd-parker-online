@@ -1,19 +1,20 @@
+import { CommonModule } from "@angular/common";
 import { Component, HostBinding, Input } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatDialog } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSliderModule } from "@angular/material/slider";
+import { TranslateModule } from "@ngx-translate/core";
+import { DialogUtils } from "../../../../common/dialog/dialog.utils";
+import { DragOverDirective } from "../../../../common/directive/drag-over.directive";
+import { GetCardImagePipe, GetCharacterImagePipe } from "../../../../common/utils/card-utils";
 import { Character, CharacterEquipment } from "../../../model/character";
 import { AdventureService } from "../../../service/adventure.service";
 import { SelectCardDialogComponent } from "../context-menu/dialog/select-card-dialog.component";
-import { DialogUtils } from "../../../../common/dialog/dialog.utils";
-import { MatDialog } from "@angular/material/dialog";
-import { CardUtils } from "../../../../common/utils/card-utils";
-import { MatCardModule } from "@angular/material/card";
-import { TranslateModule } from "@ngx-translate/core";
-import { MatSliderModule } from "@angular/material/slider";
-import { FormsModule } from "@angular/forms";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatProgressBarModule } from "@angular/material/progress-bar";
-import { MatIconModule } from "@angular/material/icon";
-import { CommonModule } from "@angular/common";
-import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-character-mobile-displayer",
@@ -30,12 +31,13 @@ import { MatButtonModule } from "@angular/material/button";
     CommonModule,
     MatButtonModule,
     MatIconModule,
+    GetCharacterImagePipe,
+    GetCardImagePipe,
+    DragOverDirective,
   ],
 })
 export class CharacterMobileDisplayerComponent {
   @HostBinding("class") cssClasses = "d-flex flex-column h-100";
-
-  CardUtils = CardUtils;
 
   @Input()
   character: Character;

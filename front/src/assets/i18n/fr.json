@@ -98,7 +98,7 @@
       "trade-one-way": "{{from}} a donné {{fromId}} à {{to}}",
       "trade-nothing": "{{from}} n'a rien échangé avec {{to}}",
       "accept-chest": "{{from}} a trouvé {{fromId}} dans un coffre",
-      "refuse-chest": "{{from}} a ouvert un coffre mais tout jeté",
+      "refuse-chest": "{{from}} a ouvert un coffre mais a tout jeté",
       "trapped-chest": "{{from}} a été piégé par {{to}}"
     },
     "gm-panel": {

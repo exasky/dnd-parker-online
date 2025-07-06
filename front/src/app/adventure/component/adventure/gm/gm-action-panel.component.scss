@@ -33,6 +33,11 @@
 }
 
 ::ng-deep {
+  .dark-mode {
+    .initiative-character {
+      background: black !important;
+    }
+  }
   .initiative-character {
     display: flex;
     align-items: center;
@@ -45,6 +50,12 @@
     img {
       width: 28px;
       height: 28px;
+    }
+  }
+
+  .dark-mode {
+    .cdk-drag-preview {
+      color: white;
     }
   }
 

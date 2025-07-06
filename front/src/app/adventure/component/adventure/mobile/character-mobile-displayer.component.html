@@ -1,8 +1,10 @@
 <mat-card class="flex-grow m-2 overflow">
   <mat-card-content class="d-flex flex-column align-items-center">
-    <img *ngIf="!editable && character.name" width="50%" [src]="CardUtils.getCharacterCardImage(character)" />
+    @if (!editable && character.name) {
+      <img width="50%" [src]="character | getCharacterImage: 'card'" />
+    }
 
-    <ng-container *ngIf="editable">
+    @if (editable) {
       <div class="d-flex w-100 justify-content-around">
         <div class="d-flex flex-column">
           <mat-label style="padding-left: 8px">{{ "common.hp" | translate }}</mat-label>
@@ -63,26 +65,26 @@
           </mat-slider>
         </div>
       </div>
-    </ng-container>
-
-    <ng-container *ngIf="!editable">
+    } @else {
       <section class="status-bar w-100">
-        <mat-progress-bar color="warn" mode="determinate" [value]="(character.hp * 100) / character.maxHp">
-        </mat-progress-bar>
+        <mat-progress-bar mode="determinate" [value]="(character.hp * 100) / character.maxHp" />
         <div class="status-bar-text">{{ "common.hp" | translate }} : {{ character.hp }} / {{ character.maxHp }}</div>
       </section>
-      <section class="status-bar w-100" *ngIf="character.maxMp">
-        <mat-progress-bar color="accent" mode="determinate" [value]="(character.mp * 100) / character.maxMp">
-        </mat-progress-bar>
-        <div class="status-bar-text">{{ "common.mp" | translate }} : {{ character.mp }} / {{ character.maxMp }}</div>
-      </section>
-    </ng-container>
+      @if (character.maxMp) {
+        <section class="status-bar w-100">
+          <mat-progress-bar mode="determinate" [value]="(character.mp * 100) / character.maxMp" />
+          <div class="status-bar-text">{{ "common.mp" | translate }} : {{ character.mp }} / {{ character.maxMp }}</div>
+        </section>
+      }
+    }
 
     <div mat-subheader>
       {{ "common.equipped" | translate }}
-      <button *ngIf="editable" mat-icon-button (click)="openSelectCardEquippedItem()">
-        <mat-icon>add</mat-icon>
-      </button>
+      @if (editable) {
+        <button mat-icon-button (click)="openSelectCardEquippedItem()">
+          <mat-icon>add</mat-icon>
+        </button>
+      }
     </div>
     <div
       class="w-100 d-flex align-items-center justify-content-center"
@@ -90,34 +92,34 @@
       dragOver
       (drop)="addEquippedItem($event)"
     >
-      <div *ngIf="character.equippedItems.length === 0">
-        {{ "common.drag&drop" | translate }}
-      </div>
-      <ng-container *ngIf="character.equippedItems.length !== 0">
-        <div *ngFor="let item of character.equippedItems" class="m-auto position-relative">
-          <img
-            [src]="CardUtils.getCardImage(item)"
-            draggable="true"
-            (dragstart)="equipmentDragStartHandler($event, item)"
-            width="150px"
-            height="230px"
-          />
-          <button
-            *ngIf="editable"
-            mat-mini-fab
-            style="position: absolute; top: 0; left: 73px"
-            (click)="removeEquipmentItem(item)"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
-      </ng-container>
+      @if (character.equippedItems.length === 0) {
+        <div>{{ "common.drag&drop" | translate }}</div>
+      } @else {
+        @for (item of character.equippedItems; track $index) {
+          <div class="m-auto position-relative">
+            <img
+              [src]="item | getCardImage"
+              draggable="true"
+              (dragstart)="equipmentDragStartHandler($event, item)"
+              width="150px"
+              height="230px"
+            />
+            @if (editable) {
+              <button mat-mini-fab style="position: absolute; top: 0; left: 73px" (click)="removeEquipmentItem(item)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+          </div>
+        }
+      }
     </div>
     <div mat-subheader>
       {{ "common.backpack" | translate }}
-      <button *ngIf="editable" mat-icon-button (click)="openSelectCardBackPackItem()">
-        <mat-icon>add</mat-icon>
-      </button>
+      @if (editable) {
+        <button mat-icon-button (click)="openSelectCardBackPackItem()">
+          <mat-icon>add</mat-icon>
+        </button>
+      }
     </div>
     <div
       class="w-100 d-flex align-items-center justify-content-center"
@@ -125,29 +127,27 @@
       dragOver
       (drop)="addBackPackItem($event)"
     >
-      <div *ngIf="character.backpackItems.length === 0">
-        {{ "common.drag&drop" | translate }}
-      </div>
-      <ng-container *ngIf="character.backpackItems.length !== 0">
-        <div *ngFor="let item of character.backpackItems" class="m-auto" style="position: relative">
-          <img
-            [src]="CardUtils.getCardImage(item)"
-            draggable="true"
-            class="m-auto"
-            (dragstart)="backpackDragStartHandler($event, item)"
-            width="150px"
-            height="230px"
-          />
-          <button
-            *ngIf="editable"
-            mat-mini-fab
-            style="position: absolute; top: 0; left: 73px"
-            (click)="removeBackpackItem(item)"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
-      </ng-container>
+      @if (character.backpackItems.length === 0) {
+        <div>{{ "common.drag&drop" | translate }}</div>
+      } @else {
+        @for (item of character.backpackItems; track $index) {
+          <div class="m-auto" style="position: relative">
+            <img
+              [src]="item | getCardImage"
+              draggable="true"
+              class="m-auto"
+              (dragstart)="backpackDragStartHandler($event, item)"
+              width="150px"
+              height="230px"
+            />
+            @if (editable) {
+              <button mat-mini-fab style="position: absolute; top: 0; left: 73px" (click)="removeBackpackItem(item)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+          </div>
+        }
+      }
     </div>
   </mat-card-content>
 </mat-card>
