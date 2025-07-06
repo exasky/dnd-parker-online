@@ -1,10 +1,10 @@
 @use "material/material";
 
 @use "flex";
-@use "tooltip";
-@use "utilities";
 
-@use "bootstrap/scss/bootstrap";
+// @use "bootstrap/scss/bootstrap";
+@use "bootstrap-utilities.min.css";
+
 @use "ngx-toastr/toastr";
 
 /* You can add global styles to this file, and also import other style files */

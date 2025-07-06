@@ -1,27 +1,29 @@
-import { Component, EventEmitter, HostBinding, Input, Output } from "@angular/core";
+import { CdkDrag, CdkDragDrop, CdkDropList, DragDropModule, moveItemInArray } from "@angular/cdk/drag-drop";
+import { CommonModule } from "@angular/common";
+import { Component, HostBinding, Input, output } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
 import { MatDialog } from "@angular/material/dialog";
 import { MatExpansionModule } from "@angular/material/expansion";
+import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSelectModule } from "@angular/material/select";
 import { MatDrawer } from "@angular/material/sidenav";
+import { MatSliderModule } from "@angular/material/slider";
 import { Router } from "@angular/router";
 import { TranslateModule } from "@ngx-translate/core";
-import { CardUtils } from "../../../../common/utils/card-utils";
+import { CapitalizePipe } from "../../../../common/pipe/capitalize.pipe";
+import { SortPipe } from "../../../../common/pipe/sort.pipe";
+import { MobileService } from "../../../../common/service/mobile.service";
+import { GetCharacterImagePipe, GetMonsterImagePipe } from "../../../../common/utils/card-utils";
 import { Initiative, MonsterLayerItem } from "../../../model/adventure";
 import { CharacterItem, MonsterItem } from "../../../model/item";
 import { AdventureService } from "../../../service/adventure.service";
 import { GmService } from "../../../service/gm.service";
 import { AlertMessageDialogComponent } from "./alert-message-dialog.component";
-import { MatMenuModule } from "@angular/material/menu";
-import { MatCardModule } from "@angular/material/card";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { CapitalizePipe } from "../../../../common/pipe/capitalize.pipe";
-import { MatSliderModule } from "@angular/material/slider";
-import { MatSelectModule } from "@angular/material/select";
-import { CommonModule } from "@angular/common";
-import { SortPipe } from "../../../../common/pipe/sort.pipe";
-import { MatInputModule } from "@angular/material/input";
-import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-gm-action-panel",
@@ -43,12 +45,14 @@ import { MatButtonModule } from "@angular/material/button";
     MatInputModule,
     MatButtonModule,
     ReactiveFormsModule,
+    GetMonsterImagePipe,
+    CdkDropList,
+    CdkDrag,
+    GetCharacterImagePipe,
   ],
 })
 export class GmActionPanelComponent {
   @HostBinding("class") cssClasses = "flex-grow d-flex";
-
-  getMonsterImage = CardUtils.getMonsterImage;
 
   SoundType = SoundType;
   SoundMacroType = SoundMacroType;
@@ -56,8 +60,13 @@ export class GmActionPanelComponent {
   @Input()
   adventureId: number;
 
+  _initiatives: Initiative[];
   @Input()
-  initiatives: Initiative[];
+  set initiatives(initiatives: Initiative[]) {
+    this._initiatives = (JSON.parse(JSON.stringify(initiatives)) as Initiative[]).sort((a, b) =>
+      a.number < b.number ? -1 : 1,
+    );
+  }
 
   @Input()
   characters: CharacterItem[];
@@ -68,23 +77,21 @@ export class GmActionPanelComponent {
   @Input()
   selectedMonsterId: number;
 
-  @Output()
-  selectMonster: EventEmitter<number> = new EventEmitter<number>();
-
   @Input()
   cursorEnabled = true;
 
-  @Output()
-  toggleCursor: EventEmitter<void> = new EventEmitter<void>();
-
   @Input()
   exportable: MatDrawer;
+
+  toggleCursor = output<void>();
+  selectMonster = output<number>();
 
   constructor(
     private dialog: MatDialog,
     private router: Router,
     private gmService: GmService,
     private adventureService: AdventureService,
+    public mobileService: MobileService,
   ) {}
 
   sendAlert() {
@@ -184,8 +191,13 @@ export class GmActionPanelComponent {
     this.adventureService.updateCharacter(this.adventureId, charItem.character);
   }
 
+  dropInitiative(event: CdkDragDrop<any>) {
+    moveItemInArray(this._initiatives, event.previousIndex, event.currentIndex);
+    this._initiatives.forEach((init, idx) => (init.number = idx));
+  }
+
   updateInitiatives() {
-    this.gmService.updateInitiatives(this.adventureId, this.initiatives);
+    this.gmService.updateInitiatives(this.adventureId, this._initiatives);
   }
 
   openMobileVersion() {
