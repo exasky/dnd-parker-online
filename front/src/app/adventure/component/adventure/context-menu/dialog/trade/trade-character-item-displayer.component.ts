@@ -1,10 +1,10 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, HostBinding, Input, Output } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
 import { MatDividerModule } from "@angular/material/divider";
 import { TranslateModule } from "@ngx-translate/core";
-import { CardUtils, GetCardImagePipe } from "../../../../../../common/utils/card-utils";
+import { GetCardImagePipe } from "../../../../../../common/utils/card-utils";
 import { Character, CharacterEquipment } from "../../../../../model/character";
-import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-trade-character-item-displayer",

@@ -1,8 +1,11 @@
 <div class="dice">
   <ol class="die-list even-roll" #dice data-roll="1">
-    <li *ngFor="let number of [1,2,3,4,5,6]" class="die-item"
-        attr.data-side="{{number}}"
-        [ngStyle]="{'background-image': 'url(\'assets/dice/' + diceType() + '/' + number + '.jpeg\')'}">
-    </li>
+    @for (number of [1, 2, 3, 4, 5, 6]; track number) {
+      <li
+        class="die-item"
+        attr.data-side="{{ number }}"
+        [ngStyle]="{ 'background-image': 'url(\'assets/dice/' + diceType() + '/' + number + '.jpeg\')' }"
+      ></li>
+    }
   </ol>
 </div>

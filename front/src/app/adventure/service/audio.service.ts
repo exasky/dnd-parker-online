@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 
 export interface IAudioService {
   getDisplayName(): string;
-  playSound(src: string);
-  setVolume(volume: number);
+  playSound(src: string): void;
+  setVolume(volume: number): void;
   getVolume(): number;
 }
 
@@ -15,9 +15,7 @@ export class AudioService implements IAudioService {
 
   public volume: number = 0.6;
 
-  getDisplayName() {
-    return "sound";
-  }
+  getDisplayName = () => "sound";
 
   playSound(src: string) {
     const audio = new Audio(src);
@@ -51,9 +49,7 @@ export class AmbientAudioService implements IAudioService {
   private fadeInOutTime = 2000;
   private fadeInOutIntervalDelay = 100;
 
-  getDisplayName() {
-    return "ambient";
-  }
+  getDisplayName = () => "ambient";
 
   playSound(src: string) {
     if (this.ambientSound) {

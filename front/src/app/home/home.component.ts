@@ -36,18 +36,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.isDarkTheme = !!localStorage.getItem("isDark");
-    if (this.isDarkTheme) {
-      document.body.classList.add("dark-mode");
-      document.body.classList.remove("light-mode");
-    } else {
-      document.body.classList.add("light-mode");
-      document.body.classList.remove("dark-mode");
-    }
-
-    this.lang = localStorage.getItem("lang");
-    if (!this.lang) this.lang = "en";
-
-    this.translate.use(this.lang);
+    this.lang = localStorage.getItem("lang") ?? "en";
   }
 
   switchLang() {

@@ -1,22 +1,22 @@
+import { CommonModule } from "@angular/common";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
-import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
-import { Character, CharacterEquipment } from "../../../model/character";
-import { AudioService } from "../../../service/audio.service";
-import { AuthService } from "../../../../login/auth.service";
-import { AdventureCardService } from "../../../service/adventure-card.service";
-import { CardUtils, GetCardImagePipe } from "../../../../common/utils/card-utils";
-import { DrawnCardWebsocketService } from "../../../../common/service/ws/drawn-card.websocket.service";
-import { Subscription } from "rxjs";
-import { SocketResponseType } from "../../../../common/model/websocket.response";
-import { CardMessage, CardMessageType } from "../../../model/card-message";
-import { Initiative } from "../../../model/adventure";
-import { AdventureUtils } from "../utils/utils";
-import { TranslateModule } from "@ngx-translate/core";
-import { MatCheckboxModule } from "@angular/material/checkbox";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
-import { CommonModule } from "@angular/common";
+import { TranslateModule } from "@ngx-translate/core";
+import { Subscription } from "rxjs";
+import { SocketResponseType } from "../../../../common/model/websocket.response";
+import { DrawnCardWebsocketService } from "../../../../common/service/ws/drawn-card.websocket.service";
+import { GetCardImagePipe } from "../../../../common/utils/card-utils";
+import { AuthService } from "../../../../login/auth.service";
+import { Initiative } from "../../../model/adventure";
+import { CardMessage, CardMessageType } from "../../../model/card-message";
+import { Character, CharacterEquipment } from "../../../model/character";
+import { AdventureCardService } from "../../../service/adventure-card.service";
+import { AudioService } from "../../../service/audio.service";
+import { AdventureUtils } from "../utils/utils";
 
 @Component({
   selector: "app-drawn-card-dialog",
@@ -36,7 +36,7 @@ import { CommonModule } from "@angular/common";
 export class DrawnCardDialogComponent implements OnInit, OnDestroy {
   isMyTurn = AdventureUtils.isMyTurn;
 
-  public characterName;
+  public characterName: string;
 
   private drawnCardWSObs: Subscription;
   isEquipmentSelected: boolean = null;

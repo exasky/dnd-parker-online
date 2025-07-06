@@ -1,13 +1,13 @@
-import { Component, HostBinding, Inject, OnInit } from "@angular/core";
-import { GmService } from "../../../../service/gm.service";
-import { CharacterEquipment } from "../../../../model/character";
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
-import { CardUtils, GetCardImagePipe } from "../../../../../common/utils/card-utils";
-import { TranslateModule } from "@ngx-translate/core";
-import { CharacterItemDisplayerComponent } from "../../../creator/character-item-displayer.component";
 import { CommonModule } from "@angular/common";
+import { Component, HostBinding, Inject, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { TranslateModule } from "@ngx-translate/core";
 import { DragOverDirective } from "../../../../../common/directive/drag-over.directive";
+import { GetCardImagePipe } from "../../../../../common/utils/card-utils";
+import { CharacterEquipment } from "../../../../model/character";
+import { GmService } from "../../../../service/gm.service";
+import { CharacterItemDisplayerComponent } from "../../../creator/character-item-displayer.component";
 
 @Component({
   selector: "app-select-card-dialog",

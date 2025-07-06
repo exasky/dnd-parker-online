@@ -1,4 +1,4 @@
-<ng-container *ngIf="adventure">
+@if (adventure) {
   <div class="d-flex flex-column flex-shrink-0">
     <div class="d-flex mx-2 mt-2">
       <div class="flex-1 d-flex justify-content-start align-items-center">
@@ -7,9 +7,9 @@
       <div class="flex-3 d-flex justify-content-center align-items-center">
         <h3 class="mb-0">
           {{ adventure.name }}
-          <ng-container *ngIf="!authService.isGM()">
+          @if (!authService.isGM()) {
             ({{ getCharacterNamesFromId(authService.currentUserValue().id) }})
-          </ng-container>
+          }
         </h3>
       </div>
       <div class="flex-1 d-flex justify-content-end align-items-center">
@@ -19,12 +19,14 @@
       </div>
     </div>
 
-    <div class="d-flex align-items-center" *ngIf="authService.isGM()">
-      <button mat-raised-button class="flex-shrink-0 mx-2" (click)="toggleGmPanel()">
-        {{ "adventure.gm-panel-label" | translate }}
-      </button>
-      <app-adventure-item-displayer [layerElements]="addableLayerElements"></app-adventure-item-displayer>
-    </div>
+    @if (authService.isGM()) {
+      <div class="d-flex align-items-center">
+        <button mat-raised-button class="flex-shrink-0 mx-2" (click)="toggleGmPanel()">
+          {{ "adventure.gm-panel-label" | translate }}
+        </button>
+        <app-adventure-item-displayer [layerElements]="addableLayerElements"></app-adventure-item-displayer>
+      </div>
+    }
   </div>
 
   <mat-drawer-container
@@ -34,20 +36,22 @@
     (keyup)="onKeyboard($event)"
   >
     <mat-drawer #leftPanelDrawer mode="side" position="start">
-      <app-log-panel *ngIf="isLogPanel" class="h-100" style="width: 25vw" [adventure]="adventure"></app-log-panel>
-      <app-gm-action-panel
-        *ngIf="!isLogPanel"
-        style="min-height: 100%; min-width: 150px"
-        [adventureId]="adventure.id"
-        [initiatives]="characterTurns"
-        [monsters]="monsters"
-        [characters]="characters"
-        [selectedMonsterId]="selectedMonsterId"
-        [cursorEnabled]="showCursor"
-        [exportable]="leftPanelDrawer"
-        (selectMonster)="selectMonster($event)"
-        (toggleCursor)="showCursor = !showCursor"
-      ></app-gm-action-panel>
+      @if (isLogPanel) {
+        <app-log-panel class="h-100" style="width: 25vw" [adventure]="adventure"></app-log-panel>
+      } @else {
+        <app-gm-action-panel
+          style="min-height: 100%; min-width: 150px"
+          [adventureId]="adventure.id"
+          [initiatives]="characterTurns"
+          [monsters]="monsters"
+          [characters]="characters"
+          [selectedMonsterId]="selectedMonsterId"
+          [cursorEnabled]="showCursor"
+          [exportable]="leftPanelDrawer"
+          (selectMonster)="selectMonster($event)"
+          (toggleCursor)="showCursor = !showCursor"
+        ></app-gm-action-panel>
+      }
     </mat-drawer>
 
     <mat-drawer-content>
@@ -62,124 +66,118 @@
       >
         <app-players-cursor [adventureId]="this.adventure.id" [characters]="characters"></app-players-cursor>
 
-        <ng-template ngFor let-boardRow [ngForOf]="adventure.boards" let-rowIdx="index">
-          <ng-template ngFor let-boardCol [ngForOf]="boardRow" let-colIdx="index">
-            <img
-              *ngIf="boardCol"
-              class="adventure-board-background"
-              [ngStyle]="{
-                top: 700 * rowIdx + 'px',
-                left: 700 * colIdx + 'px',
-                transform: 'rotate(' + boardCol.rotation + 'deg)',
-              }"
-              [src]="'assets/board/' + boardCol.boardNumber + '.JPG'"
-            />
-            <!--            <div *ngIf="boardCol" TODO replace div.background-image by img-->
-            <!--                 [ngStyle]="{'top': 700 * rowIdx + 'px',-->
-            <!--                      'left': 700 * colIdx + 'px',-->
-            <!--                      'background-image': 'url(\'assets/board/' + boardCol.boardNumber + '.JPG\')',-->
-            <!--                      'transform': 'rotate(' + boardCol.rotation + 'deg)'}"-->
-            <!--                 class="adventure-board-background"></div>-->
-          </ng-template>
-        </ng-template>
+        @for (boardRow of adventure.boards; track $index; let rowIdx = $index) {
+          @for (boardCol of boardRow; track $index; let colIdx = $index) {
+            @if (boardCol) {
+              <img
+                class="adventure-board-background"
+                [ngStyle]="{
+                  top: 700 * rowIdx + 'px',
+                  left: 700 * colIdx + 'px',
+                  transform: 'rotate(' + boardCol.rotation + 'deg)',
+                }"
+                [src]="'assets/board/' + boardCol.boardNumber + '.JPG'"
+              />
+            }
+          }
+        }
         <gridster #gridster [options]="options" style="flex-grow: 1; z-index: 10">
-          <gridster-item
-            *ngFor="let item of dashboard"
-            [item]="item"
-            [ngSwitch]="item.type"
-            style="background: none !important"
-            [ngbTooltip]="tipContent"
-            [disableTooltip]="tooltipDisabled(item)"
-            [openDelay]="500"
-            container="body"
-            #t="ngbTooltip"
-            [closeDelay]="10"
-            [class.item-selected]="selectedItem && selectedItem.id === item.id && selectedItem.type === item.type"
-            (mousedown)="t.close()"
-            (contextmenu)="contextMenu.openMenu($event, item)"
-          >
-            <div
-              *ngIf="!item.dragEnabled && item.type === LayerElementType.CHARACTER"
-              class="adventure-board-item"
-              style="z-index: 5; background-color: rgba(0, 0, 0, 0.5)"
-            ></div>
-
-            <ng-template #tipContent [ngSwitch]="item.type">
-              <ng-template [ngSwitchCase]="LayerElementType.CHARACTER">
-                <app-character-tooltip-displayer
-                  [character]="item['character']"
-                  [ngStyle]="{ height: getCharacterTooltipHeight(item['character']) + 'px' }"
-                />
-              </ng-template>
-              <ng-template [ngSwitchCase]="LayerElementType.MONSTER">
-                <img width="300" [src]="getMonsterDescriptionImage(item['monster'])" />
-              </ng-template>
-              <div *ngSwitchDefault></div>
-            </ng-template>
-
-            <div
-              *ngSwitchCase="LayerElementType.CHARACTER"
-              class="adventure-board-item"
-              [class.selected]="currentTurn?.characterName === item['character'].name"
-              [ngStyle]="{ 'background-image': 'url(\'assets/character/' + item.name + '-token.jpg\')' }"
+          @for (item of dashboard; track item.elementId + "-" + item.id) {
+            <gridster-item
+              [item]="item"
+              style="background: none !important"
+              [ngbTooltip]="tipContent"
+              [disableTooltip]="tooltipDisabled(item)"
+              [openDelay]="500"
+              container="body"
+              #t="ngbTooltip"
+              [closeDelay]="10"
+              [class.item-selected]="selectedItem && selectedItem.id === item.id && selectedItem.type === item.type"
+              (mousedown)="t.close()"
+              (contextmenu)="contextMenu.openMenu($event, item)"
             >
-              <ng-container *ngIf="item['character'].hp === 0">
-                <div
-                  class="d-flex justify-content-center align-items-center w-100 h-100"
-                  style="color: red; background-color: rgba(0, 0, 0, 0.5)"
-                >
-                  <span class="mdi mdi-skull" style="font-size: 200%"></span>
-                </div>
-              </ng-container>
-            </div>
+              @if (!item.dragEnabled && item.type === LayerElementType.CHARACTER) {
+                <div class="adventure-board-item" style="z-index: 5; background-color: rgba(0, 0, 0, 0.5)"></div>
+              }
+              <ng-template #tipContent>
+                @switch (item.type) {
+                  @case (LayerElementType.CHARACTER) {
+                    <app-character-tooltip-displayer
+                      [character]="item['character']"
+                      [ngStyle]="{ height: getCharacterTooltipHeight(item['character']) + 'px' }"
+                    />
+                  }
+                  @case (LayerElementType.MONSTER) {
+                    <img width="300" [src]="item['monster'] | getMonsterImage: true" />
+                  }
+                }
+              </ng-template>
 
-            <div
-              *ngSwitchCase="LayerElementType.MONSTER"
-              class="adventure-board-item"
-              [class.selected]="selectedMonsterId === item.id"
-              [ngStyle]="{ 'background-image': 'url(\'assets/monster/' + item.name + '-token.jpg\')' }"
-            ></div>
-
-            <div *ngSwitchCase="LayerElementType.TRAP">
-              <div
-                class="adventure-board-item"
-                *ngIf="authService.isGM() || item['shown'] === true || item['deactivated'] === true"
-                [class.trap-visible]="authService.isGM() && item['shown'] === true"
-                [ngStyle]="{
-                  'background-image':
-                    'url(\'assets/item/' +
-                    item.name +
-                    '-' +
-                    (item['deactivated'] ? 'deactivated' : 'activated') +
-                    '.jpg\')',
-                }"
-              ></div>
-            </div>
-
-            <div *ngSwitchCase="LayerElementType.DOOR">
-              <div
-                class="adventure-board-item"
-                [ngStyle]="{
-                  'background-image':
-                    'url(\'assets/item/door-' + item.name + '-' + (item['open'] ? 'opened' : 'closed') + '.jpg\')',
-                }"
-              ></div>
-            </div>
-
-            <div *ngSwitchCase="LayerElementType.CHEST">
-              <div
-                class="adventure-board-item"
-                [class.chest-with-card]="authService.isGM() && item['specificCard']"
-                [ngStyle]="{ 'background-image': 'url(\'assets/item/' + item.name + '\')' }"
-              ></div>
-            </div>
-
-            <div
-              *ngSwitchDefault
-              class="adventure-board-item"
-              [ngStyle]="{ 'background-image': 'url(\'assets/item/' + item.name + '\')' }"
-            ></div>
-          </gridster-item>
+              @switch (item.type) {
+                @case (LayerElementType.CHARACTER) {
+                  <div
+                    class="adventure-board-item"
+                    [class.selected]="currentTurn?.characterName === item['character'].name"
+                    [ngStyle]="{ 'background-image': 'url(\'assets/character/' + item.name + '-token.jpg\')' }"
+                  >
+                    @if (item["character"].hp === 0) {
+                      <div
+                        class="d-flex justify-content-center align-items-center w-100 h-100"
+                        style="color: red; background-color: rgba(0, 0, 0, 0.5)"
+                      >
+                        <span class="mdi mdi-skull" style="font-size: 200%"></span>
+                      </div>
+                    }
+                  </div>
+                }
+                @case (LayerElementType.MONSTER) {
+                  <div
+                    class="adventure-board-item"
+                    [class.selected]="selectedMonsterId === item.id"
+                    [ngStyle]="{ 'background-image': 'url(\'assets/monster/' + item.name + '-token.jpg\')' }"
+                  ></div>
+                }
+                @case (LayerElementType.TRAP) {
+                  @if (authService.isGM() || item["shown"] === true || item["deactivated"] === true) {
+                    <div
+                      class="adventure-board-item"
+                      [class.trap-visible]="authService.isGM() && item['shown'] === true"
+                      [ngStyle]="{
+                        'background-image':
+                          'url(\'assets/item/' +
+                          item.name +
+                          '-' +
+                          (item['deactivated'] ? 'deactivated' : 'activated') +
+                          '.jpg\')',
+                      }"
+                    ></div>
+                  }
+                }
+                @case (LayerElementType.DOOR) {
+                  <div
+                    class="adventure-board-item"
+                    [ngStyle]="{
+                      'background-image':
+                        'url(\'assets/item/door-' + item.name + '-' + (item['open'] ? 'opened' : 'closed') + '.jpg\')',
+                    }"
+                  ></div>
+                }
+                @case (LayerElementType.CHEST) {
+                  <div
+                    class="adventure-board-item"
+                    [class.chest-with-card]="authService.isGM() && item['specificCard']"
+                    [ngStyle]="{ 'background-image': 'url(\'assets/item/' + item.name + '\')' }"
+                  ></div>
+                }
+                @default {
+                  <div
+                    class="adventure-board-item"
+                    [ngStyle]="{ 'background-image': 'url(\'assets/item/' + item.name + '\')' }"
+                  ></div>
+                }
+              }
+            </gridster-item>
+          }
         </gridster>
       </div>
     </mat-drawer-content>
@@ -207,4 +205,4 @@
     (validateCharacterMove)="validateCharacterMove()"
     (closeMenu)="focusMainDrawer()"
   ></app-context-menu>
-</ng-container>
+}

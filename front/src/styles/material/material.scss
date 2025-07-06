@@ -33,4 +33,8 @@ body.dark-mode {
     filter: url(#brightness);
     filter: brightness(80%);
   }
+
+  span {
+    color: var(--mat-sys-on-surface-variant);
+  }
 }

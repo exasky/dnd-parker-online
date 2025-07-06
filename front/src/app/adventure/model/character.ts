@@ -1,6 +1,6 @@
-import {GM_CHAR_NAME} from "./adventure";
+import { GM_CHAR_NAME } from "./adventure";
 
-export class CharacterTemplate {
+export interface CharacterTemplate {
   id: number;
   name: string;
   displayName: string;
@@ -35,7 +35,7 @@ export class Character {
   }
 }
 
-export class CharacterEquipment {
+export interface CharacterEquipment {
   id: number;
   name: string;
   level: number;
@@ -45,10 +45,10 @@ export class CharacterEquipment {
 }
 
 export enum ItemType {
-  ARTIFACT = 'ARTIFACT',
-  POTION = 'POTION',
-  SPELL = 'SPELL',
-  WEAPON = 'WEAPON',
-  TRAP = 'TRAP',
-  ITEM = 'ITEM'
+  ARTIFACT = "ARTIFACT",
+  POTION = "POTION",
+  SPELL = "SPELL",
+  WEAPON = "WEAPON",
+  TRAP = "TRAP",
+  ITEM = "ITEM",
 }

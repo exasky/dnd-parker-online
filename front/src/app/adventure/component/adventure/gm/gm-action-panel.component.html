@@ -1,9 +1,11 @@
 <mat-accordion class="flex-grow d-flex flex-column" [multi]="true">
-  <div *ngIf="exportable" class="d-flex justify-content-center">
-    <button mat-icon-button (click)="openMobileVersion()">
-      <mat-icon>open_in_new</mat-icon>
-    </button>
-  </div>
+  @if (exportable) {
+    <div class="d-flex justify-content-center">
+      <button mat-icon-button (click)="openMobileVersion()">
+        <mat-icon>open_in_new</mat-icon>
+      </button>
+    </div>
+  }
   <mat-expansion-panel class="flex-shrink-0 d-flex flex-column mb-0">
     <mat-expansion-panel-header>
       <mat-panel-title>{{ "adventure.gm-panel.tools" | translate }}</mat-panel-title>

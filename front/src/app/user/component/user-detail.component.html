@@ -49,8 +49,12 @@
             formControlName="password"
             (input)="onPasswordInput()"
           />
-          <mat-error *ngIf="password.hasError('required')">{{ "user.password-required" | translate }}</mat-error>
-          <mat-error *ngIf="password.hasError('minlength')">{{ "user.password-length" | translate }}</mat-error>
+          @if (password.hasError("required")) {
+            <mat-error>{{ "user.password-required" | translate }}</mat-error>
+          }
+          @if (password.hasError("minlength")) {
+            <mat-error>{{ "user.password-length" | translate }}</mat-error>
+          }
         </mat-form-field>
         <mat-form-field>
           <input
@@ -60,10 +64,12 @@
             formControlName="password2"
             (input)="onPasswordInput()"
           />
-          <mat-error *ngIf="password2.hasError('required')">{{ "user.password-required" | translate }}</mat-error>
-          <mat-error *ngIf="password2.invalid && !password2.hasError('required')">{{
-            "user.password-match" | translate
-          }}</mat-error>
+          @if (password2.hasError("required")) {
+            <mat-error>{{ "user.password-required" | translate }}</mat-error>
+          }
+          @if (password2.invalid && !password2.hasError("required")) {
+            <mat-error>{{ "user.password-match" | translate }}</mat-error>
+          }
         </mat-form-field>
       </form>
     </mat-card-content>

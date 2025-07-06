@@ -1,5 +1,5 @@
-<ng-container *ngIf="adventure">
-  <ng-container *ngIf="authService.isGM()">
+@if (adventure) {
+  @if (authService.isGM()) {
     <mat-tab-group color="accent" class="flex-grow">
       <mat-tab label="GM">
         <app-gm-action-panel
@@ -15,37 +15,44 @@
         <ng-template mat-tab-label>{{ "adventure.gm-panel.characters" | translate }}</ng-template>
         <ng-template matTabContent>
           <mat-tab-group color="accent" class="flex-grow">
-            <mat-tab *ngFor="let character of characters">
-              <ng-template mat-tab-label>
-                <mat-icon *ngIf="currentTurn && currentTurn.characterName === character.name" color="warn" class="mr-1">
-                  radio_button_checked
-                </mat-icon>
-                <span *ngIf="character.hp === 0" class="mdi mdi-skull" style="color: red; font-size: 150%"></span>
-                {{ character.name | capitalize }}
-              </ng-template>
-              <app-character-mobile-displayer
-                [editable]="true"
-                [adventureId]="adventure.id"
-                [character]="character"
-              ></app-character-mobile-displayer>
-            </mat-tab>
+            @for (character of characters; track $index) {
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  @if (currentTurn?.characterName === character.name) {
+                    <mat-icon color="warn" class="mr-1"> radio_button_checked </mat-icon>
+                  }
+                  @if (character.hp === 0) {
+                    <span class="mdi mdi-skull" style="color: red; font-size: 150%"></span>
+                  }
+                  {{ character.name | capitalize }}
+                </ng-template>
+                <app-character-mobile-displayer
+                  [editable]="true"
+                  [adventureId]="adventure.id"
+                  [character]="character"
+                />
+              </mat-tab>
+            }
           </mat-tab-group>
         </ng-template>
       </mat-tab>
     </mat-tab-group>
-  </ng-container>
-  <ng-container *ngIf="!authService.isGM()">
-    <mat-tab-group *ngIf="!authService.isGM()" color="accent" class="flex-grow">
-      <mat-tab *ngFor="let character of characters">
-        <ng-template mat-tab-label>
-          <mat-icon *ngIf="currentTurn && currentTurn.characterName === character.name" color="warn" class="mr-1"
-            >radio_button_checked
-          </mat-icon>
-          <span *ngIf="character.hp === 0" class="mdi mdi-skull" style="color: red; font-size: 150%"></span>
-          {{ character.name | capitalize }}
-        </ng-template>
-        <app-character-mobile-displayer [character]="character"></app-character-mobile-displayer>
-      </mat-tab>
+  } @else {
+    <mat-tab-group color="accent" class="flex-grow">
+      @for (character of characters; track $index) {
+        <mat-tab>
+          <ng-template mat-tab-label>
+            @if (currentTurn?.characterName === character.name) {
+              <mat-icon color="warn" class="mr-1">radio_button_checked </mat-icon>
+            }
+            @if (character.hp === 0) {
+              <span class="mdi mdi-skull" style="color: red; font-size: 150%"></span>
+            }
+            {{ character.name | capitalize }}
+          </ng-template>
+          <app-character-mobile-displayer [character]="character" />
+        </mat-tab>
+      }
     </mat-tab-group>
-  </ng-container>
-</ng-container>
+  }
+}

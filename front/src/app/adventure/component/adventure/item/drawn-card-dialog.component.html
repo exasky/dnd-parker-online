@@ -13,12 +13,7 @@
 <mat-dialog-actions class="d-flex justify-content-around align-items-center">
   @if (authService.isGM()) {
     <button mat-raised-button (click)="this.close(false)">{{ "common.cancel" | translate }}</button>
-    <mat-checkbox
-      [(ngModel)]="isEquipmentSelected"
-      [indeterminate]="isEquipmentSelected === null"
-      style="margin-bottom: -0.5rem; margin-left: 8px"
-      disabled
-    >
+    <mat-checkbox [(ngModel)]="isEquipmentSelected" [indeterminate]="isEquipmentSelected === null" disabled>
       {{ "adventure.dialog.draw-card.add-equipment" | translate }}
     </mat-checkbox>
     <button mat-raised-button (click)="this.close(true)">{{ "common.validate" | translate }}</button>

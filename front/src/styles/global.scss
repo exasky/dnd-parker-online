@@ -17,17 +17,12 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   overflow: hidden;
+  background-image: url("/assets/wallpaper/light.jpg");
 }
 
 app-root {
   background-repeat: no-repeat;
   background-size: cover;
-}
-
-.light-mode {
-  app-root {
-    background-image: url("/assets/wallpaper/light.jpg") !important;
-  }
 }
 
 .overflow {

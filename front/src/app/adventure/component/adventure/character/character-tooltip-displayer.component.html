@@ -2,18 +2,18 @@
 <div class="d-flex" [ngStyle]="{ width: getEquipmentWidth() + 'px' }">
   <div class="flex-grow d-flex justify-content-around align-items-center flex-wrap">
     @for (item of character.equippedItems; track $index) {
-      <img [src]="CardUtils.getCardImage(item)" [width]="cardWidth" [height]="cardHeight" />
+      <img [src]="item | getCardImage" [width]="cardWidth" [height]="cardHeight" />
     } @empty {
       {{ "adventure.character-tooltip.no-equipped-item" | translate }}
     }
   </div>
 </div>
 
-<img [src]="CardUtils.getCharacterWearablesImage(character)" style="object-fit: scale-down" />
+<img [src]="character | getCharacterImage: 'wearables'" style="object-fit: scale-down" />
 
 <div class="d-flex flex-column justify-content-around align-items-center">
   @if (displayCard) {
-    <img [width]="300" [height]="450" [src]="CardUtils.getCharacterCardImage(character)" />
+    <img [width]="300" [height]="450" [src]="character | getCharacterImage: 'card'" />
   } @else {
     <div class="d-flex justify-content-center" style="text-transform: capitalize">
       {{ character.name }}
@@ -24,12 +24,14 @@
     <mat-progress-bar class="hp-bar" mode="determinate" [value]="(character.hp * 100) / character.maxHp" />
     <div class="status-bar-text">{{ "common.hp" | translate }} : {{ character.hp }} / {{ character.maxHp }}</div>
   </div>
-  <div class="status-bar w-100" *ngIf="character.maxMp">
-    <mat-progress-bar class="mp-bar" mode="determinate" [value]="(character.mp * 100) / character.maxMp" />
-    <div class="status-bar-text">{{ "common.mp" | translate }} : {{ character.mp }} / {{ character.maxMp }}</div>
-  </div>
+  @if (character.maxMp) {
+    <div class="status-bar w-100">
+      <mat-progress-bar class="mp-bar" mode="determinate" [value]="(character.mp * 100) / character.maxMp" />
+      <div class="status-bar-text">{{ "common.mp" | translate }} : {{ character.mp }} / {{ character.maxMp }}</div>
+    </div>
+  }
 
-  <img [src]="CardUtils.getCharacterCharacteristicsImage(character)" style="object-fit: scale-down" />
+  <img [src]="character | getCharacterImage: 'characteristics'" style="object-fit: scale-down" />
 </div>
 
 <img [src]="'assets/character/backpack.jpg'" style="object-fit: scale-down" />
@@ -38,7 +40,7 @@
 <div class="d-flex" [ngStyle]="{ width: getEquipmentWidth() + 'px' }">
   <div class="flex-grow d-flex justify-content-around align-items-center flex-wrap">
     @for (item of character.backpackItems; track $index) {
-      <img [src]="CardUtils.getCardImage(item)" [width]="cardWidth" [height]="cardHeight" />
+      <img [src]="item | getCardImage" [width]="cardWidth" [height]="cardHeight" />
     } @empty {
       {{ "adventure.character-tooltip.no-equipped-item" | translate }}
     }
