@@ -1,10 +1,14 @@
 ul {
   list-style-type: none;
   padding-left: 0 !important;
+  margin-top: 0;
 }
 
 li {
   padding-left: 35px;
+  display: flex;
+  align-items: center;
+  margin-top: 1em;
 }
 
 li:before {

@@ -1,42 +1,46 @@
 <div class="d-flex">
   <div class="d-flex flex-column align-items-center justify-content-evenly">
     {{ "adventure.dialog.dice.attacker" | translate }}
-    <div *ngIf="data.fromAttack.type === LayerElementType.CHARACTER" class="position-relative">
-      <img
-        width="200"
-        [src]="CardUtils.getCharacterCharacterImage(data.fromAttack['character'])"
-        [alt]="data.fromAttack['character'].name"
-      />
-      <ng-container *ngIf="data.fromAttackWeapon">
+    @if (data.fromAttack.type === LayerElementType.CHARACTER) {
+      <div class="position-relative">
         <img
-          width="170"
-          class="position-absolute"
-          style="bottom: 0; right: 0"
-          [src]="CardUtils.getCardImage(data.fromAttackWeapon)"
-          [alt]="data.fromAttackWeapon.name"
+          width="200"
+          [src]="data.fromAttack['character'] | getCharacterImage: 'character'"
+          [alt]="data.fromAttack['character'].name"
         />
-      </ng-container>
-    </div>
-    <ng-container *ngIf="data.fromAttack.type === LayerElementType.MONSTER">
+        @if (data.fromAttackWeapon) {
+          <img
+            width="170"
+            class="position-absolute"
+            style="bottom: 0; right: 0"
+            [src]="data.fromAttackWeapon | getCardImage"
+            [alt]="data.fromAttackWeapon.name"
+          />
+        }
+      </div>
+    }
+    @if (data.fromAttack.type === LayerElementType.MONSTER) {
       <img
         width="200"
-        [src]="CardUtils.getMonsterDescriptionImage(data.fromAttack['monster'])"
+        [src]="data.fromAttack['monster'] | getMonsterImage: true"
         [alt]="data.fromAttack['monster'].element.name"
       />
-    </ng-container>
+    }
   </div>
   <div class="d-flex flex-column">
     <div class="d-flex justify-content-evenly flex-wrap mat-elevation-z3 p-2" style="border-radius: 4px">
-      <div *ngFor="let dice of allDices" class="m-1">
-        <img
-          height="70px"
-          width="70px"
-          style="border-radius: 5px"
-          [src]="'assets/dice/' + dice.name + '/1.jpeg'"
-          [alt]="dice.name"
-          (click)="addToDiceList(dice)"
-        />
-      </div>
+      @for (dice of allDices; track $index) {
+        <div class="m-1">
+          <img
+            height="70px"
+            width="70px"
+            style="border-radius: 5px"
+            [src]="'assets/dice/' + dice.name + '/1.jpeg'"
+            [alt]="dice.name"
+            (click)="addToDiceList(dice)"
+          />
+        </div>
+      }
     </div>
     <mat-dialog-content>
       <div class="d-flex flex-wrap justify-content-evenly">
@@ -54,14 +58,14 @@
       @case (LayerElementType.CHARACTER) {
         <img
           width="200"
-          [src]="CardUtils.getCharacterCharacterImage(data.toAttack['character'])"
+          [src]="data.toAttack['character'] | getCharacterImage: 'character'"
           [alt]="data.toAttack['character'].name"
         />
       }
       @case (LayerElementType.MONSTER) {
         <img
           width="200"
-          [src]="CardUtils.getMonsterDescriptionImage(data.toAttack['monster'])"
+          [src]="data.toAttack['monster'] | getMonsterImage: true"
           [alt]="data.toAttack['monster'].element.name"
         />
       }
@@ -72,18 +76,17 @@
   <div class="position-absolute" style="left: 0">
     {{ "adventure.dialog.dice.turn" | translate: { char: data.user.username } }}
   </div>
-  <button *ngIf="!rollDisabled" mat-raised-button (click)="rollDices()" [disabled]="selectedDices.length === 0">
-    {{ "adventure.dialog.dice.roll" | translate }}
-  </button>
-  <button
-    mat-raised-button
-    color="accent"
-    *ngIf="authService.isGM"
-    class="position-absolute"
-    style="right: 0"
-    (click)="this.close()"
-  >
-    {{ "common.close" | translate }}
-  </button>
-  <div *ngIf="rollDisabled">{{ "adventure.dialog.dice.no-turn" | translate }}</div>
+  @if (!rollDisabled) {
+    <button mat-raised-button (click)="rollDices()" [disabled]="selectedDices.length === 0">
+      {{ "adventure.dialog.dice.roll" | translate }}
+    </button>
+  }
+  @if (authService.isGM()) {
+    <button mat-raised-button color="accent" class="position-absolute" style="right: 0" (click)="this.close()">
+      {{ "common.close" | translate }}
+    </button>
+  }
+  @if (rollDisabled) {
+    <div>{{ "adventure.dialog.dice.no-turn" | translate }}</div>
+  }
 </mat-dialog-actions>

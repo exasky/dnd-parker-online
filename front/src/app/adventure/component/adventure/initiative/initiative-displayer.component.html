@@ -1,6 +1,9 @@
-<div *ngFor="let init of sortedInitiatives"
-     class="d-flex flex-column m-2 align-items-center"
-     [class.selected]="currentInitiative && init.characterName === currentInitiative.characterName">
-  <p>N°{{init.number}}</p>
-  <img [src]="getCharacterCharacterImage(init.characterName)" alt="character-character"/>
-</div>
+@for (init of sortedInitiatives(); track $index) {
+  <div
+    class="d-flex flex-column m-2 align-items-center"
+    [class.selected]="init.characterName === currentInitiative?.characterName"
+  >
+    <p>N°{{ init.number + 1 }}</p>
+    <img [src]="init.characterName | getCharacterImage: 'character'" alt="character-character" />
+  </div>
+}

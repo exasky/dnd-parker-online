@@ -1,24 +1,13 @@
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { inject } from "@angular/core";
+import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from "@angular/router";
 import { AuthService } from "../auth.service";
 
-@Injectable({ providedIn: "root" })
-export class ProfileGuard implements CanActivate {
-  constructor(
-    private router: Router,
-    private authService: AuthService,
-  ) {}
-
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot,
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    const rolesToCheck = route.data["roles"] as string[];
-    if (rolesToCheck.indexOf(this.authService.currentUserValue.role) !== -1) {
-      return true;
-    } else {
-      return this.router.navigate(["/"], { queryParams: { message: "unauthorized" } });
-    }
-  }
-}
+export const profileGuard: CanActivateFn = (route: ActivatedRouteSnapshot, _: RouterStateSnapshot) => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+  const rolesToCheck = route.data["roles"] as string[];
+  return (
+    rolesToCheck.indexOf(auth.currentUserValue().role) !== -1 ||
+    router.navigate(["/"], { queryParams: { message: "unauthorized" } })
+  );
+};

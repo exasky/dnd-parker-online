@@ -1,17 +1,30 @@
-<h1 mat-dialog-title>{{'adventure.dialog.next-turn.header' | translate}}</h1>
+<h1 mat-dialog-title>{{ "adventure.dialog.next-turn.header" | translate }}</h1>
 <div mat-dialog-content style="width: 300px" class="align-items-center d-flex flex-column justify-content-center m-5">
-  <ng-container *ngIf="authService.isGM">
-    <p [innerHTML]="'adventure.dialog.next-turn.valid-end-turn' | translate:{char: data.currentTurn.characterName | capitalize}"></p>
-  </ng-container>
-  <ng-container *ngIf="!authService.isGM">
-    <p [innerHTML]="'adventure.dialog.next-turn.wait-end-turn' | translate:{char: data.currentTurn.characterName | capitalize}"></p>
+  @if (authService.isGM()) {
+    <p
+      [innerHTML]="
+        'adventure.dialog.next-turn.valid-end-turn' | translate: { char: data.currentTurn.characterName | capitalize }
+      "
+    ></p>
+  } @else {
+    <p
+      [innerHTML]="
+        'adventure.dialog.next-turn.wait-end-turn' | translate: { char: data.currentTurn.characterName | capitalize }
+      "
+    ></p>
     <div class="d-flex justify-content-center align-items-center" style="min-height: 80px">
       <div class="loader"></div>
     </div>
-  </ng-container>
+  }
 </div>
 
-<mat-dialog-actions *ngIf="authService.isGM" class="d-flex justify-content-evenly">
-  <button mat-button (click)="this.close(false)" [disabled]="waitForValidation">{{'common.cancel' | translate}}</button>
-  <button mat-button (click)="this.close(true)" cdkfocusinitial="" [disabled]="waitForValidation">{{'common.validate' | translate}}</button>
-</mat-dialog-actions>
+@if (authService.isGM()) {
+  <mat-dialog-actions class="d-flex justify-content-evenly">
+    <button mat-button (click)="this.close(false)" [disabled]="waitForValidation">
+      {{ "common.cancel" | translate }}
+    </button>
+    <button mat-button (click)="this.close(true)" cdkfocusinitial="" [disabled]="waitForValidation">
+      {{ "common.validate" | translate }}
+    </button>
+  </mat-dialog-actions>
+}

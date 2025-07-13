@@ -1,11 +1,11 @@
-export class AlertMessage {
+export interface AlertMessage {
   characterId?: number;
   message: string;
-  type: AlertMessageType
+  type: AlertMessageType;
 }
 
 export enum AlertMessageType {
-  SUCCESS = 'SUCCESS',
-  WARN = 'WARN',
-  ERROR = 'ERROR'
+  SUCCESS = "SUCCESS",
+  WARN = "WARN",
+  ERROR = "ERROR",
 }

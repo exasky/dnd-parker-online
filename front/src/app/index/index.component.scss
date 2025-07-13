@@ -1,0 +1,38 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+
+  max-width: 850px;
+  min-width: 300px;
+  width: 75vw;
+
+  margin: 1em auto;
+}
+
+.welcome-card {
+  width: 100%;
+  padding-bottom: 16px;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-evenly;
+  gap: 1em;
+
+  mat-card {
+    mat-card-content {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+.create-campaign {
+  width: 100%;
+  button {
+    width: 100%;
+  }
+}

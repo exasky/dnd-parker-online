@@ -1,16 +1,16 @@
-import { Component, EventEmitter, HostBinding, Input, Output } from "@angular/core";
-import { Character, CharacterEquipment, CharacterTemplate } from "../../../model/character";
-import { MatSelectChange, MatSelectModule } from "@angular/material/select";
-import { CardUtils } from "../../../../common/utils/card-utils";
-import { TranslateModule } from "@ngx-translate/core";
-import { MatIconModule } from "@angular/material/icon";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { FormsModule } from "@angular/forms";
-import { CommonModule } from "@angular/common";
-import { MatInputModule } from "@angular/material/input";
-import { MatButtonModule } from "@angular/material/button";
 import { DragDropModule } from "@angular/cdk/drag-drop";
+import { CommonModule } from "@angular/common";
+import { Component, EventEmitter, HostBinding, Input, Output } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectChange, MatSelectModule } from "@angular/material/select";
+import { TranslateModule } from "@ngx-translate/core";
 import { DragOverDirective } from "../../../../common/directive/drag-over.directive";
+import { GetCardImagePipe, GetCharacterImagePipe } from "../../../../common/utils/card-utils";
+import { Character, CharacterEquipment, CharacterTemplate } from "../../../model/character";
 
 @Component({
   selector: "app-character-creator",
@@ -26,12 +26,12 @@ import { DragOverDirective } from "../../../../common/directive/drag-over.direct
     MatButtonModule,
     DragDropModule,
     DragOverDirective,
+    GetCardImagePipe,
+    GetCharacterImagePipe,
   ],
 })
 export class CharacterCreatorComponent {
   @HostBinding("class") cssClasses = "d-flex";
-
-  CardUtils = CardUtils;
 
   @Input()
   character: Character;

@@ -2,28 +2,34 @@
   <input matInput placeholder="{{ 'common.search' | translate }}" (input)="filterChanged($event.target['value'])" />
 </mat-form-field>
 
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="overflow d-flex" style="background-color: unset">
+<mat-tree
+  #tree
+  [dataSource]="datasource()"
+  [childrenAccessor]="childrenAccessor"
+  class="overflow d-flex"
+  style="background-color: unset"
+>
   <mat-tree-node
     *matTreeNodeDef="let node"
     matTreeNodePadding
     draggable="true"
-    (dragstart)="dragStartHandler($event, node.item)"
+    (dragstart)="dragStartHandler($event, node)"
   >
-    @switch (node.item.type) {
+    @switch (node.type) {
       @case (layerElementType.CHARACTER) {
-        <img class="icon" [src]="'assets/character/' + node.item.name + '-token.jpg'" />
+        <img class="icon" [src]="'assets/character/' + node.name + '-token.jpg'" />
       }
       @case (layerElementType.MONSTER) {
-        <img class="icon" [src]="'assets/monster/' + node.item.name + '-token.jpg'" />
+        <img class="icon" [src]="'assets/monster/' + node.name + '-token.jpg'" />
       }
       @case (layerElementType.TRAP) {
-        <img class="icon" [src]="'assets/item/' + node.item.name + '-activated.jpg'" />
+        <img class="icon" [src]="'assets/item/' + node.name + '-activated.jpg'" />
       }
       @case (layerElementType.DOOR) {
-        <img class="icon" [src]="'assets/item/door-' + node.item.name + '-closed.jpg'" />
+        <img class="icon" [src]="'assets/item/door-' + node.name + '-closed.jpg'" />
       }
       @default {
-        <img class="icon" [src]="'assets/item/' + node.item.name" />
+        <img class="icon" [src]="'assets/item/' + node.name" />
       }
     }
 
@@ -32,7 +38,7 @@
 
   <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
     <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-      <mat-icon>{{ treeControl.isExpanded(node) ? "expand_more" : "chevron_right" }}</mat-icon>
+      <mat-icon>{{ tree.isExpanded(node) ? "expand_more" : "chevron_right" }}</mat-icon>
     </button>
     {{ "adventure.item-displayer." + node.name | translate }}
   </mat-tree-node>

@@ -5,7 +5,6 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxChange, MatCheckboxModule } from "@angular/material/checkbox";
 import { MatDialog } from "@angular/material/dialog";
-import { MatDividerModule } from "@angular/material/divider";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
@@ -14,18 +13,18 @@ import { MatSelectModule } from "@angular/material/select";
 import { TranslateModule } from "@ngx-translate/core";
 import { SimpleCampaign } from "../../adventure/model/campaign";
 import { CampaignService } from "../../adventure/service/campaign.service";
-import { GmService } from "../../adventure/service/gm.service";
 import { ConfirmDialogComponent } from "../../common/dialog/confirm-dialog.component";
 import { ToasterService } from "../../common/service/toaster.service";
 import { UserEdit } from "../model/user-edit";
 import { UserService } from "../service/user.service";
+import { map, tap } from "rxjs";
 
 @Component({
   selector: "app-user-list",
   templateUrl: "./user-list.component.html",
+  styleUrls: ["./user-list.component.scss"],
   imports: [
     MatIconModule,
-    MatDividerModule,
     TranslateModule,
     MatCardModule,
     MatFormFieldModule,
@@ -51,7 +50,6 @@ export class UserListComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private gmService: GmService,
     private campaignService: CampaignService,
     private toaster: ToasterService,
     private dialog: MatDialog,
@@ -60,15 +58,17 @@ export class UserListComponent implements OnInit {
   ngOnInit(): void {
     this.userService
       .getAll()
-      .subscribe(
-        (users) => (this.users = users.sort((a, b) => (a.username.toLowerCase() < b.username.toLowerCase() ? -1 : 1))),
-      );
-    this.campaignService.getAllCampaigns().subscribe((campaigns) => {
-      this.campaigns = campaigns;
-      this.campaigns.forEach((campaign) =>
-        campaign.characters.sort((a, b) => (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1)),
-      );
-    });
+      .pipe(map((u) => u.sort((a, b) => (a.username.toLowerCase() < b.username.toLowerCase() ? -1 : 1))))
+      .subscribe((users) => (this.users = users));
+
+    this.campaignService
+      .getAllCampaigns()
+      .pipe(
+        tap((c) =>
+          c.forEach((c) => c.characters.sort((a, b) => (a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1))),
+        ),
+      )
+      .subscribe((campaigns) => (this.campaigns = campaigns));
   }
 
   selectUser(user: UserEdit) {
@@ -77,15 +77,13 @@ export class UserListComponent implements OnInit {
     this.isEdit = false;
   }
 
-  isCharacterSelected(character: { id: number; name: string }) {
+  isCharacterSelected(character: { id: number }) {
     return this.userEdit.characters.some((userChar) => userChar.id === character.id);
   }
 
   createUser() {
-    const newUser = new UserEdit();
-    newUser.characters = [];
-    this.selectUser(newUser);
-    this.isEdit = true;
+    this.selectUser(new UserEdit());
+    this.editUser();
   }
 
   editUser() {
@@ -93,7 +91,8 @@ export class UserListComponent implements OnInit {
   }
 
   cancel() {
-    this.selectUser(this.selectedUser!);
+    if (!this.selectedUser.id) this.selectUser(null);
+    else this.selectUser(this.selectedUser!);
   }
 
   deleteUser() {
@@ -108,7 +107,8 @@ export class UserListComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.userService.delete(this.selectedUser!.id!).subscribe(() => {
-          this.ngOnInit();
+          const userIdx = this.users.findIndex((u) => u.id == this.selectedUser!.id);
+          this.users.splice(userIdx, 1);
           this.toaster.success("User " + this.selectedUser!.username + " deleted !");
           this.selectedUser = null;
         });
@@ -121,13 +121,14 @@ export class UserListComponent implements OnInit {
     if (this.selectedUser.id !== undefined) {
       this.userService.update(this.selectedUser).subscribe((savedUser) => {
         this.selectUser(savedUser);
-        this.ngOnInit();
+        const userIdx = this.users.findIndex((u) => u.id == savedUser!.id);
+        this.users[userIdx] = savedUser;
         this.toaster.success("User " + savedUser.username + " updated !");
       });
     } else {
       this.userService.create(this.selectedUser).subscribe((createdUser) => {
         this.selectUser(createdUser);
-        this.ngOnInit();
+        this.users.push(createdUser);
         this.toaster.success("User " + createdUser.username + " created !");
       });
     }

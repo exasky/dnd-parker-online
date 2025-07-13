@@ -1,22 +1,28 @@
-<h1 mat-dialog-title>{{'adventure.dialog.trade.header' | translate}}</h1>
+<h1 mat-dialog-title>{{ "adventure.dialog.trade.header" | translate }}</h1>
 
-<div class="flex-grow d-flex">
-  <app-trade-character-item-displayer class="flex-3"
-                                      [character]="data.trade.from"
-                                      [tradeEnabled]="isClickAuthorized(true)"
-                                      [itemSelected]="selectedFrom.characterEquipment"
-                                      (equipmentSelected)="selectEquipment($event, true)"></app-trade-character-item-displayer>
+<div class="flex-grow d-flex mx-5">
+  <app-trade-character-item-displayer
+    class="flex-3"
+    [character]="data.trade.from"
+    [tradeEnabled]="isClickAuthorized(true)"
+    [itemSelected]="selectedFrom.characterEquipment"
+    (equipmentSelected)="selectEquipment($event, true)"
+  ></app-trade-character-item-displayer>
 
   <mat-icon style="font-size: 500%; width: unset; height: unset; margin: auto">swap_horiz</mat-icon>
 
-  <app-trade-character-item-displayer class="flex-3"
-                                      [tradeEnabled]="isClickAuthorized(false)"
-                                      [character]="data.trade.to"
-                                      [itemSelected]="selectedTo.characterEquipment"
-                                      (equipmentSelected)="selectEquipment($event, false)"></app-trade-character-item-displayer>
+  <app-trade-character-item-displayer
+    class="flex-3"
+    [tradeEnabled]="isClickAuthorized(false)"
+    [character]="data.trade.to"
+    [itemSelected]="selectedTo.characterEquipment"
+    (equipmentSelected)="selectEquipment($event, false)"
+  ></app-trade-character-item-displayer>
 </div>
 
-<mat-dialog-actions *ngIf="authService.isGM">
-  <button mat-raised-button (click)="cancelTrade()">{{'common.cancel' | translate}}</button>
-  <button mat-raised-button (click)="validateTrade()">{{'adventure.dialog.trade.validate' | translate}}</button>
-</mat-dialog-actions>
+@if (authService.isGM()) {
+  <mat-dialog-actions>
+    <button mat-raised-button (click)="cancelTrade()">{{ "common.cancel" | translate }}</button>
+    <button mat-raised-button (click)="validateTrade()">{{ "adventure.dialog.trade.validate" | translate }}</button>
+  </mat-dialog-actions>
+}

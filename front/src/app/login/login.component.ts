@@ -1,15 +1,26 @@
+import { CommonModule } from "@angular/common";
 import { Component, HostBinding, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AuthService } from "./auth.service";
-import { ToasterService } from "../common/service/toaster.service";
 import { TranslateModule } from "@ngx-translate/core";
-import { CommonModule } from "@angular/common";
+import { AuthService } from "./auth.service";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
-  imports: [TranslateModule, FormsModule, ReactiveFormsModule, CommonModule],
+  styleUrl: "./login.component.scss",
+  imports: [
+    TranslateModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
 })
 export class LoginComponent implements OnInit {
   @HostBinding("style.flex-grow") flexGrow = "1";
@@ -25,10 +36,9 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
-    private toasterService: ToasterService,
   ) {
     // redirect to home if already logged in
-    if (this.authService.currentUserValue) {
+    if (this.authService.currentUserValue()) {
       this.router.navigate(["/"]);
     }
   }
@@ -45,7 +55,7 @@ export class LoginComponent implements OnInit {
 
   // convenience getter for easy access to form fields
   get f() {
-    return this.loginForm.controls as any; // TODO: fix type
+    return this.loginForm.controls;
   }
 
   onSubmit() {
@@ -57,12 +67,12 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authService.login(this.f.username.value, this.f.password.value).subscribe(
-      () => this.router.navigate([this.returnUrl]),
-      () => {
+    this.authService.login(this.loginForm.get("username").value, this.loginForm.get("password").value).subscribe({
+      next: () => this.router.navigate([this.returnUrl]),
+      error: () => {
         this.loading = false;
         this.loginForm.reset({});
       },
-    );
+    });
   }
 }

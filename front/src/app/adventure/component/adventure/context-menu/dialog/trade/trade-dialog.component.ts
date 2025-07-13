@@ -14,15 +14,22 @@ import { TranslateModule } from "@ngx-translate/core";
 import { TradeCharacterItemDisplayerComponent } from "./trade-character-item-displayer.component";
 import { MatIcon, MatIconModule } from "@angular/material/icon";
 import { CommonModule } from "@angular/common";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: "app-trade-dialog",
   templateUrl: "./trade-dialog.component.html",
-  imports: [TranslateModule, MatDialogModule, TradeCharacterItemDisplayerComponent, MatIconModule, CommonModule],
+  imports: [
+    TranslateModule,
+    MatDialogModule,
+    TradeCharacterItemDisplayerComponent,
+    MatIconModule,
+    CommonModule,
+    MatButtonModule,
+  ],
 })
 export class TradeDialogComponent implements OnInit, OnDestroy {
   @HostBinding("style.height") height = "75vh";
-  @HostBinding("style.width") width = "75vw";
   @HostBinding("class") cssClass = "d-flex flex-column";
 
   private advSub: Subscription;
@@ -83,9 +90,9 @@ export class TradeDialogComponent implements OnInit, OnDestroy {
   }
 
   isClickAuthorized(isFrom: boolean): boolean {
-    return this.authService.currentUserValue.characters.some(
-      (userChar) => userChar.id === (isFrom ? this.data.trade.from.id : this.data.trade.to.id),
-    );
+    return this.authService
+      .currentUserValue()
+      .characters.some((userChar) => userChar.id === (isFrom ? this.data.trade.from.id : this.data.trade.to.id));
   }
 
   validateTrade() {

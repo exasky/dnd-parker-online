@@ -70,9 +70,9 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
 
       this.characters = this.adventure.campaignCharacters;
 
-      this.authService.currentUserValue.characters = this.characters;
+      this.authService.currentUserValue().characters = this.characters;
 
-      this.initMonsters();
+      this.adventure.monsters.forEach((advMonster) => this.monsters.push(advMonster));
     });
 
     this.adventureWSObs = this.adventureWS.getObservable(adventureId).subscribe((receivedMsg: SocketResponse) => {
@@ -157,10 +157,6 @@ export class AdventureMobileComponent implements OnInit, OnDestroy {
   selectMonster(layerItemId: number) {
     this.selectedMonsterId = layerItemId;
     this.adventureService.selectMonster(this.adventure.id, layerItemId);
-  }
-
-  private initMonsters() {
-    this.adventure.monsters.forEach((advMonster) => this.monsters.push(advMonster));
   }
 
   private removeMonster(monster: MonsterItem) {

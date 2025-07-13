@@ -23,6 +23,7 @@ import { MatButtonModule } from "@angular/material/button";
 @Component({
   selector: "app-user-detail",
   templateUrl: "./user-detail.component.html",
+  styleUrls: ["./user-detail.component.scss"],
   imports: [
     MatCardModule,
     FormsModule,
@@ -36,7 +37,6 @@ import { MatButtonModule } from "@angular/material/button";
   ],
 })
 export class UserDetailComponent implements OnInit {
-  @HostBinding("class") cssClasses = "flex-grow d-flex flex-column justify-content-center align-items-center";
   currentUser: UserEdit;
 
   passFormGroup: FormGroup;
@@ -48,7 +48,7 @@ export class UserDetailComponent implements OnInit {
     private formBuilder: FormBuilder,
   ) {
     this.userService
-      .getById(this.authService.currentUserValue.id)
+      .getById(this.authService.currentUserValue().id)
       .subscribe((userEdit) => (this.currentUser = userEdit));
   }
 

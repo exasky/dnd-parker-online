@@ -1,3 +1,4 @@
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -10,6 +11,13 @@ import {
   Type,
   ViewChild,
 } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatInputModule } from "@angular/material/input";
+import { MatDrawer, MatSidenavModule } from "@angular/material/sidenav";
+import { ActivatedRoute, Router } from "@angular/router";
+import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateModule } from "@ngx-translate/core";
 import {
   CompactType,
   DisplayGrid,
@@ -20,6 +28,16 @@ import {
   GridsterModule,
   GridType,
 } from "angular-gridster2";
+import { Subscription } from "rxjs";
+import { DialogUtils } from "../../../common/dialog/dialog.utils";
+import { SocketResponse } from "../../../common/model";
+import { SocketResponseType } from "../../../common/model/websocket.response";
+import { ToasterService } from "../../../common/service/toaster.service";
+import { AdventureWebsocketService } from "../../../common/service/ws/adventure.websocket.service";
+import { DiceWebsocketService } from "../../../common/service/ws/dice.websocket.service";
+import { DrawnCardWebsocketService } from "../../../common/service/ws/drawn-card.websocket.service";
+import { GetMonsterImagePipe } from "../../../common/utils/card-utils";
+import { AuthService } from "../../../login/auth.service";
 import {
   Adventure,
   Board,
@@ -32,55 +50,36 @@ import {
   MonsterLayerItem,
   TrapLayerItem,
 } from "../../model/adventure";
-import { AdventureService } from "../../service/adventure.service";
-import { GmService } from "../../service/gm.service";
-import { ActivatedRoute, Router } from "@angular/router";
-import { AuthService } from "../../../login/auth.service";
-import { ROLE_GM } from "../../../user/user";
-import { SocketResponse } from "../../../common/model";
-import { Subscription } from "rxjs";
-import { DrawnCardWebsocketService } from "../../../common/service/ws/drawn-card.websocket.service";
-import { DrawnCardDialogComponent } from "./item/drawn-card-dialog.component";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { AdventureMessage, AdventureMessageType, MouseMove } from "../../model/adventure-message";
-import { SocketResponseType } from "../../../common/model/websocket.response";
-import { ToasterService } from "../../../common/service/toaster.service";
-import { DialogUtils } from "../../../common/dialog/dialog.utils";
-import { DiceMessage, DiceMessageType } from "../../model/dice-message";
-import { DiceAttackDialogComponent, DiceDialogComponent } from "./dice/dice-dialog.component";
-import { DiceWebsocketService } from "../../../common/service/ws/dice.websocket.service";
-import { MatDrawer, MatSidenavModule } from "@angular/material/sidenav";
-import { AdventureWebsocketService } from "../../../common/service/ws/adventure.websocket.service";
-import { MonsterTemplate } from "../../model/monster";
 import { AlertMessage, AlertMessageType } from "../../model/alert-message";
+import { CardMessage, CardMessageType } from "../../model/card-message";
+import { Character } from "../../model/character";
+import { DiceMessage, DiceMessageType } from "../../model/dice-message";
+import { CharacterItem } from "../../model/item";
 import {
   CharacterLayerGridsterItem,
   LayerGridsterItem,
   MonsterLayerGridsterItem,
 } from "../../model/layer-gridster-item";
-import { AmbientAudioService, AudioService } from "../../service/audio.service";
+import { MonsterTemplate } from "../../model/monster";
 import { AdventureCardService } from "../../service/adventure-card.service";
-import { CardMessage, CardMessageType } from "../../model/card-message";
-import { AdventureUtils } from "./utils/utils";
-import { InitiativeDialogComponent } from "./initiative/initiative-dialog.component";
-import { NextTurnDialogComponent } from "./action/next-turn-dialog.component";
-import { Character } from "../../model/character";
-import { TradeDialogComponent } from "./context-menu/dialog/trade/trade-dialog.component";
-import { SwitchEquipmentDialogComponent } from "./context-menu/dialog/switch-equipment-dialog.component";
-import { CardUtils } from "../../../common/utils/card-utils";
-import { CharacterItem } from "../../model/item";
-import { AdventureItemDisplayerComponent } from "./item/adventure-item-displayer.component";
-import { TranslateModule } from "@ngx-translate/core";
-import { LogPanelComponent } from "./log/log-panel.component";
-import { GmActionPanelComponent } from "./gm/gm-action-panel.component";
-import { CommonModule } from "@angular/common";
-import { PlayersCursorComponent } from "./cursor/players-cursor.component";
-import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
-import { CharacterTooltipDisplayerComponent } from "./character/character-tooltip-displayer.component";
+import { AdventureService } from "../../service/adventure.service";
+import { AmbientAudioService, AudioService } from "../../service/audio.service";
+import { GmService } from "../../service/gm.service";
 import { ActionPanelComponent } from "./action/action-panel.component";
+import { NextTurnDialogComponent } from "./action/next-turn-dialog.component";
+import { CharacterTooltipDisplayerComponent } from "./character/character-tooltip-displayer.component";
 import { ContextMenuComponent } from "./context-menu/context-menu.component";
-import { MatInputModule } from "@angular/material/input";
-import { MatButtonModule } from "@angular/material/button";
+import { SwitchEquipmentDialogComponent } from "./context-menu/dialog/switch-equipment-dialog.component";
+import { TradeDialogComponent } from "./context-menu/dialog/trade/trade-dialog.component";
+import { PlayersCursorComponent } from "./cursor/players-cursor.component";
+import { DiceAttackDialogComponent, DiceDialogComponent } from "./dice/dice-dialog.component";
+import { GmActionPanelComponent } from "./gm/gm-action-panel.component";
+import { InitiativeDialogComponent } from "./initiative/initiative-dialog.component";
+import { AdventureItemDisplayerComponent } from "./item/adventure-item-displayer.component";
+import { DrawnCardDialogComponent } from "./item/drawn-card-dialog.component";
+import { LogPanelComponent } from "./log/log-panel.component";
+import { AdventureUtils } from "./utils/utils";
 
 @Component({
   selector: "app-adventure",
@@ -102,6 +101,7 @@ import { MatButtonModule } from "@angular/material/button";
     ContextMenuComponent,
     MatInputModule,
     MatButtonModule,
+    GetMonsterImagePipe,
   ],
 })
 export class AdventureComponent implements OnInit, OnDestroy {
@@ -122,8 +122,6 @@ export class AdventureComponent implements OnInit, OnDestroy {
   @ViewChild("mainDrawerContainer", { read: ElementRef }) mainDrawerContainer: ElementRef;
 
   @ViewChild("gridster", { read: GridsterComponent }) gridster: GridsterComponent;
-
-  getMonsterDescriptionImage = CardUtils.getMonsterDescriptionImage;
 
   private lastMouseMoveSend: number;
   // private mouseMoveDelay = 132; // 7fps
@@ -182,14 +180,14 @@ export class AdventureComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (this.authService.isGM) {
+    if (this.authService.isGM()) {
       this.gmService.getAddableElements().subscribe((elements) => (this.addableLayerElements = elements));
       this.gmService.getMonsterTemplates().subscribe((monsters) => (this.monsterTemplates = monsters));
     }
     const adventureId = this.route.snapshot.paramMap.get("id")!;
     this.adventureService.getAdventure(adventureId).subscribe((adventure) => {
       this.adventure = adventure;
-      const currentUser = this.authService.currentUserValue;
+      const currentUser = this.authService.currentUserValue();
       currentUser.characters = this.adventure.campaignCharacters.filter(
         (character) => character.userId === currentUser.id,
       );
@@ -230,6 +228,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             } else {
               this.adventure = message.message;
               this.adventure.characters.forEach((layerItem) => this.updateItem(layerItem));
+              this.cdr.detectChanges();
             }
             break;
           case AdventureMessageType.UPDATE_CHARACTER:
@@ -244,6 +243,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
               if (this.isSameItemAsSelected(characterItem!)) {
                 this.selectedItem = null;
               }
+              this.cdr.detectChanges();
             }
             break;
           case AdventureMessageType.UPDATE_MONSTER:
@@ -251,6 +251,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             const monsterToUpdate = this.findInDashboard(monster) as MonsterLayerGridsterItem;
             if (monsterToUpdate) {
               monsterToUpdate.hp = monster.hp;
+              this.cdr.detectChanges();
             }
             break;
           case AdventureMessageType.ROLL_INITIATIVE:
@@ -289,7 +290,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
             const alert: AlertMessage = message.message;
             if (
               !alert.characterId ||
-              this.authService.currentUserValue.characters.some((char) => char.id === alert.characterId)
+              this.authService.currentUserValue().characters.some((char) => char.id === alert.characterId)
             ) {
               switch (alert.type) {
                 case AlertMessageType.SUCCESS:
@@ -347,13 +348,13 @@ export class AdventureComponent implements OnInit, OnDestroy {
             const trade = message.message;
             const from = this.characters.find((char) => char.character.id === trade.from)!.character;
             const to = this.characters.find((char) => char.character.id === trade.to)!.character;
-            this.currentDialog = this.dialog.open(
-              TradeDialogComponent,
-              DialogUtils.getDefaultConfig({
+            this.currentDialog = this.dialog.open(TradeDialogComponent, {
+              ...DialogUtils.getDefaultConfig({
                 adventureId: this.adventure.id,
                 trade: { from, to },
               }),
-            );
+              width: "85vw",
+            });
             break;
           case AdventureMessageType.ASK_SWITCH:
             const character = this.characters.find((char) => char.character.id === message.message)!.character;
@@ -537,7 +538,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   toggleGmPanel() {
-    if (this.authService.isGM) {
+    if (this.authService.isGM()) {
       if (!this.isLogPanel && this.leftPanelDrawer.opened) {
         this.leftPanelDrawer.close();
       } else if (!this.leftPanelDrawer.opened) {
@@ -550,7 +551,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
   stopItemDrag(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
     this.focusMainDrawer();
 
-    if (!this.authService.isGM && this.currentTurn) return;
+    if (!this.authService.isGM() && this.currentTurn) return;
 
     if (item.x === itemComponent.$item.x && item.y === itemComponent.$item.y) {
       // Case click
@@ -608,8 +609,8 @@ export class AdventureComponent implements OnInit, OnDestroy {
     mouseMove.y = e.pageY;
     mouseMove.offsetX = this.boardPanel.nativeElement.getBoundingClientRect().left;
     mouseMove.offsetY = this.boardPanel.nativeElement.getBoundingClientRect().top;
-    mouseMove.userId = this.authService.currentUserValue.id;
-    mouseMove.username = this.authService.currentUserValue.username;
+    mouseMove.userId = this.authService.currentUserValue().id;
+    mouseMove.username = this.authService.currentUserValue().username;
     this.adventureService.playerMouseMove(this.adventure.id, mouseMove).subscribe(() => {
       this.isMoveSending = false;
     });
@@ -619,16 +620,18 @@ export class AdventureComponent implements OnInit, OnDestroy {
     const mouseMove = new MouseMove();
     mouseMove.x = -1;
     mouseMove.y = -1;
-    mouseMove.userId = this.authService.currentUserValue.id;
+    mouseMove.userId = this.authService.currentUserValue().id;
     this.adventureService.playerMouseMove(this.adventure.id, mouseMove).subscribe(() => {
       this.isMoveSending = false;
     });
   }
 
   onKeyboard(e: KeyboardEvent) {
+    if (!this.selectedItem) return;
+
     if (e.code === "Escape") {
       this.selectedItem = null;
-    } else if (this.selectedItem && ["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].indexOf(e.code) !== -1) {
+    } else if (["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].indexOf(e.code) !== -1) {
       e.preventDefault();
       e.stopPropagation();
 
@@ -713,7 +716,7 @@ export class AdventureComponent implements OnInit, OnDestroy {
     }
   }
 
-  itemChange(item: LayerGridsterItem, itemComponent: GridsterItemComponentInterface) {
+  itemChange(item: LayerGridsterItem, _: GridsterItemComponentInterface) {
     if (this.dashboard.indexOf(item) !== -1) {
       this.adventureService.updateLayerItem(this.adventure.id, AdventureUtils.existingGridsterItemToLayerItem(item));
     }
@@ -785,40 +788,35 @@ export class AdventureComponent implements OnInit, OnDestroy {
   }
 
   private isDragEnabledForItem(item: LayerItem): boolean {
-    const user = this.authService.currentUserValue;
+    if (this.authService.isGM()) return true;
+    if (item.element.type !== LayerElementType.CHARACTER) return false;
 
-    if (user.role === ROLE_GM) return true;
-
-    if (item.element.type === LayerElementType.CHARACTER) {
-      if (!user.characters.some((char) => char.name.toLowerCase() === item.element.name.toLowerCase())) return false;
-      if ((item as CharacterLayerItem).character.hp === 0) return false;
-      if (!this.currentTurn) return true;
-      if (
-        AdventureUtils.isMyTurn(user, this.currentTurn) &&
-        this.currentTurn.characterName === (item as CharacterLayerItem).character.name
-      ) {
-        return true;
-      }
+    const user = this.authService.currentUserValue();
+    if (!user.characters.some((char) => char.name.toLowerCase() === item.element.name.toLowerCase())) return false;
+    if ((item as CharacterLayerItem).character.hp === 0) return false;
+    if (!this.currentTurn) return true;
+    if (
+      AdventureUtils.isMyTurn(user, this.currentTurn) &&
+      this.currentTurn.characterName === (item as CharacterLayerItem).character.name
+    ) {
+      return true;
     }
-
     return false;
   }
 
   private isDragEnabledForGridsterItem(item: LayerGridsterItem): boolean {
-    const user = this.authService.currentUserValue;
+    if (this.authService.isGM()) return true;
+    if (item.type !== LayerElementType.CHARACTER) return false;
 
-    if (user.role === ROLE_GM) return true;
-
-    if (item.type === LayerElementType.CHARACTER) {
-      if (!user.characters.some((char) => char.name.toLowerCase() === item.name.toLowerCase())) return false;
-      if ((item as CharacterLayerGridsterItem).character.hp === 0) return false;
-      if (!this.currentTurn) return true;
-      if (
-        AdventureUtils.isMyTurn(user, this.currentTurn) &&
-        this.currentTurn.characterName === (item as CharacterLayerGridsterItem).character.name
-      ) {
-        return true;
-      }
+    const user = this.authService.currentUserValue();
+    if (!user.characters.some((char) => char.name.toLowerCase() === item.name.toLowerCase())) return false;
+    if ((item as CharacterLayerGridsterItem).character.hp === 0) return false;
+    if (!this.currentTurn) return true;
+    if (
+      AdventureUtils.isMyTurn(user, this.currentTurn) &&
+      this.currentTurn.characterName === (item as CharacterLayerGridsterItem).character.name
+    ) {
+      return true;
     }
 
     return false;

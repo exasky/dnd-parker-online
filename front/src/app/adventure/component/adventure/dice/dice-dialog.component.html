@@ -23,18 +23,17 @@
   <div class="position-absolute" style="left: 0">
     {{ "adventure.dialog.dice.turn" | translate: { char: data.user.username } }}
   </div>
-  <button *ngIf="!rollDisabled" mat-raised-button (click)="rollDices()" [disabled]="selectedDices.length === 0">
-    {{ "adventure.dialog.dice.roll" | translate }}
-  </button>
-  <button
-    mat-raised-button
-    color="accent"
-    *ngIf="authService.isGM"
-    class="position-absolute"
-    style="right: 0"
-    (click)="this.close()"
-  >
-    {{ "common.close" | translate }}
-  </button>
-  <div *ngIf="rollDisabled">{{ "adventure.dialog.dice.no-turn" | translate }}</div>
+  @if (!rollDisabled) {
+    <button mat-raised-button (click)="rollDices()" [disabled]="selectedDices.length === 0">
+      {{ "adventure.dialog.dice.roll" | translate }}
+    </button>
+  }
+  @if (authService.isGM()) {
+    <button mat-raised-button color="accent" class="position-absolute" style="right: 0" (click)="this.close()">
+      {{ "common.close" | translate }}
+    </button>
+  }
+  @if (rollDisabled) {
+    <div>{{ "adventure.dialog.dice.no-turn" | translate }}</div>
+  }
 </mat-dialog-actions>

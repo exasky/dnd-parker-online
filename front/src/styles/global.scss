@@ -2,8 +2,9 @@
 
 @use "flex";
 
-@use "tooltip";
-@use "bootstrap/scss/bootstrap";
+// @use "bootstrap/scss/bootstrap";
+@use "bootstrap-utilities.min.css";
+
 @use "ngx-toastr/toastr";
 
 /* You can add global styles to this file, and also import other style files */
@@ -16,17 +17,12 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   overflow: hidden;
+  background-image: url("/assets/wallpaper/light.jpg");
 }
 
 app-root {
   background-repeat: no-repeat;
   background-size: cover;
-}
-
-.light-mode {
-  app-root {
-    background-image: url("/assets/wallpaper/light.jpg") !important;
-  }
 }
 
 .overflow {
@@ -38,8 +34,7 @@ app-root {
 }
 
 .w-0 {
-  //noinspection CssRedundantUnit
-  width: 0px;
+  width: 0;
 }
 
 .mw-75 {
@@ -53,4 +48,12 @@ app-root {
 .mdi-large {
   font-size: 140% !important;
   margin-right: 20px !important;
+}
+
+.tooltip {
+  z-index: 500;
+  background-color: rgba($color: black, $alpha: 0.8);
+  color: white;
+  padding: 1em !important;
+  border-radius: 8px;
 }

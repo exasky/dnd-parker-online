@@ -1,11 +1,10 @@
-import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, Observable } from "rxjs";
-import { ROLE_GM, User } from "../user/user";
-import { map } from "rxjs/operators";
-import { jwtDecode } from "jwt-decode";
-import { environment } from "../../environments/environment";
+import { computed, Injectable, signal } from "@angular/core";
 import { Router } from "@angular/router";
+import { jwtDecode } from "jwt-decode";
+import { map } from "rxjs/operators";
+import { environment } from "../../environments/environment";
+import { ROLE_GM, User } from "../user/user";
 
 @Injectable({
   providedIn: "root",
@@ -13,24 +12,16 @@ import { Router } from "@angular/router";
 export class AuthService {
   private static API_URL = environment.apiUrl + "/login";
 
-  private currentUserSubject: BehaviorSubject<User>;
-  public currentUser: Observable<User>;
+  private currentUserSignal = signal<User>(JSON.parse(localStorage.getItem("currentUser")));
+
+  readonly currentUserValue = computed(() => this.currentUserSignal());
+  readonly isLoggedIn = computed(() => !!this.currentUserValue());
+  readonly isGM = computed(() => this.currentUserSignal()?.role === ROLE_GM);
 
   constructor(
     private http: HttpClient,
     private router: Router,
-  ) {
-    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem("currentUser")));
-    this.currentUser = this.currentUserSubject.asObservable();
-  }
-
-  public get currentUserValue(): User {
-    return this.currentUserSubject.value;
-  }
-
-  public get isGM(): boolean {
-    return this.currentUserValue.role === ROLE_GM;
-  }
+  ) {}
 
   login(username: string, password: string) {
     return this.http.post<any>(AuthService.API_URL, { username, password }).pipe(
@@ -41,7 +32,7 @@ export class AuthService {
         if (user && user.token) {
           // store user details and jwt token in local storage to keep user logged in between page refreshes
           localStorage.setItem("currentUser", JSON.stringify(user));
-          this.currentUserSubject.next(user);
+          this.currentUserSignal.set(user);
         }
 
         return user;
@@ -52,7 +43,7 @@ export class AuthService {
   logout() {
     // remove user from local storage to log user out
     localStorage.removeItem("currentUser");
-    this.currentUserSubject.next(null);
+    this.currentUserSignal.set(null);
     this.router.navigateByUrl("/login");
   }
 }

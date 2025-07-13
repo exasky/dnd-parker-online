@@ -31,14 +31,13 @@ export class AdventureItemDisplayerComponent extends ItemDisplayer<LayerElement>
 
   @Input()
   set layerElements(layerElements: LayerElement[]) {
-    this.elements = layerElements;
-    if (layerElements) this.filterDataSource("");
+    this.elements.set(layerElements);
   }
 
-  protected filterDataSource(filterText: string) {
+  protected override filterDataSource(elements: LayerElement[], filterText: string): ItemNode[] {
     const data: ItemNode[] = [];
     const splitFilter = filterText.split(" ");
-    this.elements.forEach((layerElement) => {
+    elements.forEach((layerElement) => {
       if (StringUtils.isFilter(splitFilter, layerElement.name.split("_"))) {
         const name =
           layerElement.type !== LayerElementType.MONSTER && layerElement.type !== LayerElementType.CHARACTER
@@ -53,7 +52,7 @@ export class AdventureItemDisplayerComponent extends ItemDisplayer<LayerElement>
         groupNode.children.push({ ...layerElement });
       }
     });
-    this.dataSource.data = data;
+    return data;
   }
 
   dragStartHandler(ev, layerElement: LayerElement) {

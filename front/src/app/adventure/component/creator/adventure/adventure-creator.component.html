@@ -3,7 +3,7 @@
     <div class="d-flex flex-column" style="height: calc(100vh - 192px)">
       <div>
         <div style="overflow-x: scroll; overflow-y: hidden; white-space: nowrap">
-          <ng-container *ngFor="let board of availableBoards">
+          @for (board of availableBoards; track board.id) {
             <img
               class="draggable-board"
               draggable="true"
@@ -11,38 +11,41 @@
               [src]="'assets/board/' + board.boardNumber + '.JPG'"
               (dragstart)="dragStartHandler($event, board)"
             />
-          </ng-container>
+          }
         </div>
       </div>
 
       <gridster [options]="options" style="flex-grow: 1">
-        <gridster-item *ngFor="let item of gridsterBoards" [item]="item">
-          <div
-            class="selected-board-gridster-background"
-            *ngIf="item['board']"
-            [ngStyle]="{
-              'background-image': 'url(\'assets/board/' + item['board'].boardNumber + '.JPG\')',
-              transform: 'rotate(' + item['board'].rotation + 'deg)',
-            }"
-          ></div>
+        @for (item of gridsterBoards; track $index) {
+          <gridster-item [item]="item">
+            @if (item["board"]) {
+              <div
+                class="selected-board-gridster-background"
+                [ngStyle]="{
+                  'background-image': 'url(\'assets/board/' + item['board'].boardNumber + '.JPG\')',
+                  transform: 'rotate(' + item['board'].rotation + 'deg)',
+                }"
+              ></div>
+            }
 
-          <div style="height: 100%" class="d-flex flex-column justify-content-between">
-            <div class="d-flex justify-content-between">
-              <button mat-mini-fab (mousedown)="rotateLeft(item['board'])">
-                <mat-icon>rotate_left</mat-icon>
-              </button>
-              <button mat-mini-fab (mousedown)="rotateRight(item['board'])">
-                <mat-icon>rotate_right</mat-icon>
-              </button>
-            </div>
+            <div style="height: 100%" class="d-flex flex-column justify-content-between">
+              <div class="d-flex justify-content-between">
+                <button mat-mini-fab (mousedown)="rotateLeft(item['board'])">
+                  <mat-icon>rotate_left</mat-icon>
+                </button>
+                <button mat-mini-fab (mousedown)="rotateRight(item['board'])">
+                  <mat-icon>rotate_right</mat-icon>
+                </button>
+              </div>
 
-            <div class="d-flex justify-content-center">
-              <button mat-mini-fab (mousedown)="removeItem($event, item)">
-                <mat-icon>delete</mat-icon>
-              </button>
+              <div class="d-flex justify-content-center">
+                <button mat-mini-fab (mousedown)="removeItem($event, item)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
             </div>
-          </div>
-        </gridster-item>
+          </gridster-item>
+        }
       </gridster>
 
       <div class="flex-shrink-0 d-flex justify-content-center mt-1" style="margin-bottom: -20px">

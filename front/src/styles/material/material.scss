@@ -16,11 +16,25 @@ html {
 body.dark-mode {
   color-scheme: dark;
   background-image: url("/assets/wallpaper/dark.jpg") !important;
+  background-size: cover;
+  background-position: center;
+
+  @include mat.theme(
+    (
+      color: mat.$blue-palette,
+      typography: Roboto,
+      density: 0,
+    )
+  );
 
   img {
     -webkit-filter: brightness(80%);
     -moz-filter: brightness(80%);
     filter: url(#brightness);
     filter: brightness(80%);
+  }
+
+  span {
+    color: var(--mat-sys-on-surface-variant);
   }
 }

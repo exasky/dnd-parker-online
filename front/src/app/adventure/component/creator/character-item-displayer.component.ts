@@ -1,15 +1,15 @@
+import { DragDropModule } from "@angular/cdk/drag-drop";
 import { Component, HostBinding, Input } from "@angular/core";
-import { CharacterEquipment } from "../../model/character";
-import { StringUtils } from "../../../common/utils/string-utils";
-import { ItemDisplayer, ItemNode } from "../../../common/component/item.displayer";
-import { CardUtils } from "../../../common/utils/card-utils";
+import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { TranslateModule } from "@ngx-translate/core";
-import { MatTreeModule } from "@angular/material/tree";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
-import { DragDropModule } from "@angular/cdk/drag-drop";
-import { MatButtonModule } from "@angular/material/button";
+import { MatTreeModule } from "@angular/material/tree";
+import { TranslateModule } from "@ngx-translate/core";
+import { ItemDisplayer, ItemNode } from "../../../common/component/item.displayer";
+import { GetCardImagePipe } from "../../../common/utils/card-utils";
+import { StringUtils } from "../../../common/utils/string-utils";
+import { CharacterEquipment } from "../../model/character";
 
 @Component({
   selector: "app-character-item-displayer",
@@ -22,23 +22,21 @@ import { MatButtonModule } from "@angular/material/button";
     MatInputModule,
     MatButtonModule,
     DragDropModule,
+    GetCardImagePipe,
   ],
 })
 export class CharacterItemDisplayerComponent extends ItemDisplayer<CharacterEquipment> {
   @HostBinding("class") cssClass = "d-flex flex-column";
 
-  getCardImage = CardUtils.getCardImage;
-
   @Input()
   set characterItems(characterItems: CharacterEquipment[]) {
-    this.elements = characterItems;
-    this.filterDataSource("");
+    this.elements.set(characterItems);
   }
 
-  protected filterDataSource(filterText: string) {
+  protected override filterDataSource(elements: CharacterEquipment[], filterText: string): ItemNode[] {
     const data: ItemNode[] = [];
     const splitFilter = filterText.split(" ");
-    this.elements.forEach((characterItem) => {
+    elements.forEach((characterItem) => {
       if (StringUtils.isFilter(splitFilter, characterItem.name.split("_"))) {
         let typeNode = data.find((value) => value.name === characterItem.type);
         if (!typeNode) {
@@ -61,7 +59,7 @@ export class CharacterItemDisplayerComponent extends ItemDisplayer<CharacterEqui
     });
     data.forEach((typeNode) => typeNode.children!.sort((a, b) => (a.name < b.name ? -1 : 1)));
     data.sort((a, b) => (a.name < b.name ? -1 : 1));
-    this.dataSource.data = data;
+    return data;
   }
 
   dragStartHandler(ev: DragEvent, item: CharacterEquipment) {

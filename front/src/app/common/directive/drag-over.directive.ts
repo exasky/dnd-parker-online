@@ -1,36 +1,38 @@
-import {Directive, ElementRef} from '@angular/core';
+import { Directive, ElementRef } from "@angular/core";
 
 @Directive({
-  selector: '[dragOver]'
+  selector: "[dragOver]",
 })
 export class DragOverDirective {
-  private enterTarget;
+  private enterTarget: EventTarget;
 
   constructor(el: ElementRef) {
-    el.nativeElement.ondragover = (event) => event.preventDefault();
+    const htmlElement = el.nativeElement as HTMLElement;
 
-    el.nativeElement.ondragenter = (event) => {
+    htmlElement.ondragover = (event) => event.preventDefault();
+
+    htmlElement.ondragenter = (event) => {
       this.enterTarget = event.target;
       event.stopPropagation();
       event.preventDefault();
-      if (!!localStorage.getItem('isDark')) {
-        el.nativeElement.style.border = '5px dashed white';
+      if (!!localStorage.getItem("isDark")) {
+        htmlElement.style.border = "5px dashed white";
       } else {
-        el.nativeElement.style.border = '5px dashed black';
+        htmlElement.style.border = "5px dashed black";
       }
       return false;
     };
 
-    el.nativeElement.ondragleave = (event) => {
+    htmlElement.ondragleave = (event) => {
       if (event.target === this.enterTarget) {
         event.stopPropagation();
         event.preventDefault();
-        el.nativeElement.style.border = 'none';
+        htmlElement.style.border = "none";
       }
-    }
+    };
 
     el.nativeElement.ondrop = () => {
-      el.nativeElement.style.border = 'none';
-    }
+      htmlElement.style.border = "none";
+    };
   }
 }

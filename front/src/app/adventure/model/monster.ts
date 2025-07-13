@@ -1,6 +1,6 @@
-import {LayerElement} from "./adventure";
+import { LayerElement } from "./adventure";
 
-export class MonsterTemplate {
+export interface MonsterTemplate {
   id: number;
   maxHp: number;
   movePoints: number;

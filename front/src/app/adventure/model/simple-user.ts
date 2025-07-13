@@ -1,5 +1,5 @@
-export class SimpleUser {
+export interface SimpleUser {
   id: number;
   username: string;
-  role: string
+  role: string;
 }

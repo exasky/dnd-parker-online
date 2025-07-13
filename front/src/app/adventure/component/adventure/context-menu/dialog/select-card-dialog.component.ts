@@ -1,23 +1,30 @@
-import { Component, HostBinding, Inject, OnInit } from "@angular/core";
-import { GmService } from "../../../../service/gm.service";
-import { CharacterEquipment } from "../../../../model/character";
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
-import { CardUtils } from "../../../../../common/utils/card-utils";
-import { TranslateModule } from "@ngx-translate/core";
-import { CharacterItemDisplayerComponent } from "../../../creator/character-item-displayer.component";
 import { CommonModule } from "@angular/common";
+import { Component, HostBinding, Inject, OnInit } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { TranslateModule } from "@ngx-translate/core";
+import { DragOverDirective } from "../../../../../common/directive/drag-over.directive";
+import { GetCardImagePipe } from "../../../../../common/utils/card-utils";
+import { CharacterEquipment } from "../../../../model/character";
+import { GmService } from "../../../../service/gm.service";
+import { CharacterItemDisplayerComponent } from "../../../creator/character-item-displayer.component";
 
 @Component({
   selector: "app-select-card-dialog",
   templateUrl: "./select-card-dialog.component.html",
-  imports: [TranslateModule, MatDialogModule, CharacterItemDisplayerComponent, CommonModule],
+  imports: [
+    TranslateModule,
+    MatDialogModule,
+    CharacterItemDisplayerComponent,
+    CommonModule,
+    MatButtonModule,
+    GetCardImagePipe,
+    DragOverDirective,
+  ],
 })
 export class SelectCardDialogComponent implements OnInit {
   @HostBinding("style.height") height = "75vh";
-  @HostBinding("style.width") width = "50vw";
   @HostBinding("class") cssClass = "d-flex flex-column";
-
-  getCardImage = CardUtils.getCardImage;
 
   allCharacterItems: CharacterEquipment[];
 
@@ -38,7 +45,7 @@ export class SelectCardDialogComponent implements OnInit {
     });
   }
 
-  setSelectedCard(ev) {
+  setSelectedCard(ev: DragEvent) {
     ev.preventDefault();
     const itemId = +ev.dataTransfer.getData("text");
     const foundItem = this.allCharacterItems.find((allItem) => allItem.id === itemId);

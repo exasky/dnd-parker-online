@@ -167,7 +167,7 @@
     "dialog": {
       "next-turn": {
         "header": "Next turn ?",
-        "valid-end-turn": "Valid <strong>{{char}}</strong>'s end turn ?",
+        "valid-end-turn": "Validate <strong>{{char}}</strong>'s end turn ?",
         "wait-end-turn": "<strong>{{char}}</strong>'s turn ending, please wait ..."
       },
       "switch-equipment": {

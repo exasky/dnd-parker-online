@@ -1,25 +1,25 @@
-import { Component, Inject, OnDestroy, OnInit, QueryList, ViewChildren, Directive, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Component, Directive, inject, OnDestroy, OnInit, QueryList, ViewChildren } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
 import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
-import { GmService } from "../../../service/gm.service";
-import { AuthService } from "../../../../login/auth.service";
-import { DiceWebsocketService } from "../../../../common/service/ws/dice.websocket.service";
-import { DiceService } from "../../../service/dice.service";
-import { SimpleUser } from "../../../model/simple-user";
-import { ToasterService } from "../../../../common/service/toaster.service";
-import { AudioService } from "../../../service/audio.service";
-import { DiceComponent } from "./dice.component";
-import { Dice } from "../../../model/dice";
+import { TranslateModule } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
 import { SocketResponse } from "../../../../common/model";
 import { SocketResponseType } from "../../../../common/model/websocket.response";
+import { ToasterService } from "../../../../common/service/toaster.service";
+import { DiceWebsocketService } from "../../../../common/service/ws/dice.websocket.service";
+import { GetCardImagePipe, GetCharacterImagePipe, GetMonsterImagePipe } from "../../../../common/utils/card-utils";
+import { AuthService } from "../../../../login/auth.service";
+import { LayerElementType } from "../../../model/adventure";
+import { CharacterEquipment } from "../../../model/character";
+import { Dice } from "../../../model/dice";
 import { DiceMessage, DiceMessageType } from "../../../model/dice-message";
 import { LayerGridsterItem } from "../../../model/layer-gridster-item";
-import { LayerElementType } from "../../../model/adventure";
-import { CardUtils } from "../../../../common/utils/card-utils";
-import { CharacterEquipment } from "../../../model/character";
-import { TranslateModule } from "@ngx-translate/core";
-import { CommonModule } from "@angular/common";
-import { MatButtonModule } from "@angular/material/button";
+import { SimpleUser } from "../../../model/simple-user";
+import { AudioService } from "../../../service/audio.service";
+import { DiceService } from "../../../service/dice.service";
+import { GmService } from "../../../service/gm.service";
+import { DiceComponent } from "./dice.component";
 
 @Directive()
 abstract class AbstractDiceDialogComponent implements OnInit, OnDestroy {
@@ -44,7 +44,7 @@ abstract class AbstractDiceDialogComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.rollDisabled = !this.authService.isGM && !(this.authService.currentUserValue.id === this.data.user.id);
+    this.rollDisabled = !this.authService.isGM() && !(this.authService.currentUserValue().id === this.data.user.id);
     this.diceService.getAllDices().subscribe((dices) => (this.allDices = dices));
     this.diceWSObs = this.diceWS.getObservable(this.data.adventureId).subscribe((receivedMsg: SocketResponse) => {
       if (receivedMsg.type === SocketResponseType.SUCCESS) {
@@ -129,11 +129,18 @@ export class DiceDialogComponent extends AbstractDiceDialogComponent {
 @Component({
   selector: "app-dice-attack-dialog",
   templateUrl: "./dice-attack-dialog.component.html",
-  imports: [TranslateModule, MatDialogModule, DiceComponent, CommonModule, MatButtonModule],
+  imports: [
+    TranslateModule,
+    MatDialogModule,
+    DiceComponent,
+    CommonModule,
+    MatButtonModule,
+    GetCharacterImagePipe,
+    GetCardImagePipe,
+    GetMonsterImagePipe,
+  ],
 })
 export class DiceAttackDialogComponent extends AbstractDiceDialogComponent {
-  CardUtils = CardUtils;
-
   override data: {
     adventureId: string;
     user: SimpleUser;

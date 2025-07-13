@@ -1,3 +1,4 @@
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -7,29 +8,28 @@ import {
   OnDestroy,
   OnInit,
 } from "@angular/core";
-import { GmService } from "../../../service/gm.service";
-import { Adventure, GM_CHAR_NAME, Initiative } from "../../../model/adventure";
+import { FormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
 import { MatDialog } from "@angular/material/dialog";
-import { DiceService } from "../../../service/dice.service";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatIconModule } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSliderModule } from "@angular/material/slider";
+import { Router } from "@angular/router";
+import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateModule } from "@ngx-translate/core";
+import { Subscription } from "rxjs";
 import { AuthService } from "../../../../login/auth.service";
+import { Adventure, GM_CHAR_NAME, Initiative } from "../../../model/adventure";
+import { Character } from "../../../model/character";
+import { CharacterItem } from "../../../model/item";
 import { AdventureService } from "../../../service/adventure.service";
 import { AmbientAudioService, AudioService } from "../../../service/audio.service";
-import { AdventureCardService } from "../../../service/adventure-card.service";
-import { CharacterItem } from "../../../model/item";
-import { Router } from "@angular/router";
-import { Character } from "../../../model/character";
-import { Subscription } from "rxjs";
-import { MatMenuModule } from "@angular/material/menu";
-import { MatIconModule } from "@angular/material/icon";
-import { TranslateModule } from "@ngx-translate/core";
-import { MatSliderModule } from "@angular/material/slider";
-import { MatDividerModule } from "@angular/material/divider";
-import { MatButtonModule } from "@angular/material/button";
-import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { DiceService } from "../../../service/dice.service";
+import { GmService } from "../../../service/gm.service";
 import { CharacterTooltipDisplayerComponent } from "../character/character-tooltip-displayer.component";
 import { InitiativeDisplayerComponent } from "../initiative/initiative-displayer.component";
-import { FormsModule } from "@angular/forms";
-import { CommonModule } from "@angular/common";
+import { OverlayModule } from "@angular/cdk/overlay";
 
 @Component({
   selector: "app-action-panel",
@@ -77,7 +77,6 @@ export class ActionPanelComponent implements OnInit, OnDestroy {
   constructor(
     private gmService: GmService,
     private adventureService: AdventureService,
-    private adventureCardService: AdventureCardService,
     private dialog: MatDialog,
     private router: Router,
     private diceService: DiceService,
@@ -122,9 +121,9 @@ export class ActionPanelComponent implements OnInit, OnDestroy {
 
   get isMyTurn(): boolean {
     if (!this.currentInitiative) return false;
-    return this.authService.currentUserValue.characters.some(
-      (char) => this.currentInitiative.characterName === char.name,
-    );
+    return this.authService
+      .currentUserValue()
+      .characters.some((char) => this.currentInitiative.characterName === char.name);
   }
 
   rollDices() {

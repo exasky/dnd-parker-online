@@ -2,7 +2,7 @@
 <ul role="list">
   @for (log of logs; track $index) {
     <li role="listitem" class="li-type-{{ log.type }}">
-      <span>({{ log.logDate | timeAgo }})</span>
+      ({{ log.logDate | timeAgo }})
       @switch (log.type) {
         @case (AdventureLogType.ATTACK) {
           @if (log.fromId) {

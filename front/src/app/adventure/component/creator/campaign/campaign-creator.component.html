@@ -1,78 +1,93 @@
-<!--  Buttons of characters, new adventure-->
-<div class="d-flex flex-column m-3" *ngIf="campaign">
-  <div class="flex-grow d-flex flex-column overflow">
-    <mat-form-field>
-      <mat-label>{{'campaign-creator.name' | translate}}</mat-label>
-      <input matInput [(ngModel)]="campaign.name" autocomplete="false">
-    </mat-form-field>
-    <button mat-raised-button
-            class="mb-2 flex-shrink-0"
-            (click)="isCharacterCreatorSelected = true">
-      {{'campaign-creator.characters' | translate}}
-    </button>
-    <button mat-raised-button class="mb-2 flex-shrink-0" style="min-height: 10px"
-            *ngFor="let adventure of campaign.adventures"
-            (click)="selectAdventure(adventure)">{{adventure.name}}</button>
-    <button mat-raised-button class="flex-shrink-0"
-            (click)="addNewAdventure()">
-      <mat-icon>add</mat-icon>
-      {{'campaign-creator.add-adventure' | translate}}
-    </button>
-  </div>
-
-  <mat-form-field *ngIf="campaign.id === undefined">
-    <mat-label>{{'campaign-creator.copy-from' | translate}}</mat-label>
-    <mat-select #select (selectionChange)="copyFrom($event); select.writeValue(null)">
-      <mat-option [value]="null">{{'common.cancel' | translate}}</mat-option>
-      <mat-option *ngFor="let campaign of this.allCampaigns"
-                  [value]="campaign.id">
-        {{campaign.name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <button mat-raised-button class="flex-shrink-0" (click)="saveCampaign()">
-    {{'common.save' | translate}}
-  </button>
-  <button *ngIf="campaign.id" mat-raised-button color="warn" class="flex-shrink-0 mt-2" (click)="deleteCampaign()">
-    {{'common.delete' | translate}}
-  </button>
-
-</div>
-
-<!-- Current content Adventure of characters-->
-<div class="flex-grow d-flex m-3" *ngIf="campaign">
-  <div *ngIf="isCharacterCreatorSelected" class="flex-grow d-flex flex-column">
-    <div class="flex-grow d-flex">
-      <div class="flex-grow d-flex overflow flex-wrap justify-content-center align-items-center flex-3">
-        <mat-card *ngFor="let character of campaign.characters; let index = index"
-                  class="m-3 flex-grow d-flex flex-column">
-          <app-character-creator [character]="character"
-                                 [positionInList]="index"
-                                 [availableCharacters]="characterTemplates"
-                                 [allCharacters]="campaign.characters"
-                                 [allCharacterItems]="allCharacterItems"
-                                 (selectCharacterEvent)="removeAvailableCharacter($event)"
-                                 (deleteEvent)="removeCharacter($event)"></app-character-creator>
-        </mat-card>
-
-      </div>
-      <app-character-item-displayer style="flex: 1"
-                                    *ngIf="allCharacterItems"
-                                    [characterItems]="allCharacterItems"></app-character-item-displayer>
+@if (campaign) {
+  <!--  Buttons of characters, new adventure-->
+  <div class="d-flex flex-column m-3">
+    <div class="flex-grow d-flex flex-column overflow">
+      <mat-form-field>
+        <mat-label>{{ "campaign-creator.name" | translate }}</mat-label>
+        <input matInput [(ngModel)]="campaign.name" autocomplete="false" />
+      </mat-form-field>
+      <button mat-raised-button class="mb-2 flex-shrink-0" (click)="isCharacterCreatorSelected = true">
+        {{ "campaign-creator.characters" | translate }}
+      </button>
+      @for (adventure of campaign.adventures; track adventure.id) {
+        <button
+          mat-raised-button
+          class="mb-2 flex-shrink-0"
+          style="min-height: 10px"
+          (click)="selectAdventure(adventure)"
+        >
+          {{ adventure.name }}
+        </button>
+        <button mat-raised-button class="flex-shrink-0" (click)="addNewAdventure()">
+          <mat-icon>add</mat-icon>
+          {{ "campaign-creator.add-adventure" | translate }}
+        </button>
+      }
     </div>
 
-    <button *ngIf="campaign.characters.length < 4"
-            mat-raised-button
-            class="flex-shrink-0"
-            (click)="addNewCharacter()">
-      {{'campaign-creator.add-character' | translate}}
+    @if (campaign.id === undefined) {
+      <mat-form-field>
+        <mat-label>{{ "campaign-creator.copy-from" | translate }}</mat-label>
+        <mat-select #select (selectionChange)="copyFrom($event); select.writeValue(null)">
+          <mat-option [value]="null">{{ "common.cancel" | translate }}</mat-option>
+          @for (campaign of this.allCampaigns; track campaign.id) {
+            <mat-option [value]="campaign.id">{{ campaign.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+    <button mat-raised-button class="flex-shrink-0" (click)="saveCampaign()">
+      {{ "common.save" | translate }}
     </button>
+    @if (campaign.id) {
+      <button mat-raised-button color="warn" class="flex-shrink-0 mt-2" (click)="deleteCampaign()">
+        {{ "common.delete" | translate }}
+      </button>
+    }
   </div>
 
-  <ng-container *ngIf="selectedAdventure && !isCharacterCreatorSelected">
-    <app-adventure-creator class="flex-grow"
-                           [adventure]="selectedAdventure"
-                           (adventureDeleted)="deleteSelectedAdventure()"></app-adventure-creator>
-  </ng-container>
+  <!-- Current content Adventure of characters-->
 
-</div>
+  <div class="flex-grow d-flex m-3">
+    @if (isCharacterCreatorSelected) {
+      @if (isCharacterCreatorSelected) {
+        <div class="flex-grow d-flex flex-column">
+          <div class="flex-grow d-flex">
+            <div class="flex-grow d-flex overflow flex-wrap justify-content-center align-items-center flex-3">
+              @for (character of campaign.characters; track $index) {
+                <mat-card class="m-3 flex-grow d-flex flex-column">
+                  <app-character-creator
+                    [character]="character"
+                    [positionInList]="$index"
+                    [availableCharacters]="characterTemplates"
+                    [allCharacters]="campaign.characters"
+                    [allCharacterItems]="allCharacterItems"
+                    (selectCharacterEvent)="removeAvailableCharacter($event)"
+                    (deleteEvent)="removeCharacter($event)"
+                  />
+                </mat-card>
+              }
+            </div>
+            @if (allCharacterItems) {
+              <app-character-item-displayer style="flex: 1" [characterItems]="allCharacterItems" />
+            }
+          </div>
+
+          @if (campaign.characters.length < 4) {
+            <button mat-raised-button class="flex-shrink-0" (click)="addNewCharacter()">
+              {{ "campaign-creator.add-character" | translate }}
+            </button>
+          }
+        </div>
+      }
+    }
+
+    @if (selectedAdventure && !isCharacterCreatorSelected) {
+      <app-adventure-creator
+        class="flex-grow"
+        [adventure]="selectedAdventure"
+        (adventureDeleted)="deleteSelectedAdventure()"
+      />
+    }
+  </div>
+}

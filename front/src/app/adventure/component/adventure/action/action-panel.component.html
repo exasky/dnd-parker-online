@@ -4,30 +4,29 @@
     {{ "adventure.action-panel.volume" | translate }}
   </button>
   <mat-menu #soundMenu="matMenu" [overlapTrigger]="true">
-    <div
-      *ngFor="let aS of [audioService, ambientAudioService]"
-      mat-menu-item
-      disableRipple
-      class="d-flex align-items-center"
-      style="height: unset !important"
-      (click)="$event.preventDefault(); $event.stopPropagation()"
-    >
-      <div class="d-flex align-items-center">
-        <mat-icon>
-          <ng-container *ngIf="aS.volume === 0">volume_off</ng-container>
-          <ng-container *ngIf="aS.volume > 0 && aS.volume <= 0.33">volume_mute</ng-container>
-          <ng-container *ngIf="aS.volume > 0.33 && aS.volume <= 0.66">volume_down</ng-container>
-          <ng-container *ngIf="aS.volume > 0.66">volume_up</ng-container>
-        </mat-icon>
+    @for (aS of [audioService, ambientAudioService]; track $index) {
+      <div mat-menu-item [disableRipple]="true" (click)="$event.preventDefault(); $event.stopPropagation()">
+        <div class="d-flex align-items-center">
+          <mat-icon>
+            @if (aS.volume === 0) {
+              volume_off
+            } @else if (aS.volume <= 0.33) {
+              volume_mute
+            } @else if (aS.volume <= 0.66) {
+              volume_down
+            } @else {
+              volume_up
+            }
+          </mat-icon>
+          <div class="d-flex flex-column">
+            <small style="height: 20px">{{ "adventure.action-panel." + aS.getDisplayName() | translate }}</small>
+            <mat-slider [max]="1" [min]="0" [step]="0.01">
+              <input matSliderThumb [ngModel]="aS.volume" (ngModelChange)="aS.setVolume($event)" #slider />
+            </mat-slider>
+          </div>
+        </div>
       </div>
-      <div class="d-flex flex-column">
-        <small style="height: 20px">{{ "adventure.action-panel." + aS.getDisplayName() | translate }}</small>
-
-        <mat-slider [max]="1" [min]="0" [step]="0.01" (input)="aS.setVolume($event['value'])">
-          <input matSliderThumb [(ngModel)]="aS.volume" #slider />
-        </mat-slider>
-      </div>
-    </div>
+    }
   </mat-menu>
 
   <mat-divider class="mx-2 mb-2 mt-0" [inset]="false"></mat-divider>
@@ -38,74 +37,72 @@
 
   <mat-divider class="m-2" [inset]="false"></mat-divider>
 
-  <button
-    *ngFor="let charItem of sortedCharacterItems"
-    mat-raised-button
-    [color]="currentInitiative && charItem.character.name === currentInitiative.characterName ? 'warn' : 'primary'"
-    class="flex-shrink-0 m-2"
-    style="text-transform: capitalize"
-    [ngbTooltip]="tooltipContent"
-    [disableTooltip]="!charItem.character.id"
-    tooltipClass="tooltip-action-panel"
-    [openDelay]="500"
-    [container]="'body'"
-  >
-    {{ charItem.character.name }}
-    <ng-container *ngIf="!isGm(charItem.character)">({{ charItem.character.userName }})</ng-container>
-    <ng-template #tooltipContent>
-      <app-character-tooltip-displayer
-        [character]="charItem.character"
-        [displayCard]="true"
-        cardWidth="200"
-        cardHeight="300"
-      ></app-character-tooltip-displayer>
-    </ng-template>
-  </button>
+  @for (charItem of sortedCharacterItems; track $index) {
+    <button
+      [matButton]="
+        currentInitiative && charItem.character.name === currentInitiative.characterName ? 'filled' : 'elevated'
+      "
+      class="flex-shrink-0 m-2"
+      style="text-transform: capitalize"
+      [ngbTooltip]="tooltipContent"
+      [disableTooltip]="!charItem.character.id"
+      [openDelay]="500"
+      container="body"
+      placement="left"
+    >
+      {{ charItem.character.name }}
+      @if (!isGm(charItem.character)) {
+        ({{ charItem.character.userName }})
+      }
+      <ng-template #tooltipContent>
+        <app-character-tooltip-displayer
+          [character]="charItem.character"
+          [displayCard]="true"
+          cardWidth="200"
+          cardHeight="300"
+        ></app-character-tooltip-displayer>
+      </ng-template>
+    </button>
+  }
 
-  <ng-container *ngIf="currentInitiative">
+  @if (currentInitiative) {
     <mat-divider class="m-2" [inset]="false"></mat-divider>
     <button
       mat-raised-button
-      color="accent"
       class="flex-shrink-0 m-2"
       [ngbTooltip]="tooltipContent"
       [disableTooltip]="initiatives.length === 0"
-      tooltipClass="mw-75"
-      [container]="'body'"
+      container="body"
       placement="left"
     >
       {{ "adventure.action-panel.current-initiative" | translate }}
       <ng-template #tooltipContent>
         <app-initiative-displayer
-          style="height: 350px"
           [currentInitiative]="currentInitiative"
           [initiatives]="initiatives"
         ></app-initiative-displayer>
       </ng-template>
     </button>
-  </ng-container>
-  <ng-container *ngIf="authService.isGM">
-    <mat-divider *ngIf="!currentInitiative" class="m-2" [inset]="false"></mat-divider>
-    <button
-      mat-raised-button
-      color="accent"
-      class="flex-shrink-0 m-2"
-      (click)="rollInitiative()"
-      [disabled]="disableActions"
-    >
+  }
+  @if (authService.isGM()) {
+    @if (!currentInitiative) {
+      <mat-divider class="m-2" [inset]="false"></mat-divider>
+    }
+    <button mat-raised-button class="flex-shrink-0 m-2" (click)="rollInitiative()" [disabled]="disableActions">
       {{ "adventure.action-panel.roll-initiative" | translate }}
     </button>
-    <button
-      *ngIf="currentInitiative"
-      mat-raised-button
-      color="accent"
-      class="flex-shrink-0 m-2"
-      (click)="resetInitiative()"
-      [disabled]="disableActions"
-    >
-      {{ "adventure.action-panel.reset-initiative" | translate }}
-    </button>
-  </ng-container>
+    @if (currentInitiative) {
+      <button
+        mat-raised-button
+        color="accent"
+        class="flex-shrink-0 m-2"
+        (click)="resetInitiative()"
+        [disabled]="disableActions"
+      >
+        {{ "adventure.action-panel.reset-initiative" | translate }}
+      </button>
+    }
+  }
 
   <mat-divider class="m-2" [inset]="false"></mat-divider>
 
@@ -114,23 +111,21 @@
     color="accent"
     class="flex-shrink-0 m-2"
     (click)="endTurn()"
-    [disabled]="disableActions || (!isMyTurn && !authService.isGM)"
+    [disabled]="disableActions || (!isMyTurn && !authService.isGM())"
   >
     {{ "adventure.action-panel.end-turn" | translate }}
   </button>
 </div>
 
-<div *ngIf="!authService.isGM" class="d-flex justify-content-center">
-  <button mat-icon-button (click)="openMobileVersion()">
+@if (!authService.isGM()) {
+  <button class="align-self-center" mat-icon-button (click)="openMobileVersion()">
     <mat-icon>open_in_new</mat-icon>
   </button>
-</div>
-
-<div class="flex-shrink-0 d-flex flex-column justify-content-end" *ngIf="authService.isGM">
+} @else {
   <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="prevAdventure()">
     {{ "adventure.action-panel.previous-adventure" | translate }}
   </button>
   <button mat-raised-button color="accent" class="flex-shrink-0 m-2" (click)="nextAdventure()">
     {{ "adventure.action-panel.next-adventure" | translate }}
   </button>
-</div>
+}
