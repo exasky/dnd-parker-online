@@ -1,5 +1,14 @@
 import { CommonModule } from "@angular/common";
-import { AfterViewInit, Component, ElementRef, inject, OnInit, viewChild, ViewContainerRef } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  inject,
+  OnInit,
+  viewChild,
+  ViewContainerRef,
+} from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -8,7 +17,9 @@ import { Adventure, Board, LayerElement, LayerElementType, LayerItem } from "../
 import { LayerGridsterItem } from "../../model/layer-gridster-item";
 import { AdventureService } from "../../service/adventure.service";
 import { ContextMenuComponent } from "../adventure/context-menu/context-menu.component";
+import { AnimationManager } from "./animations/manager";
 import { EntityTooltipComponent } from "./tooltip.component";
+import { LayerMeshesState } from "./layers.state";
 
 @Component({
   selector: "app-adventure3d-scene",
@@ -45,13 +56,16 @@ export class Adventure3dComponent implements OnInit, AfterViewInit {
   adventure: Adventure;
   //endregion
 
-  private host = inject(ViewContainerRef);
   sceneContainerRef = viewChild<ElementRef>("sceneContainer");
+
+  animationManager = inject(AnimationManager);
+  layerMeshesState = inject(LayerMeshesState);
+
+  private renderer!: THREE.WebGLRenderer;
+  private canvas!: HTMLCanvasElement;
 
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
-  private renderer!: THREE.WebGLRenderer;
-  private canvas!: HTMLCanvasElement;
   private controls!: OrbitControls;
   private raycaster!: THREE.Raycaster;
   private mouse: THREE.Vector2;
@@ -63,9 +77,7 @@ export class Adventure3dComponent implements OnInit, AfterViewInit {
 
   // context
   contextMenu = viewChild<ContextMenuComponent>("contextMenu");
-  contextMenuVisible = false;
   contextMenuPosition = { top: "0px", left: "0px" };
-  contextMenuActions: { label: string; handler: () => void }[] = [];
 
   ngOnInit(): void {
     const adventureId = this.route.snapshot.paramMap.get("id")!;
@@ -87,8 +99,8 @@ export class Adventure3dComponent implements OnInit, AfterViewInit {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x111111); // dark theme
 
-    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    this.camera.position.set(10, 10, 10);
+    this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 2000);
+    this.camera.position.set(20, 20, 20);
     this.camera.lookAt(0, 0, 0);
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -97,8 +109,8 @@ export class Adventure3dComponent implements OnInit, AfterViewInit {
     container.appendChild(this.canvas);
 
     // Controls (debug uniquement)
-    this.controls = new OrbitControls(this.camera, this.canvas);
-    this.controls.enableDamping = true;
+    // this.controls = new OrbitControls(this.camera, this.canvas);
+    // this.controls.enableDamping = true;
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
@@ -115,17 +127,19 @@ export class Adventure3dComponent implements OnInit, AfterViewInit {
     // const gridHelper = new THREE.GridHelper(20, 20);
     // this.scene.add(gridHelper);
 
-    this.camera.position.z = 5;
+    // this.camera.position.z = 150;
 
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
     this.canvas.addEventListener("click", this.onCanvasClick.bind(this));
-    this.renderer.domElement.addEventListener("pointermove", this.onCanvasPointerMove.bind(this));
-    this.renderer.domElement.addEventListener("contextmenu", this.onCanvasRightClick.bind(this));
+    this.canvas.addEventListener("pointermove", this.onCanvasPointerMove.bind(this));
+    this.canvas.addEventListener("contextmenu", this.onCanvasRightClick.bind(this));
 
     // this.createBoard();
+    this.initCameraControls();
     this.renderAdventureBoards(this.adventure);
     this.renderEntities(this.adventure);
+    this.centerCameraOnBoards(this.adventure.boards.length, this.adventure.boards[0].length);
   }
 
   // #region RENDER ADVENTURE BOARDS
@@ -177,6 +191,9 @@ export class Adventure3dComponent implements OnInit, AfterViewInit {
   // #region RENDER ENTITIES
 
   private renderEntities(adventure: Adventure): void {
+    adventure.doors.forEach((trap) => {
+      this.addLayerItem(trap);
+    });
     adventure.traps.forEach((trap) => {
       this.addLayerItem(trap);
     });
@@ -192,29 +209,31 @@ export class Adventure3dComponent implements OnInit, AfterViewInit {
     adventure.chests.forEach((trap) => {
       this.addLayerItem(trap);
     });
-    adventure.doors.forEach((trap) => {
-      this.addLayerItem(trap);
-    });
   }
 
   private addLayerItem(item: LayerItem): void {
     const textureLoader = new THREE.TextureLoader();
     const imagePath = this.getImagePathForItem(item.element);
     textureLoader.load(imagePath, (texture) => {
-      const geometry = new THREE.PlaneGeometry(item.element.colSize, item.element.rowSize);
+      const width = 1 * item.element.colSize;
+      const height = 1 * item.element.rowSize;
+      const geometry = new THREE.PlaneGeometry(width, height);
+
+      // Décale l'origine de la géométrie vers le coin haut-gauche
+      geometry.translate(width / 2, -height / 2, 0);
+
       const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
       const plane = new THREE.Mesh(geometry, material);
 
       plane.rotation.x = -Math.PI / 2; // à plat sur le sol
-
-      const centerX = item.positionX + item.element.colSize / 2;
-      const centerZ = item.positionY + item.element.rowSize / 2;
-      plane.position.set(centerX, 0.01, centerZ); // Légèrement au-dessus du plateau
+      plane.position.set(item.positionX, 0.01, item.positionY); // Légèrement au-dessus du plateau
 
       plane.userData = { layerItem: item }; // Pour l'interaction
       this.intersectedObjects.push(plane);
 
       this.scene.add(plane);
+
+      this.layerMeshesState.addLayerMesh(item, plane); // Stocke le mesh pour référence future
     });
   }
 
@@ -237,6 +256,7 @@ export class Adventure3dComponent implements OnInit, AfterViewInit {
   // #endregion
 
   // #region Grid interactions
+  private selectionOutline?: THREE.Mesh;
   onCanvasClick(event: MouseEvent): void {
     const rect = this.canvas.getBoundingClientRect();
 
@@ -248,16 +268,24 @@ export class Adventure3dComponent implements OnInit, AfterViewInit {
     const intersects = this.raycaster.intersectObjects(this.intersectedObjects, true);
 
     if (intersects.length > 0) {
-      const clicked = intersects[0].object;
+      const clicked = intersects[0].object as THREE.Mesh;
 
       const userData = clicked.userData as { layerItem: LayerItem };
       if (userData?.layerItem) {
-        this.handleEntityClick(userData.layerItem);
+        this.handleEntityClick(clicked, userData.layerItem);
       }
     }
   }
 
-  handleEntityClick(item: LayerItem): void {
+  selectedItem: LayerItem;
+  selectedLine: THREE.LineSegments;
+  handleEntityClick(mesh: THREE.Mesh, item: LayerItem): void {
+    if (this.selectedItem) {
+      this.scene.remove(this.selectedLine);
+    }
+    this.selectedItem = item; // Met à jour l'item sélectionné
+    this.applySelectedEffect(mesh);
+
     switch (item.element.type) {
       case LayerElementType.CHEST:
         console.log("Coffre cliqué :", item.element.name);
@@ -288,7 +316,7 @@ export class Adventure3dComponent implements OnInit, AfterViewInit {
       const object = intersects[0].object;
 
       if (this.hoveredObject !== object) {
-        this.clearHoverEffect();
+        this.clearHoverEffect(this.hoveredObject);
 
         this.hoveredObject = object;
         this.applyHoverEffect(object);
@@ -303,7 +331,7 @@ export class Adventure3dComponent implements OnInit, AfterViewInit {
         }
       }
     } else {
-      this.clearHoverEffect();
+      this.clearHoverEffect(this.hoveredObject);
       this.hoveredObject = null;
       this.hoveredItem = null;
     }
@@ -322,14 +350,31 @@ export class Adventure3dComponent implements OnInit, AfterViewInit {
     }
   }
 
-  clearHoverEffect(): void {
-    if (this.hoveredObject) {
-      const material = (this.hoveredObject as any).material;
-      if (material && "emissive" in material) {
-        material.emissive.setHex(0x000000);
-      } else if (material && "color" in material) {
-        material.color.setHex(0xffffff);
-      }
+  applySelectedEffect(object: THREE.Mesh): void {
+    const edgesGeometry = new THREE.EdgesGeometry(object.geometry);
+    const lineMaterial = new THREE.LineBasicMaterial({
+      color: 0xffff00,
+      transparent: true,
+      opacity: 1,
+      depthWrite: false,
+    });
+    const outline = new THREE.LineSegments(edgesGeometry, lineMaterial);
+    outline.position.copy(object.position);
+    outline.rotation.copy(object.rotation);
+    outline.scale.copy(object.scale);
+    outline.renderOrder = 999; // S'assurer qu'il est au-dessus du reste
+    outline.position.y += 0.01; // Légèrement au-dessus pour éviter le z-fighting
+    this.selectedLine = outline;
+    this.scene.add(outline);
+  }
+
+  clearHoverEffect(object: THREE.Object3D): void {
+    if (!object) return;
+    const material = (object as any).material;
+    if (material && "emissive" in material) {
+      material.emissive.setHex(0x000000);
+    } else if (material && "color" in material) {
+      material.color.setHex(0xffffff);
     }
   }
 
@@ -358,9 +403,141 @@ export class Adventure3dComponent implements OnInit, AfterViewInit {
   }
   // #endregion
 
+  // #region Camera Controls
+  private isDragging = false;
+  private isRotating = false;
+  private lastMousePosition = new THREE.Vector2();
+  private rotation = { azimuth: Math.PI / 4, elevation: Math.PI / 4 }; // angles horizontaux/verticaux
+  initCameraControls() {
+    const canvas = this.renderer.domElement;
+
+    canvas.addEventListener("mousedown", (event) => {
+      if (event.button === 0) {
+        // clic gauche
+        this.isDragging = true;
+        this.lastMousePosition.set(event.clientX, event.clientY);
+      }
+      if (event.button === 2) {
+        // clic droit
+        this.isRotating = true;
+        this.lastMousePosition.set(event.clientX, event.clientY);
+      }
+    });
+
+    canvas.addEventListener("mouseup", (event) => {
+      if (event.button === 0) {
+        this.isDragging = false;
+      }
+      if (event.button === 2) {
+        this.isRotating = false;
+      }
+    });
+
+    canvas.addEventListener("mouseleave", (event) => {
+      if (event.button === 0) {
+        this.isDragging = false;
+      }
+      if (event.button === 2) {
+        this.isRotating = false;
+      }
+    });
+
+    canvas.addEventListener("mousemove", (event) => {
+      if (this.isDragging) {
+        const deltaX = event.clientX - this.lastMousePosition.x;
+        const deltaY = event.clientY - this.lastMousePosition.y;
+
+        const dragSpeed = 1 / (this.camera.zoom * 10); // plus tu es zoomé, plus c’est lent
+        this.camera.position.x -= (deltaX * dragSpeed) / 5;
+        this.camera.position.z -= (deltaY * dragSpeed) / 5;
+
+        this.lastMousePosition.set(event.clientX, event.clientY);
+      }
+      if (this.isRotating) {
+        const deltaX = event.clientX - this.lastMousePosition.x;
+        const deltaY = event.clientY - this.lastMousePosition.y;
+
+        const rotationSpeed = 0.005;
+
+        this.rotation.azimuth -= deltaX * rotationSpeed;
+        this.rotation.elevation -= deltaY * rotationSpeed;
+
+        // clamp l'élévation pour éviter les retournements
+        this.rotation.elevation = THREE.MathUtils.clamp(this.rotation.elevation, 0.2, Math.PI / 2);
+
+        this.lastMousePosition.set(event.clientX, event.clientY);
+
+        this.updateCameraOrbit();
+      }
+    });
+
+    canvas.addEventListener("wheel", (event) => {
+      event.preventDefault(); // évite le scroll de page
+      const zoomFactor = 1.1; // valeur de zoom
+
+      if (event.deltaY < 0) {
+        this.camera.zoom *= zoomFactor;
+      } else {
+        this.camera.zoom /= zoomFactor;
+      }
+
+      this.camera.zoom = THREE.MathUtils.clamp(this.camera.zoom, 0.3, 5); // bornes
+      this.camera.updateProjectionMatrix();
+    });
+  }
+
+  targetCamera = new THREE.Vector3();
+  centerCameraOnBoards(boardRows: number, boardCols: number) {
+    const boardSize = 11; // en cases
+    const totalWidth = boardCols * boardSize;
+    const totalHeight = boardRows * boardSize;
+
+    const centerX = totalWidth / 2;
+    const centerZ = totalHeight / 2;
+
+    // Place la caméra au-dessus du centre du plateau
+    this.targetCamera = new THREE.Vector3(centerX, 0, centerZ);
+    this.camera.position.set(centerX, 15, centerZ * 2); // Y élevé pour vue de dessus
+    this.camera.lookAt(new THREE.Vector3(centerX, 0, centerZ));
+  }
+
+  updateCameraOrbit() {
+    const offset = new THREE.Vector3().subVectors(this.camera.position, this.targetCamera);
+    const cameraDistance = offset.length();
+
+    const x = cameraDistance * Math.sin(this.rotation.elevation) * Math.sin(this.rotation.azimuth);
+    const y = cameraDistance * Math.cos(this.rotation.elevation);
+    const z = cameraDistance * Math.sin(this.rotation.elevation) * Math.cos(this.rotation.azimuth);
+
+    this.camera.position.set(this.targetCamera.x + x, this.targetCamera.y + y, this.targetCamera.z + z);
+    this.camera.lookAt(this.targetCamera);
+  }
+  // #endregion
+
+  @HostListener("document:keydown", ["$event"])
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === "ArrowRight") {
+      const entity = this.layerMeshesState.first(); // récupère le joueur
+      this.moveEntityTo(entity, entity.positionX + 1, entity.positionY);
+    }
+  }
+
+  private moveEntityTo(layerItem: LayerItem, x: number, y: number) {
+    const mesh = this.layerMeshesState.getLayerMesh(layerItem);
+    if (!mesh) return;
+
+    layerItem.positionX = x;
+    layerItem.positionY = y;
+
+    const target = new THREE.Vector3(x, mesh.position.y, y);
+
+    this.animationManager.animateMove(mesh, target);
+  }
+
   private startRenderingLoop(): void {
-    const animate = () => {
-      this.controls.update();
+    const animate = (time) => {
+      // this.controls.update();
+      this.animationManager.runAnimations(time);
       this.renderer.render(this.scene, this.camera);
     };
     this.renderer.setAnimationLoop(animate);
