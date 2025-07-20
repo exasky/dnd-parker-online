@@ -5,5 +5,8 @@
         "Configurer",
         "Flippable",
         "Gridster"
+    ],
+    "html.customData": [
+        "node_modules/angular-three/metadata.json"
     ]
 }

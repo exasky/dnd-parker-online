@@ -28,6 +28,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import("./adventure/component/adventure/adventure-index.component").then((m) => m.AdventureIndexComponent),
       },
+      {
+        path: "adventure3d/:id",
+        loadComponent: () =>
+          import("./adventure/component/adventure3d/adventure3d.component").then((m) => m.Adventure3dComponent),
+      },
       { path: "users", canActivate: [profileGuard], data: { roles: ["ROLE_GM"] }, component: UserListComponent },
       { path: "user-detail", component: UserDetailComponent },
     ],

@@ -1,5 +1,5 @@
-import {Character} from "./character";
-import {CharacterItem, ChestItem, DoorItem, MonsterItem, TrapItem} from "./item";
+import { Character } from "./character";
+import { CharacterItem, ChestItem, DoorItem, MonsterItem, TrapItem } from "./item";
 
 export class Adventure {
   id: number;
@@ -25,7 +25,7 @@ export class Adventure {
     this.boards = [];
     this.traps = [];
     this.doors = [];
-    this.otherItems = []
+    this.otherItems = [];
   }
 }
 
@@ -38,7 +38,7 @@ export class Initiative {
   }
 }
 
-export const GM_CHAR_NAME = 'game-master';
+export const GM_CHAR_NAME = "game-master";
 
 export class Board {
   id?: number;
@@ -53,25 +53,20 @@ export class Board {
 
 export interface LayerItem {
   id?: number;
-  positionX: number
+  positionX: number;
   positionY: number;
   element: LayerElement;
 }
 
-export interface TrapLayerItem extends LayerItem, TrapItem {
-}
+export interface TrapLayerItem extends LayerItem, TrapItem {}
 
-export interface DoorLayerItem extends LayerItem, DoorItem {
-}
+export interface DoorLayerItem extends LayerItem, DoorItem {}
 
-export interface ChestLayerItem extends LayerItem, ChestItem {
-}
+export interface ChestLayerItem extends LayerItem, ChestItem {}
 
-export interface MonsterLayerItem extends LayerItem, MonsterItem {
-}
+export interface MonsterLayerItem extends LayerItem, MonsterItem {}
 
-export interface CharacterLayerItem extends LayerItem, CharacterItem {
-}
+export interface CharacterLayerItem extends LayerItem, CharacterItem {}
 
 export interface LayerElement {
   id: number;
@@ -82,17 +77,20 @@ export interface LayerElement {
 }
 
 export enum LayerElementType {
-  CHEST = 'CHEST',
-  DOOR = 'DOOR',
-  TRAP = 'TRAP',
-  CHARACTER = 'CHARACTER',
-  MONSTER = 'MONSTER',
-  TREE = 'TREE',
-  PILLAR = 'PILLAR'
+  CHEST = "CHEST",
+  DOOR = "DOOR",
+  TRAP = "TRAP",
+  CHARACTER = "CHARACTER",
+  MONSTER = "MONSTER",
+  TREE = "TREE",
+  PILLAR = "PILLAR",
 }
 
 export enum ImageRotation {
-  NONE = 0, RIGHT = 90, LEFT = -90, DOWN = 180
+  NONE = 0,
+  RIGHT = 90,
+  LEFT = -90,
+  DOWN = 180,
 }
 
 export class AdventureLog {
@@ -106,9 +104,9 @@ export class AdventureLog {
 }
 
 export enum AdventureLogType {
-  TRADE = 'TRADE',
-  SWITCH = 'SWITCH',
-  ATTACK = 'ATTACK',
-  DIE = 'DIE',
-  OPEN_CHEST = 'OPEN_CHEST'
+  TRADE = "TRADE",
+  SWITCH = "SWITCH",
+  ATTACK = "ATTACK",
+  DIE = "DIE",
+  OPEN_CHEST = "OPEN_CHEST",
 }

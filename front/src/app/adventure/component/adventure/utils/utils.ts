@@ -4,20 +4,21 @@ import {
   DoorLayerGridsterItem,
   LayerGridsterItem,
   MonsterLayerGridsterItem,
-  TrapLayerGridsterItem
+  TrapLayerGridsterItem,
 } from "../../../model/layer-gridster-item";
 import {
   CharacterLayerItem,
   ChestLayerItem,
-  DoorLayerItem, Initiative,
+  DoorLayerItem,
+  Initiative,
   LayerElementType,
   LayerItem,
   MonsterLayerItem,
-  TrapLayerItem
+  TrapLayerItem,
 } from "../../../model/adventure";
-import {Character} from "../../../model/character";
-import {GridsterItem} from "angular-gridster2";
-import {User} from "../../../../user/user";
+import { Character } from "../../../model/character";
+import { GridsterItem } from "angular-gridster2";
+import { User } from "../../../../user/user";
 
 export class AdventureUtils {
   static baseGridsterItemToLayerItem(item: LayerGridsterItem): LayerItem {
@@ -31,7 +32,7 @@ export class AdventureUtils {
         rowSize: item.rows,
         type: item.type,
         name: item.name,
-      }
+      },
     };
   }
   static existingGridsterItemToLayerItem(item: LayerGridsterItem): LayerItem {
@@ -67,7 +68,7 @@ export class AdventureUtils {
   }
 
   static updateCharacter(character: Character, toUpdateCharacters: Character[]): Character {
-    const toUpdate = toUpdateCharacters.find(advChar => advChar.id === character.id);
+    const toUpdate = toUpdateCharacters.find((advChar) => advChar.id === character.id);
     if (toUpdate) {
       toUpdate.maxHp = character.maxHp;
       toUpdate.hp = character.hp;
@@ -118,11 +119,13 @@ export class AdventureUtils {
   static isMyTurn(currentUser: User, currentInitiative: Initiative): boolean {
     // if (!currentInitiative) return false; // commented when authorize null initiative
     if (!currentInitiative) return true;
-    return currentUser.characters.some(char => currentInitiative.characterName === char.name);
+    return currentUser.characters.some((char) => currentInitiative.characterName === char.name);
   }
 
   static areItemsNextToEachOther(item: LayerGridsterItem, item2: LayerGridsterItem) {
-    return (item.y === item2.y && ([-1, 1].indexOf(item.x - item2.x) !== -1)
-      || (item.x === item2.x && ([-1, 1].indexOf(item.y - item2.y) !== -1)));
+    return (
+      (item.y === item2.y && [-1, 1].indexOf(item.x - item2.x) !== -1) ||
+      (item.x === item2.x && [-1, 1].indexOf(item.y - item2.y) !== -1)
+    );
   }
 }

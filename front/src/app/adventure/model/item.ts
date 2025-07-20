@@ -1,5 +1,5 @@
-import {Character, CharacterEquipment} from "./character";
-import {MonsterTemplate} from "./monster";
+import { Character, CharacterEquipment } from "./character";
+import { MonsterTemplate } from "./monster";
 
 export interface TrapItem {
   id?: number;
@@ -10,7 +10,7 @@ export interface TrapItem {
 export interface DoorItem {
   id?: number;
   vertical: boolean;
-  open: boolean
+  open: boolean;
 }
 
 export interface ChestItem {
